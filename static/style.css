@@ -1,0 +1,25 @@
+/* Preloader Overlay */
+.preloader {
+  position: fixed;
+  inset: 0;
+  /* Evita usar shorthand background si quieres que Tailwind controle el fondo del body detrás */
+  background-color: rgba(10, 10, 20, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  opacity: 1;
+  transition: opacity 0.4s ease;
+  backdrop-filter: blur(8px);
+}
+
+.preloader img {
+  width: 200px;
+  height: 200px;
+  object-fit: contain;
+}
+
+.preloader.fade-out {
+  opacity: 0;
+  pointer-events: none;
+}

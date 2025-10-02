@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DislexIA - Configuración</title>
+    <link rel="icon" type="image/x-icon" href="static/img/favicon.ico">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#8b5cf6',
+                        sidebar: '#f8f9fc'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .setting-card {
+            transition: all 0.2s ease;
+        }
+        
+        .setting-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 24px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #cbd5e1;
+            transition: .3s;
+            border-radius: 24px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+        }
+
+        input:checked + .toggle-slider {
+            background-color: #8b5cf6;
+        }
+
+        input:checked + .toggle-slider:before {
+            transform: translateX(20px);
+        }
+
+        .tab-btn {
+            transition: all 0.2s ease;
+        }
+
+        .tab-btn.active {
+            background-color: white;
+            color: #8b5cf6;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50">
+    <div class="p-8">
+        <!-- Header -->
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-900 mb-2">Configuración</h1>
+            <p class="text-gray-600">Personaliza tu experiencia en DislexIA</p>
+        </div>
+
+        <!-- Tabs -->
+        <div class="flex gap-2 mb-6 bg-gray-100 p-1 rounded-xl inline-flex">
+            <button class="tab-btn active px-4 py-2 rounded-lg text-sm font-medium" data-tab="general">
+                General
+            </button>
+            <button class="tab-btn px-4 py-2 rounded-lg text-sm font-medium text-gray-600" data-tab="accessibility">
+                Accesibilidad
+            </button>
+            <button class="tab-btn px-4 py-2 rounded-lg text-sm font-medium text-gray-600" data-tab="notifications">
+                Notificaciones
+            </button>
+            <button class="tab-btn px-4 py-2 rounded-lg text-sm font-medium text-gray-600" data-tab="privacy">
+                Privacidad
+            </button>
+        </div>
+
+        <!-- Tab Content -->
+        <div id="tab-content">
+            <!-- General Settings -->
+            <div id="general-content" class="tab-content">
+                <div class="space-y-4">
+                    <!-- Dark Mode -->
+                    <div class="setting-card bg-white rounded-xl border border-gray-200 p-6">
+                        <div class="flex items-start justify-between">
+                            <div class="flex items-start gap-4">
+                                <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-moon text-purple-600 text-lg"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-base font-semibold text-gray-900 mb-1">Modo Oscuro</h3>
+                                    <p class="text-sm text-gray-500">Activa el tema oscuro para reducir el cansancio visual</p>
+                                </div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="dark-mode-toggle">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Language -->
+                    <div class="setting-card bg-white rounded-xl border border-gray-200 p-6">
+                        <div class="flex items-start justify-between">
+                            <div class="flex items-start gap-4">
+                                <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-language text-blue-600 text-lg"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <h3 class="text-base font-semibold text-gray-900 mb-1">Idioma</h3>
+                                    <p class="text-sm text-gray-500 mb-3">Selecciona el idioma de la interfaz</p>
+                                    <select class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-500">
+                                        <option value="es">Español</option>
+                                        <option value="en">English</option>
+                                        <option value="fr">Français</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Auto Save -->
+                    <div class="setting-card bg-white rounded-xl border border-gray-200 p-6">
+                        <div class="flex items-start justify-between">
+                            <div class="flex items-start gap-4">
+                                <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-save text-green-600 text-lg"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-base font-semibold text-gray-900 mb-1">Guardado Automático</h3>
+                                    <p class="text-sm text-gray-500">Guarda tu progreso automáticamente durante los juegos</p>
+                                </div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked id="auto-save-toggle">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Sound Effects -->
+                    <div class="setting-card bg-white rounded-xl border border-gray-200 p-6">
+                        <div class="flex items-start justify-between">
+                            <div class="flex items-start gap-4">
+                                <div class="w-12 h-12 bg-yellow-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-volume-up text-yellow-600 text-lg"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-base font-semibold text-gray-900 mb-1">Efectos de Sonido</h3>
+                                    <p class="text-sm text-gray-500">Reproduce sonidos durante las interacciones</p>
+                                </div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked id="sound-toggle">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Accessibility Settings -->
+            <div id="accessibility-content" class="tab-content hidden">
+                <div class="space-y-4">
+                    <!-- Font Size -->
+                    <div class="setting-card bg-white rounded-xl border border-gray-200 p-6">
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-text-height text-purple-600 text-lg"></i>
+                            </div>
+                            <div class="flex-1">
+                                <h3 class="text-base font-semibold text-gray-900 mb-1">Tamaño de Fuente</h3>
+                                <p class="text-sm text-gray-500 mb-3">Ajusta el tamaño del texto en la aplicación</p>
+                                <select class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-500">
+                                    <option value="small">Pequeño</option>
+                                    <option value="medium" selected>Mediano</option>
+                                    <option value="large">Grande</option>
+                                    <option value="xlarge">Muy Grande</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Dyslexia Font -->
+                    <div class="setting-card bg-white rounded-xl border border-gray-200 p-6">
+                        <div class="flex items-start justify-between">
+                            <div class="flex items-start gap-4">
+                                <div class="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-font text-indigo-600 text-lg"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-base font-semibold text-gray-900 mb-1">Fuente para Dislexia</h3>
+                                    <p class="text-sm text-gray-500">Usa una fuente especialmente diseñada para facilitar la lectura</p>
+                                </div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="dyslexia-font-toggle">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- High Contrast -->
+                    <div class="setting-card bg-white rounded-xl border border-gray-200 p-6">
+                        <div class="flex items-start justify-between">
+                            <div class="flex items-start gap-4">
+                                <div class="w-12 h-12 bg-gray-800 rounded-xl flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-adjust text-white text-lg"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-base font-semibold text-gray-900 mb-1">Alto Contraste</h3>
+                                    <p class="text-sm text-gray-500">Aumenta el contraste para mejorar la visibilidad</p>
+                                </div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="contrast-toggle">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Line Spacing -->
+                    <div class="setting-card bg-white rounded-xl border border-gray-200 p-6">
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 bg-teal-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-align-justify text-teal-600 text-lg"></i>
+                            </div>
+                            <div class="flex-1">
+                                <h3 class="text-base font-semibold text-gray-900 mb-1">Espaciado de Líneas</h3>
+                                <p class="text-sm text-gray-500 mb-3">Ajusta el espacio entre líneas de texto</p>
+                                <select class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-500">
+                                    <option value="normal">Normal</option>
+                                    <option value="relaxed" selected>Relajado</option>
+                                    <option value="loose">Amplio</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Voice Commands -->
+                    <div class="setting-card bg-white rounded-xl border border-gray-200 p-6">
+                        <div class="flex items-start justify-between">
+                            <div class="flex items-start gap-4">
+                                <div class="w-12 h-12 bg-pink-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-microphone text-pink-600 text-lg"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-base font-semibold text-gray-900 mb-1">Comandos de Voz</h3>
+                                    <p class="text-sm text-gray-500">Controla la aplicación mediante voz</p>
+                                </div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="voice-toggle">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notifications Settings -->
+            <div id="notifications-content" class="tab-content hidden">
+                <div class="space-y-4">
+                    <!-- Email Notifications -->
+                    <div class="setting-card bg-white rounded-xl border border-gray-200 p-6">
+                        <div class="flex items-start justify-between">
+                            <div class="flex items-start gap-4">
+                                <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-envelope text-blue-600 text-lg"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-base font-semibold text-gray-900 mb-1">Notificaciones por Email</h3>
+                                    <p class="text-sm text-gray-500">Recibe actualizaciones importantes por correo</p>
+                                </div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked id="email-notif-toggle">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Progress Reminders -->
+                    <div class="setting-card bg-white rounded-xl border border-gray-200 p-6">
+                        <div class="flex items-start justify-between">
+                            <div class="flex items-start gap-4">
+                                <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-bell text-green-600 text-lg"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-base font-semibold text-gray-900 mb-1">Recordatorios de Práctica</h3>
+                                    <p class="text-sm text-gray-500">Recibe recordatorios diarios para practicar</p>
+                                </div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked id="reminder-toggle">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Achievement Notifications -->
+                    <div class="setting-card bg-white rounded-xl border border-gray-200 p-6">
+                        <div class="flex items-start justify-between">
+                            <div class="flex items-start gap-4">
+                                <div class="w-12 h-12 bg-yellow-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-trophy text-yellow-600 text-lg"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-base font-semibold text-gray-900 mb-1">Logros y Progreso</h3>
+                                    <p class="text-sm text-gray-500">Notificaciones sobre tus logros y mejoras</p>
+                                </div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked id="achievement-toggle">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Privacy Settings -->
+            <div id="privacy-content" class="tab-content hidden">
+                <div class="space-y-4">
+                    <!-- Data Collection -->
+                    <div class="setting-card bg-white rounded-xl border border-gray-200 p-6">
+                        <div class="flex items-start justify-between">
+                            <div class="flex items-start gap-4">
+                                <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-chart-line text-purple-600 text-lg"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-base font-semibold text-gray-900 mb-1">Recopilación de Datos</h3>
+                                    <p class="text-sm text-gray-500">Permite recopilar datos anónimos para mejorar la app</p>
+                                </div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked id="data-toggle">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Profile Visibility -->
+                    <div class="setting-card bg-white rounded-xl border border-gray-200 p-6">
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-user-shield text-blue-600 text-lg"></i>
+                            </div>
+                            <div class="flex-1">
+                                <h3 class="text-base font-semibold text-gray-900 mb-1">Visibilidad del Perfil</h3>
+                                <p class="text-sm text-gray-500 mb-3">Controla quién puede ver tu perfil y progreso</p>
+                                <select class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-500">
+                                    <option value="private" selected>Privado</option>
+                                    <option value="friends">Solo Amigos</option>
+                                    <option value="public">Público</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Delete Account -->
+                    <div class="setting-card bg-white rounded-xl border border-red-200 p-6">
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-trash-alt text-red-600 text-lg"></i>
+                            </div>
+                            <div class="flex-1">
+                                <h3 class="text-base font-semibold text-gray-900 mb-1">Eliminar Cuenta</h3>
+                                <p class="text-sm text-gray-500 mb-3">Elimina permanentemente tu cuenta y todos tus datos</p>
+                                <button class="px-4 py-2 bg-red-50 hover:bg-red-100 text-red-600 font-medium rounded-lg text-sm transition-colors">
+                                    Eliminar Cuenta
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function initSettingsPage() {
+            console.log('Inicializando página de configuración...');
+
+            // Elementos DOM
+            const tabButtons = document.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            console.log('Elementos encontrados:', {
+                tabButtons: tabButtons.length,
+                tabContents: tabContents.length
+            });
+
+            // Funcionalidad de tabs
+            tabButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const targetTab = this.getAttribute('data-tab');
+                    
+                    // Remover clase active de todos los botones
+                    tabButtons.forEach(btn => {
+                        btn.classList.remove('active', 'text-gray-900');
+                        btn.classList.add('text-gray-600');
+                    });
+                    
+                    // Agregar clase active al botón clickeado
+                    this.classList.add('active', 'text-gray-900');
+                    this.classList.remove('text-gray-600');
+                    
+                    // Ocultar todos los contenidos
+                    tabContents.forEach(content => {
+                        content.classList.add('hidden');
+                    });
+                    
+                    // Mostrar el contenido correspondiente
+                    const targetContent = document.getElementById(`${targetTab}-content`);
+                    if (targetContent) {
+                        targetContent.classList.remove('hidden');
+                    }
+                });
+            });
+
+            // Funcionalidad de toggles (guardar en localStorage)
+            const toggles = document.querySelectorAll('.toggle-switch input[type="checkbox"]');
+            
+            toggles.forEach(toggle => {
+                // Cargar estado guardado
+                const savedState = localStorage.getItem(toggle.id);
+                if (savedState !== null) {
+                    toggle.checked = savedState === 'true';
+                }
+                
+                // Guardar cuando cambie
+                toggle.addEventListener('change', function() {
+                    localStorage.setItem(this.id, this.checked);
+                    console.log(`${this.id}: ${this.checked}`);
+                    
+                    // Aplicar cambios específicos
+                    if (this.id === 'dark-mode-toggle') {
+                        // Aquí podrías aplicar el modo oscuro
+                        console.log('Dark mode:', this.checked ? 'ON' : 'OFF');
+                    }
+                });
+            });
+
+            // Funcionalidad de selects
+            const selects = document.querySelectorAll('select');
+            selects.forEach(select => {
+                select.addEventListener('change', function() {
+                    console.log(`${this.previousElementSibling?.textContent || 'Select'} changed to:`, this.value);
+                });
+            });
+
+            console.log('Página de configuración inicializada correctamente');
+        })();
+    </script>
+</body>
+
+</html>

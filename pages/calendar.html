@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DislexIA - Calendario</title>
+    <link rel="icon" type="image/x-icon" href="static/img/favicon.ico">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#8b5cf6',
+                        sidebar: '#f8f9fc'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .calendar-day {
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        
+        .calendar-day:hover {
+            background-color: #f3f4f6;
+        }
+        
+        .calendar-day.selected {
+            background-color: #8b5cf6;
+            color: white;
+        }
+        
+        .calendar-day.has-activity {
+            position: relative;
+        }
+        
+        .calendar-day.has-activity::after {
+            content: '';
+            position: absolute;
+            bottom: 2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 4px;
+            background-color: #8b5cf6;
+            border-radius: 50%;
+        }
+        
+        .calendar-day.selected.has-activity::after {
+            background-color: white;
+        }
+        
+        .activity-item {
+            transition: all 0.2s ease;
+        }
+        
+        .activity-item:hover {
+            transform: translateX(4px);
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50">
+    <div class="p-8">
+        <!-- Header -->
+        <div class="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900 mb-2">Calendario de Actividades</h1>
+                <p class="text-gray-600">Organiza y revisa tus sesiones de entrenamiento</p>
+            </div>
+            
+            <div class="flex gap-3">
+                <button id="today-btn" class="px-4 py-2 bg-white border border-gray-300 rounded-xl text-sm font-medium transition-all hover:bg-gray-50">
+                    Hoy
+                </button>
+                <button id="add-activity-btn" class="px-4 py-2 bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-xl text-sm font-medium transition-all hover:from-purple-600 hover:to-purple-700 flex items-center gap-2">
+                    <i class="fas fa-plus"></i>
+                    Nueva Actividad
+                </button>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Calendario -->
+            <div class="lg:col-span-2">
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+                    <!-- Controles del Calendario -->
+                    <div class="flex items-center justify-between mb-6">
+                        <button id="prev-month" class="p-2 rounded-lg hover:bg-gray-100 transition-colors">
+                            <i class="fas fa-chevron-left text-gray-600"></i>
+                        </button>
+                        
+                        <h2 id="current-month" class="text-xl font-bold text-gray-900">Febrero 2024</h2>
+                        
+                        <button id="next-month" class="p-2 rounded-lg hover:bg-gray-100 transition-colors">
+                            <i class="fas fa-chevron-right text-gray-600"></i>
+                        </button>
+                    </div>
+
+                    <!-- Días de la semana -->
+                    <div class="grid grid-cols-7 gap-1 mb-4">
+                        <div class="text-center text-sm font-medium text-gray-500 py-2">Dom</div>
+                        <div class="text-center text-sm font-medium text-gray-500 py-2">Lun</div>
+                        <div class="text-center text-sm font-medium text-gray-500 py-2">Mar</div>
+                        <div class="text-center text-sm font-medium text-gray-500 py-2">Mié</div>
+                        <div class="text-center text-sm font-medium text-gray-500 py-2">Jue</div>
+                        <div class="text-center text-sm font-medium text-gray-500 py-2">Vie</div>
+                        <div class="text-center text-sm font-medium text-gray-500 py-2">Sáb</div>
+                    </div>
+
+                    <!-- Días del mes -->
+                    <div id="calendar-days" class="grid grid-cols-7 gap-1">
+                        <!-- Los días se generarán dinámicamente con JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Estadísticas rápidas -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+                    <div class="bg-white rounded-xl border border-gray-200 p-4 text-center">
+                        <div class="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                            <i class="fas fa-play text-purple-600"></i>
+                        </div>
+                        <p class="text-lg font-bold text-gray-900" id="sessions-count">0</p>
+                        <p class="text-xs text-gray-500">Sesiones este mes</p>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl border border-gray-200 p-4 text-center">
+                        <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                            <i class="fas fa-check-circle text-green-600"></i>
+                        </div>
+                        <p class="text-lg font-bold text-gray-900" id="completed-count">0</p>
+                        <p class="text-xs text-gray-500">Completadas</p>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl border border-gray-200 p-4 text-center">
+                        <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                            <i class="fas fa-clock text-blue-600"></i>
+                        </div>
+                        <p class="text-lg font-bold text-gray-900" id="time-count">0h</p>
+                        <p class="text-xs text-gray-500">Tiempo total</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Registros del día seleccionado -->
+            <div class="lg:col-span-1">
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 sticky top-8">
+                    <h3 class="text-lg font-bold text-gray-900 mb-4" id="selected-date">Hoy</h3>
+                    
+                    <!-- Lista de actividades -->
+                    <div id="activities-list" class="space-y-3 mb-6">
+                        <div class="text-center py-8 text-gray-500">
+                            <i class="fas fa-calendar-day text-3xl mb-2 opacity-50"></i>
+                            <p>No hay actividades para este día</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Resumen del día -->
+                    <div class="border-t border-gray-200 pt-4">
+                        <h4 class="font-medium text-gray-900 mb-3">Resumen del día</h4>
+                        <div class="space-y-2 text-sm">
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Sesiones completadas:</span>
+                                <span class="font-medium" id="day-sessions">0</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Tiempo total:</span>
+                                <span class="font-medium" id="day-time">0 min</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Puntos ganados:</span>
+                                <span class="font-medium text-green-600" id="day-points">0</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para agregar actividad -->
+    <div id="activity-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 hidden">
+        <div class="bg-white rounded-2xl shadow-xl max-w-md w-full p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold text-gray-900">Nueva Actividad</h3>
+                <button id="close-modal" class="p-2 rounded-lg hover:bg-gray-100 transition-colors">
+                    <i class="fas fa-times text-gray-500"></i>
+                </button>
+            </div>
+            
+            <form id="activity-form" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Juego</label>
+                    <select id="activity-game" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                        <option value="quiz">Quiz Interactivo</option>
+                        <option value="search">Búsqueda de Palabras</option>
+                        <option value="order">Ordenar Oraciones</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Duración (minutos)</label>
+                    <input type="number" id="activity-duration" min="5" max="60" value="15" 
+                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Puntos obtenidos</label>
+                    <input type="number" id="activity-points" min="0" max="100" value="25" 
+                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Notas</label>
+                    <textarea id="activity-notes" rows="3" 
+                              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                              placeholder="Agrega alguna observación..."></textarea>
+                </div>
+                
+                <div class="flex gap-3 pt-2">
+                    <button type="button" id="cancel-activity" class="flex-1 px-4 py-2 border border-gray-300 text-gray-700 font-medium rounded-xl hover:bg-gray-50 transition-colors">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="flex-1 px-4 py-2 bg-gradient-to-r from-purple-500 to-purple-600 text-white font-medium rounded-xl hover:from-purple-600 hover:to-purple-700 transition-colors">
+                        Guardar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // IIFE para ejecutar inmediatamente sin esperar DOMContentLoaded
+        (function initCalendarPage() {
+            console.log('Inicializando calendario...');
+            
+            // Datos de ejemplo para actividades
+            let activities = {
+                '2024-02-15': [
+                    {
+                        id: 1,
+                        game: 'quiz',
+                        gameName: 'Quiz Interactivo',
+                        duration: 12,
+                        points: 80,
+                        notes: 'Excelente rendimiento en comprensión lectora',
+                        time: '10:30 AM'
+                    },
+                    {
+                        id: 2,
+                        game: 'search',
+                        gameName: 'Búsqueda de Palabras',
+                        duration: 8,
+                        points: 65,
+                        notes: 'Encontró 12 de 15 palabras',
+                        time: '04:15 PM'
+                    }
+                ],
+                '2024-02-10': [
+                    {
+                        id: 3,
+                        game: 'order',
+                        gameName: 'Ordenar Oraciones',
+                        duration: 15,
+                        points: 45,
+                        notes: 'Dificultad con oraciones complejas',
+                        time: '03:00 PM'
+                    }
+                ],
+                '2024-02-05': [
+                    {
+                        id: 4,
+                        game: 'quiz',
+                        gameName: 'Quiz Interactivo',
+                        duration: 10,
+                        points: 70,
+                        notes: 'Mejoró 15% respecto a la última sesión',
+                        time: '11:00 AM'
+                    }
+                ]
+            };
+
+            // Estado del calendario
+            let currentDate = new Date();
+            let selectedDate = new Date();
+            let currentMonth = currentDate.getMonth();
+            let currentYear = currentDate.getFullYear();
+
+            // Elementos DOM
+            const calendarDays = document.getElementById('calendar-days');
+            const currentMonthElement = document.getElementById('current-month');
+            const prevMonthBtn = document.getElementById('prev-month');
+            const nextMonthBtn = document.getElementById('next-month');
+            const todayBtn = document.getElementById('today-btn');
+            const selectedDateElement = document.getElementById('selected-date');
+            const activitiesList = document.getElementById('activities-list');
+            const activityModal = document.getElementById('activity-modal');
+            const addActivityBtn = document.getElementById('add-activity-btn');
+            const closeModalBtn = document.getElementById('close-modal');
+            const cancelActivityBtn = document.getElementById('cancel-activity');
+            const activityForm = document.getElementById('activity-form');
+            
+            // Elementos de estadísticas
+            const sessionsCount = document.getElementById('sessions-count');
+            const completedCount = document.getElementById('completed-count');
+            const timeCount = document.getElementById('time-count');
+            const daySessions = document.getElementById('day-sessions');
+            const dayTime = document.getElementById('day-time');
+            const dayPoints = document.getElementById('day-points');
+
+            console.log('Elementos encontrados:', {
+                calendarDays: calendarDays ? 'Sí' : 'No',
+                prevMonthBtn: prevMonthBtn ? 'Sí' : 'No',
+                activityModal: activityModal ? 'Sí' : 'No'
+            });
+
+            // Renderizar calendario
+            function renderCalendar() {
+                calendarDays.innerHTML = '';
+                
+                // Actualizar título del mes
+                const monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 
+                                   'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+                currentMonthElement.textContent = `${monthNames[currentMonth]} ${currentYear}`;
+                
+                // Obtener primer día del mes y cantidad de días
+                const firstDay = new Date(currentYear, currentMonth, 1);
+                const lastDay = new Date(currentYear, currentMonth + 1, 0);
+                const daysInMonth = lastDay.getDate();
+                const startingDay = firstDay.getDay();
+                
+                // Días del mes anterior
+                const prevMonthLastDay = new Date(currentYear, currentMonth, 0).getDate();
+                for (let i = 0; i < startingDay; i++) {
+                    const dayElement = document.createElement('div');
+                    dayElement.className = 'calendar-day text-center py-2 text-gray-400';
+                    dayElement.textContent = prevMonthLastDay - startingDay + i + 1;
+                    calendarDays.appendChild(dayElement);
+                }
+                
+                // Días del mes actual
+                const today = new Date();
+                for (let day = 1; day <= daysInMonth; day++) {
+                    const dayElement = document.createElement('div');
+                    const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                    const hasActivity = activities[dateStr] && activities[dateStr].length > 0;
+                    
+                    dayElement.className = `calendar-day text-center py-2 rounded-lg ${hasActivity ? 'has-activity' : ''}`;
+                    
+                    if (day === today.getDate() && currentMonth === today.getMonth() && currentYear === today.getFullYear()) {
+                        dayElement.classList.add('font-bold', 'text-purple-600');
+                    }
+                    
+                    if (day === selectedDate.getDate() && currentMonth === selectedDate.getMonth() && currentYear === selectedDate.getFullYear()) {
+                        dayElement.classList.add('selected');
+                    }
+                    
+                    dayElement.textContent = day;
+                    dayElement.dataset.date = dateStr;
+                    dayElement.addEventListener('click', () => selectDate(day));
+                    calendarDays.appendChild(dayElement);
+                }
+                
+                // Días del próximo mes
+                const totalCells = 42;
+                const remainingCells = totalCells - (startingDay + daysInMonth);
+                for (let i = 1; i <= remainingCells; i++) {
+                    const dayElement = document.createElement('div');
+                    dayElement.className = 'calendar-day text-center py-2 text-gray-400';
+                    dayElement.textContent = i;
+                    calendarDays.appendChild(dayElement);
+                }
+            }
+
+            function selectDate(day) {
+                selectedDate = new Date(currentYear, currentMonth, day);
+                renderCalendar();
+                updateSelectedDateInfo();
+            }
+
+            function updateSelectedDateInfo() {
+                const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+                selectedDateElement.textContent = selectedDate.toLocaleDateString('es-ES', options);
+                
+                const dateStr = formatDate(selectedDate);
+                const dayActivities = activities[dateStr] || [];
+                
+                activitiesList.innerHTML = '';
+                
+                if (dayActivities.length === 0) {
+                    activitiesList.innerHTML = `
+                        <div class="text-center py-8 text-gray-500">
+                            <i class="fas fa-calendar-day text-3xl mb-2 opacity-50"></i>
+                            <p>No hay actividades para este día</p>
+                        </div>
+                    `;
+                } else {
+                    dayActivities.forEach(activity => {
+                        const activityElement = document.createElement('div');
+                        activityElement.className = 'activity-item bg-gray-50 border border-gray-200 rounded-xl p-4';
+                        
+                        let gameIcon = 'fa-gamepad';
+                        let gameColor = 'purple';
+                        
+                        if (activity.game === 'search') {
+                            gameIcon = 'fa-search';
+                            gameColor = 'blue';
+                        } else if (activity.game === 'order') {
+                            gameIcon = 'fa-sort-alpha-down';
+                            gameColor = 'orange';
+                        }
+                        
+                        activityElement.innerHTML = `
+                            <div class="flex justify-between items-start mb-2">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-8 h-8 bg-${gameColor}-100 rounded-lg flex items-center justify-center">
+                                        <i class="fas ${gameIcon} text-${gameColor}-600 text-sm"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-medium text-gray-900">${activity.gameName}</h4>
+                                        <p class="text-xs text-gray-500">${activity.time}</p>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <span class="inline-block bg-green-100 text-green-800 text-xs font-medium px-2 py-1 rounded-full">
+                                        +${activity.points} pts
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="flex justify-between text-sm text-gray-600">
+                                <span>${activity.duration} min</span>
+                                <span>${activity.notes}</span>
+                            </div>
+                        `;
+                        
+                        activitiesList.appendChild(activityElement);
+                    });
+                }
+                
+                daySessions.textContent = dayActivities.length;
+                const totalTime = dayActivities.reduce((sum, activity) => sum + activity.duration, 0);
+                dayTime.textContent = `${totalTime} min`;
+                const totalPoints = dayActivities.reduce((sum, activity) => sum + activity.points, 0);
+                dayPoints.textContent = totalPoints;
+            }
+
+            function updateStatistics() {
+                let totalSessions = 0;
+                let totalTime = 0;
+                
+                Object.values(activities).forEach(dayActivities => {
+                    totalSessions += dayActivities.length;
+                    dayActivities.forEach(activity => {
+                        totalTime += activity.duration;
+                    });
+                });
+                
+                sessionsCount.textContent = totalSessions;
+                completedCount.textContent = totalSessions;
+                timeCount.textContent = `${Math.round(totalTime / 60)}h ${totalTime % 60}m`;
+            }
+
+            function goToPreviousMonth() {
+                currentMonth--;
+                if (currentMonth < 0) {
+                    currentMonth = 11;
+                    currentYear--;
+                }
+                renderCalendar();
+            }
+
+            function goToNextMonth() {
+                currentMonth++;
+                if (currentMonth > 11) {
+                    currentMonth = 0;
+                    currentYear++;
+                }
+                renderCalendar();
+            }
+
+            function goToToday() {
+                currentDate = new Date();
+                currentMonth = currentDate.getMonth();
+                currentYear = currentDate.getFullYear();
+                selectedDate = new Date();
+                renderCalendar();
+                updateSelectedDateInfo();
+            }
+
+            function openActivityModal() {
+                activityModal.classList.remove('hidden');
+            }
+
+            function closeActivityModal() {
+                activityModal.classList.add('hidden');
+                activityForm.reset();
+            }
+
+            function saveActivity(e) {
+                e.preventDefault();
+                
+                const game = document.getElementById('activity-game').value;
+                const duration = parseInt(document.getElementById('activity-duration').value);
+                const points = parseInt(document.getElementById('activity-points').value);
+                const notes = document.getElementById('activity-notes').value;
+                
+                const dateStr = formatDate(selectedDate);
+                
+                if (!activities[dateStr]) {
+                    activities[dateStr] = [];
+                }
+                
+                const gameNames = {
+                    'quiz': 'Quiz Interactivo',
+                    'search': 'Búsqueda de Palabras',
+                    'order': 'Ordenar Oraciones'
+                };
+                
+                const newActivity = {
+                    id: Date.now(),
+                    game: game,
+                    gameName: gameNames[game],
+                    duration: duration,
+                    points: points,
+                    notes: notes,
+                    time: new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })
+                };
+                
+                activities[dateStr].push(newActivity);
+                
+                closeActivityModal();
+                renderCalendar();
+                updateSelectedDateInfo();
+                updateStatistics();
+            }
+
+            function formatDate(date) {
+                return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+            }
+
+            // Inicializar
+            renderCalendar();
+            updateSelectedDateInfo();
+            updateStatistics();
+            
+            // Event listeners
+            prevMonthBtn.addEventListener('click', goToPreviousMonth);
+            nextMonthBtn.addEventListener('click', goToNextMonth);
+            todayBtn.addEventListener('click', goToToday);
+            addActivityBtn.addEventListener('click', openActivityModal);
+            closeModalBtn.addEventListener('click', closeActivityModal);
+            cancelActivityBtn.addEventListener('click', closeActivityModal);
+            activityForm.addEventListener('submit', saveActivity);
+            
+            console.log('Calendario inicializado correctamente');
+        })();
+    </script>
+</body>
+
+</html>
