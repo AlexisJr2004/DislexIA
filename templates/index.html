@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}DislexIA - Panel Administrativo{% endblock %}
+
+{% block extra_head %}
+<!-- Estilos específicos para la página de inicio si los necesitas -->
+{% endblock %}
+
+{% block content %}
+<!-- Contenido específico del dashboard/inicio -->
+<div class="dashboard-content">
+    <h1 class="text-2xl font-bold text-gray-900 mb-6">Panel Administrativo</h1>
+    <p class="text-gray-600">Bienvenido al sistema DislexIA. Aquí podrás gestionar todos los aspectos de la aplicación.</p>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+
+<!-- Scripts específicos para el dashboard -->
+<script>
+    // JavaScript específico para la página de dashboard/inicio
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('Dashboard cargado correctamente');
+        // Aquí puedes agregar funcionalidades específicas del dashboard
+    });
+</script>
+{% endblock %}

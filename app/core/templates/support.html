@@ -1,26 +1,10 @@
-<!DOCTYPE html>
-<html lang="es">
+{% extends 'base.html' %}
+{% load static %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DislexIA - Soporte</title>
-    <link rel="icon" type="image/x-icon" href="static/img/favicon.ico">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#8b5cf6',
-                        sidebar: '#f8f9fc'
-                    }
-                }
-            }
-        }
-    </script>
-    <style>
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block extra_head %}
+<style>
         .contact-card {
             transition: all 0.3s ease;
         }
@@ -51,11 +35,10 @@
         .faq-icon {
             transition: transform 0.3s ease;
         }
-    </style>
-</head>
+</style>
+{% endblock %}
 
-<body class="bg-gray-50">
-    <div class="p-8">
+{% block content %}
         <!-- Header -->
         <div class="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
             <div>
@@ -294,9 +277,10 @@
                 </div>
             </div>
         </div>
-    </div>
+{% endblock %}
 
-    <script>
+{% block extra_scripts %}
+<script>
         // IIFE para ejecutar inmediatamente
         (function initSupportPage() {
             console.log('Inicializando página de soporte...');
@@ -342,7 +326,5 @@
 
             console.log('Página de soporte inicializada correctamente');
         })();
-    </script>
-</body>
-
-</html>
+</script>
+{% endblock %}

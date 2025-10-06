@@ -1,13 +1,14 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="es">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DislexIA - Panel Administrativo</title>
-    <link rel="icon" type="image/x-icon" href="static/img/favicon.ico">
+    <title>{% block title %}DislexIA - Panel Administrativo{% endblock %}</title>
+    <link rel="icon" type="image/x-icon" href="{% static 'img/favicon.ico' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="static/style.css">
+    <link rel="stylesheet" href="{% static 'style.css' %}">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -21,13 +22,13 @@
             }
         }
     </script>
+    {% block extra_head %}{% endblock %}
 </head>
 
 <body>
-
     <!-- Pantalla de Carga -->
     <div id="preloader" class="preloader" aria-hidden="true">
-        <img src="static/img/carga.gif" alt="Cargando..." />
+        <img src="{% static 'img/carga.gif' %}" alt="Cargando..." />
     </div>
 
     <!-- Sidebar -->
@@ -37,11 +38,11 @@
             <div class="p-6">
                 <div class="flex items-center gap-2">
                     <div class="w-10 h-10 rounded-full overflow-hidden">
-                        <img src="static/img//favicon.ico" alt="Foto de perfil" class="w-full h-full object-cover">
+                        <img src="{% static 'img/favicon.ico' %}" alt="Foto de perfil" class="w-full h-full object-cover">
                     </div>
                     <div>
                         <h1 class="text-sm font-bold text-gray-900">DislexIA</h1>
-                        <p class="text-xs text-gray-500">Tu neuropsicólogos amigo</p>
+                        <p class="text-xs text-gray-500">Tu neuropsicólogo amigo</p>
                     </div>
                 </div>
             </div>
@@ -49,17 +50,17 @@
 
             <!-- Navigation -->
             <nav class="flex-1 px-3">
-                <a href="#dashboard" data-page="dashboard"
-                    class="nav-link flex items-center gap-3 px-3 py-2 mb-1 text-primary bg-primary/10 rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 hover:shadow-sm">
+                <a href="{% url 'dashboard' %}"
+                    class="nav-link flex items-center gap-3 px-3 py-2 mb-1 {% if request.resolver_match.url_name == 'dashboard' %}text-primary bg-primary/10{% else %}text-gray-600 hover:bg-gray-100{% endif %} rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 hover:shadow-sm">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
                     </svg>
-                    Panel Admnistrativo
+                    Panel Administrativo
                 </a>
 
-                <a href="#games" data-page="games"
-                    class="nav-link flex items-center gap-3 px-3 py-2 mb-1 text-gray-600 hover:bg-gray-100 rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 hover:shadow-sm">
+                <a href="{% url 'core:games' %}"
+                    class="nav-link flex items-center gap-3 px-3 py-2 mb-1 {% if request.resolver_match.url_name == 'games' %}text-primary bg-primary/10{% else %}text-gray-600 hover:bg-gray-100{% endif %} rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 hover:shadow-sm">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path
                             d="M6 12h2m-1-1v2m8-1h2m-1-1v2m-9 5a4 4 0 01-4-4V9a4 4 0 014-4h10a4 4 0 014 4v4a4 4 0 01-4 4h-3l-2 2-2-2H8z" />
@@ -67,8 +68,8 @@
                     Juegos
                 </a>
 
-                <a href="#calendar" data-page="calendar"
-                    class="nav-link flex items-center gap-3 px-3 py-2 mb-1 text-gray-600 hover:bg-gray-100 rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 hover:shadow-sm">
+                <a href="{% url 'core:calendar' %}"
+                    class="nav-link flex items-center gap-3 px-3 py-2 mb-1 {% if request.resolver_match.url_name == 'calendar' %}text-primary bg-primary/10{% else %}text-gray-600 hover:bg-gray-100{% endif %} rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 hover:shadow-sm">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -76,8 +77,8 @@
                     Calendario
                 </a>
 
-                <a href="#documents" data-page="documents"
-                    class="nav-link flex items-center gap-3 px-3 py-2 mb-1 text-gray-600 hover:bg-gray-100 rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 hover:shadow-sm">
+                <a href="{% url 'core:documents' %}"
+                    class="nav-link flex items-center gap-3 px-3 py-2 mb-1 {% if request.resolver_match.url_name == 'documents' %}text-primary bg-primary/10{% else %}text-gray-600 hover:bg-gray-100{% endif %} rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 hover:shadow-sm">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -88,8 +89,8 @@
 
             <!-- Bottom Section -->
             <div class="p-3">
-                <a href="#settings" data-page="settings"
-                    class="nav-link flex items-center gap-3 px-3 py-2 mb-1 text-gray-600 hover:bg-gray-100 rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105">
+                <a href="{% url 'core:settings' %}"
+                    class="nav-link flex items-center gap-3 px-3 py-2 mb-1 {% if request.resolver_match.url_name == 'settings' %}text-primary bg-primary/10{% else %}text-gray-600 hover:bg-gray-100{% endif %} rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M12 15.5A3.5 3.5 0 1 0 12 8.5a3.5 3.5 0 0 0 0 7z" />
@@ -99,9 +100,8 @@
                     Configuraciones
                 </a>
 
-
-                <a href="#support" data-page="support"
-                    class="nav-link flex items-center gap-3 px-3 py-2 mb-3 text-gray-600 hover:bg-gray-100 rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105">
+                <a href="{% url 'core:support' %}"
+                    class="nav-link flex items-center gap-3 px-3 py-2 mb-3 {% if request.resolver_match.url_name == 'support' %}text-primary bg-primary/10{% else %}text-gray-600 hover:bg-gray-100{% endif %} rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8-1.09 0-2.13-.18-3.08-.5L3 20l1.5-2.5A8.962 8.962 0 013 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
@@ -109,23 +109,21 @@
                     Soporte
                 </a>
 
-
                 <!-- User Profile con borde superior -->
-                <a href="#profile" data-page="profile"
-                    class="nav-link flex items-center gap-2 p-2 border-t border-gray-200 hover:bg-gray-100 rounded-lg cursor-pointer transition-all duration-200 hover:scale-105">
+                <a href="{% url 'core:profile' %}"
+                    class="nav-link flex items-center gap-2 p-2 border-t border-gray-200 {% if request.resolver_match.url_name == 'profile' %}bg-primary/10{% else %}hover:bg-gray-100{% endif %} rounded-lg cursor-pointer transition-all duration-200 hover:scale-105">
                     <div class="w-10 h-10 rounded-full overflow-hidden">
-                        <img src="static/img/profile.png" alt="Foto de perfil" class="w-full h-full object-cover">
+                        <img src="{% static 'img/profile.png' %}" alt="Foto de perfil" class="w-full h-full object-cover">
                     </div>
                     <div class="flex-1 min-w-0">
-                        <p class="text-sm font-semibold text-gray-900 truncate">Dr. Alexis Durán</p>
-                        <p class="text-xs text-gray-500 truncate">snietod@unemi.edu.ec</p>
+                        <p class="text-sm font-semibold text-gray-900 truncate">{% block user_name %}Dr. Alexis Durán{% endblock %}</p>
+                        <p class="text-xs text-gray-500 truncate">{% block user_email %}snietod@unemi.edu.ec{% endblock %}</p>
                     </div>
                     <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                     </svg>
                 </a>
             </div>
-
         </div>
     </div>
 
@@ -136,11 +134,11 @@
             <div class="flex items-center gap-3">
                 <!-- Imagen de perfil -->
                 <div class="w-10 h-10 rounded-full overflow-hidden">
-                    <img src="static/img/profile.png" alt="Foto de perfil" class="w-full h-full object-cover">
+                    <img src="{% static 'img/profile.png' %}" alt="Foto de perfil" class="w-full h-full object-cover">
                 </div>
                 <div>
-                    <p class="text-sm font-semibold text-gray-900">Alexis Durán</p>
-                    <p class="text-xs text-gray-500">Bienvenido</p>
+                    <p class="text-sm font-semibold text-gray-900">{% block topbar_user_name %}Alexis Durán{% endblock %}</p>
+                    <p class="text-xs text-gray-500">{% block topbar_greeting %}Bienvenido{% endblock %}</p>
                 </div>
             </div>
 
@@ -227,151 +225,15 @@
 
         <!-- Dynamic Content Area -->
         <div id="content-area" class="p-8">
-            <!-- El contenido se cargará aquí dinámicamente -->
+            {% block content %}
+            <!-- El contenido específico de cada página se cargará aquí -->
+            {% endblock %}
         </div>
-
     </div>
 
-    <script>
-        // Variables para manejar los estilos y scripts cargados
-        let loadedPageStyles = [];
-        let loadedPageScripts = [];
-
-        // Función para limpiar recursos de página anterior
-        function cleanupPreviousPage() {
-            loadedPageStyles.forEach(style => style.remove());
-            loadedPageStyles = [];
-
-            loadedPageScripts.forEach(script => {
-                if (script && script.parentNode) script.parentNode.removeChild(script);
-            });
-            loadedPageScripts = [];
-        }
-
-        // Función para actualizar navegación activa
-        function updateActiveNavigation(pageName) {
-            document.querySelectorAll('.nav-link').forEach(link => {
-                link.classList.remove('text-primary', 'bg-primary/10');
-                link.classList.add('text-gray-600');
-                link.classList.add('hover:bg-gray-100');
-            });
-
-            const activeLink = document.querySelector(`[data-page="${pageName}"]`);
-            if (activeLink) {
-                activeLink.classList.add('text-primary', 'bg-primary/10');
-                activeLink.classList.remove('text-gray-600');
-                activeLink.classList.remove('hover:bg-gray-100');
-            }
-        }
-
-        // Función para ejecutar scripts inline
-        function executeInlineScript(scriptContent) {
-            try {
-                const wrappedScript = `(function() { ${scriptContent} })();`;
-                eval(wrappedScript);
-                return true;
-            } catch (error) {
-                console.error('Error ejecutando script:', error);
-                return false;
-            }
-        }
-
-        // Función principal para cargar contenido dinámico
-        async function loadPage(pageName) {
-            const contentArea = document.getElementById('content-area');
-            contentArea.style.opacity = '0';
-
-            cleanupPreviousPage();
-
-            try {
-                const response = await fetch(`pages/${pageName}.html`);
-                const html = await response.text();
-
-                setTimeout(() => {
-                    const parser = new DOMParser();
-                    const doc = parser.parseFromString(html, 'text/html');
-
-                    // Extraer estilos del head
-                    doc.querySelectorAll('style').forEach(style => {
-                        const newStyle = document.createElement('style');
-                        newStyle.textContent = style.textContent;
-                        document.head.appendChild(newStyle);
-                        loadedPageStyles.push(newStyle);
-                    });
-
-                    // Extraer scripts del body
-                    const bodyContent = doc.body;
-                    const scripts = Array.from(bodyContent.querySelectorAll('script'));
-                    scripts.forEach(s => s.remove());
-
-                    // Insertar contenido sin scripts
-                    contentArea.innerHTML = bodyContent.innerHTML;
-
-                    // Hacer visible el contenido
-                    contentArea.style.opacity = '1';
-
-                    // Ejecutar scripts cuando el DOM está listo
-                    requestAnimationFrame(() => {
-                        scripts.forEach(script => {
-                            if (script.src) {
-                                const newScript = document.createElement('script');
-                                newScript.src = script.src;
-                                newScript.async = false;
-                                document.body.appendChild(newScript);
-                                loadedPageScripts.push(newScript);
-                            } else {
-                                const scriptElement = document.createElement('script');
-                                scriptElement.textContent = script.textContent;
-                                document.body.appendChild(scriptElement);
-                                loadedPageScripts.push(scriptElement);
-
-                                // Opcional: remover después de ejecutar
-                                setTimeout(() => {
-                                    if (scriptElement.parentNode) scriptElement.parentNode.removeChild(scriptElement);
-                                }, 100);
-                            }
-                        });
-                    });
-                }, 150);
-
-                // Actualizar navegación activa
-                updateActiveNavigation(pageName);
-            } catch (error) {
-                console.error('Error loading page:', error);
-                contentArea.innerHTML = '<p>Error loading content</p>';
-                contentArea.style.opacity = '1';
-            }
-        }
-
-        // Manejar clicks en los enlaces del sidebar
-        document.querySelectorAll('.nav-link').forEach(link => {
-            link.addEventListener('click', e => {
-                e.preventDefault();
-                const pageName = link.getAttribute('data-page');
-                window.location.hash = pageName;
-                loadPage(pageName);
-            });
-        });
-
-        // Cargar página inicial o desde URL hash
-        window.addEventListener('load', () => {
-            const hash = window.location.hash.slice(1) || 'dashboard';
-            loadPage(hash);
-        });
-
-        // Manejar navegación del navegador (atrás/adelante)
-        window.addEventListener('hashchange', () => {
-            const hash = window.location.hash.slice(1) || 'dashboard';
-            loadPage(hash);
-        });
-
-        // Transición de opacidad
-        document.getElementById('content-area').style.transition = 'opacity 0.15s ease-in-out';
-
-    </script>
-
-    <script src="static/main.js"></script>
-
+    <!-- Scripts Base -->
+    {% block extra_scripts %}{% endblock %}
+    <script src="{% static 'main.js' %}"></script>
 </body>
 
 </html>

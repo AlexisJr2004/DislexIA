@@ -1,27 +1,10 @@
-<!DOCTYPE html>
-<html lang="es">
+{% extends 'base.html' %}
+{% load static %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DislexIA - Games</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="icon" type="image/x-icon" href="static/img/favicon.ico">
-    <link rel="stylesheet" href="static/style.css">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#8b5cf6',
-                        sidebar: '#f8f9fc'
-                    }
-                }
-            }
-        }
-    </script>
-    <style>
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block extra_head %}
+<style>
         .game-card {
             transition: all 0.3s ease;
         }
@@ -53,12 +36,10 @@
             background-color: #8b5cf6;
             color: white;
         }
-    </style>
-</head>
+</style>
+{% endblock %}
 
-<body class="bg-gray-50">
-
-    <div class="p-8">
+{% block content %}
         <div class="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
             <!-- Título -->
             <div>
@@ -107,7 +88,7 @@
             <div class="game-card bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden"
                 data-difficulty="facil">
                 <div class="game-image relative h-48">
-                    <img class="w-full h-full object-cover" src="static/img/quiz interactivo.png" alt="Quiz Game" />
+                    <img class="w-full h-full object-cover" src="{% static 'img/quiz interactivo.png' %}" alt="Quiz Game" />
                     <div class="absolute top-4 right-4">
                         <span
                             class="difficulty-badge px-3 py-1 bg-green-500/90 text-white text-xs font-semibold rounded-full">
@@ -155,7 +136,7 @@
                         </div>
                     </div>
 
-                    <a href="/games/quiz-interactivo.html"
+                    <a href="{% url 'games:quiz_interactivo' %}"
                         class="w-full bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white font-semibold py-3 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 shadow-md hover:shadow-lg">
                         <i class="fas fa-play"></i>
                         Jugar Ahora
@@ -167,7 +148,7 @@
             <div class="game-card bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden"
                 data-difficulty="medio">
                 <div class="game-image relative h-48">
-                    <img class="w-full h-full object-cover" src="static/img/buscar palabras.png" alt="Word Search" />
+                    <img class="w-full h-full object-cover" src="{% static 'img/buscar palabras.png' %}" alt="Word Search" />
                     <div class="absolute top-4 right-4">
                         <span
                             class="difficulty-badge px-3 py-1 bg-yellow-500/90 text-white text-xs font-semibold rounded-full">
@@ -215,7 +196,7 @@
                         </div>
                     </div>
 
-                    <a href="/games/buscar-palabras.html"
+                    <a href="{% url 'games:buscar_palabras' %}"
                         class="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold py-3 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 shadow-md hover:shadow-lg">
                         <i class="fas fa-play"></i>
                         Jugar Ahora
@@ -227,7 +208,7 @@
             <div class="game-card bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden"
                 data-difficulty="dificil">
                 <div class="game-image relative h-48">
-                    <img class="w-full h-full object-cover" src="static/img/ordenar palabras.png" alt="Word Order" />
+                    <img class="w-full h-full object-cover" src="{% static 'img/ordenar palabras.png' %}" alt="Word Order" />
                     <div class="absolute top-4 right-4">
                         <span
                             class="difficulty-badge px-3 py-1 bg-red-500/90 text-white text-xs font-semibold rounded-full">
@@ -275,7 +256,7 @@
                         </div>
                     </div>
 
-                    <a href="/games/ordenar-palabras.html"
+                    <a href="{% url 'games:ordenar_palabras' %}"
                         class="w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-semibold py-3 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 shadow-md hover:shadow-lg">
                         <i class="fas fa-play"></i>
                         Jugar Ahora
@@ -319,9 +300,10 @@
                 <p class="text-sm text-gray-500">Días consecutivos</p>
             </div>
         </div>
-    </div>
+{% endblock %}
 
-    <script>
+{% block extra_scripts %}
+<script>
 
             // Funcionalidad para los filtros - SIN DOMContentLoaded
             (function initGamesPage() {
@@ -385,8 +367,5 @@
 
                 console.log('Página de juegos inicializada correctamente');
             })();
-    </script>
-
-</body>
-
-</html>
+</script>
+{% endblock %}

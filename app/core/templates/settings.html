@@ -1,26 +1,10 @@
-<!DOCTYPE html>
-<html lang="es">
+{% extends 'base.html' %}
+{% load static %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DislexIA - Configuración</title>
-    <link rel="icon" type="image/x-icon" href="static/img/favicon.ico">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#8b5cf6',
-                        sidebar: '#f8f9fc'
-                    }
-                }
-            }
-        }
-    </script>
-    <style>
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block extra_head %}
+<style>
         .setting-card {
             transition: all 0.2s ease;
         }
@@ -84,11 +68,10 @@
             color: #8b5cf6;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
-    </style>
-</head>
+</style>
+{% endblock %}
 
-<body class="bg-gray-50">
-    <div class="p-8">
+{% block content %}
         <!-- Header -->
         <div class="mb-8">
             <h1 class="text-3xl font-bold text-gray-900 mb-2">Configuración</h1>
@@ -414,9 +397,10 @@
                 </div>
             </div>
         </div>
-    </div>
+{% endblock %}
 
-    <script>
+{% block extra_scripts %}
+<script>
         (function initSettingsPage() {
             console.log('Inicializando página de configuración...');
 
@@ -490,7 +474,5 @@
 
             console.log('Página de configuración inicializada correctamente');
         })();
-    </script>
-</body>
-
-</html>
+</script>
+{% endblock %}

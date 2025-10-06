@@ -1,14 +1,10 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Resources - Dyslexia Support</title>
-    <link rel="icon" type="image/x-icon" href="static/img/favicon.ico">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="static/style.css">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block extra_head %}
+<style>
         .resource-card {
             transition: all 0.3s ease;
         }
@@ -61,10 +57,10 @@
         .search-input:focus {
             box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
         }
-    </style>
-</head>
-<body>
-    <div class="max-w-7xl mx-auto">
+</style>
+{% endblock %}
+
+{% block content %}
         <!-- Header -->
         <div class="mb-8 fade-in">
             <div class="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
@@ -568,9 +564,10 @@
                 </div>
             </div>
         </div>
-    </div>
+{% endblock %}
 
-    <script>
+{% block extra_scripts %}
+<script>
         (function initResourcesPage() {
             console.log('Initializing resources page...');
 
@@ -665,6 +662,5 @@
 
             console.log('Resources page initialized successfully');
         })();
-    </script>
-</body>
-</html>
+</script>
+{% endblock %}

@@ -1,31 +1,25 @@
-<!DOCTYPE html>
-<html lang="es">
+{% extends 'base.html' %}
+{% load static %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DislexIA - Dashboard</title>
-    <link rel="icon" type="image/x-icon" href="static/img/favicon.ico">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="static/style.css">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#8b5cf6',
-                        sidebar: '#f8f9fc'
-                    }
-                }
-            }
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block extra_head %}
+<!-- Estilos específicos para el dashboard -->
+<style>
+    .chart-bar {
+        animation: slideUp 0.8s ease-out forwards;
+        transform: translateY(100%);
+    }
+    
+    @keyframes slideUp {
+        to {
+            transform: translateY(0);
         }
-    </script>
-</head>
+    }
+</style>
+{% endblock %}
 
-<body>
-
-    <!-- Dashboard Content -->
+{% block content %}
     <div class="p-8">
                <div class="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
             <!-- Título -->
@@ -639,21 +633,36 @@
     </div>
 
 
-    <script>
-        // Active link management
-        const navLinks = document.querySelectorAll('nav a');
+{% endblock %}
 
-        navLinks.forEach(link => {
-            link.addEventListener('click', (e) => {
-                navLinks.forEach(l => {
-                    l.classList.remove('text-primary', 'bg-primary/10');
-                    l.classList.add('text-gray-600');
-                });
-                link.classList.remove('text-gray-600');
-                link.classList.add('text-primary', 'bg-primary/10');
+{% block extra_scripts %}
+<!-- Scripts específicos para el dashboard -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Animación de las barras del gráfico
+        const chartBars = document.querySelectorAll('.chart-bar');
+        chartBars.forEach((bar, index) => {
+            setTimeout(() => {
+                bar.style.animationDelay = `${index * 0.1}s`;
+            }, 100);
+        });
+        
+        // Manejo de checkboxes en las notas
+        const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const parent = this.closest('.flex');
+                if (this.checked) {
+                    parent.querySelector('.font-semibold').style.textDecoration = 'line-through';
+                    parent.style.opacity = '0.7';
+                } else {
+                    parent.querySelector('.font-semibold').style.textDecoration = 'none';
+                    parent.style.opacity = '1';
+                }
             });
         });
-    </script>
-</body>
-
-</html>
+        
+        console.log('Dashboard cargado correctamente');
+    });
+</script>
+{% endblock %}
