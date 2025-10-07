@@ -82,12 +82,45 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': os.getenv('DATABASE_ENGINE', 'django.db.backends.sqlite3'),
-        'NAME': BASE_DIR / os.getenv('DATABASE_NAME', 'db.sqlite3'),
+# Configuración dinámica para diferentes bases de datos
+DATABASE_ENGINE = os.getenv('DATABASE_ENGINE', 'django.db.backends.sqlite3')
+
+if DATABASE_ENGINE == 'mssql':
+    # Configuración para SQL Server
+    db_user = os.getenv('DATABASE_USER', '')
+    db_password = os.getenv('DATABASE_PASSWORD', '')
+    
+    # Configuración base
+    db_config = {
+        'ENGINE': 'mssql',
+        'NAME': os.getenv('DATABASE_NAME', 'DISLEXIA'),
+        'HOST': os.getenv('DATABASE_HOST', 'localhost'),
+        'PORT': os.getenv('DATABASE_PORT', '1433'),
+        'OPTIONS': {
+            'driver': os.getenv('DATABASE_OPTIONS_DRIVER', 'ODBC Driver 17 for SQL Server'),
+        },
     }
-}
+    
+    # Si no hay usuario/contraseña, usar autenticación de Windows
+    if not db_user and not db_password:
+        db_config['OPTIONS']['extra_params'] = 'Trusted_Connection=yes;TrustServerCertificate=yes'
+        print("🔐 Usando autenticación de Windows para SQL Server")
+    else:
+        # Usar autenticación SQL Server
+        db_config['USER'] = db_user
+        db_config['PASSWORD'] = db_password
+        db_config['OPTIONS']['extra_params'] = os.getenv('DATABASE_OPTIONS_EXTRA_PARAMS', 'TrustServerCertificate=yes')
+        print(f"🔐 Usando autenticación SQL Server para usuario: {db_user}")
+    
+    DATABASES = {'default': db_config}
+else:
+    # Configuración para SQLite (desarrollo)
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / os.getenv('DATABASE_NAME', 'db.sqlite3'),
+        }
+    }
 
 
 # Password validation
