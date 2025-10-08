@@ -22,13 +22,14 @@ def crear_juegos_iniciales(sender, **kwargs):
     juegos_iniciales = [
         {
             'nombre': 'Selecciona la Palabra Correcta',
-            'descripcion': 'Observa la imagen y selecciona la palabra que la describe correctamente entre varias opciones.',
+            'descripcion': 'Observa la imagen y selecciona la palabra que la describe correctamente entre varias opciones. Evalúa reconocimiento visual y ortografía.',
             'categoria': 'reconocimiento_visual',
             'dificultad': 'facil',
             'color_tema': 'green',
             'duracion_estimada_minutos': 8,
             'puntuacion_promedio': 4.6,
             'orden_visualizacion': 1,
+            'slug': 'selecciona-la-palabra-correcta',  # Slug se auto-genera, pero lo mantenemos para compatibilidad
         },
         {
             'nombre': 'Escribe el Nombre del Objeto',
@@ -71,16 +72,6 @@ def crear_juegos_iniciales(sender, **kwargs):
             'orden_visualizacion': 5,
         },
         {
-            'nombre': 'Buscar Palabras',
-            'descripcion': 'Encuentra palabras ocultas en una sopa de letras. Perfecto para mejorar la concentración y el reconocimiento visual.',
-            'categoria': 'memoria_concentracion',
-            'dificultad': 'medio',
-            'color_tema': 'teal',
-            'duracion_estimada_minutos': 15,
-            'puntuacion_promedio': 4.6,
-            'orden_visualizacion': 6,
-        },
-        {
             'nombre': 'Ordenar Palabras',
             'descripcion': 'Organiza las palabras en el orden correcto para formar oraciones coherentes. Desarrolla gramática y sintaxis.',
             'categoria': 'lectura_comprension',
@@ -89,17 +80,7 @@ def crear_juegos_iniciales(sender, **kwargs):
             'duracion_estimada_minutos': 20,
             'puntuacion_promedio': 4.9,
             'orden_visualizacion': 7,
-        },
-        {
-            'nombre': 'Quiz Interactivo',
-            'descripcion': 'Pon a prueba tus conocimientos con preguntas de opción múltiple. Ideal para practicar comprensión lectora y memoria.',
-            'categoria': 'lectura_comprension',
-            'dificultad': 'facil',
-            'color_tema': 'indigo',
-            'duracion_estimada_minutos': 10,
-            'puntuacion_promedio': 4.8,
-            'orden_visualizacion': 8,
-        },
+        }
     ]
     
     created_count = 0
@@ -114,6 +95,14 @@ def crear_juegos_iniciales(sender, **kwargs):
         if created:
             created_count += 1
             print(f'✅ Juego creado: {juego.nombre}')
+            
+            # Crear archivo JSON de configuración si no existe
+            if not juego.archivo_configuracion_existe():
+                try:
+                    juego.crear_archivo_configuracion_template()
+                    print(f'📄 Archivo JSON creado: {juego.archivo_configuracion}')
+                except Exception as e:
+                    print(f'❌ Error creando JSON para {juego.nombre}: {e}')
         else:
             # Actualizar campos si el juego ya existe (excepto tipo_juego que es único)
             updated = False
@@ -126,6 +115,14 @@ def crear_juegos_iniciales(sender, **kwargs):
                 juego.save()
                 updated_count += 1
                 print(f'🔄 Juego actualizado: {juego.nombre}')
+                
+            # Verificar si necesita archivo JSON
+            if not juego.archivo_configuracion_existe():
+                try:
+                    juego.crear_archivo_configuracion_template()
+                    print(f'📄 Archivo JSON creado para juego existente: {juego.archivo_configuracion}')
+                except Exception as e:
+                    print(f'❌ Error creando JSON para {juego.nombre}: {e}')
     
     if created_count > 0 or updated_count > 0:
         total_juegos = Juego.objects.filter(activo=True).count()

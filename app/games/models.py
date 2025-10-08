@@ -154,19 +154,106 @@ class Juego(models.Model):
         
         super().save(*args, **kwargs)
     
-    def actualizar_estadisticas(self):
-        """Actualiza las estadísticas del juego basándose en las pruebas realizadas"""
-        # Contar pruebas de este juego específico
-        pruebas = self.pruebas_realizadas.all()
-        self.total_jugadas = pruebas.count()
+    def generar_url_sesion(self, evaluacion_id):
+        """
+        Genera una URL única para una sesión específica de juego
+        Esto permite que el mismo niño juegue el mismo juego múltiples veces
+        con URLs diferentes para cada sesión/evaluación
+        """
+        import uuid
+        session_token = str(uuid.uuid4())[:8]  # 8 caracteres únicos
+        return f"{self.slug}-eval-{evaluacion_id}-{session_token}"
+    
+    @classmethod
+    def obtener_por_url_sesion(cls, url_sesion):
+        """
+        Obtiene un juego basado en su URL de sesión
+        Extrae el slug del juego de la URL de sesión
+        """
+        try:
+            # Extraer el slug base de la URL de sesión
+            # Formato: "slug-eval-123-abc12345"
+            slug_base = url_sesion.split('-eval-')[0]
+            return cls.objects.get(slug=slug_base, activo=True)
+        except (cls.DoesNotExist, IndexError):
+            return None
+    
+    @property
+    def archivo_configuracion(self):
+        """
+        Retorna el nombre del archivo JSON de configuración basado en el slug
+        El archivo se genera automáticamente: slug + '.json'
+        """
+        return f"{self.slug}.json"
+    
+    @property
+    def ruta_archivo_configuracion(self):
+        """
+        Retorna la ruta completa del archivo JSON de configuración
+        """
+        return f"app/games/static/data/{self.archivo_configuracion}"
+    
+    @property
+    def url_archivo_configuracion(self):
+        """
+        Retorna la URL del archivo JSON para uso en el frontend
+        """
+        return f"/static/data/{self.archivo_configuracion}"
+    
+    def archivo_configuracion_existe(self):
+        """
+        Verifica si el archivo JSON de configuración existe
+        """
+        import os
+        from django.conf import settings
         
-        # Contar evaluaciones completadas que incluyan este juego
-        evaluaciones_completadas = pruebas.filter(
-            evaluacion__estado='completada'
-        ).values('evaluacion').distinct().count()
+        ruta_completa = os.path.join(settings.BASE_DIR, self.ruta_archivo_configuracion)
+        return os.path.exists(ruta_completa)
+    
+    def crear_archivo_configuracion_template(self):
+        """
+        Crea un archivo JSON template básico si no existe
+        """
+        import json
+        import os
+        from django.conf import settings
         
-        self.total_completados = evaluaciones_completadas
-        self.save(update_fields=['total_jugadas', 'total_completados'])
+        if self.archivo_configuracion_existe():
+            return False  # Ya existe
+        
+        # Template básico
+        template = {
+            "game_info": {
+                "game_slug": self.slug,
+                "json_version": "1.0",
+                "total_questions": 0,
+                "created_date": "2025-10-08",
+                "last_updated": "2025-10-08"
+            },
+            "levels": [],
+            "scoring": {
+                "correct_answer": 10,
+                "time_bonus": 5,
+                "perfect_level": 50
+            },
+            "confusion_types": {
+                "inversion_letras": "Inversión de letras (b/d, p/q)",
+                "sustitucion_letras": "Sustitución de letras similares (m/n, r/l)",
+                "inversion_silabas": "Inversión de sílabas",
+                "omision_letras": "Omisión de letras"
+            }
+        }
+        
+        # Crear directorio si no existe
+        ruta_directorio = os.path.join(settings.BASE_DIR, "app", "games", "static", "data")
+        os.makedirs(ruta_directorio, exist_ok=True)
+        
+        # Crear archivo
+        ruta_completa = os.path.join(settings.BASE_DIR, self.ruta_archivo_configuracion)
+        with open(ruta_completa, 'w', encoding='utf-8') as f:
+            json.dump(template, f, indent=2, ensure_ascii=False)
+        
+        return True  # Archivo creado
 
 class Evaluacion(models.Model):
     """Modelo para evaluaciones cognitivas realizadas a los niños"""
@@ -295,3 +382,121 @@ class PruebaCognitiva(models.Model):
     def tiempo_respuesta_segundos(self):
         """Convierte el tiempo de respuesta a segundos"""
         return self.tiempo_respuesta_ms / 1000
+
+class SesionJuego(models.Model):
+    """
+    Modelo para manejar sesiones únicas de juego por evaluación
+    Cada vez que un niño juega un juego, se crea una nueva sesión con URL única
+    """
+    
+    evaluacion = models.ForeignKey(
+        Evaluacion,
+        on_delete=models.CASCADE,
+        related_name='sesiones_juego',
+        verbose_name="Evaluación"
+    )
+    juego = models.ForeignKey(
+        Juego,
+        on_delete=models.CASCADE,
+        related_name='sesiones',
+        verbose_name="Juego"
+    )
+    
+    url_sesion = models.CharField(
+        max_length=200,
+        unique=True,
+        verbose_name="URL de Sesión",
+        help_text="URL única para esta sesión de juego"
+    )
+    nivel_seleccionado = models.PositiveIntegerField(
+        default=1,
+        verbose_name="Nivel Seleccionado",
+        help_text="Nivel de dificultad seleccionado para esta sesión"
+    )
+    fecha_inicio = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de Inicio")
+    fecha_fin = models.DateTimeField(null=True, blank=True, verbose_name="Fecha de Fin")
+    estado = models.CharField(
+        max_length=20,
+        choices=ESTADO_CHOICES,
+        default='en_proceso',
+        verbose_name="Estado de la Sesión"
+    )
+    
+    # Configuración de sesión (datos mínimos necesarios)
+    puntaje_total = models.PositiveIntegerField(
+        default=0,
+        verbose_name="Puntaje Total",
+        help_text="Puntaje total obtenido en esta sesión"
+    )
+    preguntas_respondidas = models.PositiveIntegerField(
+        default=0,
+        verbose_name="Preguntas Respondidas"
+    )
+    tiempo_total_segundos = models.PositiveIntegerField(
+        default=0,
+        verbose_name="Tiempo Total (segundos)"
+    )
+    
+    class Meta:
+        verbose_name = "Sesión de Juego"
+        verbose_name_plural = "Sesiones de Juego"
+        ordering = ['-fecha_inicio']
+        unique_together = ['evaluacion', 'juego', 'url_sesion']
+    
+    def __str__(self):
+        return f"Sesión {self.juego.nombre} - Eval {self.evaluacion.id} ({self.estado})"
+    
+    def save(self, *args, **kwargs):
+        """Override save para generar URL única"""
+        if not self.url_sesion:
+            self.url_sesion = self.juego.generar_url_sesion(self.evaluacion.id)
+        
+        super().save(*args, **kwargs)
+    
+    @property
+    def archivo_configuracion_juego(self):
+        """Retorna el archivo JSON que debe cargar el frontend para este juego"""
+        return self.juego.archivo_configuracion
+    
+    @property
+    def url_configuracion_juego(self):
+        """Retorna la URL del archivo JSON que debe cargar el frontend"""
+        return self.juego.url_archivo_configuracion
+    
+    def finalizar_sesion(self, puntaje_final, preguntas_contestadas, tiempo_total):
+        """
+        Finaliza la sesión con los resultados obtenidos
+        Este método será llamado desde la vista cuando el frontend envíe los resultados
+        """
+        from django.utils import timezone
+        
+        self.estado = 'completada'
+        self.fecha_fin = timezone.now()
+        self.puntaje_total = puntaje_final
+        self.preguntas_respondidas = preguntas_contestadas
+        self.tiempo_total_segundos = tiempo_total
+        self.save(update_fields=[
+            'estado', 'fecha_fin', 'puntaje_total', 
+            'preguntas_respondidas', 'tiempo_total_segundos'
+        ])
+    
+    @property
+    def duracion_sesion(self):
+        """Calcula la duración de la sesión en minutos"""
+        if self.fecha_fin and self.fecha_inicio:
+            delta = self.fecha_fin - self.fecha_inicio
+            return delta.total_seconds() / 60
+        return None
+    
+    @classmethod
+    def crear_nueva_sesion(cls, evaluacion, juego, nivel=1):
+        """
+        Crea una nueva sesión de juego para una evaluación específica
+        Retorna la sesión creada con URL única
+        """
+        sesion = cls.objects.create(
+            evaluacion=evaluacion,
+            juego=juego,
+            nivel_seleccionado=nivel
+        )
+        return sesion

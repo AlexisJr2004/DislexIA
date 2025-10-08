@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Inicializando {{ juego.nombre }} - DislexIA{% endblock %}
+
+{% block extra_head %}
+<style>
+    .loading-container {
+        min-height: 60vh;
+    }
+    
+    .loading-spinner {
+        animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="loading-container flex flex-col items-center justify-center">
+    <div class="text-center">
+        <div class="loading-spinner w-16 h-16 border-4 border-purple-200 border-t-purple-600 rounded-full mx-auto mb-6"></div>
+        <h2 class="text-2xl font-bold text-gray-800 mb-4">Preparando el juego...</h2>
+        <p class="text-gray-600">Configurando la sesión para {{ juego.nombre }}</p>
+    </div>
+</div>
+
+<script>
+    // Esta página se usa solo como transición, normalmente se redirige inmediatamente
+    setTimeout(() => {
+        window.location.reload();
+    }, 3000);
+</script>
+{% endblock %}

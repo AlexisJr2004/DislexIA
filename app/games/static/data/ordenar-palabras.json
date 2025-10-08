@@ -1,0 +1,21 @@
+{
+  "game_info": {
+    "game_slug": "ordenar-palabras",
+    "json_version": "1.0",
+    "total_questions": 0,
+    "created_date": "2025-10-08",
+    "last_updated": "2025-10-08"
+  },
+  "levels": [],
+  "scoring": {
+    "correct_answer": 10,
+    "time_bonus": 5,
+    "perfect_level": 50
+  },
+  "confusion_types": {
+    "inversion_letras": "Inversión de letras (b/d, p/q)",
+    "sustitucion_letras": "Sustitución de letras similares (m/n, r/l)",
+    "inversion_silabas": "Inversión de sílabas",
+    "omision_letras": "Omisión de letras"
+  }
+}

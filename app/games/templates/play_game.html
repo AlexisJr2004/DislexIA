@@ -1,0 +1,298 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block extra_head %}
+<style>
+    .game-container {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: calc(100vh - 80px);
+    }
+    
+    .game-header {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .config-viewer {
+        background: rgba(0, 0, 0, 0.8);
+        color: #f8f9fa;
+        font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+        max-height: 600px;
+        overflow-y: auto;
+    }
+    
+    .json-key { color: #79c0ff; }
+    .json-string { color: #a5d6ff; }
+    .json-number { color: #79c0ff; }
+    .json-boolean { color: #ffab70; }
+    .json-null { color: #ffa657; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="game-container">
+    <!-- Header del juego -->
+    <div class="game-header px-6 py-4">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <a href="{% url 'games:game_list' %}" 
+                   class="text-gray-600 hover:text-gray-800 transition-colors">
+                    <i class="fas fa-arrow-left text-xl"></i>
+                </a>
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-900">{{ juego.nombre }}</h1>
+                    <p class="text-gray-600">{{ nino.nombre_completo }} - Evaluación #{{ evaluacion.id }}</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-4">
+                <div class="px-4 py-2 bg-green-100 text-green-800 rounded-lg">
+                    <i class="fas fa-play-circle mr-2"></i>
+                    <span class="font-medium">En Progreso</span>
+                </div>
+                <button id="btn-finish-game" 
+                        class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors">
+                    <i class="fas fa-stop mr-2"></i>
+                    Finalizar Juego
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contenido principal del juego -->
+    <div class="px-6 py-8">
+        <div class="max-w-6xl mx-auto">
+            
+            <!-- Información de la sesión -->
+            <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-purple-600">{{ sesion.nivel_seleccionado }}</div>
+                        <div class="text-sm text-gray-500">Nivel</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-blue-600">{{ sesion.puntaje_total }}</div>
+                        <div class="text-sm text-gray-500">Puntaje</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-green-600">{{ sesion.preguntas_respondidas }}</div>
+                        <div class="text-sm text-gray-500">Preguntas</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-orange-600" id="tiempo-transcurrido">00:00</div>
+                        <div class="text-sm text-gray-500">Tiempo</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Área principal del juego -->
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                <div class="bg-gray-50 px-6 py-4 border-b">
+                    <h2 class="text-lg font-semibold text-gray-800">
+                        <i class="fas fa-gamepad mr-2 text-purple-600"></i>
+                        Contenido del Juego - {{ juego.nombre }}
+                    </h2>
+                    <p class="text-sm text-gray-600 mt-1">
+                        URL de sesión: <code class="bg-gray-200 px-2 py-1 rounded text-xs">{{ sesion.url_sesion }}</code>
+                    </p>
+                </div>
+                
+                <div class="p-6">
+                    <!-- Por ahora mostrar la configuración JSON -->
+                    <div class="mb-6">
+                        <h3 class="text-md font-medium text-gray-700 mb-3">
+                            <i class="fas fa-cog mr-2"></i>
+                            Configuración del Juego (JSON)
+                        </h3>
+                        
+                        <div class="config-viewer rounded-lg p-4">
+                            <pre id="json-content" class="text-sm whitespace-pre-wrap">{{ game_config_json }}</pre>
+                        </div>
+                    </div>
+
+                    <!-- Información adicional -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            <h4 class="font-medium text-gray-700 mb-2">Información del Juego</h4>
+                            <div class="space-y-2 text-sm">
+                                <div><strong>Categoría:</strong> {{ juego.get_categoria_display }}</div>
+                                <div><strong>Dificultad:</strong> {{ juego.get_dificultad_display }}</div>
+                                <div><strong>Duración estimada:</strong> {{ juego.duracion_estimada_minutos }} min</div>
+                                <div><strong>Archivo de config:</strong> {{ juego.archivo_configuracion }}</div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            <h4 class="font-medium text-gray-700 mb-2">Información de la Sesión</h4>
+                            <div class="space-y-2 text-sm">
+                                <div><strong>Estado:</strong> 
+                                    <span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">{{ sesion.get_estado_display }}</span>
+                                </div>
+                                <div><strong>Fecha inicio:</strong> {{ sesion.fecha_inicio|date:"d/m/Y H:i" }}</div>
+                                <div><strong>Niño:</strong> {{ nino.nombre_completo }}</div>
+                                <div><strong>Edad:</strong> {{ nino.edad }} años</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Placeholder para el juego real -->
+                    <div class="mt-8 border-2 border-dashed border-gray-300 rounded-xl p-12 text-center">
+                        <div class="text-gray-400 mb-4">
+                            <i class="fas fa-puzzle-piece text-6xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-600 mb-2">Área del Juego</h3>
+                        <p class="text-gray-500 mb-4">
+                            Aquí se implementará la lógica específica del juego usando JavaScript<br>
+                            basándose en la configuración JSON mostrada arriba.
+                        </p>
+                        <button class="px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors">
+                            <i class="fas fa-play mr-2"></i>
+                            Comenzar Juego (Demo)
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de confirmación para finalizar -->
+<div id="modal-finish" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center">
+    <div class="bg-white rounded-xl p-6 max-w-md w-mx mx-4">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">¿Finalizar juego?</h3>
+        <p class="text-gray-600 mb-6">
+            ¿Estás seguro de que deseas finalizar esta sesión de juego? 
+            Los progresos actuales se guardarán.
+        </p>
+        <div class="flex gap-3 justify-end">
+            <button id="btn-cancel-finish" class="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
+                Cancelar
+            </button>
+            <button id="btn-confirm-finish" class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors">
+                Sí, Finalizar
+            </button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    (function initGamePage() {
+        console.log('Inicializando página de juego...');
+        
+        const sesionData = {
+            url_sesion: '{{ sesion.url_sesion }}',
+            juego_nombre: '{{ juego.nombre }}',
+            evaluacion_id: '{{ evaluacion.id }}',
+            nino_id: '{{ nino.id }}'
+        };
+        
+        // Colorear JSON
+        function colorizeJson() {
+            const jsonElement = document.getElementById('json-content');
+            if (!jsonElement) return;
+            
+            let jsonText = jsonElement.textContent;
+            
+            // Colorear claves
+            jsonText = jsonText.replace(/"([^"]+)":/g, '<span class="json-key">"$1"</span>:');
+            
+            // Colorear strings (valores)
+            jsonText = jsonText.replace(/:\s*"([^"]*)"/g, ': <span class="json-string">"$1"</span>');
+            
+            // Colorear números
+            jsonText = jsonText.replace(/:\s*(\d+\.?\d*)/g, ': <span class="json-number">$1</span>');
+            
+            // Colorear booleans
+            jsonText = jsonText.replace(/:\s*(true|false)/g, ': <span class="json-boolean">$1</span>');
+            
+            // Colorear null
+            jsonText = jsonText.replace(/:\s*(null)/g, ': <span class="json-null">$1</span>');
+            
+            jsonElement.innerHTML = jsonText;
+        }
+        
+        // Contador de tiempo
+        const startTime = new Date('{{ sesion.fecha_inicio|date:"c" }}');
+        
+        function updateTimer() {
+            const now = new Date();
+            const diff = Math.floor((now - startTime) / 1000);
+            
+            const minutes = Math.floor(diff / 60);
+            const seconds = diff % 60;
+            
+            const timeString = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            const timerElement = document.getElementById('tiempo-transcurrido');
+            if (timerElement) {
+                timerElement.textContent = timeString;
+            }
+        }
+        
+        // Modal de finalización
+        const btnFinish = document.getElementById('btn-finish-game');
+        const modal = document.getElementById('modal-finish');
+        const btnCancel = document.getElementById('btn-cancel-finish');
+        const btnConfirm = document.getElementById('btn-confirm-finish');
+        
+        if (btnFinish && modal) {
+            btnFinish.addEventListener('click', () => {
+                modal.classList.remove('hidden');
+            });
+        }
+        
+        if (btnCancel && modal) {
+            btnCancel.addEventListener('click', () => {
+                modal.classList.add('hidden');
+            });
+        }
+        
+        if (btnConfirm) {
+            btnConfirm.addEventListener('click', async () => {
+                try {
+                    const response = await fetch(`{% url 'games:finish_game_session' url_sesion=sesion.url_sesion %}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            puntaje_total: 0,  // Por ahora 0, después se calculará
+                            preguntas_respondidas: 0,  // Por ahora 0
+                            tiempo_total_segundos: Math.floor((new Date() - startTime) / 1000)
+                        })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        alert('Sesión finalizada correctamente');
+                        window.location.href = '{% url "games:game_list" %}';
+                    } else {
+                        alert('Error al finalizar sesión: ' + data.error);
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('Error de conexión al finalizar la sesión');
+                }
+                
+                modal.classList.add('hidden');
+            });
+        }
+        
+        // Inicializar
+        colorizeJson();
+        
+        // Actualizar timer cada segundo
+        setInterval(updateTimer, 1000);
+        updateTimer(); // Primera actualización inmediata
+        
+        console.log('Página de juego inicializada correctamente');
+        console.log('Datos de sesión:', sesionData);
+    })();
+</script>
+{% endblock %}

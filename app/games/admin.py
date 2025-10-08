@@ -1,7 +1,6 @@
 from django.contrib import admin
 from .models import Juego, Evaluacion, PruebaCognitiva
 
-
 @admin.register(Juego)
 class JuegoAdmin(admin.ModelAdmin):
     """Administrador para el modelo Juego - completamente editable"""
@@ -48,7 +47,7 @@ class JuegoAdmin(admin.ModelAdmin):
     readonly_fields = ['fecha_creacion', 'fecha_actualizacion']
     
     # Acciones personalizadas
-    actions = ['activar_juegos', 'desactivar_juegos', 'actualizar_estadisticas_seleccionados']
+    actions = ['activar_juegos', 'desactivar_juegos']
     
     def activar_juegos(self, request, queryset):
         """Activa los juegos seleccionados"""
@@ -61,15 +60,6 @@ class JuegoAdmin(admin.ModelAdmin):
         updated = queryset.update(activo=False)
         self.message_user(request, f'{updated} juegos desactivados correctamente.')
     desactivar_juegos.short_description = 'Desactivar juegos seleccionados'
-    
-    def actualizar_estadisticas_seleccionados(self, request, queryset):
-        """Actualiza las estadísticas de los juegos seleccionados"""
-        count = 0
-        for juego in queryset:
-            juego.actualizar_estadisticas()
-            count += 1
-        self.message_user(request, f'Estadísticas actualizadas para {count} juegos.')
-    actualizar_estadisticas_seleccionados.short_description = 'Actualizar estadísticas'
     
     def categoria_display(self, obj):
         """Muestra la categoría con formato legible"""
@@ -84,9 +74,6 @@ class JuegoAdmin(admin.ModelAdmin):
     def save_model(self, request, obj, form, change):
         """Override save para actualizar estadísticas después de guardar"""
         super().save_model(request, obj, form, change)
-        if change:  # Solo si es una actualización
-            obj.actualizar_estadisticas()
-
 
 @admin.register(Evaluacion)
 class EvaluacionAdmin(admin.ModelAdmin):
@@ -120,7 +107,6 @@ class EvaluacionAdmin(admin.ModelAdmin):
     # Hacer todos los campos de solo lectura
     def get_readonly_fields(self, request, obj=None):
         return [field.name for field in self.model._meta.fields]
-
 
 @admin.register(PruebaCognitiva)
 class PruebaCognitivaAdmin(admin.ModelAdmin):

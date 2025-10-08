@@ -1,0 +1,636 @@
+{
+  "game_info": {
+    "game_slug": "selecciona-la-palabra-correcta",
+    "json_version": "1.0",
+    "total_questions": 20,
+    "created_date": "2025-10-08",
+    "last_updated": "2025-10-08"
+  },
+  "levels": [
+    {
+      "level": 1,
+      "difficulty": "facil",
+      "description": "Palabras básicas con confusiones comunes",
+      "questions": [
+        {
+          "id": 1,
+          "image_path": "/static/img/games/pluma.jpg",
+          "question": "Selecciona la palabra correcta de acuerdo a la imagen.",
+          "options": [
+            {
+              "text": "Pluma",
+              "is_correct": true
+            },
+            {
+              "text": "Pulma",
+              "is_correct": false,
+              "confusion_type": "inversion_letras"
+            },
+            {
+              "text": "Pluna",
+              "is_correct": false,
+              "confusion_type": "sustitucion_letras"
+            },
+            {
+              "text": "Pruna",
+              "is_correct": false,
+              "confusion_type": "sustitucion_letras"
+            }
+          ],
+          "correct_answer": "Pluma",
+          "time_limit": 30,
+          "points": 10,
+          "confusion_patterns": ["m/n", "l/r", "p/b"]
+        },
+        {
+          "id": 2,
+          "image_path": "/static/img/games/casa.jpg",
+          "question": "Selecciona la palabra correcta de acuerdo a la imagen.",
+          "options": [
+            {
+              "text": "Casa",
+              "is_correct": true
+            },
+            {
+              "text": "Saca",
+              "is_correct": false,
+              "confusion_type": "inversion_silabas"
+            },
+            {
+              "text": "Caza",
+              "is_correct": false,
+              "confusion_type": "sustitucion_letras"
+            },
+            {
+              "text": "Cada",
+              "is_correct": false,
+              "confusion_type": "sustitucion_letras"
+            }
+          ],
+          "correct_answer": "Casa",
+          "time_limit": 30,
+          "points": 10,
+          "confusion_patterns": ["s/z", "s/d"]
+        },
+        {
+          "id": 3,
+          "image_path": "/static/img/games/perro.jpg",
+          "question": "Selecciona la palabra correcta de acuerdo a la imagen.",
+          "options": [
+            {
+              "text": "Perro",
+              "is_correct": true
+            },
+            {
+              "text": "Berto",
+              "is_correct": false,
+              "confusion_type": "sustitucion_letras"
+            },
+            {
+              "text": "Pelro",
+              "is_correct": false,
+              "confusion_type": "sustitucion_letras"
+            },
+            {
+              "text": "Perdo",
+              "is_correct": false,
+              "confusion_type": "sustitucion_letras"
+            }
+          ],
+          "correct_answer": "Perro",
+          "time_limit": 30,
+          "points": 10,
+          "confusion_patterns": ["p/b", "r/l", "r/d"]
+        },
+        {
+          "id": 4,
+          "image_path": "/static/img/games/dado.jpg",
+          "question": "Selecciona la palabra correcta de acuerdo a la imagen.",
+          "options": [
+            {
+              "text": "Dado",
+              "is_correct": true
+            },
+            {
+              "text": "Bado",
+              "is_correct": false,
+              "confusion_type": "inversion_letras"
+            },
+            {
+              "text": "Dano",
+              "is_correct": false,
+              "confusion_type": "sustitucion_letras"
+            },
+            {
+              "text": "Gado",
+              "is_correct": false,
+              "confusion_type": "sustitucion_letras"
+            }
+          ],
+          "correct_answer": "Dado",
+          "time_limit": 30,
+          "points": 10,
+          "confusion_patterns": ["d/b", "d/n", "d/g"]
+        },
+        {
+          "id": 5,
+          "image_path": "/static/img/games/boca.jpg",
+          "question": "Selecciona la palabra correcta de acuerdo a la imagen.",
+          "options": [
+            {
+              "text": "Boca",
+              "is_correct": true
+            },
+            {
+              "text": "Doca",
+              "is_correct": false,
+              "confusion_type": "inversion_letras"
+            },
+            {
+              "text": "Poca",
+              "is_correct": false,
+              "confusion_type": "sustitucion_letras"
+            },
+            {
+              "text": "Boda",
+              "is_correct": false,
+              "confusion_type": "sustitucion_letras"
+            }
+          ],
+          "correct_answer": "Boca",
+          "time_limit": 30,
+          "points": 10,
+          "confusion_patterns": ["b/d", "b/p", "c/d"]
+        },
+        {
+          "id": 6,
+          "image_path": "/static/img/games/luna.jpg",
+          "question": "Selecciona la palabra correcta de acuerdo a la imagen.",
+          "options": [
+            {
+              "text": "Luna",
+              "is_correct": true
+            },
+            {
+              "text": "Runa",
+              "is_correct": false,
+              "confusion_type": "sustitucion_letras"
+            },
+            {
+              "text": "Luma",
+              "is_correct": false,
+              "confusion_type": "sustitucion_letras"
+            },
+            {
+              "text": "Nula",
+              "is_correct": false,
+              "confusion_type": "inversion_silabas"
+            }
+          ],
+          "correct_answer": "Luna",
+          "time_limit": 30,
+          "points": 10,
+          "confusion_patterns": ["l/r", "n/m"]
+        },
+        {
+          "id": 7,
+          "image_path": "/static/img/games/pato.jpg",
+          "question": "Selecciona la palabra correcta de acuerdo a la imagen.",
+          "options": [
+            {
+              "text": "Pato",
+              "is_correct": true
+            },
+            {
+              "text": "Bato",
+              "is_correct": false,
+              "confusion_type": "inversion_letras"
+            },
+            {
+              "text": "Pado",
+              "is_correct": false,
+              "confusion_type": "sustitucion_letras"
+            },
+            {
+              "text": "Topa",
+              "is_correct": false,
+              "confusion_type": "inversion_silabas"
+            }
+          ],
+          "correct_answer": "Pato",
+          "time_limit": 30,
+          "points": 10,
+          "confusion_patterns": ["p/b", "t/d"]
+        },
+        {
+          "id": 8,
+          "image_path": "/static/img/games/mesa.jpg",
+          "question": "Selecciona la palabra correcta de acuerdo a la imagen.",
+          "options": [
+            {
+              "text": "Mesa",
+              "is_correct": true
+            },
+            {
+              "text": "Nesa",
+              "is_correct": false,
+              "confusion_type": "sustitucion_letras"
+            },
+            {
+              "text": "Meza",
+              "is_correct": false,
+              "confusion_type": "sustitucion_letras"
+            },
+            {
+              "text": "Same",
+              "is_correct": false,
+              "confusion_type": "inversion_silabas"
+            }
+          ],
+          "correct_answer": "Mesa",
+          "time_limit": 30,
+          "points": 10,
+          "confusion_patterns": ["m/n", "s/z"]
+        },
+        {
+          "id": 9,
+          "image_path": "/static/img/games/flor.jpg",
+          "question": "Selecciona la palabra correcta de acuerdo a la imagen.",
+          "options": [
+            {
+              "text": "Flor",
+              "is_correct": true
+            },
+            {
+              "text": "Frol",
+              "is_correct": false,
+              "confusion_type": "inversion_letras"
+            },
+            {
+              "text": "Flow",
+              "is_correct": false,
+              "confusion_type": "sustitucion_letras"
+            },
+            {
+              "text": "Plor",
+              "is_correct": false,
+              "confusion_type": "sustitucion_letras"
+            }
+          ],
+          "correct_answer": "Flor",
+          "time_limit": 30,
+          "points": 10,
+          "confusion_patterns": ["l/r", "r/w", "f/p"]
+        },
+        {
+          "id": 10,
+          "image_path": "/static/img/games/gato.jpg",
+          "question": "Selecciona la palabra correcta de acuerdo a la imagen.",
+          "options": [
+            {
+              "text": "Gato",
+              "is_correct": true
+            },
+            {
+              "text": "Cato",
+              "is_correct": false,
+              "confusion_type": "sustitucion_letras"
+            },
+            {
+              "text": "Gado",
+              "is_correct": false,
+              "confusion_type": "sustitucion_letras"
+            },
+            {
+              "text": "Toga",
+              "is_correct": false,
+              "confusion_type": "inversion_silabas"
+            }
+          ],
+          "correct_answer": "Gato",
+          "time_limit": 30,
+          "points": 10,
+          "confusion_patterns": ["g/c", "t/d"]
+        }
+      ]
+    },
+    {
+      "level": 2,
+      "difficulty": "medio",
+      "description": "Palabras más complejas con patrones de dislexia específicos",
+      "questions": [
+        {
+          "id": 11,
+          "image_path": "/static/img/games/mariposa.jpg",
+          "question": "Selecciona la palabra correcta de acuerdo a la imagen.",
+          "options": [
+            {
+              "text": "Mariposa",
+              "is_correct": true
+            },
+            {
+              "text": "Maridoba",
+              "is_correct": false,
+              "confusion_type": "sustitucion_letras"
+            },
+            {
+              "text": "Maliposa",
+              "is_correct": false,
+              "confusion_type": "sustitucion_letras"
+            },
+            {
+              "text": "Maribosa",
+              "is_correct": false,
+              "confusion_type": "sustitucion_letras"
+            }
+          ],
+          "correct_answer": "Mariposa",
+          "time_limit": 35,
+          "points": 15,
+          "confusion_patterns": ["p/b", "r/l", "p/d"]
+        },
+        {
+          "id": 12,
+          "image_path": "/static/img/games/bicicleta.jpg",
+          "question": "Selecciona la palabra correcta de acuerdo a la imagen.",
+          "options": [
+            {
+              "text": "Bicicleta",
+              "is_correct": true
+            },
+            {
+              "text": "Dicicleta",
+              "is_correct": false,
+              "confusion_type": "inversion_letras"
+            },
+            {
+              "text": "Bicicreta",
+              "is_correct": false,
+              "confusion_type": "sustitucion_letras"
+            },
+            {
+              "text": "Bicidleta",
+              "is_correct": false,
+              "confusion_type": "sustitucion_letras"
+            }
+          ],
+          "correct_answer": "Bicicleta",
+          "time_limit": 40,
+          "points": 15,
+          "confusion_patterns": ["b/d", "l/r", "c/d"]
+        },
+        {
+          "id": 13,
+          "image_path": "/static/img/games/elefante.jpg",
+          "question": "Selecciona la palabra correcta de acuerdo a la imagen.",
+          "options": [
+            {
+              "text": "Elefante",
+              "is_correct": true
+            },
+            {
+              "text": "Erefante",
+              "is_correct": false,
+              "confusion_type": "sustitucion_letras"
+            },
+            {
+              "text": "Elefamte",
+              "is_correct": false,
+              "confusion_type": "sustitucion_letras"
+            },
+            {
+              "text": "Elevante",
+              "is_correct": false,
+              "confusion_type": "sustitucion_letras"
+            }
+          ],
+          "correct_answer": "Elefante",
+          "time_limit": 40,
+          "points": 15,
+          "confusion_patterns": ["l/r", "n/m", "f/v"]
+        },
+        {
+          "id": 14,
+          "image_path": "/static/img/games/helicoptero.jpg",
+          "question": "Selecciona la palabra correcta de acuerdo a la imagen.",
+          "options": [
+            {
+              "text": "Helicóptero",
+              "is_correct": true
+            },
+            {
+              "text": "Hericóptero",
+              "is_correct": false,
+              "confusion_type": "sustitucion_letras"
+            },
+            {
+              "text": "Helicóbtero",
+              "is_correct": false,
+              "confusion_type": "sustitucion_letras"
+            },
+            {
+              "text": "Helicódtero",
+              "is_correct": false,
+              "confusion_type": "sustitucion_letras"
+            }
+          ],
+          "correct_answer": "Helicóptero",
+          "time_limit": 45,
+          "points": 20,
+          "confusion_patterns": ["l/r", "p/b", "p/d"]
+        },
+        {
+          "id": 15,
+          "image_path": "/static/img/games/dinosaurio.jpg",
+          "question": "Selecciona la palabra correcta de acuerdo a la imagen.",
+          "options": [
+            {
+              "text": "Dinosaurio",
+              "is_correct": true
+            },
+            {
+              "text": "Binasaurio",
+              "is_correct": false,
+              "confusion_type": "inversion_letras"
+            },
+            {
+              "text": "Dinosanurio",
+              "is_correct": false,
+              "confusion_type": "sustitucion_letras"
+            },
+            {
+              "text": "Dinamaurio",
+              "is_correct": false,
+              "confusion_type": "sustitucion_letras"
+            }
+          ],
+          "correct_answer": "Dinosaurio",
+          "time_limit": 45,
+          "points": 20,
+          "confusion_patterns": ["d/b", "u/n", "s/m"]
+        },
+        {
+          "id": 16,
+          "image_path": "/static/img/games/computadora.jpg",
+          "question": "Selecciona la palabra correcta de acuerdo a la imagen.",
+          "options": [
+            {
+              "text": "Computadora",
+              "is_correct": true
+            },
+            {
+              "text": "Combutadora",
+              "is_correct": false,
+              "confusion_type": "sustitucion_letras"
+            },
+            {
+              "text": "Conputadora",
+              "is_correct": false,
+              "confusion_type": "sustitucion_letras"
+            },
+            {
+              "text": "Compudatora",
+              "is_correct": false,
+              "confusion_type": "inversion_silabas"
+            }
+          ],
+          "correct_answer": "Computadora",
+          "time_limit": 40,
+          "points": 15,
+          "confusion_patterns": ["p/b", "m/n", "do/da"]
+        },
+        {
+          "id": 17,
+          "image_path": "/static/img/games/refrigerador.jpg",
+          "question": "Selecciona la palabra correcta de acuerdo a la imagen.",
+          "options": [
+            {
+              "text": "Refrigerador",
+              "is_correct": true
+            },
+            {
+              "text": "Refligerador",
+              "is_correct": false,
+              "confusion_type": "sustitucion_letras"
+            },
+            {
+              "text": "Refrigelador",
+              "is_correct": false,
+              "confusion_type": "sustitucion_letras"
+            },
+            {
+              "text": "Refriperador",
+              "is_correct": false,
+              "confusion_type": "sustitucion_letras"
+            }
+          ],
+          "correct_answer": "Refrigerador",
+          "time_limit": 45,
+          "points": 20,
+          "confusion_patterns": ["r/l", "g/p", "e/a"]
+        },
+        {
+          "id": 18,
+          "image_path": "/static/img/games/biblioteca.jpg",
+          "question": "Selecciona la palabra correcta de acuerdo a la imagen.",
+          "options": [
+            {
+              "text": "Biblioteca",
+              "is_correct": true
+            },
+            {
+              "text": "Diblioteca",
+              "is_correct": false,
+              "confusion_type": "inversion_letras"
+            },
+            {
+              "text": "Bibliodera",
+              "is_correct": false,
+              "confusion_type": "sustitucion_letras"
+            },
+            {
+              "text": "Bibrioteca",
+              "is_correct": false,
+              "confusion_type": "sustitucion_letras"
+            }
+          ],
+          "correct_answer": "Biblioteca",
+          "time_limit": 40,
+          "points": 15,
+          "confusion_patterns": ["b/d", "t/d", "l/r"]
+        },
+        {
+          "id": 19,
+          "image_path": "/static/img/games/princesa.jpg",
+          "question": "Selecciona la palabra correcta de acuerdo a la imagen.",
+          "options": [
+            {
+              "text": "Princesa",
+              "is_correct": true
+            },
+            {
+              "text": "Brincesa",
+              "is_correct": false,
+              "confusion_type": "sustitucion_letras"
+            },
+            {
+              "text": "Primcesa",
+              "is_correct": false,
+              "confusion_type": "sustitucion_letras"
+            },
+            {
+              "text": "Princeda",
+              "is_correct": false,
+              "confusion_type": "sustitucion_letras"
+            }
+          ],
+          "correct_answer": "Princesa",
+          "time_limit": 35,
+          "points": 15,
+          "confusion_patterns": ["p/b", "n/m", "s/d"]
+        },
+        {
+          "id": 20,
+          "image_path": "/static/img/games/telefono.jpg",
+          "question": "Selecciona la palabra correcta de acuerdo a la imagen.",
+          "options": [
+            {
+              "text": "Teléfono",
+              "is_correct": true
+            },
+            {
+              "text": "Teréfono",
+              "is_correct": false,
+              "confusion_type": "sustitucion_letras"
+            },
+            {
+              "text": "Telévono",
+              "is_correct": false,
+              "confusion_type": "sustitucion_letras"
+            },
+            {
+              "text": "Telefomo",
+              "is_correct": false,
+              "confusion_type": "sustitucion_letras"
+            }
+          ],
+          "correct_answer": "Teléfono",
+          "time_limit": 35,
+          "points": 15,
+          "confusion_patterns": ["l/r", "f/v", "n/m"]
+        }
+      ]
+    }
+  ],
+  "scoring": {
+    "correct_answer": 10,
+    "time_bonus": 5,
+    "perfect_level": 50
+  },
+  "confusion_types": {
+    "inversion_letras": "Inversión de letras (b/d, p/q)",
+    "sustitucion_letras": "Sustitución de letras similares (m/n, r/l)",
+    "inversion_silabas": "Inversión de sílabas",
+    "omision_letras": "Omisión de letras"
+  }
+}
