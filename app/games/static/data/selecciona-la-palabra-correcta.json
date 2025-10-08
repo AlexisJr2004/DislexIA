@@ -14,7 +14,7 @@
       "questions": [
         {
           "id": 1,
-          "image_path": "/static/img/games/pluma.jpg",
+          "image_path": "/static/img/pluma.jpg",
           "question": "Selecciona la palabra correcta de acuerdo a la imagen.",
           "options": [
             {
@@ -44,7 +44,7 @@
         },
         {
           "id": 2,
-          "image_path": "/static/img/games/casa.jpg",
+          "image_path": "/static/img/casa.jpg",
           "question": "Selecciona la palabra correcta de acuerdo a la imagen.",
           "options": [
             {
@@ -74,7 +74,7 @@
         },
         {
           "id": 3,
-          "image_path": "/static/img/games/perro.jpg",
+          "image_path": "/static/img/perro.jpg",
           "question": "Selecciona la palabra correcta de acuerdo a la imagen.",
           "options": [
             {
@@ -104,7 +104,7 @@
         },
         {
           "id": 4,
-          "image_path": "/static/img/games/dado.jpg",
+          "image_path": "/static/img/dado.jpg",
           "question": "Selecciona la palabra correcta de acuerdo a la imagen.",
           "options": [
             {
@@ -134,7 +134,7 @@
         },
         {
           "id": 5,
-          "image_path": "/static/img/games/boca.jpg",
+          "image_path": "/static/img/boca.jpg",
           "question": "Selecciona la palabra correcta de acuerdo a la imagen.",
           "options": [
             {
@@ -164,7 +164,7 @@
         },
         {
           "id": 6,
-          "image_path": "/static/img/games/luna.jpg",
+          "image_path": "/static/img/luna.jpg",
           "question": "Selecciona la palabra correcta de acuerdo a la imagen.",
           "options": [
             {
@@ -194,7 +194,7 @@
         },
         {
           "id": 7,
-          "image_path": "/static/img/games/pato.jpg",
+          "image_path": "/static/img/pato.jpg",
           "question": "Selecciona la palabra correcta de acuerdo a la imagen.",
           "options": [
             {
@@ -224,7 +224,7 @@
         },
         {
           "id": 8,
-          "image_path": "/static/img/games/mesa.jpg",
+          "image_path": "/static/img/mesa.jpg",
           "question": "Selecciona la palabra correcta de acuerdo a la imagen.",
           "options": [
             {
@@ -254,7 +254,7 @@
         },
         {
           "id": 9,
-          "image_path": "/static/img/games/flor.jpg",
+          "image_path": "/static/img/flor.jpg",
           "question": "Selecciona la palabra correcta de acuerdo a la imagen.",
           "options": [
             {
@@ -284,7 +284,7 @@
         },
         {
           "id": 10,
-          "image_path": "/static/img/games/gato.jpg",
+          "image_path": "/static/img/gato.jpg",
           "question": "Selecciona la palabra correcta de acuerdo a la imagen.",
           "options": [
             {
@@ -321,7 +321,7 @@
       "questions": [
         {
           "id": 11,
-          "image_path": "/static/img/games/mariposa.jpg",
+          "image_path": "/static/img/mariposa.jpg",
           "question": "Selecciona la palabra correcta de acuerdo a la imagen.",
           "options": [
             {
@@ -351,7 +351,7 @@
         },
         {
           "id": 12,
-          "image_path": "/static/img/games/bicicleta.jpg",
+          "image_path": "/static/img/bicicleta.jpg",
           "question": "Selecciona la palabra correcta de acuerdo a la imagen.",
           "options": [
             {
@@ -381,7 +381,7 @@
         },
         {
           "id": 13,
-          "image_path": "/static/img/games/elefante.jpg",
+          "image_path": "/static/img/elefante.jpg",
           "question": "Selecciona la palabra correcta de acuerdo a la imagen.",
           "options": [
             {
@@ -411,7 +411,7 @@
         },
         {
           "id": 14,
-          "image_path": "/static/img/games/helicoptero.jpg",
+          "image_path": "/static/img/helicoptero.jpg",
           "question": "Selecciona la palabra correcta de acuerdo a la imagen.",
           "options": [
             {
@@ -441,7 +441,7 @@
         },
         {
           "id": 15,
-          "image_path": "/static/img/games/dinosaurio.jpg",
+          "image_path": "/static/img/dinosaurio.jpg",
           "question": "Selecciona la palabra correcta de acuerdo a la imagen.",
           "options": [
             {
@@ -471,7 +471,7 @@
         },
         {
           "id": 16,
-          "image_path": "/static/img/games/computadora.jpg",
+          "image_path": "/static/img/computadora.jpg",
           "question": "Selecciona la palabra correcta de acuerdo a la imagen.",
           "options": [
             {
@@ -501,7 +501,7 @@
         },
         {
           "id": 17,
-          "image_path": "/static/img/games/refrigerador.jpg",
+          "image_path": "/static/img/refrigerador.jpg",
           "question": "Selecciona la palabra correcta de acuerdo a la imagen.",
           "options": [
             {
@@ -531,7 +531,7 @@
         },
         {
           "id": 18,
-          "image_path": "/static/img/games/biblioteca.jpg",
+          "image_path": "/static/img/biblioteca.jpg",
           "question": "Selecciona la palabra correcta de acuerdo a la imagen.",
           "options": [
             {
@@ -561,7 +561,7 @@
         },
         {
           "id": 19,
-          "image_path": "/static/img/games/princesa.jpg",
+          "image_path": "/static/img/princesa.jpg",
           "question": "Selecciona la palabra correcta de acuerdo a la imagen.",
           "options": [
             {
@@ -591,7 +591,7 @@
         },
         {
           "id": 20,
-          "image_path": "/static/img/games/telefono.jpg",
+          "image_path": "/static/img/telefono.jpg",
           "question": "Selecciona la palabra correcta de acuerdo a la imagen.",
           "options": [
             {

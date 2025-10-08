@@ -29,6 +29,26 @@
     .json-number { color: #79c0ff; }
     .json-boolean { color: #ffab70; }
     .json-null { color: #ffa657; }
+    
+    /* Animaciones para las respuestas */
+    @keyframes pulse-green {
+        0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
+        25% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(34, 197, 94, 0.3); }
+        50% { transform: scale(1.1); box-shadow: 0 0 0 15px rgba(34, 197, 94, 0.1); }
+        75% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(34, 197, 94, 0.05); }
+        100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+    }
+    
+    @keyframes shake-red {
+        0%, 100% { transform: translateX(0); }
+        10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+        20%, 40%, 60%, 80% { transform: translateX(5px); }
+    }
+    
+    @keyframes fade-out {
+        from { opacity: 1; }
+        to { opacity: 0.6; }
+    }
 </style>
 {% endblock %}
 
@@ -95,14 +115,14 @@
                         <i class="fas fa-gamepad mr-2 text-purple-600"></i>
                         Contenido del Juego - {{ juego.nombre }}
                     </h2>
-                    <p class="text-sm text-gray-600 mt-1">
+                    <!-- <p class="text-sm text-gray-600 mt-1">
                         URL de sesión: <code class="bg-gray-200 px-2 py-1 rounded text-xs">{{ sesion.url_sesion }}</code>
-                    </p>
+                    </p> -->
                 </div>
                 
                 <div class="p-6">
                     <!-- Por ahora mostrar la configuración JSON -->
-                    <div class="mb-6">
+                    <!-- <div class="mb-6">
                         <h3 class="text-md font-medium text-gray-700 mb-3">
                             <i class="fas fa-cog mr-2"></i>
                             Configuración del Juego (JSON)
@@ -110,6 +130,15 @@
                         
                         <div class="config-viewer rounded-lg p-4">
                             <pre id="json-content" class="text-sm whitespace-pre-wrap">{{ game_config_json }}</pre>
+                        </div>
+                    </div> -->
+
+                    <!-- Área principal del juego -->
+                    <div id="game-area" class="mt-8">
+                        <!-- El contenido del juego se carga dinámicamente aquí -->
+                        <div class="text-center py-12">
+                            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
+                            <p class="text-gray-600">Cargando juego...</p>
                         </div>
                     </div>
 
@@ -124,7 +153,6 @@
                                 <div><strong>Archivo de config:</strong> {{ juego.archivo_configuracion }}</div>
                             </div>
                         </div>
-                        
                         <div class="bg-gray-50 rounded-lg p-4">
                             <h4 class="font-medium text-gray-700 mb-2">Información de la Sesión</h4>
                             <div class="space-y-2 text-sm">
@@ -136,22 +164,6 @@
                                 <div><strong>Edad:</strong> {{ nino.edad }} años</div>
                             </div>
                         </div>
-                    </div>
-
-                    <!-- Placeholder para el juego real -->
-                    <div class="mt-8 border-2 border-dashed border-gray-300 rounded-xl p-12 text-center">
-                        <div class="text-gray-400 mb-4">
-                            <i class="fas fa-puzzle-piece text-6xl"></i>
-                        </div>
-                        <h3 class="text-xl font-semibold text-gray-600 mb-2">Área del Juego</h3>
-                        <p class="text-gray-500 mb-4">
-                            Aquí se implementará la lógica específica del juego usando JavaScript<br>
-                            basándose en la configuración JSON mostrada arriba.
-                        </p>
-                        <button class="px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors">
-                            <i class="fas fa-play mr-2"></i>
-                            Comenzar Juego (Demo)
-                        </button>
                     </div>
                 </div>
             </div>
@@ -180,41 +192,32 @@
 {% endblock %}
 
 {% block extra_scripts %}
+<!-- Cargar el JS específico del juego -->
+<script src="{% static 'js/' %}{{ juego.slug }}.js"></script>
+
 <script>
-    (function initGamePage() {
-        console.log('Inicializando página de juego...');
-        
-        const sesionData = {
-            url_sesion: '{{ sesion.url_sesion }}',
-            juego_nombre: '{{ juego.nombre }}',
-            evaluacion_id: '{{ evaluacion.id }}',
-            nino_id: '{{ nino.id }}'
-        };
-        
-        // Colorear JSON
-        function colorizeJson() {
-            const jsonElement = document.getElementById('json-content');
-            if (!jsonElement) return;
-            
-            let jsonText = jsonElement.textContent;
-            
-            // Colorear claves
-            jsonText = jsonText.replace(/"([^"]+)":/g, '<span class="json-key">"$1"</span>:');
-            
-            // Colorear strings (valores)
-            jsonText = jsonText.replace(/:\s*"([^"]*)"/g, ': <span class="json-string">"$1"</span>');
-            
-            // Colorear números
-            jsonText = jsonText.replace(/:\s*(\d+\.?\d*)/g, ': <span class="json-number">$1</span>');
-            
-            // Colorear booleans
-            jsonText = jsonText.replace(/:\s*(true|false)/g, ': <span class="json-boolean">$1</span>');
-            
-            // Colorear null
-            jsonText = jsonText.replace(/:\s*(null)/g, ': <span class="json-null">$1</span>');
-            
-            jsonElement.innerHTML = jsonText;
+    // Pasar datos del juego al JavaScript
+    window.gameSessionData = {
+        url_sesion: '{{ sesion.url_sesion }}',
+        juego_slug: '{{ juego.slug }}',
+        juego_nombre: '{{ juego.nombre }}',
+        evaluacion_id: '{{ evaluacion.id }}',
+        nino_id: '{{ nino.id }}',
+        // URLs de la API
+        api_urls: {
+            question_response: '{% url "games:save_question_response" %}',
+            level_complete: '{% url "games:save_level_complete" %}',
+            finish_game: '{% url "games:finish_game_session" url_sesion=sesion.url_sesion %}',
+            game_list: '{% url "games:game_list" %}'
         }
+    };
+
+    window.gameConfig = {{ game_config_json|safe }};
+
+    (function initGamePage() {
+        console.log('🎮 Inicializando página de juego...');
+        console.log('📊 Datos de sesión:', window.gameSessionData);
+        console.log('⚙️ Configuración:', window.gameConfig);
         
         // Contador de tiempo
         const startTime = new Date('{{ sesion.fecha_inicio|date:"c" }}');
@@ -242,7 +245,15 @@
         
         if (btnFinish && modal) {
             btnFinish.addEventListener('click', () => {
-                modal.classList.remove('hidden');
+                // Si hay una instancia del juego activa, usar su método de finalización
+                if (window.gameInstance && typeof window.gameInstance.finishGame === 'function') {
+                    if (confirm('¿Estás seguro de que deseas finalizar el juego? Tu progreso se guardará.')) {
+                        window.gameInstance.finishGame();
+                    }
+                } else {
+                    // Fallback al modal original
+                    modal.classList.remove('hidden');
+                }
             });
         }
         
@@ -261,9 +272,10 @@
                             'Content-Type': 'application/json',
                         },
                         body: JSON.stringify({
-                            puntaje_total: 0,  // Por ahora 0, después se calculará
-                            preguntas_respondidas: 0,  // Por ahora 0
-                            tiempo_total_segundos: Math.floor((new Date() - startTime) / 1000)
+                            total_score: 0,
+                            total_correct: 0,
+                            total_incorrect: 0,
+                            total_time_seconds: Math.floor((new Date() - startTime) / 1000)
                         })
                     });
                     
@@ -284,15 +296,11 @@
             });
         }
         
-        // Inicializar
-        colorizeJson();
-        
         // Actualizar timer cada segundo
         setInterval(updateTimer, 1000);
         updateTimer(); // Primera actualización inmediata
         
-        console.log('Página de juego inicializada correctamente');
-        console.log('Datos de sesión:', sesionData);
+        console.log('✅ Página de juego inicializada correctamente');
     })();
 </script>
 {% endblock %}

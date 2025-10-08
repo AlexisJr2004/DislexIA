@@ -110,6 +110,113 @@ class PlayGameView(TemplateView):
 
 @csrf_exempt
 @require_http_methods(["POST"])
+def save_question_response(request):
+    """API endpoint para guardar la respuesta a una pregunta específica"""
+    try:
+        data = json.loads(request.body)
+        
+        session_url = data.get('session_url')
+        question_id = data.get('question_id')
+        is_correct = data.get('is_correct', False)
+        response_time_ms = data.get('response_time_ms', 0)
+        points_earned = data.get('points_earned', 0)
+        
+        # Obtener la sesión
+        sesion = get_object_or_404(SesionJuego, url_sesion=session_url)
+        
+        # Crear o actualizar PruebaCognitiva
+        from .models import PruebaCognitiva
+        
+        prueba, created = PruebaCognitiva.objects.get_or_create(
+            evaluacion=sesion.evaluacion,
+            juego=sesion.juego,
+            numero_prueba=question_id,
+            defaults={
+                'clics': 1,
+                'aciertos': 1 if is_correct else 0,
+                'errores': 0 if is_correct else 1,
+                'puntaje': points_earned,
+                'tiempo_respuesta_ms': response_time_ms
+            }
+        )
+        
+        if not created:
+            # Actualizar existente
+            prueba.clics += 1
+            if is_correct:
+                prueba.aciertos += 1
+            else:
+                prueba.errores += 1
+            prueba.puntaje += points_earned
+            prueba.save()
+        
+        # Actualizar estadísticas de la sesión
+        sesion.puntaje_total += points_earned if is_correct else 0
+        if is_correct:
+            sesion.preguntas_respondidas += 1
+        sesion.save()
+        
+        return JsonResponse({
+            'success': True,
+            'message': 'Respuesta guardada correctamente',
+            'prueba_id': prueba.id
+        })
+        
+    except Exception as e:
+        return JsonResponse({
+            'success': False,
+            'error': str(e)
+        }, status=400)
+
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def save_level_complete(request):
+    """API endpoint para guardar la finalización de un nivel"""
+    try:
+        data = json.loads(request.body)
+        
+        session_url = data.get('session_url')
+        level = data.get('level', 1)
+        total_questions = data.get('total_questions', 0)
+        correct_answers = data.get('correct_answers', 0)
+        incorrect_answers = data.get('incorrect_answers', 0)
+        
+        # Obtener la sesión
+        sesion = get_object_or_404(SesionJuego, url_sesion=session_url)
+        
+        # Actualizar estadísticas de la evaluación
+        evaluacion = sesion.evaluacion
+        evaluacion.total_aciertos += correct_answers
+        evaluacion.total_errores += incorrect_answers
+        evaluacion.total_clics += total_questions
+        
+        # Calcular precisión promedio
+        total_respuestas = evaluacion.total_aciertos + evaluacion.total_errores
+        if total_respuestas > 0:
+            evaluacion.precision_promedio = (evaluacion.total_aciertos / total_respuestas) * 100
+        
+        evaluacion.save()
+        
+        return JsonResponse({
+            'success': True,
+            'message': f'Nivel {level} completado correctamente',
+            'evaluacion_stats': {
+                'total_aciertos': evaluacion.total_aciertos,
+                'total_errores': evaluacion.total_errores,
+                'precision_promedio': float(evaluacion.precision_promedio)
+            }
+        })
+        
+    except Exception as e:
+        return JsonResponse({
+            'success': False,
+            'error': str(e)
+        }, status=400)
+
+
+@csrf_exempt
+@require_http_methods(["POST"])
 def finish_game_session(request, url_sesion):
     """API endpoint para finalizar una sesión de juego"""
     try:
@@ -119,9 +226,9 @@ def finish_game_session(request, url_sesion):
         # Parsear datos del POST
         data = json.loads(request.body)
         
-        puntaje_final = data.get('puntaje_total', 0)
-        preguntas_contestadas = data.get('preguntas_respondidas', 0)
-        tiempo_total = data.get('tiempo_total_segundos', 0)
+        puntaje_final = data.get('total_score', sesion.puntaje_total)
+        preguntas_contestadas = data.get('total_correct', 0) + data.get('total_incorrect', 0)
+        tiempo_total = data.get('total_time_seconds', 0)
         
         # Finalizar sesión
         sesion.finalizar_sesion(puntaje_final, preguntas_contestadas, tiempo_total)
@@ -130,13 +237,20 @@ def finish_game_session(request, url_sesion):
         evaluacion = sesion.evaluacion
         evaluacion.fecha_hora_fin = timezone.now()
         evaluacion.estado = 'completada'
+        evaluacion.duracion_total_minutos = tiempo_total // 60
         evaluacion.save()
         
         return JsonResponse({
             'success': True,
             'message': 'Sesión finalizada correctamente',
             'sesion_id': sesion.id,
-            'evaluacion_id': evaluacion.id
+            'evaluacion_id': evaluacion.id,
+            'final_stats': {
+                'puntaje_total': sesion.puntaje_total,
+                'preguntas_respondidas': sesion.preguntas_respondidas,
+                'tiempo_total_minutos': evaluacion.duracion_total_minutos,
+                'precision_promedio': float(evaluacion.precision_promedio)
+            }
         })
         
     except Exception as e:
@@ -144,4 +258,3 @@ def finish_game_session(request, url_sesion):
             'success': False,
             'error': str(e)
         }, status=400)
-

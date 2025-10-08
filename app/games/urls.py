@@ -10,6 +10,8 @@ urlpatterns = [
     path('init/<slug:juego_slug>/', views.InitGameView.as_view(), name='init_game'),
     # Jugar juego (sesión específica)
     path('play/<str:url_sesion>/', views.PlayGameView.as_view(), name='play_game'),
-    # API para finalizar sesión
+    # APIs del juego
+    path('api/question-response/', views.save_question_response, name='save_question_response'),
+    path('api/level-complete/', views.save_level_complete, name='save_level_complete'),
     path('api/finish/<str:url_sesion>/', views.finish_game_session, name='finish_game_session'),
 ]
