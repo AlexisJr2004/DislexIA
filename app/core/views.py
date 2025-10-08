@@ -1,16 +1,5 @@
 from django.views.generic import TemplateView
 
-class GamesView(TemplateView):
-    template_name = 'games.html'
-    
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context.update({
-            'page_title': 'Juegos - DislexIA',
-            'active_section': 'games',
-        })
-        return context
-
 class CalendarView(TemplateView):
     template_name = 'calendar.html'
     

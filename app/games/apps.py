@@ -4,3 +4,7 @@ from django.apps import AppConfig
 class GamesConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'app.games'
+    
+    def ready(self):
+        """Importar signals cuando la app esté lista"""
+        import app.games.signals

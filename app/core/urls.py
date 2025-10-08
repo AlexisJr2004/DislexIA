@@ -1,10 +1,9 @@
-from django.urls import path
+from django.urls import include, path
 from . import views
 
 app_name = 'core'
 
 urlpatterns = [
-    path('games/', views.GamesView.as_view(), name='games'),
     path('calendar/', views.CalendarView.as_view(), name='calendar'),
     path('documents/', views.DocumentsView.as_view(), name='documents'),
     path('settings/', views.SettingsView.as_view(), name='settings'),

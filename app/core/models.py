@@ -1,22 +1,38 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 
+# Importar constantes
+from .constants import (
+    GENERO_CHOICES,
+    ROL_CHOICES,
+    CLASIFICACION_RIESGO_CHOICES,
+    EDAD_MIN,
+    EDAD_MAX,
+    INDICE_RIESGO_MIN,
+    INDICE_RIESGO_MAX,
+    CONFIANZA_MIN,
+    CONFIANZA_MAX,
+    DEFAULTS
+)
+
 class Nino(models.Model):
     """Modelo para almacenar información de los niños evaluados"""
-    
-    GENERO_CHOICES = [
-        ('Masculino', 'Masculino'),
-        ('Femenino', 'Femenino'),
-        ('Otro', 'Otro'),
-    ]
     
     nombres = models.CharField(max_length=100, verbose_name="Nombres")
     apellidos = models.CharField(max_length=100, verbose_name="Apellidos")
     fecha_nacimiento = models.DateField(verbose_name="Fecha de Nacimiento")
     edad = models.PositiveIntegerField(
-        validators=[MinValueValidator(6), MaxValueValidator(12)],
+        validators=[MinValueValidator(EDAD_MIN), MaxValueValidator(EDAD_MAX)],
         verbose_name="Edad"
     )
+    imagen = models.ImageField(
+        upload_to='ninos/', 
+        verbose_name="Imagen",
+        help_text="Imagen del niño (opcional)",
+        # default='ninos/default_child_image.png',
+        null=True,
+        blank=True
+        )
     genero = models.CharField(
         max_length=20, 
         choices=GENERO_CHOICES,
@@ -24,7 +40,7 @@ class Nino(models.Model):
     )
     idioma_nativo = models.CharField(max_length=50, verbose_name="Idioma Nativo")
     fecha_registro = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de Registro")
-    activo = models.BooleanField(default=True, verbose_name="Activo")
+    activo = models.BooleanField(default=DEFAULTS['nino_activo'], verbose_name="Activo")
     
     class Meta:
         verbose_name = "Niño"
@@ -42,14 +58,15 @@ class Nino(models.Model):
 class Profesional(models.Model):
     """Modelo para profesionales que validan las evaluaciones"""
     
-    ROL_CHOICES = [
-        ('administrador', 'Administrador'),
-        ('profesional', 'Profesional'),
-        ('docente', 'Docente'),
-    ]
-    
     nombres = models.CharField(max_length=100, verbose_name="Nombres")
     apellidos = models.CharField(max_length=100, verbose_name="Apellidos")
+    imagen = models.ImageField(
+        upload_to='profesionales/',
+        verbose_name="Imagen",
+        help_text="Imagen del profesional (opcional)",
+        null=True,
+        blank=True
+    )
     especialidad = models.CharField(max_length=100, verbose_name="Especialidad")
     numero_licencia = models.CharField(max_length=100, unique=True, verbose_name="Número de Licencia")
     email = models.EmailField(unique=True, verbose_name="Email")
@@ -57,12 +74,12 @@ class Profesional(models.Model):
     rol = models.CharField(
         max_length=20,
         choices=ROL_CHOICES,
-        default='profesional',
+        default=DEFAULTS['profesional_rol'],
         verbose_name="Rol"
     )
     fecha_registro = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de Registro")
     ultimo_acceso = models.DateTimeField(null=True, blank=True, verbose_name="Último Acceso")
-    activo = models.BooleanField(default=True, verbose_name="Activo")
+    activo = models.BooleanField(default=DEFAULTS['profesional_activo'], verbose_name="Activo")
     
     class Meta:
         verbose_name = "Profesional"
@@ -79,12 +96,6 @@ class Profesional(models.Model):
 class ReporteIA(models.Model):
     """Modelo para almacenar reportes generados por IA"""
     
-    CLASIFICACION_RIESGO_CHOICES = [
-        ('Bajo', 'Bajo'),
-        ('Medio', 'Medio'),
-        ('Alto', 'Alto'),
-    ]
-    
     # Relación con evaluación (se importará desde games)
     evaluacion = models.OneToOneField(
         'games.Evaluacion',
@@ -96,7 +107,7 @@ class ReporteIA(models.Model):
     indice_riesgo = models.DecimalField(
         max_digits=5, 
         decimal_places=2,
-        validators=[MinValueValidator(0.00), MaxValueValidator(100.00)],
+        validators=[MinValueValidator(INDICE_RIESGO_MIN), MaxValueValidator(INDICE_RIESGO_MAX)],
         verbose_name="Índice de Riesgo"
     )
     clasificacion_riesgo = models.CharField(
@@ -105,7 +116,7 @@ class ReporteIA(models.Model):
         verbose_name="Clasificación de Riesgo"
     )
     confianza_prediccion = models.PositiveIntegerField(
-        validators=[MinValueValidator(0), MaxValueValidator(100)],
+        validators=[MinValueValidator(CONFIANZA_MIN), MaxValueValidator(CONFIANZA_MAX)],
         verbose_name="Confianza de Predicción (%)"
     )
     caracteristicas_json = models.JSONField(
@@ -147,13 +158,13 @@ class ValidacionProfesional(models.Model):
     indice_ajustado = models.DecimalField(
         max_digits=5,
         decimal_places=2,
-        validators=[MinValueValidator(0.00), MaxValueValidator(100.00)],
+        validators=[MinValueValidator(INDICE_RIESGO_MIN), MaxValueValidator(INDICE_RIESGO_MAX)],
         verbose_name="Índice Ajustado"
     )
     diagnostico_final = models.TextField(verbose_name="Diagnóstico Final")
     notas_clinicas = models.TextField(blank=True, verbose_name="Notas Clínicas")
     plan_tratamiento = models.TextField(blank=True, verbose_name="Plan de Tratamiento")
-    requiere_seguimiento = models.BooleanField(default=False, verbose_name="Requiere Seguimiento")
+    requiere_seguimiento = models.BooleanField(default=DEFAULTS['requiere_seguimiento'], verbose_name="Requiere Seguimiento")
     fecha_validacion = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de Validación")
     
     class Meta:

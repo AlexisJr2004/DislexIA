@@ -59,8 +59,8 @@
                     Panel Administrativo
                 </a>
 
-                <a href="{% url 'core:games' %}"
-                    class="nav-link flex items-center gap-3 px-3 py-2 mb-1 {% if request.resolver_match.url_name == 'games' %}text-primary bg-primary/10{% else %}text-gray-600 hover:bg-gray-100{% endif %} rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 hover:shadow-sm">
+                <a href="{% url 'games:game_list' %}"
+                    class="nav-link flex items-center gap-3 px-3 py-2 mb-1 {% if request.resolver_match.url_name == 'game_list' %}text-primary bg-primary/10{% else %}text-gray-600 hover:bg-gray-100{% endif %} rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 hover:shadow-sm">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path
                             d="M6 12h2m-1-1v2m8-1h2m-1-1v2m-9 5a4 4 0 01-4-4V9a4 4 0 014-4h10a4 4 0 014 4v4a4 4 0 01-4 4h-3l-2 2-2-2H8z" />

@@ -1,0 +1,272 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block extra_head %}
+<style>
+    .game-card {
+        transition: all 0.3s ease;
+    }
+
+    .game-card:hover {
+        transform: translateY(-8px);
+    }
+
+    .game-image {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .game-image::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 50%;
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
+    }
+
+    .difficulty-badge {
+        backdrop-filter: blur(10px);
+    }
+
+    .filter-btn.active {
+        background-color: #8b5cf6;
+        color: white;
+    }
+
+    /* Colores dinámicos para las dificultades */
+    .difficulty-facil { background-color: rgba(34, 197, 94, 0.9); }
+    .difficulty-medio { background-color: rgba(234, 179, 8, 0.9); }
+    .difficulty-dificil { background-color: rgba(239, 68, 68, 0.9); }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
+    <!-- Título -->
+    <div>
+        <h1 class="text-3xl font-bold text-gray-900 mb-2">Juegos de Entrenamiento</h1>
+        <p class="text-gray-600">Mejora tus habilidades cognitivas con nuestros juegos interactivos</p>
+    </div>
+
+    <!-- Buscador y Filtros -->
+    <div class="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
+        <!-- Buscador -->
+        <div class="relative w-full sm:w-64">
+            <input type="text" id="search-input" placeholder="Buscar juegos..."
+                class="w-full pl-10 pr-4 py-3 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+            <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+        </div>
+
+        <!-- Filtros de dificultad -->
+        <div class="flex gap-2">
+            <button
+                class="filter-btn px-4 py-2 bg-white border border-gray-300 rounded-xl text-sm font-medium transition-all hover:bg-purple-50 active"
+                data-filter="all">
+                Todos
+            </button>
+            <button
+                class="filter-btn px-4 py-2 bg-white border border-gray-300 rounded-xl text-sm font-medium transition-all hover:bg-green-50"
+                data-filter="facil">
+                Fácil
+            </button>
+            <button
+                class="filter-btn px-4 py-2 bg-white border border-gray-300 rounded-xl text-sm font-medium transition-all hover:bg-yellow-50"
+                data-filter="medio">
+                Medio
+            </button>
+            <button
+                class="filter-btn px-4 py-2 bg-white border border-gray-300 rounded-xl text-sm font-medium transition-all hover:bg-red-50"
+                data-filter="dificil">
+                Difícil
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6" id="games-container">
+    {% for juego in juegos %}
+    <div class="game-card bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden"
+         data-difficulty="{{ juego.dificultad }}"
+         data-name="{{ juego.nombre|lower }}"
+         data-description="{{ juego.descripcion|lower }}">
+        
+        <div class="game-image relative h-48">
+            <img class="w-full h-full object-cover" 
+                 src="{% if juego.imagen %}{{ juego.imagen.url }}{% else %}{% static 'img/default-game.png' %}{% endif %}" 
+                 alt="{{ juego.nombre }}" />
+            
+            <!-- Badge de dificultad -->
+            <div class="absolute top-4 right-4">
+                <span class="difficulty-badge px-3 py-1 difficulty-{{ juego.dificultad }} text-white text-xs font-semibold rounded-full">
+                    {{ juego.get_dificultad_display }}
+                </span>
+            </div>
+            
+            <!-- Información flotante -->
+            <div class="absolute bottom-4 left-4 z-10">
+                <div class="flex items-center gap-2">
+                    <div class="px-3 py-1 bg-white/20 backdrop-blur-md rounded-full">
+                        <span class="text-white text-sm font-medium">⭐ {{ juego.puntuacion_promedio }}</span>
+                    </div>
+                    <div class="px-3 py-1 bg-white/20 backdrop-blur-md rounded-full">
+                        <span class="text-white text-sm font-medium">⏱️ {{ juego.duracion_estimada_minutos }} min</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="p-6">
+            <h3 class="text-xl font-bold text-gray-900 mb-2">{{ juego.nombre }}</h3>
+            <p class="text-gray-600 text-sm mb-4 leading-relaxed">
+                {{ juego.descripcion }}
+            </p>
+
+            <!-- Estadísticas -->
+            <div class="flex items-center gap-4 mb-4 text-sm text-gray-500">
+                <div class="flex items-center gap-1">
+                    <i class="fas fa-gamepad text-{{ juego.color_tema }}-500"></i>
+                    <span>{{ juego.total_jugadas }} jugadas</span>
+                </div>
+                <div class="flex items-center gap-1">
+                    <i class="fas fa-trophy text-yellow-500"></i>
+                    <span>{{ juego.total_completados }} completados</span>
+                </div>
+            </div>
+
+            <!-- Barra de progreso -->
+            <div class="mb-4">
+                <div class="flex justify-between text-xs text-gray-600 mb-1">
+                    <span>Progreso</span>
+                    <span>{{ juego.porcentaje_completado }}%</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2">
+                    <div class="bg-gradient-to-r from-{{ juego.color_gradiente_inicio }} to-{{ juego.color_gradiente_fin }} h-2 rounded-full w-[{{ juego.porcentaje_completado }}%]"
+                    ></div>
+                </div>
+            </div>
+
+            <!-- Botón para jugar -->
+            <a href=""
+               class="w-full bg-gradient-to-r from-{{ juego.color_gradiente_inicio }} to-{{ juego.color_gradiente_fin }} hover:from-{{ juego.color_tema }}-600 hover:to-{{ juego.color_tema }}-700 text-white font-semibold py-3 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 shadow-md hover:shadow-lg">
+                <i class="fas fa-play"></i>
+                Jugar Ahora
+            </a>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-span-full text-center py-12">
+        <div class="text-gray-400 mb-4">
+            <i class="fas fa-gamepad text-6xl"></i>
+        </div>
+        <h3 class="text-xl font-semibold text-gray-600 mb-2">No hay juegos disponibles</h3>
+        <p class="text-gray-500">Los juegos están siendo configurados. Vuelve pronto.</p>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Stats Section -->
+{% if juegos %}
+<div class="mt-8 grid grid-cols-1 md:grid-cols-4 gap-4">
+    <div class="bg-white rounded-xl border border-gray-200 p-6 text-center">
+        <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3">
+            <i class="fas fa-clock text-purple-600 text-xl"></i>
+        </div>
+        <p class="text-2xl font-bold text-gray-900 mb-1">
+            15-25 min
+        </p>
+        <p class="text-sm text-gray-500">Tiempo estimado total</p>
+    </div>
+
+    <div class="bg-white rounded-xl border border-gray-200 p-6 text-center">
+        <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
+            <i class="fas fa-gamepad text-green-600 text-xl"></i>
+        </div>
+        <p class="text-2xl font-bold text-gray-900 mb-1">{{ juegos|length }}</p>
+        <p class="text-sm text-gray-500">Juegos disponibles</p>
+    </div>
+
+    <div class="bg-white rounded-xl border border-gray-200 p-6 text-center">
+        <div class="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-3">
+            <i class="fas fa-star text-yellow-600 text-xl"></i>
+        </div>
+        <p class="text-2xl font-bold text-gray-900 mb-1">4.7</p>
+        <p class="text-sm text-gray-500">Puntuación promedio</p>
+    </div>
+
+    <div class="bg-white rounded-xl border border-gray-200 p-6 text-center">
+        <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+            <i class="fas fa-users text-blue-600 text-xl"></i>
+        </div>
+        <p class="text-2xl font-bold text-gray-900 mb-1">
+            {% regroup juegos by total_jugadas as jugadas_list %}{{ jugadas_list|length|default:0 }}
+        </p>
+        <p class="text-sm text-gray-500">Total jugadas</p>
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    (function initGamesPage() {
+        console.log('Inicializando página de juegos dinámicos...');
+
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const gameCards = document.querySelectorAll('.game-card');
+        const searchInput = document.getElementById('search-input');
+
+        // Filtrado por dificultad
+        filterButtons.forEach(button => {
+            button.addEventListener('click', function () {
+                console.log('Filtro clickeado:', this.getAttribute('data-filter'));
+
+                // Remover clase activa de todos los botones
+                filterButtons.forEach(btn => btn.classList.remove('active', 'bg-purple-500', 'text-white'));
+
+                // Agregar clase activa al botón clickeado
+                this.classList.add('active', 'bg-purple-500', 'text-white');
+
+                const filter = this.getAttribute('data-filter');
+
+                gameCards.forEach(card => {
+                    if (filter === 'all') {
+                        card.style.display = 'block';
+                    } else {
+                        if (card.getAttribute('data-difficulty') === filter) {
+                            card.style.display = 'block';
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    }
+                });
+            });
+        });
+
+        // Búsqueda de juegos
+        if (searchInput) {
+            searchInput.addEventListener('input', function () {
+                const searchTerm = this.value.toLowerCase();
+                console.log('Búsqueda:', searchTerm);
+
+                gameCards.forEach(card => {
+                    const name = card.getAttribute('data-name') || '';
+                    const description = card.getAttribute('data-description') || '';
+
+                    if (name.includes(searchTerm) || description.includes(searchTerm)) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+        }
+
+        console.log('Página de juegos dinámicos inicializada correctamente');
+    })();
+</script>
+{% endblock %}

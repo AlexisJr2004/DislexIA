@@ -10,6 +10,11 @@ instance/
 .idea/
 .vscode/
 *.log
-migrations/
 .env
 _backup/
+app/*/migrations/*
+!app/*/migrations/__init__.py
+media/*
+!media/games/
+media/games/*
+!media/games/default_game_image.png
