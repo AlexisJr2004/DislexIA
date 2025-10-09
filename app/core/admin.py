@@ -92,41 +92,46 @@ class ProfesionalAdmin(admin.ModelAdmin):
     
     list_display = [
         'nombre_completo_display',
+        'username',
         'especialidad',
         'numero_licencia',
         'email',
         'rol',
         'total_validaciones',
         'ultimo_acceso',
-        'activo'
+        'is_active'
     ]
     list_filter = [
         'rol',
         'especialidad',
-        'activo',
+        'is_active',
+        'is_staff',
         'fecha_registro'
     ]
-    search_fields = ['nombres', 'apellidos', 'especialidad', 'numero_licencia', 'email']
+    search_fields = ['username', 'nombres', 'apellidos', 'especialidad', 'numero_licencia', 'email']
     ordering = ['-fecha_registro', 'apellidos', 'nombres']
     
     fieldsets = (
+        ('Credenciales de Acceso', {
+            'fields': ('username', 'password', 'email')
+        }),
         ('Información Personal', {
-            'fields': ('nombres', 'apellidos', 'email')
+            'fields': ('nombres', 'apellidos', 'first_name', 'last_name')
         }),
         ('Información Profesional', {
-            'fields': ('especialidad', 'numero_licencia', 'rol')
+            'fields': ('especialidad', 'numero_licencia', 'rol', 'imagen')
         }),
-        ('Seguridad', {
-            'fields': ('password_hash',),
+        ('Permisos', {
+            'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions'),
             'classes': ('collapse',)
         }),
-        ('Estado y Fechas', {
-            'fields': ('activo', 'fecha_registro', 'ultimo_acceso'),
+        ('Fechas Importantes', {
+            'fields': ('fecha_registro', 'ultimo_acceso', 'last_login', 'date_joined'),
             'classes': ('collapse',)
         }),
     )
     
-    readonly_fields = ['fecha_registro']
+    readonly_fields = ['fecha_registro', 'last_login', 'date_joined']
     
     def nombre_completo_display(self, obj):
         """Muestra el nombre completo con formato"""

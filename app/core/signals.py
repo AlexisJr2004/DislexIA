@@ -1,6 +1,6 @@
 from django.db.models.signals import post_migrate
 from django.dispatch import receiver
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from datetime import date
 import os
 
@@ -14,8 +14,11 @@ def crear_superusuario_inicial(sender, **kwargs):
     if sender.name != 'app.core':
         return
     
+    # Obtener el modelo de usuario personalizado
+    Profesional = get_user_model()
+    
     # Verificar si ya existe un superusuario
-    if User.objects.filter(is_superuser=True).exists():
+    if Profesional.objects.filter(is_superuser=True).exists():
         print("👤 Ya existe un superusuario, omitiendo creación")
         return
     
@@ -26,10 +29,13 @@ def crear_superusuario_inicial(sender, **kwargs):
     
     try:
         # Crear el superusuario
-        superuser = User.objects.create_superuser(
+        superuser = Profesional.objects.create_superuser(
             username=admin_username,
             email=admin_email,
             password=admin_password,
+            nombres='Administrador',
+            apellidos='DislexIA',
+            especialidad='Administrador del Sistema',
             first_name='Administrador',
             last_name='DislexIA'
         )

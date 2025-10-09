@@ -23,3 +23,317 @@
   opacity: 0;
   pointer-events: none;
 }
+
+/**
+ * Configuraciones Globales de Tamaño de Fuente
+ * Sistema de variables CSS para tamaños de fuente adaptativos
+ */
+
+/* Variables CSS para diferentes tamaños de fuente */
+:root {
+    /* Tamaño base (medium) - valores por defecto */
+    --font-size-xs: 0.75rem;     /* 12px */
+    --font-size-sm: 0.875rem;    /* 14px */
+    --font-size-base: 1rem;      /* 16px */
+    --font-size-lg: 1.125rem;    /* 18px */
+    --font-size-xl: 1.25rem;     /* 20px */
+    --font-size-2xl: 1.5rem;     /* 24px */
+    --font-size-3xl: 1.875rem;   /* 30px */
+    --font-size-4xl: 2.25rem;    /* 36px */
+    --font-size-5xl: 3rem;       /* 48px */
+}
+
+/* Tamaño pequeño */
+body.font-size-small {
+    --font-size-xs: 0.625rem;    /* 10px */
+    --font-size-sm: 0.75rem;     /* 12px */
+    --font-size-base: 0.8125rem; /* 13px */
+    --font-size-lg: 0.9375rem;   /* 15px */
+    --font-size-xl: 1.0625rem;   /* 17px */
+    --font-size-2xl: 1.25rem;    /* 20px */
+    --font-size-3xl: 1.5rem;     /* 24px */
+    --font-size-4xl: 1.875rem;   /* 30px */
+    --font-size-5xl: 2.25rem;    /* 36px */
+}
+
+/* Tamaño grande */
+body.font-size-large {
+    --font-size-xs: 0.875rem;    /* 14px */
+    --font-size-sm: 1rem;        /* 16px */
+    --font-size-base: 1.125rem;  /* 18px */
+    --font-size-lg: 1.25rem;     /* 20px */
+    --font-size-xl: 1.375rem;    /* 22px */
+    --font-size-2xl: 1.75rem;    /* 28px */
+    --font-size-3xl: 2.25rem;    /* 36px */
+    --font-size-4xl: 2.75rem;    /* 44px */
+    --font-size-5xl: 3.5rem;     /* 56px */
+}
+
+/* Tamaño extra grande */
+body.font-size-xlarge {
+    --font-size-xs: 1rem;        /* 16px */
+    --font-size-sm: 1.125rem;    /* 18px */
+    --font-size-base: 1.25rem;   /* 20px */
+    --font-size-lg: 1.375rem;    /* 22px */
+    --font-size-xl: 1.5rem;      /* 24px */
+    --font-size-2xl: 2rem;       /* 32px */
+    --font-size-3xl: 2.5rem;     /* 40px */
+    --font-size-4xl: 3rem;       /* 48px */
+    --font-size-5xl: 4rem;       /* 64px */
+}
+
+/* Aplicar variables CSS a las clases de Tailwind existentes */
+.text-xs {
+    font-size: var(--font-size-xs) !important;
+}
+
+.text-sm {
+    font-size: var(--font-size-sm) !important;
+}
+
+.text-base {
+    font-size: var(--font-size-base) !important;
+}
+
+.text-lg {
+    font-size: var(--font-size-lg) !important;
+}
+
+.text-xl {
+    font-size: var(--font-size-xl) !important;
+}
+
+.text-2xl {
+    font-size: var(--font-size-2xl) !important;
+}
+
+.text-3xl {
+    font-size: var(--font-size-3xl) !important;
+}
+
+.text-4xl {
+    font-size: var(--font-size-4xl) !important;
+}
+
+.text-5xl {
+    font-size: var(--font-size-5xl) !important;
+}
+
+/* Aplicar también a elementos HTML estándar */
+body.font-size-small h1,
+body.font-size-medium h1,
+body.font-size-large h1,
+body.font-size-xlarge h1 {
+    font-size: var(--font-size-3xl) !important;
+}
+
+body.font-size-small h2,
+body.font-size-medium h2,
+body.font-size-large h2,
+body.font-size-xlarge h2 {
+    font-size: var(--font-size-2xl) !important;
+}
+
+body.font-size-small h3,
+body.font-size-medium h3,
+body.font-size-large h3,
+body.font-size-xlarge h3 {
+    font-size: var(--font-size-xl) !important;
+}
+
+body.font-size-small p,
+body.font-size-medium p,
+body.font-size-large p,
+body.font-size-xlarge p {
+    font-size: var(--font-size-base) !important;
+}
+
+body.font-size-small small,
+body.font-size-medium small,
+body.font-size-large small,
+body.font-size-xlarge small {
+    font-size: var(--font-size-sm) !important;
+}
+
+/* Transiciones suaves para cambios de tamaño */
+body * {
+    transition: font-size 0.2s ease;
+}
+
+/* Asegurar que los inputs y elementos de formulario también cambien */
+body.font-size-small input,
+body.font-size-small select,
+body.font-size-small textarea,
+body.font-size-small button,
+body.font-size-medium input,
+body.font-size-medium select,
+body.font-size-medium textarea,
+body.font-size-medium button,
+body.font-size-large input,
+body.font-size-large select,
+body.font-size-large textarea,
+body.font-size-large button,
+body.font-size-xlarge input,
+body.font-size-xlarge select,
+body.font-size-xlarge textarea,
+body.font-size-xlarge button {
+    font-size: var(--font-size-base) !important;
+}
+
+/**
+ * Fuentes especiales para dislexia
+ * OpenDyslexic y Lexie Readable
+ */
+
+/* Importar fuentes desde Google Fonts y otras fuentes CDN */
+@import url('https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@300;400;700&display=swap');
+
+/* OpenDyslexic desde CDN */
+@font-face {
+    font-family: 'OpenDyslexic';
+    src: url('https://cdn.jsdelivr.net/gh/antijingoist/open-dyslexic@master/otf/OpenDyslexic-Regular.otf') format('opentype'),
+         url('https://cdn.jsdelivr.net/gh/antijingoist/open-dyslexic@master/ttf/OpenDyslexic-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'OpenDyslexic';
+    src: url('https://cdn.jsdelivr.net/gh/antijingoist/open-dyslexic@master/otf/OpenDyslexic-Bold.otf') format('opentype'),
+         url('https://cdn.jsdelivr.net/gh/antijingoist/open-dyslexic@master/ttf/OpenDyslexic-Bold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'OpenDyslexic';
+    src: url('https://cdn.jsdelivr.net/gh/antijingoist/open-dyslexic@master/otf/OpenDyslexic-Italic.otf') format('opentype'),
+         url('https://cdn.jsdelivr.net/gh/antijingoist/open-dyslexic@master/ttf/OpenDyslexic-Italic.ttf') format('truetype');
+    font-weight: normal;
+    font-style: italic;
+    font-display: swap;
+}
+
+/* Variables CSS para las diferentes fuentes */
+:root {
+    --font-family-default: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --font-family-lexend: 'Lexend', var(--font-family-default);
+    --font-family-comic: 'Comic Neue', cursive, var(--font-family-default);
+    --font-family-opendyslexic: 'OpenDyslexic', var(--font-family-default);
+    
+    /* Font family actual - por defecto es la fuente del sistema */
+    --current-font-family: var(--font-family-default);
+}
+
+/* Clases para aplicar fuentes específicas */
+body.font-family-default {
+    --current-font-family: var(--font-family-default);
+}
+
+body.font-family-lexend {
+    --current-font-family: var(--font-family-lexend);
+}
+
+body.font-family-comic {
+    --current-font-family: var(--font-family-comic);
+}
+
+body.font-family-opendyslexic {
+    --current-font-family: var(--font-family-opendyslexic);
+}
+
+/* Aplicar la fuente seleccionada SOLO a elementos de texto */
+body {
+    font-family: var(--current-font-family) !important;
+}
+
+/* NO aplicar a iconos - dejar que hereden de Font Awesome */
+i[class*="fa"] {
+    font-family: "Font Awesome 6 Free" !important;
+    font-weight: 900; /* Necesario para iconos solid */
+}
+
+i.far {
+    font-weight: 400; /* Iconos regular */
+}
+
+i.fab {
+    font-family: "Font Awesome 6 Brands" !important;
+    font-weight: 400;
+}
+
+/* Específicamente para elementos de texto importantes */
+body h1,
+body h2, 
+body h3,
+body h4,
+body h5,
+body h6,
+body p,
+body span,
+body div,
+body a,
+body button,
+body input,
+body textarea,
+body select,
+body label,
+body li,
+body td,
+body th {
+    font-family: var(--current-font-family) !important;
+}
+
+/* Configuraciones específicas para fuentes de dislexia */
+body.font-family-opendyslexic *,
+body.font-family-lexend * {
+    letter-spacing: 0.05em !important;
+    word-spacing: 0.1em !important;
+    line-height: 1.6 !important;
+}
+
+body.font-family-comic * {
+    letter-spacing: 0.02em !important;
+    word-spacing: 0.05em !important;
+    line-height: 1.5 !important;
+}
+
+/* Ajustes específicos para OpenDyslexic */
+body.font-family-opendyslexic {
+    font-weight: normal !important;
+}
+
+body.font-family-opendyslexic strong,
+body.font-family-opendyslexic b,
+body.font-family-opendyslexic .font-bold,
+body.font-family-opendyslexic .font-semibold {
+    font-weight: bold !important;
+}
+
+/* Preview de fuentes */
+.font-family-preview {
+    padding: 16px;
+    background: #f8fafc;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    margin-top: 12px;
+    transition: all 0.3s ease;
+}
+
+.dark .font-family-preview {
+    background: #374151;
+    border-color: #4b5563;
+}
+
+.font-family-preview.active {
+    border-color: #8b5cf6;
+    background: #f3f4f6;
+}
+
+.dark .font-family-preview.active {
+    border-color: #a78bfa;
+    background: #4b5563;
+}

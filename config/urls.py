@@ -18,9 +18,14 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from django.views.generic.base import RedirectView
 
 urlpatterns = [
-    path('', include('app.dashboard.urls')),
+    # Redirigir raíz a login
+    path('', RedirectView.as_view(pattern_name='core:login', permanent=False)),
+    
+    # Apps
+    path('dashboard/', include('app.dashboard.urls')),
     path('', include('app.core.urls')),
     path('games/', include('app.games.urls')),
     path('admin/', admin.site.urls),

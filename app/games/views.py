@@ -5,6 +5,8 @@ from django.utils import timezone
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 import json
 import os
 from django.conf import settings
@@ -12,6 +14,7 @@ from django.conf import settings
 from .models import Juego, SesionJuego, Evaluacion
 from app.core.models import Nino
 
+@method_decorator(login_required, name='dispatch')
 class GameListView(TemplateView):
     template_name = 'game_list.html'
     
@@ -28,6 +31,7 @@ class GameListView(TemplateView):
         })
         return context
 
+@method_decorator(login_required, name='dispatch')
 class InitGameView(TemplateView):
     """Vista para inicializar un juego y crear la sesión"""
     template_name = 'init_game.html'
@@ -62,6 +66,7 @@ class InitGameView(TemplateView):
         # Redirigir a la página del juego
         return redirect('games:play_game', url_sesion=sesion.url_sesion)
 
+@method_decorator(login_required, name='dispatch')
 class PlayGameView(TemplateView):
     """Vista para renderizar el contenido del juego"""
     template_name = 'play_game.html'

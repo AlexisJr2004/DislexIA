@@ -1,6 +1,6 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="h-full">
 
 <head>
     <meta charset="UTF-8">
@@ -12,6 +12,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
+            darkMode: 'class',
             theme: {
                 extend: {
                     colors: {
@@ -22,17 +23,200 @@
             }
         }
     </script>
+    <!-- Script para aplicar el tema antes de que se renderice la página (evita parpadeo) -->
+    <script>
+        (function() {
+            const theme = localStorage.getItem('theme');
+            if (theme === 'dark') {
+                document.documentElement.classList.add('dark');
+            } else if (theme === 'light') {
+                document.documentElement.classList.remove('dark');
+            } else {
+                // Si no hay preferencia guardada, usar preferencia del sistema
+                if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    document.documentElement.classList.add('dark');
+                }
+            }
+        })();
+    </script>
+    <style>
+        @keyframes fade-in {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .animate-fade-in {
+            animation: fade-in 0.3s ease-out;
+        }
+
+        /* Toast Notifications - Estilo Samsung */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-width: 350px;
+        }
+
+        .toast {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 16px;
+            border-radius: 50px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(8px);
+            animation: slideInRight 0.3s ease-out, fadeOut 0.3s ease-in 2.7s;
+            opacity: 0;
+            animation-fill-mode: forwards;
+            min-width: 280px;
+        }
+
+        .toast-success {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.95), rgba(22, 163, 74, 0.95));
+            color: white;
+        }
+
+        .toast-error {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.95), rgba(220, 38, 38, 0.95));
+            color: white;
+        }
+
+        .toast-info {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.95), rgba(37, 99, 235, 0.95));
+            color: white;
+        }
+
+        .toast-warning {
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.95), rgba(245, 158, 11, 0.95));
+            color: white;
+        }
+
+        .toast-icon {
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        .toast-message {
+            flex: 1;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+                transform: translateX(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+        }
+
+        /* Botón Ir Arriba */
+        #scrollToTopBtn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #8b5cf6, #a78bfa);
+            color: white;
+            border: none;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
+            transition: all 0.3s ease;
+            z-index: 9998;
+            font-size: 18px;
+        }
+
+        #scrollToTopBtn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 20px rgba(139, 92, 246, 0.6);
+            background: linear-gradient(135deg, #7c3aed, #8b5cf6);
+        }
+
+        #scrollToTopBtn:active {
+            transform: translateY(-2px);
+        }
+
+        #scrollToTopBtn.show {
+            display: flex;
+            animation: fadeInUp 0.3s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Animación del icono */
+        #scrollToTopBtn i {
+            animation: bounceUp 2s infinite;
+        }
+
+        @keyframes bounceUp {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-5px);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            #scrollToTopBtn {
+                bottom: 20px;
+                right: 20px;
+                width: 45px;
+                height: 45px;
+                font-size: 16px;
+            }
+        }
+    </style>
+    
     {% block extra_head %}{% endblock %}
 </head>
 
-<body>
+<body class="bg-gray-100 dark:bg-gray-950 transition-colors duration-200 h-full">
     <!-- Pantalla de Carga -->
     <div id="preloader" class="preloader" aria-hidden="true">
         <img src="{% static 'img/carga.gif' %}" alt="Cargando..." />
     </div>
 
     <!-- Sidebar -->
-    <div class="w-56 fixed top-0 left-0 h-screen border-r border-gray-200 bg-white">
+    <div class="w-56 fixed top-0 left-0 h-screen border-r border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 transition-colors duration-200 shadow-sm dark:shadow-2xl">
         <div class="flex flex-col h-full">
             <!-- Logo -->
             <div class="p-6">
@@ -41,17 +225,17 @@
                         <img src="{% static 'img/favicon.ico' %}" alt="Foto de perfil" class="w-full h-full object-cover">
                     </div>
                     <div>
-                        <h1 class="text-sm font-bold text-gray-900">DislexIA</h1>
-                        <p class="text-xs text-gray-500">Tu neuropsicólogo amigo</p>
+                        <h1 class="text-sm font-bold text-gray-900 dark:text-white">DislexIA</h1>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">Tu neuropsicólogo amigo</p>
                     </div>
                 </div>
             </div>
-            <hr class="bg-gray-400 mx-3"><br>
+            <hr class="bg-gray-200 dark:bg-gray-800 mx-3"><br>
 
             <!-- Navigation -->
             <nav class="flex-1 px-3">
                 <a href="{% url 'dashboard' %}"
-                    class="nav-link flex items-center gap-3 px-3 py-2 mb-1 {% if request.resolver_match.url_name == 'dashboard' %}text-primary bg-primary/10{% else %}text-gray-600 hover:bg-gray-100{% endif %} rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 hover:shadow-sm">
+                    class="nav-link flex items-center gap-3 px-3 py-2 mb-1 {% if request.resolver_match.url_name == 'dashboard' %}text-purple-600 dark:text-purple-400 bg-purple-100 dark:bg-purple-500/20{% else %}text-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800{% endif %} rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 hover:shadow-sm">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
@@ -60,7 +244,7 @@
                 </a>
 
                 <a href="{% url 'games:game_list' %}"
-                    class="nav-link flex items-center gap-3 px-3 py-2 mb-1 {% if request.resolver_match.url_name == 'game_list' %}text-primary bg-primary/10{% else %}text-gray-600 hover:bg-gray-100{% endif %} rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 hover:shadow-sm">
+                    class="nav-link flex items-center gap-3 px-3 py-2 mb-1 {% if request.resolver_match.url_name == 'game_list' %}text-purple-600 dark:text-purple-400 bg-purple-100 dark:bg-purple-500/20{% else %}text-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800{% endif %} rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 hover:shadow-sm">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path
                             d="M6 12h2m-1-1v2m8-1h2m-1-1v2m-9 5a4 4 0 01-4-4V9a4 4 0 014-4h10a4 4 0 014 4v4a4 4 0 01-4 4h-3l-2 2-2-2H8z" />
@@ -69,16 +253,16 @@
                 </a>
 
                 <a href="{% url 'core:calendar' %}"
-                    class="nav-link flex items-center gap-3 px-3 py-2 mb-1 {% if request.resolver_match.url_name == 'calendar' %}text-primary bg-primary/10{% else %}text-gray-600 hover:bg-gray-100{% endif %} rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 hover:shadow-sm">
+                    class="nav-link flex items-center gap-3 px-3 py-2 mb-1 {% if request.resolver_match.url_name == 'calendar' %}text-purple-600 dark:text-purple-400 bg-purple-100 dark:bg-purple-500/20{% else %}text-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800{% endif %} rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 hover:shadow-sm">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 01-2 2z" />
                     </svg>
                     Calendario
                 </a>
 
                 <a href="{% url 'core:documents' %}"
-                    class="nav-link flex items-center gap-3 px-3 py-2 mb-1 {% if request.resolver_match.url_name == 'documents' %}text-primary bg-primary/10{% else %}text-gray-600 hover:bg-gray-100{% endif %} rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 hover:shadow-sm">
+                    class="nav-link flex items-center gap-3 px-3 py-2 mb-1 {% if request.resolver_match.url_name == 'documents' %}text-purple-600 dark:text-purple-400 bg-purple-100 dark:bg-purple-500/20{% else %}text-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800{% endif %} rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 hover:shadow-sm">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -90,7 +274,7 @@
             <!-- Bottom Section -->
             <div class="p-3">
                 <a href="{% url 'core:settings' %}"
-                    class="nav-link flex items-center gap-3 px-3 py-2 mb-1 {% if request.resolver_match.url_name == 'settings' %}text-primary bg-primary/10{% else %}text-gray-600 hover:bg-gray-100{% endif %} rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105">
+                    class="nav-link flex items-center gap-3 px-3 py-2 mb-1 {% if request.resolver_match.url_name == 'settings' %}text-purple-600 dark:text-purple-400 bg-purple-100 dark:bg-purple-500/20{% else %}text-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800{% endif %} rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M12 15.5A3.5 3.5 0 1 0 12 8.5a3.5 3.5 0 0 0 0 7z" />
@@ -101,28 +285,46 @@
                 </a>
 
                 <a href="{% url 'core:support' %}"
-                    class="nav-link flex items-center gap-3 px-3 py-2 mb-3 {% if request.resolver_match.url_name == 'support' %}text-primary bg-primary/10{% else %}text-gray-600 hover:bg-gray-100{% endif %} rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105">
+                    class="nav-link flex items-center gap-3 px-3 py-2 mb-3 {% if request.resolver_match.url_name == 'support' %}text-purple-600 dark:text-purple-400 bg-purple-100 dark:bg-purple-500/20{% else %}text-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800{% endif %} rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round"
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8-1.09 0-2.13-.18-3.08-.5L3 20l1.5-2.5A8.962 8.962 0 013 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                     </svg>
                     Soporte
                 </a>
 
                 <!-- User Profile con borde superior -->
-                <a href="{% url 'core:profile' %}"
-                    class="nav-link flex items-center gap-2 p-2 border-t border-gray-200 {% if request.resolver_match.url_name == 'profile' %}bg-primary/10{% else %}hover:bg-gray-100{% endif %} rounded-lg cursor-pointer transition-all duration-200 hover:scale-105">
-                    <div class="w-10 h-10 rounded-full overflow-hidden">
-                        <img src="{% static 'img/profile.png' %}" alt="Foto de perfil" class="w-full h-full object-cover">
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <p class="text-sm font-semibold text-gray-900 truncate">{% block user_name %}Dr. Alexis Durán{% endblock %}</p>
-                        <p class="text-xs text-gray-500 truncate">{% block user_email %}snietod@unemi.edu.ec{% endblock %}</p>
-                    </div>
-                    <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                    </svg>
-                </a>
+                <div class="border-t border-gray-200 dark:border-gray-800 pt-3">
+                    <a href="{% url 'core:profile' %}"
+                        class="nav-link flex items-center gap-2 p-2 {% if request.resolver_match.url_name == 'profile' %}bg-purple-100 dark:bg-purple-500/20{% else %}hover:bg-gray-100 dark:hover:bg-gray-800{% endif %} rounded-lg cursor-pointer transition-all duration-200 hover:scale-105 mb-2">
+                        <div class="w-10 h-10 rounded-full overflow-hidden bg-purple-100 dark:bg-purple-900/50 ring-2 ring-purple-200 dark:ring-purple-500/30">
+                            {% if user.imagen %}
+                                <img src="{{ user.imagen.url }}" alt="Foto de perfil" class="w-full h-full object-cover">
+                            {% else %}
+                                <img src="{% static 'img/profile.png' %}" alt="Foto de perfil" class="w-full h-full object-cover">
+                            {% endif %}
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm font-semibold text-gray-900 dark:text-white truncate">{{ user.nombre_completo }}</p>
+                            <p class="text-xs text-gray-500 dark:text-gray-400 truncate">{{ user.email }}</p>
+                        </div>
+                        <svg class="w-4 h-4 text-gray-400 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </a>
+
+                    <!-- Botón de Logout -->
+                    <form method="post" action="{% url 'core:logout' %}" class="w-full">
+                        {% csrf_token %}
+                        <button type="submit"
+                            class="nav-link flex items-center gap-3 px-3 py-2 text-red-600 dark:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 w-full">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                            </svg>
+                            Cerrar Sesión
+                        </button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
@@ -130,22 +332,26 @@
     <!-- Main Content -->
     <div class="ml-56">
         <!-- Top Bar -->
-        <div class="bg-white px-8 py-4 flex items-center justify-between sticky top-0 z-10">
+        <div class="bg-white dark:bg-gray-900 px-8 py-4 flex items-center justify-between sticky top-0 z-10 border-b border-gray-200 dark:border-gray-800 transition-colors duration-200 shadow-sm dark:shadow-lg">
             <div class="flex items-center gap-3">
                 <!-- Imagen de perfil -->
-                <div class="w-10 h-10 rounded-full overflow-hidden">
-                    <img src="{% static 'img/profile.png' %}" alt="Foto de perfil" class="w-full h-full object-cover">
+                <div class="w-10 h-10 rounded-full overflow-hidden bg-purple-100 dark:bg-purple-900/50">
+                    {% if user.imagen %}
+                        <img src="{{ user.imagen.url }}" alt="Foto de perfil" class="w-full h-full object-cover">
+                    {% else %}
+                        <img src="{% static 'img/profile.png' %}" alt="Foto de perfil" class="w-full h-full object-cover">
+                    {% endif %}
                 </div>
                 <div>
-                    <p class="text-sm font-semibold text-gray-900">{% block topbar_user_name %}Alexis Durán{% endblock %}</p>
-                    <p class="text-xs text-gray-500">{% block topbar_greeting %}Bienvenido{% endblock %}</p>
+                    <p class="text-sm font-semibold text-gray-900 dark:text-white">{{ user.nombre_completo }}</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">Bienvenido de nuevo</p>
                 </div>
             </div>
 
             <div class="flex items-center gap-2">
                 
                 <button type="button" data-dropdown-toggle="language-dropdown-menu"
-                    class="inline-flex items-center font-medium justify-center px-4 py-2 text-sm text-gray-900 dark:text-white rounded-lg cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white">
+                    class="inline-flex items-center font-medium justify-center px-4 py-2 text-sm text-gray-700 dark:text-gray-300 rounded-lg cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800">
                     <svg class="w-5 h-5 rounded-full me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                         xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 3900 3900">
                         <path fill="#b22234" d="M0 0h7410v3900H0z" />
@@ -178,7 +384,7 @@
                 </button>
                 
                 <button data-collapse-toggle="navbar-language" type="button"
-                    class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+                    class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-700"
                     aria-controls="navbar-language" aria-expanded="false">
                     <span class="sr-only">Open main menu</span>
                     <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
@@ -189,51 +395,147 @@
                 </button>
                 <div class="relative flex-1 max-w-md">
                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-5 h-5 text-gray-400 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                         </svg>
                     </div>
                     <input type="text" placeholder="Search..."
-                        class="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                        class="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-700 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200 placeholder-gray-500 dark:placeholder-gray-600">
                 </div>
 
                 <!-- Notification Button -->
                 <button
-                    class="p-2.5 hover:bg-gray-100 rounded-xl text-gray-600 relative transition-all hover:scale-105">
+                    class="p-2.5 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl text-gray-600 dark:text-gray-400 relative transition-all hover:scale-105">
                     <i class="far fa-bell text-lg"></i>
                     <span
-                        class="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white animate-pulse"></span>
+                        class="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white dark:border-gray-900 animate-pulse"></span>
                 </button>
 
                 <!-- Schedule Button -->
                 <button
-                    class="px-5 py-2.5 border border-gray-200 hover:border-gray-300 hover:bg-gray-50 rounded-xl text-sm font-medium text-gray-700 flex items-center gap-2.5 transition-all hover:shadow-sm">
+                    class="px-5 py-2.5 border border-gray-300 dark:border-gray-700 hover:border-gray-400 dark:hover:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-2.5 transition-all hover:shadow-sm">
                     <i class="far fa-calendar text-base"></i>
                     Schedule
                 </button>
 
                 <!-- Create Request Button -->
                 <button
-                    class="px-5 py-2.5 bg-gradient-to-r from-purple-300 to-purple-500 hover:from-purple-400 hover:to-purple-600 text-white rounded-xl text-sm font-semibold flex items-center gap-2.5 transition-all shadow-md hover:shadow-lg hover:scale-105">
+                    class="px-5 py-2.5 bg-gradient-to-r from-purple-600 to-purple-800 hover:from-purple-500 hover:to-purple-700 text-white rounded-xl text-sm font-semibold flex items-center gap-2.5 transition-all shadow-md hover:shadow-lg hover:scale-105">
                     <i class="fas fa-plus text-base"></i>
                     Create request
                 </button>
             </div>
         </div>
-        <hr class="bg-gray-400 mx-12 mt-2">
+        <hr class="bg-gray-200 dark:bg-gray-800 mx-12 mt-2">
+
+        <!-- Toast Notifications Container -->
+        {% if messages %}
+        <div class="toast-container" id="toastContainer">
+            {% for message in messages %}
+            <div class="toast {% if message.tags == 'error' %}toast-error{% elif message.tags == 'success' %}toast-success{% elif message.tags == 'warning' %}toast-warning{% else %}toast-info{% endif %}">
+                <i class="toast-icon fas {% if message.tags == 'error' %}fa-exclamation-circle{% elif message.tags == 'success' %}fa-check-circle{% elif message.tags == 'warning' %}fa-exclamation-triangle{% else %}fa-info-circle{% endif %}"></i>
+                <span class="toast-message">{{ message }}</span>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
 
         <!-- Dynamic Content Area -->
-        <div id="content-area" class="p-8">
+        <div id="content-area" class="p-8 bg-gray-50 dark:bg-gray-950 min-h-screen transition-colors duration-200">
             {% block content %}
             <!-- El contenido específico de cada página se cargará aquí -->
             {% endblock %}
         </div>
     </div>
 
-    <!-- Scripts Base -->
-    {% block extra_scripts %}{% endblock %}
-    <script src="{% static 'main.js' %}"></script>
-</body>
+    <!-- Botón Ir Arriba -->
+    <button id="scrollToTopBtn" title="Ir arriba" aria-label="Volver arriba">
+        <i class="fas fa-arrow-up"></i>
+    </button>
 
+    <!-- Scripts Base -->
+    <script src="{% static 'main.js' %}"></script>
+    
+    <!-- Script para auto-eliminar toasts después de 3 segundos -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const toasts = document.querySelectorAll('.toast');
+            toasts.forEach(function(toast) {
+                setTimeout(function() {
+                    toast.remove();
+                }, 3000);
+            });
+        });
+    </script>
+
+    <!-- Script para modo oscuro global -->
+    <script>
+        (function() {
+            // Función para cambiar el tema
+            window.toggleDarkMode = function(isDark) {
+                if (isDark) {
+                    document.documentElement.classList.add('dark');
+                    localStorage.setItem('theme', 'dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                    localStorage.setItem('theme', 'light');
+                }
+            };
+
+            // Sincronizar el toggle con el estado actual
+            function syncDarkModeToggle() {
+                const darkModeToggle = document.getElementById('dark-mode-toggle');
+                if (darkModeToggle) {
+                    const isDark = document.documentElement.classList.contains('dark');
+                    darkModeToggle.checked = isDark;
+                }
+            }
+
+            // Ejecutar al cargar la página
+            syncDarkModeToggle();
+
+            // Observar cambios en el DOM para sincronizar dinámicamente
+            const observer = new MutationObserver(syncDarkModeToggle);
+            observer.observe(document.documentElement, {
+                attributes: true,
+                attributeFilter: ['class']
+            });
+        })();
+    </script>
+
+    <!-- Script para botón Ir Arriba -->
+    <script>
+        (function() {
+            const scrollToTopBtn = document.getElementById('scrollToTopBtn');
+            const contentArea = document.getElementById('content-area');
+
+            // Mostrar/ocultar botón según scroll
+            function checkScroll() {
+                if (window.pageYOffset > 300) {
+                    scrollToTopBtn.classList.add('show');
+                } else {
+                    scrollToTopBtn.classList.remove('show');
+                }
+            }
+
+            // Scroll suave hacia arriba
+            function scrollToTop() {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            }
+
+            // Event listeners
+            window.addEventListener('scroll', checkScroll);
+            scrollToTopBtn.addEventListener('click', scrollToTop);
+
+            // Verificar scroll inicial
+            checkScroll();
+        })();
+    </script>
+    
+    {% block extra_scripts %}{% endblock %}
+</body>
 </html>

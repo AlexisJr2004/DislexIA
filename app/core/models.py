@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.contrib.auth.models import AbstractUser
 
 # Importar constantes
 from .constants import (
@@ -54,12 +55,13 @@ class Nino(models.Model):
     def nombre_completo(self):
         return f"{self.nombres} {self.apellidos}"
 
-# Se puede usar AbstractUser para facilitar el registro y autenticación
-class Profesional(models.Model):
+# Modelo de usuario personalizado usando AbstractUser de Django
+class Profesional(AbstractUser):
     """Modelo para profesionales que validan las evaluaciones"""
     
-    nombres = models.CharField(max_length=100, verbose_name="Nombres")
-    apellidos = models.CharField(max_length=100, verbose_name="Apellidos")
+    # Campos adicionales (username, email, password, first_name, last_name ya vienen de AbstractUser)
+    nombres = models.CharField(max_length=100, verbose_name="Nombres", blank=True)
+    apellidos = models.CharField(max_length=100, verbose_name="Apellidos", blank=True)
     imagen = models.ImageField(
         upload_to='profesionales/',
         verbose_name="Imagen",
@@ -67,10 +69,8 @@ class Profesional(models.Model):
         null=True,
         blank=True
     )
-    especialidad = models.CharField(max_length=100, verbose_name="Especialidad")
-    numero_licencia = models.CharField(max_length=100, unique=True, verbose_name="Número de Licencia")
-    email = models.EmailField(unique=True, verbose_name="Email")
-    password_hash = models.CharField(max_length=255, verbose_name="Hash de Contraseña")
+    especialidad = models.CharField(max_length=100, verbose_name="Especialidad", blank=True)
+    numero_licencia = models.CharField(max_length=100, unique=True, verbose_name="Número de Licencia", null=True, blank=True)
     rol = models.CharField(
         max_length=20,
         choices=ROL_CHOICES,
@@ -79,7 +79,11 @@ class Profesional(models.Model):
     )
     fecha_registro = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de Registro")
     ultimo_acceso = models.DateTimeField(null=True, blank=True, verbose_name="Último Acceso")
-    activo = models.BooleanField(default=DEFAULTS['profesional_activo'], verbose_name="Activo")
+    # El campo 'activo' ya viene como 'is_active' en AbstractUser
+    
+    # Usar email como campo de autenticación
+    USERNAME_FIELD = 'username'
+    REQUIRED_FIELDS = ['email']
     
     class Meta:
         verbose_name = "Profesional"
@@ -87,11 +91,17 @@ class Profesional(models.Model):
         ordering = ['-fecha_registro']
         
     def __str__(self):
-        return f"{self.nombres} {self.apellidos} - {self.especialidad}"
+        if self.nombres and self.apellidos:
+            return f"{self.nombres} {self.apellidos}"
+        return self.username
     
     @property
     def nombre_completo(self):
-        return f"{self.nombres} {self.apellidos}"
+        if self.nombres and self.apellidos:
+            return f"{self.nombres} {self.apellidos}"
+        elif self.first_name and self.last_name:
+            return f"{self.first_name} {self.last_name}"
+        return self.username
 
 class ReporteIA(models.Model):
     """Modelo para almacenar reportes generados por IA"""

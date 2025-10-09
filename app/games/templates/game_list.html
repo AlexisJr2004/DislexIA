@@ -48,8 +48,8 @@
 <div class="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
     <!-- Título -->
     <div>
-        <h1 class="text-3xl font-bold text-gray-900 mb-2">Juegos de Entrenamiento</h1>
-        <p class="text-gray-600">Mejora tus habilidades cognitivas con nuestros juegos interactivos</p>
+        <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">Juegos de Entrenamiento</h1>
+        <p class="text-gray-600 dark:text-gray-400">Mejora tus habilidades cognitivas con nuestros juegos interactivos</p>
     </div>
 
     <!-- Buscador y Filtros -->
@@ -57,29 +57,29 @@
         <!-- Buscador -->
         <div class="relative w-full sm:w-64">
             <input type="text" id="search-input" placeholder="Buscar juegos..."
-                class="w-full pl-10 pr-4 py-3 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent">
-            <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                class="w-full pl-10 pr-4 py-3 rounded-full border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
+            <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500"></i>
         </div>
 
         <!-- Filtros de dificultad -->
         <div class="flex gap-2">
             <button
-                class="filter-btn px-4 py-2 bg-white border border-gray-300 rounded-xl text-sm font-medium transition-all hover:bg-purple-50 active"
+                class="filter-btn px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-xl text-sm font-medium transition-all hover:bg-purple-50 dark:hover:bg-purple-900/30 text-gray-700 dark:text-gray-300 active"
                 data-filter="all">
                 Todos
             </button>
             <button
-                class="filter-btn px-4 py-2 bg-white border border-gray-300 rounded-xl text-sm font-medium transition-all hover:bg-green-50"
+                class="filter-btn px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-xl text-sm font-medium transition-all hover:bg-green-50 dark:hover:bg-green-900/30 text-gray-700 dark:text-gray-300"
                 data-filter="facil">
                 Fácil
             </button>
             <button
-                class="filter-btn px-4 py-2 bg-white border border-gray-300 rounded-xl text-sm font-medium transition-all hover:bg-yellow-50"
+                class="filter-btn px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-xl text-sm font-medium transition-all hover:bg-yellow-50 dark:hover:bg-yellow-900/30 text-gray-700 dark:text-gray-300"
                 data-filter="medio">
                 Medio
             </button>
             <button
-                class="filter-btn px-4 py-2 bg-white border border-gray-300 rounded-xl text-sm font-medium transition-all hover:bg-red-50"
+                class="filter-btn px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-xl text-sm font-medium transition-all hover:bg-red-50 dark:hover:bg-red-900/30 text-gray-700 dark:text-gray-300"
                 data-filter="dificil">
                 Difícil
             </button>
@@ -89,7 +89,7 @@
 
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6" id="games-container">
     {% for juego in juegos %}
-    <div class="game-card bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden"
+    <div class="game-card bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden"
          data-difficulty="{{ juego.dificultad }}"
          data-name="{{ juego.nombre|lower }}"
          data-description="{{ juego.descripcion|lower }}">
@@ -120,13 +120,13 @@
         </div>
 
         <div class="p-6">
-            <h3 class="text-xl font-bold text-gray-900 mb-2">{{ juego.nombre }}</h3>
-            <p class="text-gray-600 text-sm mb-4 leading-relaxed">
+            <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">{{ juego.nombre }}</h3>
+            <p class="text-gray-600 dark:text-gray-400 text-sm mb-4 leading-relaxed">
                 {{ juego.descripcion }}
             </p>
 
             <!-- Estadísticas -->
-            <div class="flex items-center gap-4 mb-4 text-sm text-gray-500">
+            <div class="flex items-center gap-4 mb-4 text-sm text-gray-500 dark:text-gray-400">
                 <div class="flex items-center gap-1">
                     <i class="fas fa-gamepad text-{{ juego.color_tema }}-500"></i>
                     <span>{{ juego.total_jugadas }} jugadas</span>
@@ -139,11 +139,11 @@
 
             <!-- Barra de progreso -->
             <div class="mb-4">
-                <div class="flex justify-between text-xs text-gray-600 mb-1">
+                <div class="flex justify-between text-xs text-gray-600 dark:text-gray-400 mb-1">
                     <span>Progreso</span>
                     <span>{{ juego.porcentaje_completado }}%</span>
                 </div>
-                <div class="w-full bg-gray-200 rounded-full h-2">
+                <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
                     <div class="bg-gradient-to-r from-{{ juego.color_gradiente_inicio }} to-{{ juego.color_gradiente_fin }} h-2 rounded-full w-[{{ juego.porcentaje_completado }}%]"
                     ></div>
                 </div>
@@ -159,11 +159,11 @@
     </div>
     {% empty %}
     <div class="col-span-full text-center py-12">
-        <div class="text-gray-400 mb-4">
+        <div class="text-gray-400 dark:text-gray-600 mb-4">
             <i class="fas fa-gamepad text-6xl"></i>
         </div>
-        <h3 class="text-xl font-semibold text-gray-600 mb-2">No hay juegos disponibles</h3>
-        <p class="text-gray-500">Los juegos están siendo configurados. Vuelve pronto.</p>
+        <h3 class="text-xl font-semibold text-gray-600 dark:text-gray-400 mb-2">No hay juegos disponibles</h3>
+        <p class="text-gray-500 dark:text-gray-500">Los juegos están siendo configurados. Vuelve pronto.</p>
     </div>
     {% endfor %}
 </div>
@@ -171,40 +171,40 @@
 <!-- Stats Section -->
 {% if juegos %}
 <div class="mt-8 grid grid-cols-1 md:grid-cols-4 gap-4">
-    <div class="bg-white rounded-xl border border-gray-200 p-6 text-center">
-        <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3">
-            <i class="fas fa-clock text-purple-600 text-xl"></i>
+    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 text-center">
+        <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center mx-auto mb-3">
+            <i class="fas fa-clock text-purple-600 dark:text-purple-400 text-xl"></i>
         </div>
-        <p class="text-2xl font-bold text-gray-900 mb-1">
+        <p class="text-2xl font-bold text-gray-900 dark:text-white mb-1">
             15-25 min
         </p>
-        <p class="text-sm text-gray-500">Tiempo estimado total</p>
+        <p class="text-sm text-gray-500 dark:text-gray-400">Tiempo estimado total</p>
     </div>
 
-    <div class="bg-white rounded-xl border border-gray-200 p-6 text-center">
-        <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
-            <i class="fas fa-gamepad text-green-600 text-xl"></i>
+    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 text-center">
+        <div class="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-3">
+            <i class="fas fa-gamepad text-green-600 dark:text-green-400 text-xl"></i>
         </div>
-        <p class="text-2xl font-bold text-gray-900 mb-1">{{ juegos|length }}</p>
-        <p class="text-sm text-gray-500">Juegos disponibles</p>
+        <p class="text-2xl font-bold text-gray-900 dark:text-white mb-1">{{ juegos|length }}</p>
+        <p class="text-sm text-gray-500 dark:text-gray-400">Juegos disponibles</p>
     </div>
 
-    <div class="bg-white rounded-xl border border-gray-200 p-6 text-center">
-        <div class="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-3">
-            <i class="fas fa-star text-yellow-600 text-xl"></i>
+    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 text-center">
+        <div class="w-12 h-12 bg-yellow-100 dark:bg-yellow-900/30 rounded-full flex items-center justify-center mx-auto mb-3">
+            <i class="fas fa-star text-yellow-600 dark:text-yellow-400 text-xl"></i>
         </div>
-        <p class="text-2xl font-bold text-gray-900 mb-1">4.7</p>
-        <p class="text-sm text-gray-500">Puntuación promedio</p>
+        <p class="text-2xl font-bold text-gray-900 dark:text-white mb-1">4.7</p>
+        <p class="text-sm text-gray-500 dark:text-gray-400">Puntuación promedio</p>
     </div>
 
-    <div class="bg-white rounded-xl border border-gray-200 p-6 text-center">
-        <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
-            <i class="fas fa-users text-blue-600 text-xl"></i>
+    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 text-center">
+        <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mx-auto mb-3">
+            <i class="fas fa-users text-blue-600 dark:text-blue-400 text-xl"></i>
         </div>
-        <p class="text-2xl font-bold text-gray-900 mb-1">
+        <p class="text-2xl font-bold text-gray-900 dark:text-white mb-1">
             {% regroup juegos by total_jugadas as jugadas_list %}{{ jugadas_list|length|default:0 }}
         </p>
-        <p class="text-sm text-gray-500">Total jugadas</p>
+        <p class="text-sm text-gray-500 dark:text-gray-400">Total jugadas</p>
     </div>
 </div>
 {% endif %}
@@ -226,10 +226,14 @@
                 console.log('Filtro clickeado:', this.getAttribute('data-filter'));
 
                 // Remover clase activa de todos los botones
-                filterButtons.forEach(btn => btn.classList.remove('active', 'bg-purple-500', 'text-white'));
+                filterButtons.forEach(btn => {
+                    btn.classList.remove('active', 'bg-purple-500', 'text-white');
+                    btn.classList.add('text-gray-700', 'dark:text-gray-300');
+                });
 
                 // Agregar clase activa al botón clickeado
                 this.classList.add('active', 'bg-purple-500', 'text-white');
+                this.classList.remove('text-gray-700', 'dark:text-gray-300');
 
                 const filter = this.getAttribute('data-filter');
 

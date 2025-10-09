@@ -65,45 +65,45 @@
         <div class="mb-8 fade-in">
             <div class="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
                 <div>
-                    <h1 class="text-3xl font-bold text-gray-900 mb-2">Resource Library</h1>
-                    <p class="text-gray-600">Download guides, worksheets, and materials to support dyslexia learning</p>
+                    <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">Resource Library</h1>
+                    <p class="text-gray-600 dark:text-gray-400">Download guides, worksheets, and materials to support dyslexia learning</p>
                 </div>
                 
-                <div class="flex items-center gap-2 px-4 py-2 bg-purple-50 border border-purple-200 rounded-xl">
-                    <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="flex items-center gap-2 px-4 py-2 bg-purple-50 dark:bg-purple-900/30 border border-purple-200 dark:border-purple-800 rounded-xl">
+                    <svg class="w-5 h-5 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                     </svg>
-                    <span class="text-sm font-medium text-purple-700">48 Resources Available</span>
+                    <span class="text-sm font-medium text-purple-700 dark:text-purple-300">48 Resources Available</span>
                 </div>
             </div>
 
             <!-- Search and Filter Bar -->
             <div class="flex flex-col md:flex-row gap-4">
                 <div class="flex-1 relative">
-                    <svg class="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                     </svg>
                     <input 
                         type="text" 
                         id="search-input"
                         placeholder="Search resources..." 
-                        class="search-input w-full pl-12 pr-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-purple-300 transition-all">
+                        class="search-input w-full pl-12 pr-4 py-3 border border-gray-200 dark:border-gray-700 rounded-xl text-sm focus:outline-none focus:border-purple-300 transition-all bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
                 </div>
                 
                 <div class="flex gap-2 overflow-x-auto pb-2">
-                    <button class="filter-btn active px-5 py-3 rounded-xl text-sm font-semibold whitespace-nowrap" data-category="all">
+                    <button class="filter-btn active px-5 py-3 rounded-xl text-sm font-semibold whitespace-nowrap bg-white dark:bg-gray-800 text-gray-900 dark:text-white" data-category="all">
                         All Resources
                     </button>
-                    <button class="filter-btn px-5 py-3 rounded-xl text-sm font-semibold text-gray-600 hover:bg-gray-100 whitespace-nowrap" data-category="guides">
+                    <button class="filter-btn px-5 py-3 rounded-xl text-sm font-semibold text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 whitespace-nowrap bg-white dark:bg-gray-800" data-category="guides">
                         Guides
                     </button>
-                    <button class="filter-btn px-5 py-3 rounded-xl text-sm font-semibold text-gray-600 hover:bg-gray-100 whitespace-nowrap" data-category="worksheets">
+                    <button class="filter-btn px-5 py-3 rounded-xl text-sm font-semibold text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 whitespace-nowrap bg-white dark:bg-gray-800" data-category="worksheets">
                         Worksheets
                     </button>
-                    <button class="filter-btn px-5 py-3 rounded-xl text-sm font-semibold text-gray-600 hover:bg-gray-100 whitespace-nowrap" data-category="activities">
+                    <button class="filter-btn px-5 py-3 rounded-xl text-sm font-semibold text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 whitespace-nowrap bg-white dark:bg-gray-800" data-category="activities">
                         Activities
                     </button>
-                    <button class="filter-btn px-5 py-3 rounded-xl text-sm font-semibold text-gray-600 hover:bg-gray-100 whitespace-nowrap" data-category="tools">
+                    <button class="filter-btn px-5 py-3 rounded-xl text-sm font-semibold text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 whitespace-nowrap bg-white dark:bg-gray-800" data-category="tools">
                         Tools
                     </button>
                 </div>
@@ -114,15 +114,15 @@
             <!-- Main Content -->
             <div class="lg:col-span-2 space-y-6">
                 <!-- Featured Resources -->
-                <div class="bg-white rounded-2xl border border-gray-200 p-8">
+                <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-8">
                     <div class="flex items-center justify-between mb-6">
-                        <h2 class="text-2xl font-bold text-gray-900">Featured Resources</h2>
-                        <span class="text-sm text-purple-600 font-medium">Most Popular</span>
+                        <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Featured Resources</h2>
+                        <span class="text-sm text-purple-600 dark:text-purple-400 font-medium">Most Popular</span>
                     </div>
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="resources-container">
                         <!-- Resource Card 1 -->
-                        <div class="resource-card bg-gradient-to-br from-purple-50 to-purple-100 rounded-2xl p-6 border-2 border-purple-200" data-category="guides">
+                        <div class="resource-card bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 rounded-2xl p-6 border-2 border-purple-200 dark:border-purple-800" data-category="guides">
                             <div class="flex items-start justify-between mb-4">
                                 <div class="w-14 h-14 bg-purple-500 rounded-2xl flex items-center justify-center shadow-lg">
                                     <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -132,10 +132,10 @@
                                 <span class="category-badge bg-purple-500 text-white text-xs font-bold px-3 py-1.5 rounded-full">Guide</span>
                             </div>
                             
-                            <h3 class="text-lg font-bold text-gray-900 mb-2">Complete Parent Guide</h3>
-                            <p class="text-sm text-gray-600 mb-4">Comprehensive guide for parents to support children with dyslexia at home.</p>
+                            <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">Complete Parent Guide</h3>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">Comprehensive guide for parents to support children with dyslexia at home.</p>
                             
-                            <div class="flex items-center gap-4 mb-4 text-xs text-gray-600">
+                            <div class="flex items-center gap-4 mb-4 text-xs text-gray-600 dark:text-gray-400">
                                 <span class="flex items-center gap-1">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -165,7 +165,7 @@
                         </div>
 
                         <!-- Resource Card 2 -->
-                        <div class="resource-card bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-6 border-2 border-blue-200" data-category="worksheets">
+                        <div class="resource-card bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 rounded-2xl p-6 border-2 border-blue-200 dark:border-blue-800" data-category="worksheets">
                             <div class="flex items-start justify-between mb-4">
                                 <div class="w-14 h-14 bg-blue-500 rounded-2xl flex items-center justify-center shadow-lg">
                                     <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -175,10 +175,10 @@
                                 <span class="category-badge bg-blue-500 text-white text-xs font-bold px-3 py-1.5 rounded-full">Worksheet</span>
                             </div>
                             
-                            <h3 class="text-lg font-bold text-gray-900 mb-2">Reading Practice Pack</h3>
-                            <p class="text-sm text-gray-600 mb-4">20 worksheets designed to improve reading comprehension and fluency.</p>
+                            <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">Reading Practice Pack</h3>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">20 worksheets designed to improve reading comprehension and fluency.</p>
                             
-                            <div class="flex items-center gap-4 mb-4 text-xs text-gray-600">
+                            <div class="flex items-center gap-4 mb-4 text-xs text-gray-600 dark:text-gray-400">
                                 <span class="flex items-center gap-1">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -208,7 +208,7 @@
                         </div>
 
                         <!-- Resource Card 3 -->
-                        <div class="resource-card bg-gradient-to-br from-green-50 to-green-100 rounded-2xl p-6 border-2 border-green-200" data-category="activities">
+                        <div class="resource-card bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 rounded-2xl p-6 border-2 border-green-200 dark:border-green-800" data-category="activities">
                             <div class="flex items-start justify-between mb-4">
                                 <div class="w-14 h-14 bg-green-500 rounded-2xl flex items-center justify-center shadow-lg">
                                     <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -218,10 +218,10 @@
                                 <span class="category-badge bg-green-500 text-white text-xs font-bold px-3 py-1.5 rounded-full">Activity</span>
                             </div>
                             
-                            <h3 class="text-lg font-bold text-gray-900 mb-2">Fun Learning Games</h3>
-                            <p class="text-sm text-gray-600 mb-4">Interactive games and activities to make learning enjoyable and engaging.</p>
+                            <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">Fun Learning Games</h3>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">Interactive games and activities to make learning enjoyable and engaging.</p>
                             
-                            <div class="flex items-center gap-4 mb-4 text-xs text-gray-600">
+                            <div class="flex items-center gap-4 mb-4 text-xs text-gray-600 dark:text-gray-400">
                                 <span class="flex items-center gap-1">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -251,7 +251,7 @@
                         </div>
 
                         <!-- Resource Card 4 -->
-                        <div class="resource-card bg-gradient-to-br from-orange-50 to-orange-100 rounded-2xl p-6 border-2 border-orange-200" data-category="tools">
+                        <div class="resource-card bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-900/20 dark:to-orange-800/20 rounded-2xl p-6 border-2 border-orange-200 dark:border-orange-800" data-category="tools">
                             <div class="flex items-start justify-between mb-4">
                                 <div class="w-14 h-14 bg-orange-500 rounded-2xl flex items-center justify-center shadow-lg">
                                     <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -261,10 +261,10 @@
                                 <span class="category-badge bg-orange-500 text-white text-xs font-bold px-3 py-1.5 rounded-full">Tool</span>
                             </div>
                             
-                            <h3 class="text-lg font-bold text-gray-900 mb-2">Progress Tracker</h3>
-                            <p class="text-sm text-gray-600 mb-4">Template to track learning progress and celebrate achievements over time.</p>
+                            <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">Progress Tracker</h3>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">Template to track learning progress and celebrate achievements over time.</p>
                             
-                            <div class="flex items-center gap-4 mb-4 text-xs text-gray-600">
+                            <div class="flex items-center gap-4 mb-4 text-xs text-gray-600 dark:text-gray-400">
                                 <span class="flex items-center gap-1">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -294,7 +294,7 @@
                         </div>
 
                         <!-- Resource Card 5 -->
-                        <div class="resource-card bg-gradient-to-br from-pink-50 to-pink-100 rounded-2xl p-6 border-2 border-pink-200" data-category="guides">
+                        <div class="resource-card bg-gradient-to-br from-pink-50 to-pink-100 dark:from-pink-900/20 dark:to-pink-800/20 rounded-2xl p-6 border-2 border-pink-200 dark:border-pink-800" data-category="guides">
                             <div class="flex items-start justify-between mb-4">
                                 <div class="w-14 h-14 bg-pink-500 rounded-2xl flex items-center justify-center shadow-lg">
                                     <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -304,10 +304,10 @@
                                 <span class="category-badge bg-pink-500 text-white text-xs font-bold px-3 py-1.5 rounded-full">Guide</span>
                             </div>
                             
-                            <h3 class="text-lg font-bold text-gray-900 mb-2">Teacher's Handbook</h3>
-                            <p class="text-sm text-gray-600 mb-4">Essential strategies for educators working with dyslexic students.</p>
+                            <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">Teacher's Handbook</h3>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">Essential strategies for educators working with dyslexic students.</p>
                             
-                            <div class="flex items-center gap-4 mb-4 text-xs text-gray-600">
+                            <div class="flex items-center gap-4 mb-4 text-xs text-gray-600 dark:text-gray-400">
                                 <span class="flex items-center gap-1">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -337,7 +337,7 @@
                         </div>
 
                         <!-- Resource Card 6 -->
-                        <div class="resource-card bg-gradient-to-br from-indigo-50 to-indigo-100 rounded-2xl p-6 border-2 border-indigo-200" data-category="worksheets">
+                        <div class="resource-card bg-gradient-to-br from-indigo-50 to-indigo-100 dark:from-indigo-900/20 dark:to-indigo-800/20 rounded-2xl p-6 border-2 border-indigo-200 dark:border-indigo-800" data-category="worksheets">
                             <div class="flex items-start justify-between mb-4">
                                 <div class="w-14 h-14 bg-indigo-500 rounded-2xl flex items-center justify-center shadow-lg">
                                     <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -347,10 +347,10 @@
                                 <span class="category-badge bg-indigo-500 text-white text-xs font-bold px-3 py-1.5 rounded-full">Worksheet</span>
                             </div>
                             
-                            <h3 class="text-lg font-bold text-gray-900 mb-2">Spelling Exercises</h3>
-                            <p class="text-sm text-gray-600 mb-4">Structured spelling activities to build confidence and accuracy.</p>
+                            <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">Spelling Exercises</h3>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">Structured spelling activities to build confidence and accuracy.</p>
                             
-                            <div class="flex items-center gap-4 mb-4 text-xs text-gray-600">
+                            <div class="flex items-center gap-4 mb-4 text-xs text-gray-600 dark:text-gray-400">
                                 <span class="flex items-center gap-1">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -382,20 +382,20 @@
                 </div>
 
                 <!-- Additional Resources -->
-                <div class="bg-white rounded-2xl border border-gray-200 p-8">
-                    <h2 class="text-2xl font-bold text-gray-900 mb-6">More Resources</h2>
+                <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-8">
+                    <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">More Resources</h2>
                     
                     <div class="space-y-4">
                         <!-- List Item 1 -->
-                        <div class="flex items-center gap-4 p-4 border border-gray-200 rounded-xl hover:border-purple-300 hover:bg-gray-50 transition-all cursor-pointer">
-                            <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                                <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div class="flex items-center gap-4 p-4 border border-gray-200 dark:border-gray-700 rounded-xl hover:border-purple-300 dark:hover:border-purple-600 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all cursor-pointer">
+                            <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-xl flex items-center justify-center flex-shrink-0">
+                                <svg class="w-6 h-6 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                 </svg>
                             </div>
                             <div class="flex-1">
-                                <h3 class="font-semibold text-gray-900 mb-1">Memory Techniques Guide</h3>
-                                <p class="text-xs text-gray-500">Strategies to improve memory and retention • PDF • 1.2 MB</p>
+                                <h3 class="font-semibold text-gray-900 dark:text-white mb-1">Memory Techniques Guide</h3>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">Strategies to improve memory and retention • PDF • 1.2 MB</p>
                             </div>
                             <button class="px-4 py-2 bg-purple-500 hover:bg-purple-600 text-white text-sm font-semibold rounded-lg transition-all">
                                 Download
@@ -403,15 +403,15 @@
                         </div>
 
                         <!-- List Item 2 -->
-                        <div class="flex items-center gap-4 p-4 border border-gray-200 rounded-xl hover:border-purple-300 hover:bg-gray-50 transition-all cursor-pointer">
-                            <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                                <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div class="flex items-center gap-4 p-4 border border-gray-200 dark:border-gray-700 rounded-xl hover:border-purple-300 dark:hover:border-purple-600 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all cursor-pointer">
+                            <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center flex-shrink-0">
+                                <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                 </svg>
                             </div>
                             <div class="flex-1">
-                                <h3 class="font-semibold text-gray-900 mb-1">Phonics Flashcards</h3>
-                                <p class="text-xs text-gray-500">Printable flashcards for phonics practice • PDF • 2.1 MB</p>
+                                <h3 class="font-semibold text-gray-900 dark:text-white mb-1">Phonics Flashcards</h3>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">Printable flashcards for phonics practice • PDF • 2.1 MB</p>
                             </div>
                             <button class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white text-sm font-semibold rounded-lg transition-all">
                                 Download
@@ -419,15 +419,15 @@
                         </div>
 
                         <!-- List Item 3 -->
-                        <div class="flex items-center gap-4 p-4 border border-gray-200 rounded-xl hover:border-purple-300 hover:bg-gray-50 transition-all cursor-pointer">
-                            <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                                <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div class="flex items-center gap-4 p-4 border border-gray-200 dark:border-gray-700 rounded-xl hover:border-purple-300 dark:hover:border-purple-600 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all cursor-pointer">
+                            <div class="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-xl flex items-center justify-center flex-shrink-0">
+                                <svg class="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                                 </svg>
                             </div>
                             <div class="flex-1">
-                                <h3 class="font-semibold text-gray-900 mb-1">Study Tips Booklet</h3>
-                                <p class="text-xs text-gray-500">Effective study strategies for students • PDF • 1.7 MB</p>
+                                <h3 class="font-semibold text-gray-900 dark:text-white mb-1">Study Tips Booklet</h3>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">Effective study strategies for students • PDF • 1.7 MB</p>
                             </div>
                             <button class="px-4 py-2 bg-green-500 hover:bg-green-600 text-white text-sm font-semibold rounded-lg transition-all">
                                 Download
@@ -440,56 +440,56 @@
             <!-- Sidebar -->
             <div class="lg:col-span-1 space-y-6">
                 <!-- Quick Stats -->
-                <div class="bg-white rounded-2xl border border-gray-200 p-6">
-                    <h3 class="text-lg font-bold text-gray-900 mb-4">Library Statistics</h3>
+                <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6">
+                    <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4">Library Statistics</h3>
                     
                     <div class="space-y-4">
-                        <div class="flex items-center justify-between py-3 border-b border-gray-100">
+                        <div class="flex items-center justify-between py-3 border-b border-gray-100 dark:border-gray-700">
                             <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
-                                    <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <div class="w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                                     </svg>
                                 </div>
-                                <span class="text-sm text-gray-600">Guides</span>
+                                <span class="text-sm text-gray-600 dark:text-gray-400">Guides</span>
                             </div>
-                            <span class="text-lg font-bold text-gray-900">12</span>
+                            <span class="text-lg font-bold text-gray-900 dark:text-white">12</span>
                         </div>
 
-                        <div class="flex items-center justify-between py-3 border-b border-gray-100">
+                        <div class="flex items-center justify-between py-3 border-b border-gray-100 dark:border-gray-700">
                             <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                                    <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <div class="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                     </svg>
                                 </div>
-                                <span class="text-sm text-gray-600">Worksheets</span>
+                                <span class="text-sm text-gray-600 dark:text-gray-400">Worksheets</span>
                             </div>
-                            <span class="text-lg font-bold text-gray-900">18</span>
+                            <span class="text-lg font-bold text-gray-900 dark:text-white">18</span>
                         </div>
 
-                        <div class="flex items-center justify-between py-3 border-b border-gray-100">
+                        <div class="flex items-center justify-between py-3 border-b border-gray-100 dark:border-gray-700">
                             <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-                                    <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <div class="w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                     </svg>
                                 </div>
-                                <span class="text-sm text-gray-600">Activities</span>
+                                <span class="text-sm text-gray-600 dark:text-gray-400">Activities</span>
                             </div>
-                            <span class="text-lg font-bold text-gray-900">10</span>
+                            <span class="text-lg font-bold text-gray-900 dark:text-white">10</span>
                         </div>
 
                         <div class="flex items-center justify-between py-3">
                             <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
-                                    <svg class="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <div class="w-10 h-10 bg-orange-100 dark:bg-orange-900/30 rounded-lg flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-orange-600 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
                                     </svg>
                                 </div>
-                                <span class="text-sm text-gray-600">Tools</span>
+                                <span class="text-sm text-gray-600 dark:text-gray-400">Tools</span>
                             </div>
-                            <span class="text-lg font-bold text-gray-900">8</span>
+                            <span class="text-lg font-bold text-gray-900 dark:text-white">8</span>
                         </div>
                     </div>
                 </div>
@@ -532,15 +532,15 @@
                 </div>
 
                 <!-- Need Help? -->
-                <div class="bg-white rounded-2xl border border-gray-200 p-6">
+                <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6">
                     <div class="text-center">
-                        <div class="w-16 h-16 bg-purple-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                            <svg class="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div class="w-16 h-16 bg-purple-100 dark:bg-purple-900/30 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                            <svg class="w-8 h-8 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" />
                             </svg>
                         </div>
-                        <h3 class="text-lg font-bold text-gray-900 mb-2">Need Help?</h3>
-                        <p class="text-sm text-gray-600 mb-4">Can't find what you're looking for? Contact our support team.</p>
+                        <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">Need Help?</h3>
+                        <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">Can't find what you're looking for? Contact our support team.</p>
                         <a href="#support" class="inline-block px-6 py-2.5 bg-purple-500 hover:bg-purple-600 text-white font-semibold rounded-xl transition-all">
                             Contact Support
                         </a>
@@ -548,15 +548,15 @@
                 </div>
 
                 <!-- Upload Request -->
-                <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl border border-blue-200 p-6">
+                <div class="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 rounded-2xl border border-blue-200 dark:border-blue-800 p-6">
                     <div class="flex items-start gap-3 mb-4">
-                        <svg class="w-6 h-6 text-blue-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-6 h-6 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                         <div>
-                            <h4 class="font-semibold text-gray-900 mb-1">Request a Resource</h4>
-                            <p class="text-xs text-gray-600 mb-3">Don't see what you need? Let us know and we'll create it.</p>
-                            <button class="text-sm font-semibold text-blue-600 hover:text-blue-700">
+                            <h4 class="font-semibold text-gray-900 dark:text-white mb-1">Request a Resource</h4>
+                            <p class="text-xs text-gray-600 dark:text-gray-400 mb-3">Don't see what you need? Let us know and we'll create it.</p>
+                            <button class="text-sm font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300">
                                 Submit Request →
                             </button>
                         </div>
@@ -584,10 +584,10 @@
                     // Update active button
                     filterButtons.forEach(btn => {
                         btn.classList.remove('active');
-                        btn.classList.add('text-gray-600', 'hover:bg-gray-100');
+                        btn.classList.add('text-gray-600', 'dark:text-gray-400', 'hover:bg-gray-100', 'dark:hover:bg-gray-700');
                     });
                     this.classList.add('active');
-                    this.classList.remove('text-gray-600', 'hover:bg-gray-100');
+                    this.classList.remove('text-gray-600', 'dark:text-gray-400', 'hover:bg-gray-100', 'dark:hover:bg-gray-700');
                     
                     // Filter cards
                     resourceCards.forEach(card => {

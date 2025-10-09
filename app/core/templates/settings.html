@@ -4,6 +4,7 @@
 {% block title %}{{ page_title }}{% endblock %}
 
 {% block extra_head %}
+
 <style>
         .setting-card {
             transition: all 0.2s ease;
@@ -68,29 +69,219 @@
             color: #8b5cf6;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
+
+        .dark .tab-btn.active {
+            background-color: rgb(55, 65, 81);
+            color: #a78bfa;
+        }
+
+        /* Estilos para las opciones de fuente y tamaño */
+        .font-option,
+        .size-option {
+            padding: 12px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: white;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .dark .font-option,
+        .dark .size-option {
+            background: #374151;
+            border-color: #4b5563;
+        }
+
+        .font-option:hover,
+        .size-option:hover {
+            border-color: #8b5cf6;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .font-option.selected,
+        .size-option.selected {
+            border-color: #8b5cf6;
+            background: #f3f4f6;
+            box-shadow: 0 0 0 1px #8b5cf6;
+        }
+
+        .dark .font-option.selected,
+        .dark .size-option.selected {
+            background: #4b5563;
+            border-color: #a78bfa;
+            box-shadow: 0 0 0 1px #a78bfa;
+        }
+
+        .font-option input[type="radio"],
+        .size-option input[type="radio"] {
+            width: 20px;
+            height: 20px;
+            accent-color: #8b5cf6;
+        }
+
+        .font-sample,
+        .size-sample {
+            flex: 1;
+        }
+
+        .font-name,
+        .size-name {
+            font-weight: 600;
+            font-size: 14px;
+            color: #374151;
+            margin-bottom: 4px;
+        }
+
+        .dark .font-name,
+        .dark .size-name {
+            color: #f9fafb;
+        }
+
+        .font-demo {
+            font-size: 16px;
+            color: #6b7280;
+            line-height: 1.4;
+        }
+
+        .dark .font-demo {
+            color: #d1d5db;
+        }
+
+        /* Estilos para las demos de tamaño */
+        .size-demo {
+            color: #6b7280;
+            line-height: 1.4;
+        }
+
+        .dark .size-demo {
+            color: #d1d5db;
+        }
+
+        /* Tamaños específicos para las demos */
+        .size-option[data-size="small"] .size-demo {
+            font-size: 13px;
+        }
+
+        .size-option[data-size="medium"] .size-demo {
+            font-size: 16px;
+        }
+
+        .size-option[data-size="large"] .size-demo {
+            font-size: 19px;
+        }
+
+        .size-option[data-size="xlarge"] .size-demo {
+            font-size: 22px;
+        }
+
+        /* Aplicar las fuentes específicas a las demos */
+        .font-option[data-font="default"] .font-demo {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        .font-option[data-font="lexend"] .font-demo {
+            font-family: 'Lexend', sans-serif;
+        }
+
+        .font-option[data-font="comic"] .font-demo {
+            font-family: 'Comic Neue', cursive, sans-serif;
+        }
+
+        .font-option[data-font="opendyslexic"] .font-demo {
+            font-family: 'OpenDyslexic', sans-serif;
+        }
+
+        /* Badge para opciones recomendadas */
+        .recommended-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            background: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%);
+            color: white;
+            font-size: 11px;
+            font-weight: 600;
+            border-radius: 6px;
+            margin-left: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Estilos para el acordeón */
+        .accordion-header {
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.2s ease;
+        }
+
+        .accordion-header:hover {
+            background: #f9fafb;
+        }
+
+        .dark .accordion-header:hover {
+            background: #374151;
+        }
+
+        .accordion-icon {
+            transition: transform 0.3s ease;
+        }
+
+        .accordion-header.active .accordion-icon {
+            transform: rotate(180deg);
+        }
+
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+
+        .accordion-content.active {
+            max-height: 1000px;
+            transition: max-height 0.5s ease-in;
+        }
+
+        .current-selection {
+            display: inline-block;
+            padding: 4px 12px;
+            background: #f3f4f6;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 13px;
+            color: #6b7280;
+            margin-top: 4px;
+        }
+
+        .dark .current-selection {
+            background: #374151;
+            border-color: #4b5563;
+            color: #d1d5db;
+        }
 </style>
 {% endblock %}
 
 {% block content %}
         <!-- Header -->
         <div class="mb-8">
-            <h1 class="text-3xl font-bold text-gray-900 mb-2">Configuración</h1>
-            <p class="text-gray-600">Personaliza tu experiencia en DislexIA</p>
+            <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">Configuración</h1>
+            <p class="text-gray-600 dark:text-gray-400">Personaliza tu experiencia en DislexIA</p>
         </div>
 
         <!-- Tabs -->
-        <div class="flex gap-2 mb-6 bg-gray-100 p-1 rounded-xl inline-flex">
-            <button class="tab-btn active px-4 py-2 rounded-lg text-sm font-medium" data-tab="general">
+        <div class="flex gap-2 mb-6 bg-gray-100 dark:bg-gray-800 p-1 rounded-xl inline-flex">
+            <button class="tab-btn active px-4 py-2 rounded-lg text-sm font-medium text-gray-900 dark:text-white dark:bg-gray-700" data-tab="general">
                 General
             </button>
-            <button class="tab-btn px-4 py-2 rounded-lg text-sm font-medium text-gray-600" data-tab="accessibility">
+            <button class="tab-btn px-4 py-2 rounded-lg text-sm font-medium text-gray-600 dark:text-gray-400" data-tab="accessibility">
                 Accesibilidad
             </button>
-            <button class="tab-btn px-4 py-2 rounded-lg text-sm font-medium text-gray-600" data-tab="notifications">
+            <button class="tab-btn px-4 py-2 rounded-lg text-sm font-medium text-gray-600 dark:text-gray-400" data-tab="notifications">
                 Notificaciones
             </button>
-            <button class="tab-btn px-4 py-2 rounded-lg text-sm font-medium text-gray-600" data-tab="privacy">
-                Privacidad
+            <button class="tab-btn px-4 py-2 rounded-lg text-sm font-medium text-gray-600 dark:text-gray-400" data-tab="privacy">
+                Cuenta
             </button>
         </div>
 
@@ -100,15 +291,15 @@
             <div id="general-content" class="tab-content">
                 <div class="space-y-4">
                     <!-- Dark Mode -->
-                    <div class="setting-card bg-white rounded-xl border border-gray-200 p-6">
+                    <div class="setting-card bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
                         <div class="flex items-start justify-between">
                             <div class="flex items-start gap-4">
-                                <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                                    <i class="fas fa-moon text-purple-600 text-lg"></i>
+                                <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-xl flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-moon text-purple-600 dark:text-purple-400 text-lg"></i>
                                 </div>
                                 <div>
-                                    <h3 class="text-base font-semibold text-gray-900 mb-1">Modo Oscuro</h3>
-                                    <p class="text-sm text-gray-500">Activa el tema oscuro para reducir el cansancio visual</p>
+                                    <h3 class="text-base font-semibold text-gray-900 dark:text-white mb-1">Modo Oscuro</h3>
+                                    <p class="text-sm text-gray-500 dark:text-gray-400">Activa el tema oscuro para reducir el cansancio visual</p>
                                 </div>
                             </div>
                             <label class="toggle-switch">
@@ -119,60 +310,21 @@
                     </div>
 
                     <!-- Language -->
-                    <div class="setting-card bg-white rounded-xl border border-gray-200 p-6">
+                    <div class="setting-card bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
                         <div class="flex items-start justify-between">
                             <div class="flex items-start gap-4">
-                                <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                                    <i class="fas fa-language text-blue-600 text-lg"></i>
+                                <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-language text-blue-600 dark:text-blue-400 text-lg"></i>
                                 </div>
                                 <div class="flex-1">
-                                    <h3 class="text-base font-semibold text-gray-900 mb-1">Idioma</h3>
-                                    <p class="text-sm text-gray-500 mb-3">Selecciona el idioma de la interfaz</p>
-                                    <select class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-500">
+                                    <h3 class="text-base font-semibold text-gray-900 dark:text-white mb-1">Idioma</h3>
+                                    <p class="text-sm text-gray-500 dark:text-gray-400 mb-3">Selecciona el idioma de la interfaz</p>
+                                    <select class="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
                                         <option value="es">Español</option>
                                         <option value="en">English</option>
-                                        <option value="fr">Français</option>
                                     </select>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-
-                    <!-- Auto Save -->
-                    <div class="setting-card bg-white rounded-xl border border-gray-200 p-6">
-                        <div class="flex items-start justify-between">
-                            <div class="flex items-start gap-4">
-                                <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                                    <i class="fas fa-save text-green-600 text-lg"></i>
-                                </div>
-                                <div>
-                                    <h3 class="text-base font-semibold text-gray-900 mb-1">Guardado Automático</h3>
-                                    <p class="text-sm text-gray-500">Guarda tu progreso automáticamente durante los juegos</p>
-                                </div>
-                            </div>
-                            <label class="toggle-switch">
-                                <input type="checkbox" checked id="auto-save-toggle">
-                                <span class="toggle-slider"></span>
-                            </label>
-                        </div>
-                    </div>
-
-                    <!-- Sound Effects -->
-                    <div class="setting-card bg-white rounded-xl border border-gray-200 p-6">
-                        <div class="flex items-start justify-between">
-                            <div class="flex items-start gap-4">
-                                <div class="w-12 h-12 bg-yellow-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                                    <i class="fas fa-volume-up text-yellow-600 text-lg"></i>
-                                </div>
-                                <div>
-                                    <h3 class="text-base font-semibold text-gray-900 mb-1">Efectos de Sonido</h3>
-                                    <p class="text-sm text-gray-500">Reproduce sonidos durante las interacciones</p>
-                                </div>
-                            </div>
-                            <label class="toggle-switch">
-                                <input type="checkbox" checked id="sound-toggle">
-                                <span class="toggle-slider"></span>
-                            </label>
                         </div>
                     </div>
                 </div>
@@ -181,35 +333,78 @@
             <!-- Accessibility Settings -->
             <div id="accessibility-content" class="tab-content hidden">
                 <div class="space-y-4">
-                    <!-- Font Size -->
-                    <div class="setting-card bg-white rounded-xl border border-gray-200 p-6">
-                        <div class="flex items-start gap-4">
-                            <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                                <i class="fas fa-text-height text-purple-600 text-lg"></i>
+                    <!-- Font Size - Acordeón -->
+                    <div class="setting-card bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+                        <div class="accordion-header p-6" id="font-size-header">
+                            <div class="flex items-start justify-between">
+                                <div class="flex items-start gap-4 flex-1">
+                                    <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-xl flex items-center justify-center flex-shrink-0">
+                                        <i class="fas fa-text-height text-purple-600 dark:text-purple-400 text-lg"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <h3 class="text-base font-semibold text-gray-900 dark:text-white mb-1">Tamaño de Fuente</h3>
+                                        <p class="text-sm text-gray-500 dark:text-gray-400">Elige el tamaño de texto que mejor se adapte a tus necesidades</p>
+                                        <span class="current-selection" id="current-size-display">Mediano (Estándar)</span>
+                                    </div>
+                                </div>
+                                <i class="fas fa-chevron-down accordion-icon text-gray-400 dark:text-gray-500 text-lg"></i>
                             </div>
-                            <div class="flex-1">
-                                <h3 class="text-base font-semibold text-gray-900 mb-1">Tamaño de Fuente</h3>
-                                <p class="text-sm text-gray-500 mb-3">Ajusta el tamaño del texto en la aplicación</p>
-                                <select class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-500">
-                                    <option value="small">Pequeño</option>
-                                    <option value="medium" selected>Mediano</option>
-                                    <option value="large">Grande</option>
-                                    <option value="xlarge">Muy Grande</option>
-                                </select>
+                        </div>
+                        
+                        <div class="accordion-content" id="font-size-content">
+                            <div class="px-6 pb-6 pt-2 space-y-3">
+                                <!-- Pequeño -->
+                                <div class="size-option" data-size="small">
+                                    <input type="radio" name="font-size" value="small" id="size-small">
+                                    <div class="size-sample">
+                                        <div class="font-name">Pequeño (Compacto)</div>
+                                        <div class="size-demo">Ideal para pantallas grandes donde quieres ver más contenido a la vez.</div>
+                                    </div>
+                                </div>
+
+                                <!-- Mediano -->
+                                <div class="size-option selected" data-size="medium">
+                                    <input type="radio" name="font-size" value="medium" id="size-medium" checked>
+                                    <div class="size-sample">
+                                        <div class="font-name">
+                                            Mediano (Estándar)
+                                            <span class="recommended-badge">Recomendado</span>
+                                        </div>
+                                        <div class="size-demo">Tamaño equilibrado perfecto para la mayoría de usuarios.</div>
+                                    </div>
+                                </div>
+
+                                <!-- Grande -->
+                                <div class="size-option" data-size="large">
+                                    <input type="radio" name="font-size" value="large" id="size-large">
+                                    <div class="size-sample">
+                                        <div class="font-name">Grande (Confortable)</div>
+                                        <div class="size-demo">Texto más grande para una lectura más cómoda.</div>
+                                    </div>
+                                </div>
+
+                                <!-- Muy Grande -->
+                                <div class="size-option" data-size="xlarge">
+                                    <input type="radio" name="font-size" value="xlarge" id="size-xlarge">
+                                    <div class="size-sample">
+                                        <div class="font-name">Muy Grande (Máxima Legibilidad)</div>
+                                        <div class="size-demo">Perfecto para usuarios con dificultades visuales.</div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Dyslexia Font -->
-                    <div class="setting-card bg-white rounded-xl border border-gray-200 p-6">
+                    <!-- Toggle rápido para fuente de dislexia -->
+                    <div class="setting-card bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
                         <div class="flex items-start justify-between">
                             <div class="flex items-start gap-4">
-                                <div class="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                                    <i class="fas fa-font text-indigo-600 text-lg"></i>
+                                <div class="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-xl flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-book-open text-green-600 dark:text-green-400 text-lg"></i>
                                 </div>
                                 <div>
-                                    <h3 class="text-base font-semibold text-gray-900 mb-1">Fuente para Dislexia</h3>
-                                    <p class="text-sm text-gray-500">Usa una fuente especialmente diseñada para facilitar la lectura</p>
+                                    <h3 class="text-base font-semibold text-gray-900 dark:text-white mb-1">Activar Fuente para Dislexia</h3>
+                                    <p class="text-sm text-gray-500 dark:text-gray-400">Activa automáticamente OpenDyslexic para una mejor experiencia de lectura</p>
                                 </div>
                             </div>
                             <label class="toggle-switch">
@@ -218,60 +413,66 @@
                             </label>
                         </div>
                     </div>
-
-                    <!-- High Contrast -->
-                    <div class="setting-card bg-white rounded-xl border border-gray-200 p-6">
-                        <div class="flex items-start justify-between">
-                            <div class="flex items-start gap-4">
-                                <div class="w-12 h-12 bg-gray-800 rounded-xl flex items-center justify-center flex-shrink-0">
-                                    <i class="fas fa-adjust text-white text-lg"></i>
+                    
+                    <!-- Font Family - Acordeón -->
+                    <div class="setting-card bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+                        <div class="accordion-header p-6" id="font-family-header">
+                            <div class="flex items-start justify-between">
+                                <div class="flex items-start gap-4 flex-1">
+                                    <div class="w-12 h-12 bg-indigo-100 dark:bg-indigo-900/30 rounded-xl flex items-center justify-center flex-shrink-0">
+                                        <i class="fas fa-font text-indigo-600 dark:text-indigo-400 text-lg"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <h3 class="text-base font-semibold text-gray-900 dark:text-white mb-1">Tipo de Fuente</h3>
+                                        <p class="text-sm text-gray-500 dark:text-gray-400">Elige una fuente especialmente diseñada para facilitar la lectura</p>
+                                        <span class="current-selection" id="current-font-display">Fuente del Sistema</span>
+                                    </div>
                                 </div>
-                                <div>
-                                    <h3 class="text-base font-semibold text-gray-900 mb-1">Alto Contraste</h3>
-                                    <p class="text-sm text-gray-500">Aumenta el contraste para mejorar la visibilidad</p>
-                                </div>
-                            </div>
-                            <label class="toggle-switch">
-                                <input type="checkbox" id="contrast-toggle">
-                                <span class="toggle-slider"></span>
-                            </label>
-                        </div>
-                    </div>
-
-                    <!-- Line Spacing -->
-                    <div class="setting-card bg-white rounded-xl border border-gray-200 p-6">
-                        <div class="flex items-start gap-4">
-                            <div class="w-12 h-12 bg-teal-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                                <i class="fas fa-align-justify text-teal-600 text-lg"></i>
-                            </div>
-                            <div class="flex-1">
-                                <h3 class="text-base font-semibold text-gray-900 mb-1">Espaciado de Líneas</h3>
-                                <p class="text-sm text-gray-500 mb-3">Ajusta el espacio entre líneas de texto</p>
-                                <select class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-500">
-                                    <option value="normal">Normal</option>
-                                    <option value="relaxed" selected>Relajado</option>
-                                    <option value="loose">Amplio</option>
-                                </select>
+                                <i class="fas fa-chevron-down accordion-icon text-gray-400 dark:text-gray-500 text-lg"></i>
                             </div>
                         </div>
-                    </div>
-
-                    <!-- Voice Commands -->
-                    <div class="setting-card bg-white rounded-xl border border-gray-200 p-6">
-                        <div class="flex items-start justify-between">
-                            <div class="flex items-start gap-4">
-                                <div class="w-12 h-12 bg-pink-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                                    <i class="fas fa-microphone text-pink-600 text-lg"></i>
+                        
+                        <div class="accordion-content" id="font-family-content">
+                            <div class="px-6 pb-6 pt-2 space-y-3">
+                                <!-- Fuente por defecto -->
+                                <div class="font-option selected" data-font="default">
+                                    <input type="radio" name="font-family" value="default" id="font-default" checked>
+                                    <div class="font-sample">
+                                        <div class="font-name">Fuente del Sistema</div>
+                                        <div class="font-demo">Esta es la fuente estándar del sistema, clara y legible.</div>
+                                    </div>
                                 </div>
-                                <div>
-                                    <h3 class="text-base font-semibold text-gray-900 mb-1">Comandos de Voz</h3>
-                                    <p class="text-sm text-gray-500">Controla la aplicación mediante voz</p>
+
+                                <!-- Lexend -->
+                                <div class="font-option" data-font="lexend">
+                                    <input type="radio" name="font-family" value="lexend" id="font-lexend">
+                                    <div class="font-sample">
+                                        <div class="font-name">
+                                            Lexend
+                                            <span class="recommended-badge">Recomendada</span>
+                                        </div>
+                                        <div class="font-demo">Fuente diseñada para mejorar la comprensión lectora.</div>
+                                    </div>
+                                </div>
+
+                                <!-- OpenDyslexic -->
+                                <div class="font-option" data-font="opendyslexic">
+                                    <input type="radio" name="font-family" value="opendyslexic" id="font-opendyslexic">
+                                    <div class="font-sample">
+                                        <div class="font-name">OpenDyslexic</div>
+                                        <div class="font-demo">Fuente específicamente creada para personas con dislexia.</div>
+                                    </div>
+                                </div>
+
+                                <!-- Comic Neue -->
+                                <div class="font-option" data-font="comic">
+                                    <input type="radio" name="font-family" value="comic" id="font-comic">
+                                    <div class="font-sample">
+                                        <div class="font-name">Comic Neue</div>
+                                        <div class="font-demo">Fuente amigable que facilita la lectura.</div>
+                                    </div>
                                 </div>
                             </div>
-                            <label class="toggle-switch">
-                                <input type="checkbox" id="voice-toggle">
-                                <span class="toggle-slider"></span>
-                            </label>
                         </div>
                     </div>
                 </div>
@@ -281,15 +482,15 @@
             <div id="notifications-content" class="tab-content hidden">
                 <div class="space-y-4">
                     <!-- Email Notifications -->
-                    <div class="setting-card bg-white rounded-xl border border-gray-200 p-6">
+                    <div class="setting-card bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
                         <div class="flex items-start justify-between">
                             <div class="flex items-start gap-4">
-                                <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                                    <i class="fas fa-envelope text-blue-600 text-lg"></i>
+                                <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-envelope text-blue-600 dark:text-blue-400 text-lg"></i>
                                 </div>
                                 <div>
-                                    <h3 class="text-base font-semibold text-gray-900 mb-1">Notificaciones por Email</h3>
-                                    <p class="text-sm text-gray-500">Recibe actualizaciones importantes por correo</p>
+                                    <h3 class="text-base font-semibold text-gray-900 dark:text-white mb-1">Notificaciones por Email</h3>
+                                    <p class="text-sm text-gray-500 dark:text-gray-400">Recibe actualizaciones importantes por correo</p>
                                 </div>
                             </div>
                             <label class="toggle-switch">
@@ -300,15 +501,15 @@
                     </div>
 
                     <!-- Progress Reminders -->
-                    <div class="setting-card bg-white rounded-xl border border-gray-200 p-6">
+                    <div class="setting-card bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
                         <div class="flex items-start justify-between">
                             <div class="flex items-start gap-4">
-                                <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                                    <i class="fas fa-bell text-green-600 text-lg"></i>
+                                <div class="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-xl flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-bell text-green-600 dark:text-green-400 text-lg"></i>
                                 </div>
                                 <div>
-                                    <h3 class="text-base font-semibold text-gray-900 mb-1">Recordatorios de Práctica</h3>
-                                    <p class="text-sm text-gray-500">Recibe recordatorios diarios para practicar</p>
+                                    <h3 class="text-base font-semibold text-gray-900 dark:text-white mb-1">Recordatorios de Práctica</h3>
+                                    <p class="text-sm text-gray-500 dark:text-gray-400">Recibe recordatorios diarios para practicar</p>
                                 </div>
                             </div>
                             <label class="toggle-switch">
@@ -319,15 +520,15 @@
                     </div>
 
                     <!-- Achievement Notifications -->
-                    <div class="setting-card bg-white rounded-xl border border-gray-200 p-6">
+                    <div class="setting-card bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
                         <div class="flex items-start justify-between">
                             <div class="flex items-start gap-4">
-                                <div class="w-12 h-12 bg-yellow-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                                    <i class="fas fa-trophy text-yellow-600 text-lg"></i>
+                                <div class="w-12 h-12 bg-yellow-100 dark:bg-yellow-900/30 rounded-xl flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-trophy text-yellow-600 dark:text-yellow-400 text-lg"></i>
                                 </div>
                                 <div>
-                                    <h3 class="text-base font-semibold text-gray-900 mb-1">Logros y Progreso</h3>
-                                    <p class="text-sm text-gray-500">Notificaciones sobre tus logros y mejoras</p>
+                                    <h3 class="text-base font-semibold text-gray-900 dark:text-white mb-1">Logros y Progreso</h3>
+                                    <p class="text-sm text-gray-500 dark:text-gray-400">Notificaciones sobre tus logros y mejoras</p>
                                 </div>
                             </div>
                             <label class="toggle-switch">
@@ -342,53 +543,16 @@
             <!-- Privacy Settings -->
             <div id="privacy-content" class="tab-content hidden">
                 <div class="space-y-4">
-                    <!-- Data Collection -->
-                    <div class="setting-card bg-white rounded-xl border border-gray-200 p-6">
-                        <div class="flex items-start justify-between">
-                            <div class="flex items-start gap-4">
-                                <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                                    <i class="fas fa-chart-line text-purple-600 text-lg"></i>
-                                </div>
-                                <div>
-                                    <h3 class="text-base font-semibold text-gray-900 mb-1">Recopilación de Datos</h3>
-                                    <p class="text-sm text-gray-500">Permite recopilar datos anónimos para mejorar la app</p>
-                                </div>
-                            </div>
-                            <label class="toggle-switch">
-                                <input type="checkbox" checked id="data-toggle">
-                                <span class="toggle-slider"></span>
-                            </label>
-                        </div>
-                    </div>
-
-                    <!-- Profile Visibility -->
-                    <div class="setting-card bg-white rounded-xl border border-gray-200 p-6">
-                        <div class="flex items-start gap-4">
-                            <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                                <i class="fas fa-user-shield text-blue-600 text-lg"></i>
-                            </div>
-                            <div class="flex-1">
-                                <h3 class="text-base font-semibold text-gray-900 mb-1">Visibilidad del Perfil</h3>
-                                <p class="text-sm text-gray-500 mb-3">Controla quién puede ver tu perfil y progreso</p>
-                                <select class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-500">
-                                    <option value="private" selected>Privado</option>
-                                    <option value="friends">Solo Amigos</option>
-                                    <option value="public">Público</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
                     <!-- Delete Account -->
-                    <div class="setting-card bg-white rounded-xl border border-red-200 p-6">
+                    <div class="setting-card bg-white dark:bg-gray-800 rounded-xl border border-red-200 dark:border-red-800 p-6">
                         <div class="flex items-start gap-4">
-                            <div class="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                                <i class="fas fa-trash-alt text-red-600 text-lg"></i>
+                            <div class="w-12 h-12 bg-red-100 dark:bg-red-900/30 rounded-xl flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-trash-alt text-red-600 dark:text-red-400 text-lg"></i>
                             </div>
                             <div class="flex-1">
-                                <h3 class="text-base font-semibold text-gray-900 mb-1">Eliminar Cuenta</h3>
-                                <p class="text-sm text-gray-500 mb-3">Elimina permanentemente tu cuenta y todos tus datos</p>
-                                <button class="px-4 py-2 bg-red-50 hover:bg-red-100 text-red-600 font-medium rounded-lg text-sm transition-colors">
+                                <h3 class="text-base font-semibold text-gray-900 dark:text-white mb-1">Eliminar Cuenta</h3>
+                                <p class="text-sm text-gray-500 dark:text-gray-400 mb-3">Elimina permanentemente tu cuenta y todos tus datos</p>
+                                <button id="deleteAccountBtn" class="px-4 py-2 bg-red-50 hover:bg-red-100 dark:bg-red-900/30 dark:hover:bg-red-900/50 text-red-600 dark:text-red-400 font-medium rounded-lg text-sm transition-colors">
                                     Eliminar Cuenta
                                 </button>
                             </div>
@@ -397,36 +561,143 @@
                 </div>
             </div>
         </div>
+
+        <!-- Modal de Confirmación para Eliminar Cuenta -->
+        <div id="deleteAccountModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-lg w-full mx-4">
+                <!-- Modal Header -->
+                <div class="bg-red-50 dark:bg-red-900/30 border-b border-red-100 dark:border-red-800 px-6 py-4 rounded-t-2xl">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 bg-red-100 dark:bg-red-900/50 rounded-full flex items-center justify-center">
+                            <i class="fas fa-exclamation-triangle text-red-600 dark:text-red-400 text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-red-900 dark:text-red-100">⚠️ Eliminar Cuenta Permanentemente</h3>
+                            <p class="text-sm text-red-700 dark:text-red-300">Esta acción no se puede deshacer</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal Body -->
+                <div class="p-6">
+                    <div class="mb-6">
+                        <p class="text-gray-700 dark:text-gray-300 mb-4">
+                            Estás a punto de eliminar tu cuenta de forma <strong>permanente</strong>. 
+                            Por favor, lee cuidadosamente las consecuencias:
+                        </p>
+                        
+                        <div class="bg-gray-50 dark:bg-gray-700 rounded-xl p-4 mb-4">
+                            <h4 class="font-semibold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
+                                <i class="fas fa-list text-red-600 dark:text-red-400"></i>
+                                Se eliminarán permanentemente:
+                            </h4>
+                            <ul class="space-y-2 text-sm text-gray-700 dark:text-gray-300">
+                                <li class="flex items-start gap-2">
+                                    <i class="fas fa-times-circle text-red-500 mt-0.5"></i>
+                                    <span>Todos tus datos personales y profesionales</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <i class="fas fa-times-circle text-red-500 mt-0.5"></i>
+                                    <span>Todas las validaciones y reportes de IA realizados</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <i class="fas fa-times-circle text-red-500 mt-0.5"></i>
+                                    <span>Tu progreso en los juegos y ejercicios</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <i class="fas fa-times-circle text-red-500 mt-0.5"></i>
+                                    <span>Todas las configuraciones y preferencias</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <i class="fas fa-times-circle text-red-500 mt-0.5"></i>
+                                    <span>Tu foto de perfil y archivos subidos</span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="bg-yellow-50 dark:bg-yellow-900/30 border border-yellow-200 dark:border-yellow-700 rounded-xl p-4 mb-4">
+                            <div class="flex gap-3">
+                                <i class="fas fa-info-circle text-yellow-600 dark:text-yellow-400 text-lg mt-0.5"></i>
+                                <div>
+                                    <p class="text-sm text-yellow-800 dark:text-yellow-200 font-medium mb-1">Importante:</p>
+                                    <p class="text-sm text-yellow-700 dark:text-yellow-300">
+                                        Una vez confirmada la eliminación, <strong>no podrás recuperar</strong> ninguno de estos datos. 
+                                        Si necesitas una pausa temporal, considera cerrar sesión en su lugar.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Confirmation Input -->
+                    <div class="mb-6">
+                        <label for="confirmationInput" class="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
+                            Para confirmar, escribe <span class="text-red-600 dark:text-red-400 font-mono">ELIMINAR</span>
+                        </label>
+                        <input 
+                            type="text" 
+                            id="confirmationInput" 
+                            class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                            placeholder="Escribe ELIMINAR para confirmar"
+                            autocomplete="off"
+                        >
+                        <p id="confirmationError" class="text-red-500 text-xs mt-1 hidden">
+                            Debes escribir exactamente "ELIMINAR" para continuar
+                        </p>
+                    </div>
+
+                    <!-- Form -->
+                    <form method="post" action="#" id="deleteAccountForm">
+                        {% csrf_token %}
+                        
+                        <!-- Actions -->
+                        <div class="flex items-center justify-end gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
+                            <button 
+                                type="button" 
+                                id="cancelDeleteBtn" 
+                                class="px-6 py-2.5 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-xl text-sm font-semibold hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                            >
+                                Cancelar
+                            </button>
+                            <button 
+                                type="submit" 
+                                id="confirmDeleteBtn"
+                                class="px-6 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-xl text-sm font-semibold shadow-md hover:shadow-lg transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                                disabled
+                            >
+                                <i class="fas fa-trash-alt"></i>
+                                Eliminar Mi Cuenta
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
 {% endblock %}
 
 {% block extra_scripts %}
 <script>
-        (function initSettingsPage() {
+        // ============ Inicialización de la página de configuración ============
+        document.addEventListener('DOMContentLoaded', function() {
             console.log('Inicializando página de configuración...');
 
-            // Elementos DOM
+            // ============ Funcionalidad de Tabs ============
             const tabButtons = document.querySelectorAll('.tab-btn');
             const tabContents = document.querySelectorAll('.tab-content');
 
-            console.log('Elementos encontrados:', {
-                tabButtons: tabButtons.length,
-                tabContents: tabContents.length
-            });
-
-            // Funcionalidad de tabs
             tabButtons.forEach(button => {
                 button.addEventListener('click', function() {
                     const targetTab = this.getAttribute('data-tab');
                     
                     // Remover clase active de todos los botones
                     tabButtons.forEach(btn => {
-                        btn.classList.remove('active', 'text-gray-900');
-                        btn.classList.add('text-gray-600');
+                        btn.classList.remove('active', 'text-gray-900', 'dark:text-white');
+                        btn.classList.add('text-gray-600', 'dark:text-gray-400');
                     });
                     
                     // Agregar clase active al botón clickeado
-                    this.classList.add('active', 'text-gray-900');
-                    this.classList.remove('text-gray-600');
+                    this.classList.add('active', 'text-gray-900', 'dark:text-white');
+                    this.classList.remove('text-gray-600', 'dark:text-gray-400');
                     
                     // Ocultar todos los contenidos
                     tabContents.forEach(content => {
@@ -441,38 +712,347 @@
                 });
             });
 
-            // Funcionalidad de toggles (guardar en localStorage)
-            const toggles = document.querySelectorAll('.toggle-switch input[type="checkbox"]');
-            
-            toggles.forEach(toggle => {
-                // Cargar estado guardado
-                const savedState = localStorage.getItem(toggle.id);
-                if (savedState !== null) {
-                    toggle.checked = savedState === 'true';
+            // ============ Funcionalidad de Acordeón ============
+            const fontSizeHeader = document.getElementById('font-size-header');
+            const fontSizeContent = document.getElementById('font-size-content');
+            const fontFamilyHeader = document.getElementById('font-family-header');
+            const fontFamilyContent = document.getElementById('font-family-content');
+
+            // Función para toggle del acordeón
+            function toggleAccordion(header, content) {
+                header.classList.toggle('active');
+                content.classList.toggle('active');
+            }
+
+            // Event listeners para acordeones
+            if (fontSizeHeader && fontSizeContent) {
+                fontSizeHeader.addEventListener('click', function() {
+                    toggleAccordion(fontSizeHeader, fontSizeContent);
+                });
+            }
+
+            if (fontFamilyHeader && fontFamilyContent) {
+                fontFamilyHeader.addEventListener('click', function() {
+                    toggleAccordion(fontFamilyHeader, fontFamilyContent);
+                });
+            }
+
+            // ============ Funcionalidad de Tamaño de Fuente ============
+            const sizeOptions = document.querySelectorAll('.size-option');
+            const sizeRadios = document.querySelectorAll('input[name="font-size"]');
+            const currentSizeDisplay = document.getElementById('current-size-display');
+
+            // Nombres de tamaños para mostrar
+            const sizeNames = {
+                small: 'Pequeño (Compacto)',
+                medium: 'Mediano (Estándar)',
+                large: 'Grande (Confortable)',
+                xlarge: 'Muy Grande (Máxima Legibilidad)'
+            };
+
+            // Función para aplicar tamaño de fuente
+            function applyFontSize(size) {
+                // Usar la función global del main.js
+                if (typeof window.setFontSize === 'function') {
+                    window.setFontSize(size);
                 }
                 
-                // Guardar cuando cambie
-                toggle.addEventListener('change', function() {
-                    localStorage.setItem(this.id, this.checked);
-                    console.log(`${this.id}: ${this.checked}`);
-                    
-                    // Aplicar cambios específicos
-                    if (this.id === 'dark-mode-toggle') {
-                        // Aquí podrías aplicar el modo oscuro
-                        console.log('Dark mode:', this.checked ? 'ON' : 'OFF');
+                // Actualizar display
+                if (currentSizeDisplay) {
+                    currentSizeDisplay.textContent = sizeNames[size] || size;
+                }
+                
+                // Actualizar selección visual
+                updateSizeSelection(size);
+                
+                console.log(`Tamaño de fuente aplicado: ${size}`);
+            }
+
+            // Función para actualizar la selección visual
+            function updateSizeSelection(size) {
+                // Actualizar opciones visuales
+                sizeOptions.forEach(option => {
+                    if (option.dataset.size === size) {
+                        option.classList.add('selected');
+                    } else {
+                        option.classList.remove('selected');
+                    }
+                });
+                
+                // Actualizar radio buttons
+                sizeRadios.forEach(radio => {
+                    radio.checked = (radio.value === size);
+                });
+            }
+
+            // Cargar configuración guardada al iniciar
+            function loadFontSize() {
+                const savedFontSize = localStorage.getItem('font-size-setting') || 'medium';
+                applyFontSize(savedFontSize);
+            }
+
+            // Event listeners para las opciones de tamaño
+            sizeOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    const selectedSize = this.dataset.size;
+                    applyFontSize(selectedSize);
+                });
+            });
+
+            // Event listeners para los radio buttons de tamaño
+            sizeRadios.forEach(radio => {
+                radio.addEventListener('change', function() {
+                    if (this.checked) {
+                        applyFontSize(this.value);
                     }
                 });
             });
 
-            // Funcionalidad de selects
-            const selects = document.querySelectorAll('select');
-            selects.forEach(select => {
-                select.addEventListener('change', function() {
-                    console.log(`${this.previousElementSibling?.textContent || 'Select'} changed to:`, this.value);
+            // Inicializar tamaño de fuente
+            loadFontSize();
+            
+            console.log('Funcionalidad de tamaño de fuente inicializada');
+
+            // ============ Funcionalidad de Familia de Fuente ============
+            const fontFamilyOptions = document.querySelectorAll('.font-option');
+            const fontFamilyRadios = document.querySelectorAll('input[name="font-family"]');
+            const currentFontDisplay = document.getElementById('current-font-display');
+            const dyslexiaFontToggle = document.getElementById('dyslexia-font-toggle');
+
+            // Nombres de fuentes para mostrar
+            const fontNames = {
+                default: 'Fuente del Sistema',
+                lexend: 'Lexend',
+                comic: 'Comic Neue',
+                opendyslexic: 'OpenDyslexic'
+            };
+
+            // Función para aplicar familia de fuente
+            function applyFontFamily(family) {
+                if (typeof window.setFontFamily === 'function') {
+                    window.setFontFamily(family);
+                }
+                
+                // Actualizar display
+                if (currentFontDisplay) {
+                    currentFontDisplay.textContent = fontNames[family] || family;
+                }
+                
+                // Actualizar selección visual
+                updateFontFamilySelection(family);
+                
+                console.log(`Familia de fuente aplicada: ${family}`);
+            }
+
+            // Función para actualizar la selección visual
+            function updateFontFamilySelection(family) {
+                // Actualizar opciones visuales
+                fontFamilyOptions.forEach(option => {
+                    if (option.dataset.font === family) {
+                        option.classList.add('selected');
+                    } else {
+                        option.classList.remove('selected');
+                    }
+                });
+                
+                // Actualizar radio buttons
+                fontFamilyRadios.forEach(radio => {
+                    radio.checked = (radio.value === family);
+                });
+                
+                // Actualizar toggle de dislexia
+                const isDyslexiaFont = (family === 'opendyslexic');
+                if (dyslexiaFontToggle) {
+                    dyslexiaFontToggle.checked = isDyslexiaFont;
+                }
+            }
+
+            // Cargar configuración guardada al iniciar
+            function loadFontFamily() {
+                const savedFontFamily = localStorage.getItem('font-family-setting') || 'default';
+                applyFontFamily(savedFontFamily);
+            }
+
+            // Event listeners para las opciones de fuente
+            fontFamilyOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    const selectedFont = this.dataset.font;
+                    applyFontFamily(selectedFont);
                 });
             });
 
+            // Event listeners para los radio buttons
+            fontFamilyRadios.forEach(radio => {
+                radio.addEventListener('change', function() {
+                    if (this.checked) {
+                        applyFontFamily(this.value);
+                    }
+                });
+            });
+
+            // Event listener para el toggle de dislexia
+            if (dyslexiaFontToggle) {
+                dyslexiaFontToggle.addEventListener('change', function() {
+                    if (typeof window.setDyslexiaFont === 'function') {
+                        window.setDyslexiaFont(this.checked);
+                    }
+                    
+                    // Actualizar selección visual
+                    const newFamily = this.checked ? 'opendyslexic' : 'default';
+                    updateFontFamilySelection(newFamily);
+                });
+            }
+
+            // Inicializar familia de fuente
+            loadFontFamily();
+            
+            console.log('Funcionalidad de familia de fuente inicializada');
+
+            // ============ Funcionalidad de Toggles ============
+            const toggles = document.querySelectorAll('.toggle-switch input[type="checkbox"]');
+            
+            toggles.forEach(toggle => {
+                // Cargar estado guardado para toggles normales
+                if (toggle.id !== 'dark-mode-toggle') {
+                    const savedState = localStorage.getItem(toggle.id);
+                    if (savedState !== null) {
+                        toggle.checked = savedState === 'true';
+                    }
+                }
+                
+                // Guardar cuando cambie
+                toggle.addEventListener('change', function() {
+                    // Aplicar cambios específicos
+                    if (this.id === 'dark-mode-toggle') {
+                        // Aplicar el modo oscuro usando la función global
+                        if (typeof window.toggleDarkMode === 'function') {
+                            window.toggleDarkMode(this.checked);
+                            console.log('Dark mode:', this.checked ? 'ON' : 'OFF');
+                        }
+                    } else {
+                        localStorage.setItem(this.id, this.checked);
+                        console.log(`${this.id}: ${this.checked}`);
+                    }
+                });
+            });
+
+            // ============ Funcionalidad de Eliminación de Cuenta ============
+            const deleteAccountModal = document.getElementById('deleteAccountModal');
+            const deleteAccountBtn = document.getElementById('deleteAccountBtn');
+            const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
+            const confirmationInput = document.getElementById('confirmationInput');
+            const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+            const confirmationError = document.getElementById('confirmationError');
+            const deleteAccountForm = document.getElementById('deleteAccountForm');
+
+            if (deleteAccountModal && deleteAccountBtn && cancelDeleteBtn && confirmationInput && confirmDeleteBtn && confirmationError && deleteAccountForm) {
+                // Abrir modal
+                deleteAccountBtn.addEventListener('click', function() {
+                    deleteAccountModal.classList.remove('hidden');
+                    deleteAccountModal.style.display = 'flex';
+                    document.body.style.overflow = 'hidden';
+                    confirmationInput.value = '';
+                    confirmDeleteBtn.disabled = true;
+                    confirmationError.classList.add('hidden');
+                    confirmationInput.focus();
+                });
+
+                // Cerrar modal
+                function closeDeleteModal(event) {
+                    if (event) {
+                        event.preventDefault();
+                    }
+                    deleteAccountModal.classList.add('hidden');
+                    deleteAccountModal.style.display = 'none';
+                    document.body.style.overflow = 'auto';
+                    confirmationInput.value = '';
+                    confirmDeleteBtn.disabled = true;
+                    confirmationError.classList.add('hidden');
+                }
+
+                cancelDeleteBtn.addEventListener('click', closeDeleteModal);
+
+                // Cerrar con clic fuera del modal
+                deleteAccountModal.addEventListener('click', function(e) {
+                    if (e.target === deleteAccountModal) {
+                        closeDeleteModal(e);
+                    }
+                });
+
+                // Cerrar con Escape
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape' && !deleteAccountModal.classList.contains('hidden')) {
+                        closeDeleteModal(e);
+                    }
+                });
+
+                // Validar texto de confirmación
+                confirmationInput.addEventListener('input', function() {
+                    const value = this.value.trim();
+                    if (value === 'ELIMINAR') {
+                        confirmDeleteBtn.disabled = false;
+                        confirmationError.classList.add('hidden');
+                        this.classList.remove('border-red-500');
+                        this.classList.add('border-green-500');
+                    } else {
+                        confirmDeleteBtn.disabled = true;
+                        this.classList.remove('border-green-500');
+                        if (value.length > 0) {
+                            this.classList.add('border-red-500');
+                        } else {
+                            this.classList.remove('border-red-500');
+                        }
+                    }
+                });
+
+                // Validar antes de enviar
+                deleteAccountForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    const value = confirmationInput.value.trim();
+                    
+                    if (value !== 'ELIMINAR') {
+                        confirmationError.classList.remove('hidden');
+                        confirmationInput.classList.add('border-red-500');
+                        confirmationInput.focus();
+                        return false;
+                    }
+
+                    // Confirmación final
+                    const finalConfirm = confirm(
+                        '⚠️ ÚLTIMA ADVERTENCIA\n\n' +
+                        'Esta es tu última oportunidad para cancelar.\n\n' +
+                        '¿Estás COMPLETAMENTE SEGURO de que deseas eliminar tu cuenta?\n\n' +
+                        'Esta acción es PERMANENTE e IRREVERSIBLE.'
+                    );
+
+                    if (!finalConfirm) {
+                        return false;
+                    }
+
+                    // Deshabilitar botón para evitar doble envío
+                    confirmDeleteBtn.disabled = true;
+                    confirmDeleteBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Eliminando...';
+                    
+                    // Simular eliminación de cuenta (aquí deberías hacer la petición real)
+                    setTimeout(() => {
+                        alert('Cuenta eliminada exitosamente. Serás redirigido a la página principal.');
+                        // Aquí harías la petición real al servidor
+                        // window.location.href = '/logout/';
+                        
+                        // Para demo, solo cerramos el modal
+                        closeDeleteModal();
+                        confirmDeleteBtn.disabled = false;
+                        confirmDeleteBtn.innerHTML = '<i class="fas fa-trash-alt"></i> Eliminar Mi Cuenta';
+                    }, 2000);
+                });
+
+                console.log('Funcionalidad de eliminación de cuenta inicializada');
+            } else {
+                console.error('Algunos elementos del modal de eliminación no se encontraron');
+            }
+
             console.log('Página de configuración inicializada correctamente');
-        })();
+        });
 </script>
 {% endblock %}
