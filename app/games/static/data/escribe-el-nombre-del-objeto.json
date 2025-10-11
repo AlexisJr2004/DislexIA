@@ -2,15 +2,238 @@
   "game_info": {
     "game_slug": "escribe-el-nombre-del-objeto",
     "json_version": "1.0",
-    "total_questions": 0,
+    "total_questions": 20,
     "created_date": "2025-10-08",
     "last_updated": "2025-10-08"
   },
-  "levels": [],
+  "levels": [
+    {
+      "level": 1,
+      "difficulty": "facil",
+      "description": "Objetos cotidianos simples",
+      "questions": [
+        {
+          "id": 1,
+          "correct_word": "CASA",
+          "hint": "Lugar donde vivimos",
+          "image_path": "/static/img/casa.jpg",
+          "time_limit": 60,
+          "points": 10,
+          "word_length": 4,
+          "category": "Lugares"
+        },
+        {
+          "id": 2,
+          "correct_word": "PERRO",
+          "hint": "Mejor amigo del hombre",
+          "image_path": "/static/img/perro.jpg",
+          "time_limit": 60,
+          "points": 10,
+          "word_length": 5,
+          "category": "Animales"
+        },
+        {
+          "id": 3,
+          "correct_word": "GATO",
+          "hint": "Animal que dice miau",
+          "image_path": "/static/img/gato.jpg",
+          "time_limit": 60,
+          "points": 10,
+          "word_length": 4,
+          "category": "Animales"
+        },
+        {
+          "id": 4,
+          "correct_word": "BOCA",
+          "hint": "Usamos esto para hablar",
+          "image_path": "/static/img/boca.jpg",
+          "time_limit": 60,
+          "points": 10,
+          "word_length": 4,
+          "category": "Cuerpo"
+        },
+        {
+          "id": 5,
+          "correct_word": "LUNA",
+          "hint": "Brilla en el cielo nocturno",
+          "image_path": "/static/img/luna.jpg",
+          "time_limit": 60,
+          "points": 10,
+          "word_length": 4,
+          "category": "Naturaleza"
+        },
+        {
+          "id": 6,
+          "correct_word": "DADO",
+          "hint": "Cubo con números del 1 al 6",
+          "image_path": "/static/img/dado.jpg",
+          "time_limit": 60,
+          "points": 10,
+          "word_length": 4,
+          "category": "Juguetes"
+        },
+        {
+          "id": 7,
+          "correct_word": "MESA",
+          "hint": "Mueble para comer o estudiar",
+          "image_path": "/static/img/mesa.jpg",
+          "time_limit": 60,
+          "points": 10,
+          "word_length": 4,
+          "category": "Muebles"
+        },
+        {
+          "id": 8,
+          "correct_word": "PATO",
+          "hint": "Ave que nada en el agua",
+          "image_path": "/static/img/pato.jpg",
+          "time_limit": 60,
+          "points": 10,
+          "word_length": 4,
+          "category": "Animales"
+        },
+        {
+          "id": 9,
+          "correct_word": "FLOR",
+          "hint": "Planta con pétalos de colores",
+          "image_path": "/static/img/flor.jpg",
+          "time_limit": 60,
+          "points": 10,
+          "word_length": 4,
+          "category": "Naturaleza"
+        },
+        {
+          "id": 10,
+          "correct_word": "SILLA",
+          "hint": "Mueble para sentarse",
+          "image_path": "/static/img/silla.jpg",
+          "time_limit": 60,
+          "points": 10,
+          "word_length": 5,
+          "category": "Muebles"
+        }
+      ]
+    },
+    {
+      "level": 2,
+      "difficulty": "medio",
+      "description": "Objetos más complejos",
+      "questions": [
+        {
+          "id": 11,
+          "correct_word": "MARIPOSA",
+          "hint": "Insecto con alas de colores",
+          "image_path": "/static/img/mariposa.jpg",
+          "time_limit": 75,
+          "points": 15,
+          "word_length": 8,
+          "category": "Animales"
+        },
+        {
+          "id": 12,
+          "correct_word": "ELEFANTE",
+          "hint": "Animal grande con trompa",
+          "image_path": "/static/img/elefante.jpg",
+          "time_limit": 75,
+          "points": 15,
+          "word_length": 8,
+          "category": "Animales"
+        },
+        {
+          "id": 13,
+          "correct_word": "TELEFONO",
+          "hint": "Aparato para llamar a alguien",
+          "image_path": "/static/img/telefono.jpg",
+          "time_limit": 75,
+          "points": 15,
+          "word_length": 8,
+          "category": "Tecnología"
+        },
+        {
+          "id": 14,
+          "correct_word": "BICICLETA",
+          "hint": "Vehículo de dos ruedas",
+          "image_path": "/static/img/bicicleta.jpg",
+          "time_limit": 90,
+          "points": 20,
+          "word_length": 9,
+          "category": "Transporte"
+        },
+        {
+          "id": 15,
+          "correct_word": "DINOSAURIO",
+          "hint": "Animal prehistórico extinto",
+          "image_path": "/static/img/dinosaurio.jpg",
+          "time_limit": 90,
+          "points": 20,
+          "word_length": 10,
+          "category": "Animales"
+        },
+        {
+          "id": 16,
+          "correct_word": "PRINCESA",
+          "hint": "Hija del rey y la reina",
+          "image_path": "/static/img/princesa.jpg",
+          "time_limit": 75,
+          "points": 15,
+          "word_length": 8,
+          "category": "Personas"
+        },
+        {
+          "id": 17,
+          "correct_word": "HELICOPTERO",
+          "hint": "Vehículo que vuela con hélices",
+          "image_path": "/static/img/helicoptero.jpg",
+          "time_limit": 100,
+          "points": 25,
+          "word_length": 11,
+          "category": "Transporte"
+        },
+        {
+          "id": 18,
+          "correct_word": "COMPUTADORA",
+          "hint": "Máquina electrónica para trabajar",
+          "image_path": "/static/img/computadora.jpg",
+          "time_limit": 100,
+          "points": 25,
+          "word_length": 11,
+          "category": "Tecnología"
+        },
+        {
+          "id": 19,
+          "correct_word": "BIBLIOTECA",
+          "hint": "Lugar con muchos libros",
+          "image_path": "/static/img/biblioteca.jpg",
+          "time_limit": 90,
+          "points": 20,
+          "word_length": 10,
+          "category": "Lugares"
+        },
+        {
+          "id": 20,
+          "correct_word": "REFRIGERADOR",
+          "hint": "Aparato que mantiene la comida fría",
+          "image_path": "/static/img/refrigerador.jpg",
+          "time_limit": 100,
+          "points": 30,
+          "word_length": 12,
+          "category": "Electrodomésticos"
+        }
+      ]
+    }
+  ],
   "scoring": {
     "correct_answer": 10,
-    "time_bonus": 5,
-    "perfect_level": 50
+    "time_bonus": 2,
+    "perfect_level": 50,
+    "hint_penalty": 3,
+    "spelling_bonus": 5
+  },
+  "game_mechanics": {
+    "max_attempts": 3,
+    "show_hint_after_attempts": 2,
+    "allow_partial_credit": false,
+    "case_sensitive": false
   },
   "confusion_types": {
     "inversion_letras": "Inversión de letras (b/d, p/q)",

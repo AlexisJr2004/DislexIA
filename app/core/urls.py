@@ -1,5 +1,6 @@
 from django.urls import include, path
 from . import views
+from .views import get_citas_dia, crear_cita, eliminar_cita, marcar_cita_completada
 
 app_name = 'core'
 
@@ -29,4 +30,9 @@ urlpatterns = [
     path('nino/<int:pk>/datos/', views.ObtenerDatosNinoView.as_view(), name='obtener_datos_nino'),
     path('lista-ninos/', views.ListaNinosView.as_view(), name='lista_ninos'),
     path('eliminar-nino/<int:pk>/', views.EliminarNinoView.as_view(), name='eliminar_nino'),
+    # Citas
+    path('citas/dia/', get_citas_dia, name='get_citas_dia'),
+    path('citas/crear/', crear_cita, name='crear_cita'),
+    path('citas/<int:cita_id>/eliminar/', eliminar_cita, name='eliminar_cita'),
+    path('citas/<int:cita_id>/completar/', marcar_cita_completada, name='marcar_cita_completada'),
 ]

@@ -18,15 +18,28 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from django.conf.urls.i18n import i18n_patterns
+
 from django.views.generic.base import RedirectView
 
 urlpatterns = [
+    # Cambio de idioma
+    path('i18n/', include('django.conf.urls.i18n')),
+]
+
+urlpatterns += i18n_patterns(
     # Redirigir raíz a login
     path('', RedirectView.as_view(pattern_name='core:login', permanent=False)),
     
-    # Apps
-    path('dashboard/', include('app.dashboard.urls')),
-    path('', include('app.core.urls')),
-    path('games/', include('app.games.urls')),
+    # Admin
     path('admin/', admin.site.urls),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    
+    # Apps
+    path('', include('app.core.urls')),
+    path('dashboard/', include('app.dashboard.urls')),
+    path('games/', include('app.games.urls')),
+    
+    prefix_default_language=True,
+)
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

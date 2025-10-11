@@ -1,7 +1,8 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load i18n %}
 
-{% block title %}{{ page_title }}{% endblock %}
+{% block title %}{% trans "Configuración - DislexIA" %}{% endblock %}
 
 {% block extra_head %}
 
@@ -265,23 +266,23 @@
 {% block content %}
         <!-- Header -->
         <div class="mb-8">
-            <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">Configuración</h1>
-            <p class="text-gray-600 dark:text-gray-400">Personaliza tu experiencia en DislexIA</p>
+            <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">{% trans "Configuración" %}</h1>
+            <p class="text-gray-600 dark:text-gray-400">{% trans "Personaliza tu experiencia en DislexIA" %}</p>
         </div>
 
         <!-- Tabs -->
         <div class="flex gap-2 mb-6 bg-gray-100 dark:bg-gray-800 p-1 rounded-xl inline-flex">
             <button class="tab-btn active px-4 py-2 rounded-lg text-sm font-medium text-gray-900 dark:text-white dark:bg-gray-700" data-tab="general">
-                General
+                {% trans "General" %}
             </button>
             <button class="tab-btn px-4 py-2 rounded-lg text-sm font-medium text-gray-600 dark:text-gray-400" data-tab="accessibility">
-                Accesibilidad
+                {% trans "Accesibilidad" %}
             </button>
             <button class="tab-btn px-4 py-2 rounded-lg text-sm font-medium text-gray-600 dark:text-gray-400" data-tab="notifications">
-                Notificaciones
+                {% trans "Notificaciones" %}
             </button>
             <button class="tab-btn px-4 py-2 rounded-lg text-sm font-medium text-gray-600 dark:text-gray-400" data-tab="privacy">
-                Cuenta
+                {% trans "Cuenta" %}
             </button>
         </div>
 
@@ -298,33 +299,14 @@
                                     <i class="fas fa-moon text-purple-600 dark:text-purple-400 text-lg"></i>
                                 </div>
                                 <div>
-                                    <h3 class="text-base font-semibold text-gray-900 dark:text-white mb-1">Modo Oscuro</h3>
-                                    <p class="text-sm text-gray-500 dark:text-gray-400">Activa el tema oscuro para reducir el cansancio visual</p>
+                                    <h3 class="text-base font-semibold text-gray-900 dark:text-white mb-1">{% trans "Modo Oscuro" %}</h3>
+                                    <p class="text-sm text-gray-500 dark:text-gray-400">{% trans "Activa el tema oscuro para reducir el cansancio visual" %}</p>
                                 </div>
                             </div>
                             <label class="toggle-switch">
                                 <input type="checkbox" id="dark-mode-toggle">
                                 <span class="toggle-slider"></span>
                             </label>
-                        </div>
-                    </div>
-
-                    <!-- Language -->
-                    <div class="setting-card bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
-                        <div class="flex items-start justify-between">
-                            <div class="flex items-start gap-4">
-                                <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center flex-shrink-0">
-                                    <i class="fas fa-language text-blue-600 dark:text-blue-400 text-lg"></i>
-                                </div>
-                                <div class="flex-1">
-                                    <h3 class="text-base font-semibold text-gray-900 dark:text-white mb-1">Idioma</h3>
-                                    <p class="text-sm text-gray-500 dark:text-gray-400 mb-3">Selecciona el idioma de la interfaz</p>
-                                    <select class="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
-                                        <option value="es">Español</option>
-                                        <option value="en">English</option>
-                                    </select>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -342,9 +324,9 @@
                                         <i class="fas fa-text-height text-purple-600 dark:text-purple-400 text-lg"></i>
                                     </div>
                                     <div class="flex-1">
-                                        <h3 class="text-base font-semibold text-gray-900 dark:text-white mb-1">Tamaño de Fuente</h3>
-                                        <p class="text-sm text-gray-500 dark:text-gray-400">Elige el tamaño de texto que mejor se adapte a tus necesidades</p>
-                                        <span class="current-selection" id="current-size-display">Mediano (Estándar)</span>
+                                        <h3 class="text-base font-semibold text-gray-900 dark:text-white mb-1">{% trans "Tamaño de Fuente" %}</h3>
+                                        <p class="text-sm text-gray-500 dark:text-gray-400">{% trans "Elige el tamaño de texto que mejor se adapte a tus necesidades" %}</p>
+                                        <span class="current-selection" id="current-size-display">{% trans "Mediano (Estándar)" %}</span>
                                     </div>
                                 </div>
                                 <i class="fas fa-chevron-down accordion-icon text-gray-400 dark:text-gray-500 text-lg"></i>
@@ -357,8 +339,8 @@
                                 <div class="size-option" data-size="small">
                                     <input type="radio" name="font-size" value="small" id="size-small">
                                     <div class="size-sample">
-                                        <div class="font-name">Pequeño (Compacto)</div>
-                                        <div class="size-demo">Ideal para pantallas grandes donde quieres ver más contenido a la vez.</div>
+                                        <div class="font-name">{% trans "Pequeño (Compacto)" %}</div>
+                                        <div class="size-demo">{% trans "Ideal para pantallas grandes donde quieres ver más contenido a la vez." %}</div>
                                     </div>
                                 </div>
 
@@ -367,10 +349,10 @@
                                     <input type="radio" name="font-size" value="medium" id="size-medium" checked>
                                     <div class="size-sample">
                                         <div class="font-name">
-                                            Mediano (Estándar)
-                                            <span class="recommended-badge">Recomendado</span>
+                                            {% trans "Mediano (Estándar)" %}
+                                            <span class="recommended-badge">{% trans "Recomendado" %}</span>
                                         </div>
-                                        <div class="size-demo">Tamaño equilibrado perfecto para la mayoría de usuarios.</div>
+                                        <div class="size-demo">{% trans "Tamaño equilibrado perfecto para la mayoría de usuarios." %}</div>
                                     </div>
                                 </div>
 
@@ -378,8 +360,8 @@
                                 <div class="size-option" data-size="large">
                                     <input type="radio" name="font-size" value="large" id="size-large">
                                     <div class="size-sample">
-                                        <div class="font-name">Grande (Confortable)</div>
-                                        <div class="size-demo">Texto más grande para una lectura más cómoda.</div>
+                                        <div class="font-name">{% trans "Grande (Confortable)" %}</div>
+                                        <div class="size-demo">{% trans "Texto más grande para una lectura más cómoda." %}</div>
                                     </div>
                                 </div>
 
@@ -387,8 +369,8 @@
                                 <div class="size-option" data-size="xlarge">
                                     <input type="radio" name="font-size" value="xlarge" id="size-xlarge">
                                     <div class="size-sample">
-                                        <div class="font-name">Muy Grande (Máxima Legibilidad)</div>
-                                        <div class="size-demo">Perfecto para usuarios con dificultades visuales.</div>
+                                        <div class="font-name">{% trans "Muy Grande (Máxima Legibilidad)" %}</div>
+                                        <div class="size-demo">{% trans "Perfecto para usuarios con dificultades visuales." %}</div>
                                     </div>
                                 </div>
                             </div>
@@ -403,8 +385,8 @@
                                     <i class="fas fa-book-open text-green-600 dark:text-green-400 text-lg"></i>
                                 </div>
                                 <div>
-                                    <h3 class="text-base font-semibold text-gray-900 dark:text-white mb-1">Activar Fuente para Dislexia</h3>
-                                    <p class="text-sm text-gray-500 dark:text-gray-400">Activa automáticamente OpenDyslexic para una mejor experiencia de lectura</p>
+                                    <h3 class="text-base font-semibold text-gray-900 dark:text-white mb-1">{% trans "Activar Fuente para Dislexia" %}</h3>
+                                    <p class="text-sm text-gray-500 dark:text-gray-400">{% trans "Activa automáticamente OpenDyslexic para una mejor experiencia de lectura" %}</p>
                                 </div>
                             </div>
                             <label class="toggle-switch">
@@ -423,9 +405,9 @@
                                         <i class="fas fa-font text-indigo-600 dark:text-indigo-400 text-lg"></i>
                                     </div>
                                     <div class="flex-1">
-                                        <h3 class="text-base font-semibold text-gray-900 dark:text-white mb-1">Tipo de Fuente</h3>
-                                        <p class="text-sm text-gray-500 dark:text-gray-400">Elige una fuente especialmente diseñada para facilitar la lectura</p>
-                                        <span class="current-selection" id="current-font-display">Fuente del Sistema</span>
+                                        <h3 class="text-base font-semibold text-gray-900 dark:text-white mb-1">{% trans "Tipo de Fuente" %}</h3>
+                                        <p class="text-sm text-gray-500 dark:text-gray-400">{% trans "Elige una fuente especialmente diseñada para facilitar la lectura" %}</p>
+                                        <span class="current-selection" id="current-font-display">{% trans "Fuente del Sistema" %}</span>
                                     </div>
                                 </div>
                                 <i class="fas fa-chevron-down accordion-icon text-gray-400 dark:text-gray-500 text-lg"></i>
@@ -438,8 +420,8 @@
                                 <div class="font-option selected" data-font="default">
                                     <input type="radio" name="font-family" value="default" id="font-default" checked>
                                     <div class="font-sample">
-                                        <div class="font-name">Fuente del Sistema</div>
-                                        <div class="font-demo">Esta es la fuente estándar del sistema, clara y legible.</div>
+                                        <div class="font-name">{% trans "Fuente del Sistema" %}</div>
+                                        <div class="font-demo">{% trans "Esta es la fuente estándar del sistema, clara y legible." %}</div>
                                     </div>
                                 </div>
 
@@ -449,9 +431,9 @@
                                     <div class="font-sample">
                                         <div class="font-name">
                                             Lexend
-                                            <span class="recommended-badge">Recomendada</span>
+                                            <span class="recommended-badge">{% trans "Recomendada" %}</span>
                                         </div>
-                                        <div class="font-demo">Fuente diseñada para mejorar la comprensión lectora.</div>
+                                        <div class="font-demo">{% trans "Fuente diseñada para mejorar la comprensión lectora." %}</div>
                                     </div>
                                 </div>
 
@@ -459,8 +441,11 @@
                                 <div class="font-option" data-font="opendyslexic">
                                     <input type="radio" name="font-family" value="opendyslexic" id="font-opendyslexic">
                                     <div class="font-sample">
-                                        <div class="font-name">OpenDyslexic</div>
-                                        <div class="font-demo">Fuente específicamente creada para personas con dislexia.</div>
+                                        <div class="font-name">
+                                            OpenDyslexic
+                                            <span class="recommended-badge">{% trans "Recomendada" %}</span>
+                                        </div>
+                                        <div class="font-demo">{% trans "Especialmente diseñada para personas con dislexia." %}</div>
                                     </div>
                                 </div>
 
@@ -469,7 +454,7 @@
                                     <input type="radio" name="font-family" value="comic" id="font-comic">
                                     <div class="font-sample">
                                         <div class="font-name">Comic Neue</div>
-                                        <div class="font-demo">Fuente amigable que facilita la lectura.</div>
+                                        <div class="font-demo">{% trans "Fuente amigable y fácil de leer con estilo casual." %}</div>
                                     </div>
                                 </div>
                             </div>
@@ -489,8 +474,8 @@
                                     <i class="fas fa-envelope text-blue-600 dark:text-blue-400 text-lg"></i>
                                 </div>
                                 <div>
-                                    <h3 class="text-base font-semibold text-gray-900 dark:text-white mb-1">Notificaciones por Email</h3>
-                                    <p class="text-sm text-gray-500 dark:text-gray-400">Recibe actualizaciones importantes por correo</p>
+                                    <h3 class="text-base font-semibold text-gray-900 dark:text-white mb-1">{% trans "Notificaciones por Email" %}</h3>
+                                    <p class="text-sm text-gray-500 dark:text-gray-400">{% trans "Recibe actualizaciones importantes por correo electrónico" %}</p>
                                 </div>
                             </div>
                             <label class="toggle-switch">
@@ -508,8 +493,8 @@
                                     <i class="fas fa-bell text-green-600 dark:text-green-400 text-lg"></i>
                                 </div>
                                 <div>
-                                    <h3 class="text-base font-semibold text-gray-900 dark:text-white mb-1">Recordatorios de Práctica</h3>
-                                    <p class="text-sm text-gray-500 dark:text-gray-400">Recibe recordatorios diarios para practicar</p>
+                                    <h3 class="text-base font-semibold text-gray-900 dark:text-white mb-1">{% trans "Recordatorios de Progreso" %}</h3>
+                                    <p class="text-sm text-gray-500 dark:text-gray-400">{% trans "Recibe recordatorios sobre tu progreso y próximas sesiones" %}</p>
                                 </div>
                             </div>
                             <label class="toggle-switch">
@@ -527,8 +512,8 @@
                                     <i class="fas fa-trophy text-yellow-600 dark:text-yellow-400 text-lg"></i>
                                 </div>
                                 <div>
-                                    <h3 class="text-base font-semibold text-gray-900 dark:text-white mb-1">Logros y Progreso</h3>
-                                    <p class="text-sm text-gray-500 dark:text-gray-400">Notificaciones sobre tus logros y mejoras</p>
+                                    <h3 class="text-base font-semibold text-gray-900 dark:text-white mb-1">{% trans "Notificaciones de Logros" %}</h3>
+                                    <p class="text-sm text-gray-500 dark:text-gray-400">{% trans "Celebra tus logros con notificaciones especiales" %}</p>
                                 </div>
                             </div>
                             <label class="toggle-switch">
@@ -550,10 +535,10 @@
                                 <i class="fas fa-trash-alt text-red-600 dark:text-red-400 text-lg"></i>
                             </div>
                             <div class="flex-1">
-                                <h3 class="text-base font-semibold text-gray-900 dark:text-white mb-1">Eliminar Cuenta</h3>
-                                <p class="text-sm text-gray-500 dark:text-gray-400 mb-3">Elimina permanentemente tu cuenta y todos tus datos</p>
+                                <h3 class="text-base font-semibold text-gray-900 dark:text-white mb-1">{% trans "Eliminar Cuenta" %}</h3>
+                                <p class="text-sm text-gray-500 dark:text-gray-400 mb-3">{% trans "Elimina permanentemente tu cuenta y todos tus datos" %}</p>
                                 <button id="deleteAccountBtn" class="px-4 py-2 bg-red-50 hover:bg-red-100 dark:bg-red-900/30 dark:hover:bg-red-900/50 text-red-600 dark:text-red-400 font-medium rounded-lg text-sm transition-colors">
-                                    Eliminar Cuenta
+                                    {% trans "Eliminar Mi Cuenta" %}
                                 </button>
                             </div>
                         </div>
@@ -572,8 +557,8 @@
                             <i class="fas fa-exclamation-triangle text-red-600 dark:text-red-400 text-xl"></i>
                         </div>
                         <div>
-                            <h3 class="text-xl font-bold text-red-900 dark:text-red-100">⚠️ Eliminar Cuenta Permanentemente</h3>
-                            <p class="text-sm text-red-700 dark:text-red-300">Esta acción no se puede deshacer</p>
+                            <h3 class="text-xl font-bold text-red-900 dark:text-red-100">⚠️ {% trans "Eliminar Cuenta Permanentemente" %}</h3>
+                            <p class="text-sm text-red-700 dark:text-red-300">{% trans "Esta acción no se puede deshacer" %}</p>
                         </div>
                     </div>
                 </div>
@@ -582,35 +567,34 @@
                 <div class="p-6">
                     <div class="mb-6">
                         <p class="text-gray-700 dark:text-gray-300 mb-4">
-                            Estás a punto de eliminar tu cuenta de forma <strong>permanente</strong>. 
-                            Por favor, lee cuidadosamente las consecuencias:
+                            {% trans "Estás a punto de eliminar tu cuenta de forma permanente. Por favor, lee cuidadosamente las consecuencias:" %}
                         </p>
                         
                         <div class="bg-gray-50 dark:bg-gray-700 rounded-xl p-4 mb-4">
                             <h4 class="font-semibold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
                                 <i class="fas fa-list text-red-600 dark:text-red-400"></i>
-                                Se eliminarán permanentemente:
+                                {% trans "Se eliminarán permanentemente:" %}
                             </h4>
                             <ul class="space-y-2 text-sm text-gray-700 dark:text-gray-300">
                                 <li class="flex items-start gap-2">
                                     <i class="fas fa-times-circle text-red-500 mt-0.5"></i>
-                                    <span>Todos tus datos personales y profesionales</span>
+                                    <span>{% trans "Todos tus datos personales y profesionales" %}</span>
                                 </li>
                                 <li class="flex items-start gap-2">
                                     <i class="fas fa-times-circle text-red-500 mt-0.5"></i>
-                                    <span>Todas las validaciones y reportes de IA realizados</span>
+                                    <span>{% trans "Todas las evaluaciones y reportes realizados" %}</span>
                                 </li>
                                 <li class="flex items-start gap-2">
                                     <i class="fas fa-times-circle text-red-500 mt-0.5"></i>
-                                    <span>Tu progreso en los juegos y ejercicios</span>
+                                    <span>{% trans "Tu progreso en los juegos y ejercicios" %}</span>
                                 </li>
                                 <li class="flex items-start gap-2">
                                     <i class="fas fa-times-circle text-red-500 mt-0.5"></i>
-                                    <span>Todas las configuraciones y preferencias</span>
+                                    <span>{% trans "Todas las configuraciones y preferencias" %}</span>
                                 </li>
                                 <li class="flex items-start gap-2">
                                     <i class="fas fa-times-circle text-red-500 mt-0.5"></i>
-                                    <span>Tu foto de perfil y archivos subidos</span>
+                                    <span>{% trans "Acceso permanente a la plataforma" %}</span>
                                 </li>
                             </ul>
                         </div>
@@ -619,10 +603,9 @@
                             <div class="flex gap-3">
                                 <i class="fas fa-info-circle text-yellow-600 dark:text-yellow-400 text-lg mt-0.5"></i>
                                 <div>
-                                    <p class="text-sm text-yellow-800 dark:text-yellow-200 font-medium mb-1">Importante:</p>
+                                    <p class="text-sm text-yellow-800 dark:text-yellow-200 font-medium mb-1">{% trans "Advertencia Final" %}</p>
                                     <p class="text-sm text-yellow-700 dark:text-yellow-300">
-                                        Una vez confirmada la eliminación, <strong>no podrás recuperar</strong> ninguno de estos datos. 
-                                        Si necesitas una pausa temporal, considera cerrar sesión en su lugar.
+                                        {% trans "Esta acción es irreversible. No podrás recuperar tu cuenta ni tus datos después de eliminarlos." %}
                                     </p>
                                 </div>
                             </div>
@@ -632,22 +615,22 @@
                     <!-- Confirmation Input -->
                     <div class="mb-6">
                         <label for="confirmationInput" class="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
-                            Para confirmar, escribe <span class="text-red-600 dark:text-red-400 font-mono">ELIMINAR</span>
+                            {% trans "Para confirmar, escribe" %} <span class="text-red-600 dark:text-red-400 font-mono">ELIMINAR</span>
                         </label>
                         <input 
                             type="text" 
                             id="confirmationInput" 
                             class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                            placeholder="Escribe ELIMINAR para confirmar"
+                            placeholder="{% trans 'Escribe ELIMINAR para confirmar' %}"
                             autocomplete="off"
                         >
                         <p id="confirmationError" class="text-red-500 text-xs mt-1 hidden">
-                            Debes escribir exactamente "ELIMINAR" para continuar
+                            {% trans "Debes escribir exactamente 'ELIMINAR' para continuar" %}
                         </p>
                     </div>
 
                     <!-- Form -->
-                    <form method="post" action="#" id="deleteAccountForm">
+                    <form method="post" action="{% url 'core:delete_account' %}" id="deleteAccountForm">
                         {% csrf_token %}
                         
                         <!-- Actions -->
@@ -657,7 +640,7 @@
                                 id="cancelDeleteBtn" 
                                 class="px-6 py-2.5 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-xl text-sm font-semibold hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                             >
-                                Cancelar
+                                {% trans "Cancelar" %}
                             </button>
                             <button 
                                 type="submit" 
@@ -666,7 +649,7 @@
                                 disabled
                             >
                                 <i class="fas fa-trash-alt"></i>
-                                Eliminar Mi Cuenta
+                                {% trans "Eliminar Mi Cuenta" %}
                             </button>
                         </div>
                     </form>
@@ -744,10 +727,10 @@
 
             // Nombres de tamaños para mostrar
             const sizeNames = {
-                small: 'Pequeño (Compacto)',
-                medium: 'Mediano (Estándar)',
-                large: 'Grande (Confortable)',
-                xlarge: 'Muy Grande (Máxima Legibilidad)'
+                small: "{% trans 'Pequeño (Compacto)' %}",
+                medium: "{% trans 'Mediano (Estándar)' %}",
+                large: "{% trans 'Grande (Confortable)' %}",
+                xlarge: "{% trans 'Muy Grande (Máxima Legibilidad)' %}"
             };
 
             // Función para aplicar tamaño de fuente
@@ -821,7 +804,7 @@
 
             // Nombres de fuentes para mostrar
             const fontNames = {
-                default: 'Fuente del Sistema',
+                default: "{% trans 'Fuente del Sistema' %}",
                 lexend: 'Lexend',
                 comic: 'Comic Neue',
                 opendyslexic: 'OpenDyslexic'
@@ -1020,10 +1003,10 @@
 
                     // Confirmación final
                     const finalConfirm = confirm(
-                        '⚠️ ÚLTIMA ADVERTENCIA\n\n' +
-                        'Esta es tu última oportunidad para cancelar.\n\n' +
-                        '¿Estás COMPLETAMENTE SEGURO de que deseas eliminar tu cuenta?\n\n' +
-                        'Esta acción es PERMANENTE e IRREVERSIBLE.'
+                        "{% trans '⚠️ ÚLTIMA ADVERTENCIA' %}\n\n" +
+                        "{% trans 'Esta es tu última oportunidad para cancelar.' %}\n\n" +
+                        "{% trans '¿Estás COMPLETAMENTE SEGURO de que deseas eliminar tu cuenta?' %}\n\n" +
+                        "{% trans 'Esta acción es PERMANENTE e IRREVERSIBLE.' %}"
                     );
 
                     if (!finalConfirm) {
@@ -1032,19 +1015,10 @@
 
                     // Deshabilitar botón para evitar doble envío
                     confirmDeleteBtn.disabled = true;
-                    confirmDeleteBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Eliminando...';
+                    confirmDeleteBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>{% trans "Eliminando..." %}';
                     
-                    // Simular eliminación de cuenta (aquí deberías hacer la petición real)
-                    setTimeout(() => {
-                        alert('Cuenta eliminada exitosamente. Serás redirigido a la página principal.');
-                        // Aquí harías la petición real al servidor
-                        // window.location.href = '/logout/';
-                        
-                        // Para demo, solo cerramos el modal
-                        closeDeleteModal();
-                        confirmDeleteBtn.disabled = false;
-                        confirmDeleteBtn.innerHTML = '<i class="fas fa-trash-alt"></i> Eliminar Mi Cuenta';
-                    }, 2000);
+                    // Aquí se enviaría el formulario al servidor
+                    this.submit();
                 });
 
                 console.log('Funcionalidad de eliminación de cuenta inicializada');

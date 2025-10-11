@@ -2,15 +2,256 @@
   "game_info": {
     "game_slug": "palabra-que-escuches",
     "json_version": "1.0",
-    "total_questions": 0,
+    "total_questions": 20,
     "created_date": "2025-10-08",
     "last_updated": "2025-10-08"
   },
-  "levels": [],
+  "levels": [
+    {
+      "level": 1,
+      "difficulty": "facil",
+      "description": "Palabras simples con audio claro",
+      "questions": [
+        {
+          "id": 1,
+          "correct_word": "CASA",
+          "audio_path": "/static/audio/casa.mp3",
+          "options": ["CASA", "CAZA", "MASA", "PASA"],
+          "hint": "Lugar donde vivimos",
+          "image_path": "/static/img/casa.jpg",
+          "time_limit": 30,
+          "points": 10,
+          "confusion_type": "sustitucion_letras"
+        },
+        {
+          "id": 2,
+          "correct_word": "PERRO",
+          "audio_path": "/static/audio/perro.mp3",
+          "options": ["PERRO", "PELRO", "BERRO", "FERRO"],
+          "hint": "Mejor amigo del hombre",
+          "image_path": "/static/img/perro.jpg",
+          "time_limit": 30,
+          "points": 10,
+          "confusion_type": "sustitucion_letras"
+        },
+        {
+          "id": 3,
+          "correct_word": "GATO",
+          "audio_path": "/static/audio/gato.mp3",
+          "options": ["GATO", "DATO", "PATO", "RATO"],
+          "hint": "Animal que dice miau",
+          "image_path": "/static/img/gato.jpg",
+          "time_limit": 30,
+          "points": 10,
+          "confusion_type": "inversion_letras"
+        },
+        {
+          "id": 4,
+          "correct_word": "BOCA",
+          "audio_path": "/static/audio/boca.mp3",
+          "options": ["BOCA", "DOCA", "POCA", "ROCA"],
+          "hint": "Usamos esto para hablar",
+          "image_path": "/static/img/boca.jpg",
+          "time_limit": 30,
+          "points": 10,
+          "confusion_type": "inversion_letras"
+        },
+        {
+          "id": 5,
+          "correct_word": "LUNA",
+          "audio_path": "/static/audio/luna.mp3",
+          "options": ["LUNA", "LUMA", "NUNA", "TUNA"],
+          "hint": "Brilla en el cielo nocturno",
+          "image_path": "/static/img/luna.jpg",
+          "time_limit": 30,
+          "points": 10,
+          "confusion_type": "sustitucion_letras"
+        },
+        {
+          "id": 6,
+          "correct_word": "DADO",
+          "audio_path": "/static/audio/dado.mp3",
+          "options": ["DADO", "BADO", "PADO", "LADO"],
+          "hint": "Cubo con números",
+          "image_path": "/static/img/dado.jpg",
+          "time_limit": 30,
+          "points": 10,
+          "confusion_type": "inversion_letras"
+        },
+        {
+          "id": 7,
+          "correct_word": "MESA",
+          "audio_path": "/static/audio/mesa.mp3",
+          "options": ["MESA", "MEZA", "PESA", "NESA"],
+          "hint": "Mueble para comer",
+          "image_path": "/static/img/mesa.jpg",
+          "time_limit": 30,
+          "points": 10,
+          "confusion_type": "sustitucion_letras"
+        },
+        {
+          "id": 8,
+          "correct_word": "PATO",
+          "audio_path": "/static/audio/pato.mp3",
+          "options": ["PATO", "BATO", "DATO", "GATO"],
+          "hint": "Ave que nada",
+          "image_path": "/static/img/pato.jpg",
+          "time_limit": 30,
+          "points": 10,
+          "confusion_type": "inversion_letras"
+        },
+        {
+          "id": 9,
+          "correct_word": "FLOR",
+          "audio_path": "/static/audio/flor.mp3",
+          "options": ["FLOR", "FLOL", "PLOR", "CLOR"],
+          "hint": "Planta bonita",
+          "image_path": "/static/img/flor.jpg",
+          "time_limit": 30,
+          "points": 10,
+          "confusion_type": "sustitucion_letras"
+        },
+        {
+          "id": 10,
+          "correct_word": "SILLA",
+          "audio_path": "/static/audio/silla.mp3",
+          "options": ["SILLA", "SIRLA", "CILLA", "VILLA"],
+          "hint": "Mueble para sentarse",
+          "image_path": "/static/img/silla.jpg",
+          "time_limit": 30,
+          "points": 10,
+          "confusion_type": "sustitucion_letras"
+        }
+      ]
+    },
+    {
+      "level": 2,
+      "difficulty": "medio",
+      "description": "Palabras más complejas con audio",
+      "questions": [
+        {
+          "id": 11,
+          "correct_word": "MARIPOSA",
+          "audio_path": "/static/audio/mariposa.mp3",
+          "options": ["MARIPOSA", "MALIPOSA", "NARIPOSA", "MARIBOSA"],
+          "hint": "Insecto con alas de colores",
+          "image_path": "/static/img/mariposa.jpg",
+          "time_limit": 40,
+          "points": 15,
+          "confusion_type": "sustitucion_letras"
+        },
+        {
+          "id": 12,
+          "correct_word": "ELEFANTE",
+          "audio_path": "/static/audio/elefante.mp3",
+          "options": ["ELEFANTE", "ELEVANTE", "ELEPANTE", "ELEFANDE"],
+          "hint": "Animal grande con trompa",
+          "image_path": "/static/img/elefante.jpg",
+          "time_limit": 40,
+          "points": 15,
+          "confusion_type": "sustitucion_letras"
+        },
+        {
+          "id": 13,
+          "correct_word": "TELEFONO",
+          "audio_path": "/static/audio/telefono.mp3",
+          "options": ["TELEFONO", "TELEVONO", "TELEDONO", "TELEMONO"],
+          "hint": "Aparato para llamar",
+          "image_path": "/static/img/telefono.jpg",
+          "time_limit": 40,
+          "points": 15,
+          "confusion_type": "sustitucion_letras"
+        },
+        {
+          "id": 14,
+          "correct_word": "BICICLETA",
+          "audio_path": "/static/audio/bicicleta.mp3",
+          "options": ["BICICLETA", "DICICLETA", "PICICLETA", "BICICRETA"],
+          "hint": "Vehículo de dos ruedas",
+          "image_path": "/static/img/bicicleta.jpg",
+          "time_limit": 45,
+          "points": 20,
+          "confusion_type": "inversion_letras"
+        },
+        {
+          "id": 15,
+          "correct_word": "DINOSAURIO",
+          "audio_path": "/static/audio/dinosaurio.mp3",
+          "options": ["DINOSAURIO", "BINOSAUR­IO", "DINOZAURIO", "DINOSAULIO"],
+          "hint": "Animal prehistórico",
+          "image_path": "/static/img/dinosaurio.jpg",
+          "time_limit": 45,
+          "points": 20,
+          "confusion_type": "inversion_letras"
+        },
+        {
+          "id": 16,
+          "correct_word": "PRINCESA",
+          "audio_path": "/static/audio/princesa.mp3",
+          "options": ["PRINCESA", "PLINCESA", "BRINCESA", "PRINCEZA"],
+          "hint": "Hija del rey",
+          "image_path": "/static/img/princesa.jpg",
+          "time_limit": 40,
+          "points": 15,
+          "confusion_type": "sustitucion_letras"
+        },
+        {
+          "id": 17,
+          "correct_word": "HELICOPTERO",
+          "audio_path": "/static/audio/helicoptero.mp3",
+          "options": ["HELICOPTERO", "HELISOPTERO", "HELICÓPTERO", "HELICOPDERO"],
+          "hint": "Vuela con hélices",
+          "image_path": "/static/img/helicoptero.jpg",
+          "time_limit": 50,
+          "points": 25,
+          "confusion_type": "sustitucion_letras"
+        },
+        {
+          "id": 18,
+          "correct_word": "COMPUTADORA",
+          "audio_path": "/static/audio/computadora.mp3",
+          "options": ["COMPUTADORA", "COMPUBADORA", "CONPUTADORA", "COMPUTADOLA"],
+          "hint": "Máquina electrónica",
+          "image_path": "/static/img/computadora.jpg",
+          "time_limit": 50,
+          "points": 25,
+          "confusion_type": "inversion_letras"
+        },
+        {
+          "id": 19,
+          "correct_word": "BIBLIOTECA",
+          "audio_path": "/static/audio/biblioteca.mp3",
+          "options": ["BIBLIOTECA", "PIBLIOTECA", "BIBLOTECA", "BIBLIO­TEKA"],
+          "hint": "Lugar con libros",
+          "image_path": "/static/img/biblioteca.jpg",
+          "time_limit": 45,
+          "points": 20,
+          "confusion_type": "inversion_letras"
+        },
+        {
+          "id": 20,
+          "correct_word": "REFRIGERADOR",
+          "audio_path": "/static/audio/refrigerador.mp3",
+          "options": ["REFRIGERADOR", "REFLIGERADOR", "REFRIGE­RADOR", "REFRIGERA­DOR"],
+          "hint": "Mantiene comida fría",
+          "image_path": "/static/img/refrigerador.jpg",
+          "time_limit": 55,
+          "points": 30,
+          "confusion_type": "sustitucion_letras"
+        }
+      ]
+    }
+  ],
   "scoring": {
     "correct_answer": 10,
-    "time_bonus": 5,
-    "perfect_level": 50
+    "time_bonus": 2,
+    "perfect_level": 50,
+    "replay_audio_penalty": 2
+  },
+  "game_mechanics": {
+    "max_attempts": 3,
+    "max_audio_replays": 3,
+    "show_hint_after_attempts": 2
   },
   "confusion_types": {
     "inversion_letras": "Inversión de letras (b/d, p/q)",

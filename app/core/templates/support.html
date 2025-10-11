@@ -1,7 +1,8 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load i18n %}
 
-{% block title %}{{ page_title }}{% endblock %}
+{% block title %}{% trans "Centro de Soporte - DislexIA" %}{% endblock %}
 
 {% block extra_head %}
 <style>
@@ -42,13 +43,13 @@
         <!-- Header -->
         <div class="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
             <div>
-                <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">Centro de Soporte</h1>
-                <p class="text-gray-600 dark:text-gray-400">Estamos aquí para ayudarte con cualquier duda o consulta</p>
+                <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">{% trans "Centro de Soporte" %}</h1>
+                <p class="text-gray-600 dark:text-gray-400">{% trans "Estamos aquí para ayudarte con cualquier duda o consulta" %}</p>
             </div>
             
             <div class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
                 <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                <span>Disponible de Lun-Vie 9:00 AM - 6:00 PM</span>
+                <span>{% trans "Disponible de Lun-Vie 9:00 AM - 6:00 PM" %}</span>
             </div>
         </div>
 
@@ -57,7 +58,7 @@
             <div class="lg:col-span-2 space-y-6">
                 <!-- Contacto Directo -->
                 <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-800 p-6">
-                    <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6">Contacta con un Especialista</h2>
+                    <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6">{% trans "Contacta con un Especialista" %}</h2>
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <!-- WhatsApp Card -->
@@ -66,28 +67,28 @@
                                 <div class="w-12 h-12 bg-green-500 rounded-xl flex items-center justify-center">
                                     <i class="fab fa-whatsapp text-white text-2xl"></i>
                                 </div>
-                                <span class="bg-green-500 text-white text-xs font-semibold px-2 py-1 rounded-full">Rápido</span>
+                                <span class="bg-green-500 text-white text-xs font-semibold px-2 py-1 rounded-full">{% trans "Rápido" %}</span>
                             </div>
                             
                             <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">WhatsApp</h3>
-                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">Chatea en tiempo real con nuestros especialistas</p>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">{% trans "Chatea en tiempo real con nuestros especialistas" %}</p>
                             
                             <div class="space-y-2 mb-4">
                                 <div class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
                                     <i class="fas fa-clock text-green-600"></i>
-                                    <span>Respuesta inmediata</span>
+                                    <span>{% trans "Respuesta inmediata" %}</span>
                                 </div>
                                 <div class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
                                     <i class="fas fa-user text-green-600"></i>
-                                    <span>Atención personalizada</span>
+                                    <span>{% trans "Atención personalizada" %}</span>
                                 </div>
                             </div>
                             
-                            <a href="https://wa.me/593999999999?text=Hola,%20necesito%20ayuda%20con%20DislexIA" 
+                            <a href="https://wa.me/593999999999?text={% trans 'Hola, necesito ayuda con DislexIA' %}" 
                                target="_blank"
                                class="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-3 rounded-xl transition-all duration-200 flex items-center justify-center gap-2">
                                 <i class="fab fa-whatsapp"></i>
-                                Abrir WhatsApp
+                                {% trans "Abrir WhatsApp" %}
                             </a>
                         </div>
 
@@ -97,27 +98,27 @@
                                 <div class="w-12 h-12 bg-purple-500 rounded-xl flex items-center justify-center">
                                     <i class="fas fa-envelope text-white text-2xl"></i>
                                 </div>
-                                <span class="bg-purple-500 text-white text-xs font-semibold px-2 py-1 rounded-full">Formal</span>
+                                <span class="bg-purple-500 text-white text-xs font-semibold px-2 py-1 rounded-full">{% trans "Formal" %}</span>
                             </div>
                             
-                            <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">Correo Electrónico</h3>
-                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">Envíanos un correo detallado sobre tu consulta</p>
+                            <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">{% trans "Correo Electrónico" %}</h3>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">{% trans "Envíanos un correo detallado sobre tu consulta" %}</p>
                             
                             <div class="space-y-2 mb-4">
                                 <div class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
                                     <i class="fas fa-reply text-purple-600"></i>
-                                    <span>Respuesta en 24h</span>
+                                    <span>{% trans "Respuesta en 24h" %}</span>
                                 </div>
                                 <div class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
                                     <i class="fas fa-file-alt text-purple-600"></i>
-                                    <span>Documentación adjunta</span>
+                                    <span>{% trans "Documentación adjunta" %}</span>
                                 </div>
                             </div>
                             
                             <button id="email-btn"
                                     class="w-full bg-purple-500 hover:bg-purple-600 text-white font-semibold py-3 rounded-xl transition-all duration-200 flex items-center justify-center gap-2">
                                 <i class="fas fa-envelope"></i>
-                                Enviar Correo
+                                {% trans "Enviar Correo" %}
                             </button>
                         </div>
                     </div>
@@ -125,61 +126,61 @@
 
                 <!-- Preguntas Frecuentes -->
                 <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-800 p-6">
-                    <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6">Preguntas Frecuentes</h2>
+                    <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6">{% trans "Preguntas Frecuentes" %}</h2>
                     
                     <div class="space-y-3" id="faq-container">
                         <!-- FAQ 1 -->
                         <div class="faq-item border border-gray-200 dark:border-gray-800 rounded-xl p-4 cursor-pointer hover:border-purple-300 dark:hover:border-purple-700">
                             <div class="flex justify-between items-center">
-                                <h3 class="font-semibold text-gray-900 dark:text-white">¿Cómo funcionan los juegos de entrenamiento?</h3>
+                                <h3 class="font-semibold text-gray-900 dark:text-white">{% trans "¿Cómo funcionan los juegos de entrenamiento?" %}</h3>
                                 <i class="faq-icon fas fa-chevron-down text-purple-500"></i>
                             </div>
                             <div class="faq-answer pt-3">
-                                <p class="text-gray-600 dark:text-gray-400 text-sm">Los juegos están diseñados específicamente para ayudar a personas con dislexia. Cada juego trabaja diferentes habilidades cognitivas como la memoria, comprensión lectora y reconocimiento de patrones. Puedes jugar a tu propio ritmo y el sistema se adapta a tu nivel.</p>
+                                <p class="text-gray-600 dark:text-gray-400 text-sm">{% trans "Los juegos están diseñados específicamente para ayudar a personas con dislexia. Cada juego trabaja diferentes habilidades cognitivas como la memoria, comprensión lectora y reconocimiento de patrones. Puedes jugar a tu propio ritmo y el sistema se adapta a tu nivel." %}</p>
                             </div>
                         </div>
 
                         <!-- FAQ 2 -->
                         <div class="faq-item border border-gray-200 dark:border-gray-800 rounded-xl p-4 cursor-pointer hover:border-purple-300 dark:hover:border-purple-700">
                             <div class="flex justify-between items-center">
-                                <h3 class="font-semibold text-gray-900 dark:text-white">¿Cuánto tiempo debo practicar cada día?</h3>
+                                <h3 class="font-semibold text-gray-900 dark:text-white">{% trans "¿Cuánto tiempo debo practicar cada día?" %}</h3>
                                 <i class="faq-icon fas fa-chevron-down text-purple-500"></i>
                             </div>
                             <div class="faq-answer pt-3">
-                                <p class="text-gray-600 dark:text-gray-400 text-sm">Recomendamos sesiones de 15-20 minutos diarios. La consistencia es más importante que la duración. El calendario te ayudará a seguir tu progreso y mantener una rutina regular.</p>
+                                <p class="text-gray-600 dark:text-gray-400 text-sm">{% trans "Recomendamos sesiones de 15-20 minutos diarios. La consistencia es más importante que la duración. El calendario te ayudará a seguir tu progreso y mantener una rutina regular." %}</p>
                             </div>
                         </div>
 
                         <!-- FAQ 3 -->
                         <div class="faq-item border border-gray-200 dark:border-gray-800 rounded-xl p-4 cursor-pointer hover:border-purple-300 dark:hover:border-purple-700">
                             <div class="flex justify-between items-center">
-                                <h3 class="font-semibold text-gray-900 dark:text-white">¿Puedo usar la plataforma en dispositivos móviles?</h3>
+                                <h3 class="font-semibold text-gray-900 dark:text-white">{% trans "¿Puedo usar la plataforma en dispositivos móviles?" %}</h3>
                                 <i class="faq-icon fas fa-chevron-down text-purple-500"></i>
                             </div>
                             <div class="faq-answer pt-3">
-                                <p class="text-gray-600 dark:text-gray-400 text-sm">Sí, DislexIA está optimizado para funcionar en computadoras, tablets y teléfonos móviles. Puedes acceder desde cualquier navegador web moderno.</p>
+                                <p class="text-gray-600 dark:text-gray-400 text-sm">{% trans "Sí, DislexIA está optimizado para funcionar en computadoras, tablets y teléfonos móviles. Puedes acceder desde cualquier navegador web moderno." %}</p>
                             </div>
                         </div>
 
                         <!-- FAQ 4 -->
                         <div class="faq-item border border-gray-200 dark:border-gray-800 rounded-xl p-4 cursor-pointer hover:border-purple-300 dark:hover:border-purple-700">
                             <div class="flex justify-between items-center">
-                                <h3 class="font-semibold text-gray-900 dark:text-white">¿Cómo puedo ver mi progreso?</h3>
+                                <h3 class="font-semibold text-gray-900 dark:text-white">{% trans "¿Cómo puedo ver mi progreso?" %}</h3>
                                 <i class="faq-icon fas fa-chevron-down text-purple-500"></i>
                             </div>
                             <div class="faq-answer pt-3">
-                                <p class="text-gray-600 dark:text-gray-400 text-sm">En el Dashboard encontrarás estadísticas detalladas de tu rendimiento. El calendario muestra tu historial de actividades y en cada juego puedes ver tus puntuaciones y mejoras a lo largo del tiempo.</p>
+                                <p class="text-gray-600 dark:text-gray-400 text-sm">{% trans "En el Dashboard encontrarás estadísticas detalladas de tu rendimiento. El calendario muestra tu historial de actividades y en cada juego puedes ver tus puntuaciones y mejoras a lo largo del tiempo." %}</p>
                             </div>
                         </div>
 
                         <!-- FAQ 5 -->
                         <div class="faq-item border border-gray-200 dark:border-gray-800 rounded-xl p-4 cursor-pointer hover:border-purple-300 dark:hover:border-purple-700">
                             <div class="flex justify-between items-center">
-                                <h3 class="font-semibold text-gray-900 dark:text-white">¿Es necesaria supervisión de un adulto?</h3>
+                                <h3 class="font-semibold text-gray-900 dark:text-white">{% trans "¿Es necesaria supervisión de un adulto?" %}</h3>
                                 <i class="faq-icon fas fa-chevron-down text-purple-500"></i>
                             </div>
                             <div class="faq-answer pt-3">
-                                <p class="text-gray-600 dark:text-gray-400 text-sm">Para niños menores de 12 años, recomendamos supervisión de un adulto durante las primeras sesiones. La plataforma es segura y fácil de usar, pero el acompañamiento ayuda a establecer buenos hábitos y resolver dudas iniciales.</p>
+                                <p class="text-gray-600 dark:text-gray-400 text-sm">{% trans "Para niños menores de 12 años, recomendamos supervisión de un adulto durante las primeras sesiones. La plataforma es segura y fácil de usar, pero el acompañamiento ayuda a establecer buenos hábitos y resolver dudas iniciales." %}</p>
                             </div>
                         </div>
                     </div>
@@ -190,20 +191,20 @@
             <div class="lg:col-span-1 space-y-6">
                 <!-- Horarios de Atención -->
                 <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-800 p-6 top-8">
-                    <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4">Horarios de Atención</h3>
+                    <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4">{% trans "Horarios de Atención" %}</h3>
                     
                     <div class="space-y-3">
                         <div class="flex justify-between items-center pb-2 border-b border-gray-100 dark:border-gray-800">
-                            <span class="text-sm text-gray-600 dark:text-gray-400">Lunes - Viernes</span>
+                            <span class="text-sm text-gray-600 dark:text-gray-400">{% trans "Lunes - Viernes" %}</span>
                             <span class="text-sm font-semibold text-gray-900 dark:text-white">9:00 - 18:00</span>
                         </div>
                         <div class="flex justify-between items-center pb-2 border-b border-gray-100 dark:border-gray-800">
-                            <span class="text-sm text-gray-600 dark:text-gray-400">Sábado</span>
+                            <span class="text-sm text-gray-600 dark:text-gray-400">{% trans "Sábado" %}</span>
                             <span class="text-sm font-semibold text-gray-900 dark:text-white">10:00 - 14:00</span>
                         </div>
                         <div class="flex justify-between items-center">
-                            <span class="text-sm text-gray-600 dark:text-gray-400">Domingo</span>
-                            <span class="text-sm font-semibold text-red-600 dark:text-red-500">Cerrado</span>
+                            <span class="text-sm text-gray-600 dark:text-gray-400">{% trans "Domingo" %}</span>
+                            <span class="text-sm font-semibold text-red-600 dark:text-red-500">{% trans "Cerrado" %}</span>
                         </div>
                     </div>
 
@@ -211,7 +212,7 @@
                         <div class="flex items-start gap-3">
                             <i class="fas fa-info-circle text-purple-500 mt-1"></i>
                             <p class="text-xs text-gray-600 dark:text-gray-400">
-                                Los mensajes fuera del horario de atención serán respondidos el siguiente día hábil.
+                                {% trans "Los mensajes fuera del horario de atención serán respondidos el siguiente día hábil." %}
                             </p>
                         </div>
                     </div>
@@ -219,13 +220,13 @@
 
                 <!-- Información de Contacto -->
                 <div class="bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl shadow-sm p-6 text-white">
-                    <h3 class="text-lg font-bold mb-4">Información de Contacto</h3>
+                    <h3 class="text-lg font-bold mb-4">{% trans "Información de Contacto" %}</h3>
                     
                     <div class="space-y-4">
                         <div class="flex items-start gap-3">
                             <i class="fas fa-phone-alt mt-1"></i>
                             <div>
-                                <p class="text-sm font-semibold">Teléfono</p>
+                                <p class="text-sm font-semibold">{% trans "Teléfono" %}</p>
                                 <p class="text-sm opacity-90">+593 99 999 9999</p>
                             </div>
                         </div>
@@ -241,7 +242,7 @@
                         <div class="flex items-start gap-3">
                             <i class="fas fa-map-marker-alt mt-1"></i>
                             <div>
-                                <p class="text-sm font-semibold">Ubicación</p>
+                                <p class="text-sm font-semibold">{% trans "Ubicación" %}</p>
                                 <p class="text-sm opacity-90">Guayaquil, Ecuador</p>
                             </div>
                         </div>
@@ -250,28 +251,28 @@
 
                 <!-- Recursos Adicionales -->
                 <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-800 p-6">
-                    <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4">Recursos Útiles</h3>
+                    <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4">{% trans "Recursos Útiles" %}</h3>
                     
                     <div class="space-y-3">
                         <a href="#" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
                             <div class="w-8 h-8 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
                                 <i class="fas fa-book text-blue-600 dark:text-blue-400 text-sm"></i>
                             </div>
-                            <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Guía de Usuario</span>
+                            <span class="text-sm font-medium text-gray-700 dark:text-gray-300">{% trans "Guía de Usuario" %}</span>
                         </a>
                         
                         <a href="#" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
                             <div class="w-8 h-8 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center">
                                 <i class="fas fa-video text-green-600 dark:text-green-400 text-sm"></i>
                             </div>
-                            <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Video Tutoriales</span>
+                            <span class="text-sm font-medium text-gray-700 dark:text-gray-300">{% trans "Video Tutoriales" %}</span>
                         </a>
                         
                         <a href="#" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
                             <div class="w-8 h-8 bg-orange-100 dark:bg-orange-900/30 rounded-lg flex items-center justify-center">
                                 <i class="fas fa-comments text-orange-600 dark:text-orange-400 text-sm"></i>
                             </div>
-                            <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Comunidad</span>
+                            <span class="text-sm font-medium text-gray-700 dark:text-gray-300">{% trans "Comunidad" %}</span>
                         </a>
                     </div>
                 </div>
@@ -283,15 +284,15 @@
 <script>
         // IIFE para ejecutar inmediatamente
         (function initSupportPage() {
-            console.log('Inicializando página de soporte...');
+            console.log('{% trans "Inicializando página de soporte..." %}');
 
             // Elementos DOM
             const faqItems = document.querySelectorAll('.faq-item');
             const emailBtn = document.getElementById('email-btn');
 
-            console.log('Elementos encontrados:', {
+            console.log('{% trans "Elementos encontrados:" %}', {
                 faqItems: faqItems.length,
-                emailBtn: emailBtn ? 'Sí' : 'No'
+                emailBtn: emailBtn ? '{% trans "Sí" %}' : '{% trans "No" %}'
             });
 
             // Funcionalidad de FAQ (acordeón)
@@ -316,15 +317,15 @@
             // Funcionalidad del botón de email
             if (emailBtn) {
                 emailBtn.addEventListener('click', function() {
-                    const subject = encodeURIComponent('Consulta sobre DislexIA');
-                    const body = encodeURIComponent('Hola,\n\nMe gustaría obtener más información sobre:\n\n');
+                    const subject = encodeURIComponent('{% trans "Consulta sobre DislexIA" %}');
+                    const body = encodeURIComponent('{% trans "Hola," %}\n\n{% trans "Me gustaría obtener más información sobre:" %}\n\n');
                     const mailtoLink = `mailto:soporte@dislexia.com?subject=${subject}&body=${body}`;
                     
                     window.location.href = mailtoLink;
                 });
             }
 
-            console.log('Página de soporte inicializada correctamente');
+            console.log('{% trans "Página de soporte inicializada correctamente" %}');
         })();
 </script>
 {% endblock %}

@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load i18n %}
 
 {% block title %}{{ page_title }}{% endblock %}
 
@@ -80,10 +81,10 @@
                         {% if user.imagen %}
                             <img src="{{ user.imagen.url }}" alt="{{ user.nombre_completo }}" class="w-full h-full object-cover">
                         {% else %}
-                            <img src="{% static 'img/profile.png' %}" alt="Profile" class="w-full h-full object-cover">
+                            <img src="{% static 'img/profile.png' %}" alt="{% trans 'Perfil' %}" class="w-full h-full object-cover">
                         {% endif %}
                     </div>
-                    <button class="absolute bottom-0 right-0 w-10 h-10 bg-purple-500 hover:bg-purple-600 rounded-full flex items-center justify-center text-white transition-all shadow-lg">
+                    <button class="absolute bottom-0 right-0 w-10 h-10 bg-purple-500 hover:bg-purple-600 rounded-full flex items-center justify-center text-white transition-all shadow-lg" title="{% trans 'Cambiar foto' %}">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -102,7 +103,7 @@
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2" />
                                 </svg>
-                                Licencia N° {{ user.numero_licencia }}
+                                {% trans "Licencia N°" %} {{ user.numero_licencia }}
                             </div>
                             {% endif %}
                             <div class="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
@@ -116,7 +117,7 @@
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                             </svg>
-                            Editar Perfil
+                            {% trans "Editar Perfil" %}
                         </button>
                     </div>
 
@@ -138,14 +139,14 @@
                             <svg class="w-4 h-4 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                             </svg>
-                            <span class="text-gray-700 dark:text-gray-300">Registrado {{ user.fecha_registro|date:"d/m/Y" }}</span>
+                            <span class="text-gray-700 dark:text-gray-300">{% trans "Registrado" %} {{ user.fecha_registro|date:"d/m/Y" }}</span>
                         </div>
                         {% if user.ultimo_acceso %}
                         <div class="flex items-center gap-2 text-sm">
                             <svg class="w-4 h-4 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
-                            <span class="text-gray-700 dark:text-gray-300">Último acceso: {{ user.ultimo_acceso|date:"d/m/Y H:i" }}</span>
+                            <span class="text-gray-700 dark:text-gray-300">{% trans "Último acceso:" %} {{ user.ultimo_acceso|date:"d/m/Y H:i" }}</span>
                         </div>
                         {% endif %}
                     </div>
@@ -164,7 +165,7 @@
                     </div>
                 </div>
                 <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ user.validaciones.count }}</p>
-                <p class="text-sm text-gray-500 dark:text-gray-400">Validaciones Realizadas</p>
+                <p class="text-sm text-gray-500 dark:text-gray-400">{% trans "Validaciones Realizadas" %}</p>
             </div>
 
             <div class="stat-card bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6">
@@ -176,7 +177,7 @@
                     </div>
                 </div>
                 <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ user.date_joined|timesince }}</p>
-                <p class="text-sm text-gray-500 dark:text-gray-400">Tiempo en la plataforma</p>
+                <p class="text-sm text-gray-500 dark:text-gray-400">{% trans "Tiempo en la plataforma" %}</p>
             </div>
 
             <div class="stat-card bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6">
@@ -187,8 +188,8 @@
                         </svg>
                     </div>
                 </div>
-                <p class="text-2xl font-bold text-gray-900 dark:text-white">{% if user.is_active %}Activo{% else %}Inactivo{% endif %}</p>
-                <p class="text-sm text-gray-500 dark:text-gray-400">Estado de la Cuenta</p>
+                <p class="text-2xl font-bold text-gray-900 dark:text-white">{% if user.is_active %}{% trans "Activo" %}{% else %}{% trans "Inactivo" %}{% endif %}</p>
+                <p class="text-sm text-gray-500 dark:text-gray-400">{% trans "Estado de la Cuenta" %}</p>
             </div>
 
             <div class="stat-card bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6">
@@ -200,7 +201,7 @@
                     </div>
                 </div>
                 <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ user.rol|title }}</p>
-                <p class="text-sm text-gray-500 dark:text-gray-400">Rol en el Sistema</p>
+                <p class="text-sm text-gray-500 dark:text-gray-400">{% trans "Rol en el Sistema" %}</p>
             </div>
         </div>
 
@@ -212,32 +213,32 @@
                     <svg class="w-6 h-6 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                     </svg>
-                    Información Personal
+                    {% trans "Información Personal" %}
                 </h2>
                 <div class="space-y-4">
                     <div class="flex justify-between items-center pb-3 border-b border-gray-100 dark:border-gray-700">
-                        <span class="text-sm text-gray-600 dark:text-gray-400">Nombres:</span>
+                        <span class="text-sm text-gray-600 dark:text-gray-400">{% trans "Nombres:" %}</span>
                         <span class="text-sm font-semibold text-gray-900 dark:text-white">{{ user.nombres|default:user.first_name }}</span>
                     </div>
                     <div class="flex justify-between items-center pb-3 border-b border-gray-100 dark:border-gray-700">
-                        <span class="text-sm text-gray-600 dark:text-gray-400">Apellidos:</span>
+                        <span class="text-sm text-gray-600 dark:text-gray-400">{% trans "Apellidos:" %}</span>
                         <span class="text-sm font-semibold text-gray-900 dark:text-white">{{ user.apellidos|default:user.last_name }}</span>
                     </div>
                     <div class="flex justify-between items-center pb-3 border-b border-gray-100 dark:border-gray-700">
-                        <span class="text-sm text-gray-600 dark:text-gray-400">Nombre de usuario:</span>
+                        <span class="text-sm text-gray-600 dark:text-gray-400">{% trans "Nombre de usuario:" %}</span>
                         <span class="text-sm font-semibold text-gray-900 dark:text-white">@{{ user.username }}</span>
                     </div>
                     <div class="flex justify-between items-center pb-3 border-b border-gray-100 dark:border-gray-700">
-                        <span class="text-sm text-gray-600 dark:text-gray-400">Correo electrónico:</span>
+                        <span class="text-sm text-gray-600 dark:text-gray-400">{% trans "Correo electrónico:" %}</span>
                         <span class="text-sm font-semibold text-gray-900 dark:text-white">{{ user.email }}</span>
                     </div>
                     <div class="flex justify-between items-center pb-3 border-b border-gray-100 dark:border-gray-700">
-                        <span class="text-sm text-gray-600 dark:text-gray-400">Fecha de registro:</span>
+                        <span class="text-sm text-gray-600 dark:text-gray-400">{% trans "Fecha de registro:" %}</span>
                         <span class="text-sm font-semibold text-gray-900 dark:text-white">{{ user.fecha_registro|date:"d/m/Y H:i" }}</span>
                     </div>
                     {% if user.last_login %}
                     <div class="flex justify-between items-center">
-                        <span class="text-sm text-gray-600 dark:text-gray-400">Último inicio de sesión:</span>
+                        <span class="text-sm text-gray-600 dark:text-gray-400">{% trans "Último inicio de sesión:" %}</span>
                         <span class="text-sm font-semibold text-gray-900 dark:text-white">{{ user.last_login|date:"d/m/Y H:i" }}</span>
                     </div>
                     {% endif %}
@@ -250,49 +251,49 @@
                     <svg class="w-6 h-6 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                     </svg>
-                    Información Profesional
+                    {% trans "Información Profesional" %}
                 </h2>
                 <div class="space-y-4">
                     <div class="flex justify-between items-center pb-3 border-b border-gray-100 dark:border-gray-700">
-                        <span class="text-sm text-gray-600 dark:text-gray-400">Especialidad:</span>
+                        <span class="text-sm text-gray-600 dark:text-gray-400">{% trans "Especialidad:" %}</span>
                         <span class="text-sm font-semibold text-gray-900 dark:text-white">{{ user.especialidad|default:"No especificada" }}</span>
                     </div>
                     {% if user.numero_licencia %}
                     <div class="flex justify-between items-center pb-3 border-b border-gray-100 dark:border-gray-700">
-                        <span class="text-sm text-gray-600 dark:text-gray-400">Número de Licencia:</span>
+                        <span class="text-sm text-gray-600 dark:text-gray-400">{% trans "Número de Licencia:" %}</span>
                         <span class="text-sm font-semibold text-gray-900 dark:text-white">{{ user.numero_licencia }}</span>
                     </div>
                     {% endif %}
                     <div class="flex justify-between items-center pb-3 border-b border-gray-100 dark:border-gray-700">
-                        <span class="text-sm text-gray-600 dark:text-gray-400">Rol:</span>
+                        <span class="text-sm text-gray-600 dark:text-gray-400">{% trans "Rol:" %}</span>
                         <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-purple-100 dark:bg-purple-900/50 text-purple-800 dark:text-purple-300">
                             {{ user.rol|title }}
                         </span>
                     </div>
                     <div class="flex justify-between items-center pb-3 border-b border-gray-100 dark:border-gray-700">
-                        <span class="text-sm text-gray-600 dark:text-gray-400">Permisos de Staff:</span>
+                        <span class="text-sm text-gray-600 dark:text-gray-400">{% trans "Permisos de Staff:" %}</span>
                         <span class="text-sm font-semibold text-gray-900 dark:text-white">
                             {% if user.is_staff %}
-                                <span class="text-green-600 dark:text-green-400">✓ Sí</span>
+                                <span class="text-green-600 dark:text-green-400">✓ {% trans "Sí" %}</span>
                             {% else %}
-                                <span class="text-gray-400">✗ No</span>
+                                <span class="text-gray-400">✗ {% trans "No" %}</span>
                             {% endif %}
                         </span>
                     </div>
                     <div class="flex justify-between items-center pb-3 border-b border-gray-100 dark:border-gray-700">
-                        <span class="text-sm text-gray-600 dark:text-gray-400">Superusuario:</span>
+                        <span class="text-sm text-gray-600 dark:text-gray-400">{% trans "Superusuario:" %}</span>
                         <span class="text-sm font-semibold text-gray-900 dark:text-white">
                             {% if user.is_superuser %}
-                                <span class="text-green-600 dark:text-green-400">✓ Sí</span>
+                                <span class="text-green-600 dark:text-green-400">✓ {% trans "Sí" %}</span>
                             {% else %}
-                                <span class="text-gray-400">✗ No</span>
+                                <span class="text-gray-400">✗ {% trans "No" %}</span>
                             {% endif %}
                         </span>
                     </div>
                     <div class="flex justify-between items-center">
-                        <span class="text-sm text-gray-600 dark:text-gray-400">Total de Validaciones:</span>
+                        <span class="text-sm text-gray-600 dark:text-gray-400">{% trans "Total de Validaciones:" %}</span>
                         <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 dark:bg-blue-900/50 text-blue-800 dark:text-blue-300">
-                            {{ user.validaciones.count }} validación{{ user.validaciones.count|pluralize:"es" }}
+                            {{ user.validaciones.count }} {% trans "validación" %}{{ user.validaciones.count|pluralize:"es" }}
                         </span>
                     </div>
                 </div>
@@ -308,7 +309,7 @@
                         <svg class="w-6 h-6 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                         </svg>
-                        Editar Perfil
+                        {% trans "Editar Perfil" %}
                     </h3>
                     <button id="closeModalBtn" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -323,15 +324,15 @@
                     
                     <!-- Profile Image Upload -->
                     <div class="mb-6">
-                        <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">Imagen de Perfil</label>
+                        <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">{% trans "Imagen de Perfil" %}</label>
                         <div class="flex items-center gap-6">
                             <!-- Current/Preview Image -->
                             <div class="relative group">
                                 <div id="imagePreviewContainer" class="w-24 h-24 rounded-full overflow-hidden border-4 border-purple-100 dark:border-purple-900/50 bg-purple-50 dark:bg-purple-900/30">
                                     {% if user.imagen %}
-                                        <img id="imagePreview" src="{{ user.imagen.url }}" alt="Preview" class="w-full h-full object-cover">
+                                        <img id="imagePreview" src="{{ user.imagen.url }}" alt="{% trans 'Vista previa' %}" class="w-full h-full object-cover">
                                     {% else %}
-                                        <img id="imagePreview" src="{% static 'img/profile.png' %}" alt="Preview" class="w-full h-full object-cover">
+                                        <img id="imagePreview" src="{% static 'img/profile.png' %}" alt="{% trans 'Vista previa' %}" class="w-full h-full object-cover">
                                     {% endif %}
                                 </div>
                             </div>
@@ -343,14 +344,14 @@
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                         </svg>
-                                        Elegir imagen
+                                        {% trans "Elegir imagen" %}
                                     </label>
                                     <button type="button" id="removeImageBtn" class="px-4 py-2 bg-red-100 hover:bg-red-200 dark:bg-red-900/50 dark:hover:bg-red-900/70 text-red-700 dark:text-red-300 rounded-lg text-sm font-semibold transition-colors">
-                                        Eliminar
+                                        {% trans "Eliminar" %}
                                     </button>
                                 </div>
                                 <input type="file" id="{{ form.imagen.id_for_label }}" name="imagen" accept="image/*" class="hidden">
-                                <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">JPG, PNG o GIF. Máximo 2MB.</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">{% trans "JPG, PNG o GIF. Máximo 2MB." %}</p>
                             </div>
                         </div>
                     </div>
@@ -360,7 +361,7 @@
                         <!-- Nombres -->
                         <div>
                             <label for="{{ form.nombres.id_for_label }}" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                                Nombres <span class="text-red-500">*</span>
+                                {% trans "Nombres" %} <span class="text-red-500">*</span>
                             </label>
                             {{ form.nombres }}
                             {% if form.nombres.errors %}
@@ -371,7 +372,7 @@
                         <!-- Apellidos -->
                         <div>
                             <label for="{{ form.apellidos.id_for_label }}" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                                Apellidos <span class="text-red-500">*</span>
+                                {% trans "Apellidos" %} <span class="text-red-500">*</span>
                             </label>
                             {{ form.apellidos }}
                             {% if form.apellidos.errors %}
@@ -382,7 +383,7 @@
                         <!-- Email -->
                         <div class="md:col-span-2">
                             <label for="{{ form.email.id_for_label }}" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                                Correo Electrónico <span class="text-red-500">*</span>
+                                {% trans "Correo Electrónico" %} <span class="text-red-500">*</span>
                             </label>
                             {{ form.email }}
                             {% if form.email.errors %}
@@ -393,7 +394,7 @@
                         <!-- Especialidad -->
                         <div>
                             <label for="{{ form.especialidad.id_for_label }}" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                                Especialidad
+                                {% trans "Especialidad" %}
                             </label>
                             {{ form.especialidad }}
                             {% if form.especialidad.errors %}
@@ -404,7 +405,7 @@
                         <!-- Número de Licencia -->
                         <div>
                             <label for="{{ form.numero_licencia.id_for_label }}" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                                Número de Licencia
+                                {% trans "Número de Licencia" %}
                             </label>
                             {{ form.numero_licencia }}
                             {% if form.numero_licencia.errors %}
@@ -416,13 +417,13 @@
                     <!-- Form Actions -->
                     <div class="flex items-center justify-end gap-3 mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
                         <button type="button" id="cancelBtn" class="px-6 py-2.5 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-xl text-sm font-semibold hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
-                            Cancelar
+                            {% trans "Cancelar" %}
                         </button>
                         <button type="submit" class="px-6 py-2.5 bg-gradient-to-r from-purple-300 to-purple-500 hover:from-purple-400 hover:to-purple-600 text-white rounded-xl text-sm font-semibold shadow-md hover:shadow-lg transition-all flex items-center gap-2">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                             </svg>
-                            Guardar Cambios
+                            {% trans "Guardar Cambios" %}
                         </button>
                     </div>
                 </form>
@@ -434,7 +435,7 @@
 <script>
     // Inicializar página de perfil
     document.addEventListener('DOMContentLoaded', function() {
-        console.log('Perfil cargado');
+        console.log('{% trans "Perfil cargado" %}');
         
         // Animar las estadísticas
         const statCards = document.querySelectorAll('.stat-card');
@@ -491,14 +492,14 @@
             if (file) {
                 // Validar tamaño (2MB)
                 if (file.size > 2 * 1024 * 1024) {
-                    alert('La imagen no debe superar los 2MB');
+                    alert('{% trans "La imagen no debe superar los 2MB" %}');
                     e.target.value = '';
                     return;
                 }
 
                 // Validar tipo
                 if (!file.type.startsWith('image/')) {
-                    alert('Por favor, selecciona un archivo de imagen válido');
+                    alert('{% trans "Por favor, selecciona un archivo de imagen válido" %}');
                     e.target.value = '';
                     return;
                 }
@@ -526,7 +527,7 @@
 
             if (!nombres || !apellidos || !email) {
                 e.preventDefault();
-                alert('Por favor, completa todos los campos obligatorios (*)');
+                alert('{% trans "Por favor, completa todos los campos obligatorios (*)" %}');
                 return false;
             }
 
@@ -534,7 +535,7 @@
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailRegex.test(email)) {
                 e.preventDefault();
-                alert('Por favor, ingresa un correo electrónico válido');
+                alert('{% trans "Por favor, ingresa un correo electrónico válido" %}');
                 return false;
             }
         });
