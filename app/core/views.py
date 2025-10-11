@@ -1,13 +1,20 @@
-from django.views.generic import TemplateView, UpdateView
+from django.views.generic import TemplateView, UpdateView, ListView
 from django.contrib.auth.views import LoginView, LogoutView, PasswordResetView, PasswordResetDoneView, PasswordResetConfirmView, PasswordResetCompleteView
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
-from django.views.generic.edit import CreateView
+from django.views.generic.edit import CreateView, DeleteView
 from django.urls import reverse_lazy
 from django.contrib import messages
-from django.shortcuts import redirect
-from .forms import ProfesionalLoginForm, ProfesionalRegistrationForm, ProfesionalUpdateForm, ProfesionalPasswordResetForm, ProfesionalSetPasswordForm
+from django.shortcuts import redirect, get_object_or_404, render
+from .forms import ProfesionalLoginForm, ProfesionalRegistrationForm, ProfesionalUpdateForm, ProfesionalPasswordResetForm, ProfesionalSetPasswordForm, NinoForm
 from django.contrib.auth import login
+from django.db.utils import OperationalError
+import logging
+from .models import Nino
+from django.http import JsonResponse
+from django.views import View
+
+logger = logging.getLogger(__name__)
 
 
 # ==================== VISTAS DE AUTENTICACIÓN ====================
@@ -84,6 +91,31 @@ class ProfesionalRegisterView(CreateView):
         messages.error(self.request, 'Error en el registro. Por favor, verifica los datos ingresados.')
         return super().form_invalid(form)
 
+    def post(self, request, *args, **kwargs):
+        """Sobrescribimos post para capturar errores de BD (p.ej. columna faltante) y evitar 500s.
+
+        Si ocurre un OperationalError, se registra y se muestra un mensaje amigable al usuario
+        indicando acción recomendada (revisar migraciones o la estructura del modelo `Profesional`).
+        """
+        try:
+            return super().post(request, *args, **kwargs)
+        except OperationalError as e:
+            # Mensaje claro para el usuario
+            messages.error(request, (
+                'Error del servidor al procesar el registro: falta una columna en la base de datos. '
+                'Esto suele ocurrir cuando el modelo y la base de datos están desincronizados (migrations pendientes) '
+                'o falta una migración. Por favor, ejecuta `python manage.py migrate` o restaura el esquema correcto.'
+            ))
+            # Log completo para depuración
+            logger.exception('OperationalError en ProfesionalRegisterView durante registro: %s', e)
+            # Redirigir al formulario de registro para que el usuario no vea un 500
+            return redirect('core:register')
+        except Exception as e:
+            # Capturar otros errores inesperados para evitar caída y registrar
+            logger.exception('Error inesperado en ProfesionalRegisterView: %s', e)
+            messages.error(request, 'Ocurrió un error inesperado. Por favor contacta al administrador.')
+            return redirect('core:register')
+
 
 class ProfesionalLogoutView(LogoutView):
     """Vista para cerrar sesión"""
@@ -97,6 +129,8 @@ class ProfesionalLogoutView(LogoutView):
     def dispatch(self, request, *args, **kwargs):
         """Procesar el logout y agregar mensaje"""
         response = super().dispatch(request, *args, **kwargs)
+        # Asegurarse de cerrar la sesión correctamente
+        request.session.flush()
         # Agregar un mensaje como cookie temporal que se mostrará en el login
         if isinstance(response, redirect.__class__) or hasattr(response, 'url'):
             response.set_cookie('logout_message', '1', max_age=5)
@@ -258,3 +292,63 @@ class ProfesionalPasswordResetConfirmView(PasswordResetConfirmView):
 class ProfesionalPasswordResetCompleteView(PasswordResetCompleteView):
     """Vista final después de cambiar la contraseña"""
     template_name = 'auth/password_reset_complete.html'
+
+
+@method_decorator(login_required, name='dispatch')
+class EditarNinoView(UpdateView):
+    """Vista para editar los datos de un niño asociado a un profesional"""
+    model = Nino
+    form_class = NinoForm
+    template_name = 'nino/editar_nino.html'
+    success_url = reverse_lazy('core:calendar')
+
+    def get_object(self, queryset=None):
+        """Asegurarse de que el profesional solo pueda editar sus propios niños."""
+        return get_object_or_404(Nino, pk=self.kwargs['pk'], profesional=self.request.user)
+
+    def form_valid(self, form):
+        messages.success(self.request, 'El niño ha sido actualizado exitosamente.')
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, 'Hubo un error al actualizar el niño. Por favor, verifica los datos ingresados.')
+        return super().form_invalid(form)
+
+    def get_initial(self):
+        """Asegurar que los valores iniciales incluyan la fecha de nacimiento."""
+        initial = super().get_initial()
+        nino = self.get_object()
+        initial['fecha_nacimiento'] = nino.fecha_nacimiento.strftime('%Y-%m-%d')
+        return initial
+
+
+class ObtenerDatosNinoView(View):
+    def get(self, request, pk):
+        """Devuelve los datos de un niño en formato JSON."""
+        try:
+            nino = Nino.objects.get(pk=pk, profesional=request.user)
+            return JsonResponse({
+                'success': True,
+                'nino': {
+                    'nombres': nino.nombres,
+                    'apellidos': nino.apellidos,
+                    'fecha_nacimiento': nino.fecha_nacimiento.strftime('%Y-%m-%d'),
+                    'edad': nino.edad,
+                    'genero': nino.genero,
+                    'idioma_nativo': nino.idioma_nativo,
+                }
+            })
+        except Nino.DoesNotExist:
+            return JsonResponse({'success': False, 'error': 'Niño no encontrado.'}, status=404)
+
+
+class ListaNinosView(ListView):
+    model = Nino
+    template_name = 'nino/lista_ninos.html'
+    context_object_name = 'ninos'
+
+
+class EliminarNinoView(DeleteView):
+    model = Nino
+    template_name = 'nino/confirmar_eliminar_nino.html'
+    success_url = reverse_lazy('core:lista_ninos')

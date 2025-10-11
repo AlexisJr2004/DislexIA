@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, PasswordResetForm, SetPasswordForm
-from .models import Profesional
+from .models import Profesional, Nino
 
 
 class ProfesionalUpdateForm(forms.ModelForm):
@@ -207,3 +207,40 @@ class ProfesionalSetPasswordForm(SetPasswordForm):
         }),
         label='Confirmar contraseña'
     )
+
+
+class NinoForm(forms.ModelForm):
+    """Formulario mínimo para crear/editar un Niño."""
+    class Meta:
+        model = Nino
+        fields = ['nombres', 'apellidos', 'fecha_nacimiento', 'edad', 'genero', 'idioma_nativo', 'imagen']
+        widgets = {
+            'nombres': forms.TextInput(attrs={
+                'class': 'w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all',
+                'placeholder': 'Nombres del niño'
+            }),
+            'apellidos': forms.TextInput(attrs={
+                'class': 'w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all',
+                'placeholder': 'Apellidos del niño'
+            }),
+            'fecha_nacimiento': forms.DateInput(attrs={
+                'class': 'w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all',
+                'type': 'date'
+            }),
+            'edad': forms.NumberInput(attrs={
+                'class': 'w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all',
+                'placeholder': 'Edad en años'
+            }),
+            'genero': forms.Select(attrs={
+                'class': 'w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all'
+            }),
+            'idioma_nativo': forms.TextInput(attrs={
+                'class': 'w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all',
+                'placeholder': 'Idioma nativo del niño'
+            }),
+            'imagen': forms.FileInput(attrs={
+                'class': 'hidden',
+                'accept': 'image/*',
+                'id': 'imagen-nino-input'
+            })
+        }

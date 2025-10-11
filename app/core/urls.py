@@ -23,4 +23,10 @@ urlpatterns = [
     path('profile/', views.ProfileView.as_view(), name='profile'),
     path('profile/update/', views.ProfileUpdateView.as_view(), name='profile_update'),
     path('account/delete/', views.DeleteAccountView.as_view(), name='delete_account'),
+
+    # Gestión de niños
+    path('nino/<int:pk>/editar/', views.EditarNinoView.as_view(), name='editar_nino'),
+    path('nino/<int:pk>/datos/', views.ObtenerDatosNinoView.as_view(), name='obtener_datos_nino'),
+    path('lista-ninos/', views.ListaNinosView.as_view(), name='lista_ninos'),
+    path('eliminar-nino/<int:pk>/', views.EliminarNinoView.as_view(), name='eliminar_nino'),
 ]

@@ -13,6 +13,8 @@ from django.conf import settings
 
 from .models import Juego, SesionJuego, Evaluacion
 from app.core.models import Nino
+from app.core.forms import NinoForm
+from app.core.models import Profesional
 
 @method_decorator(login_required, name='dispatch')
 class GameListView(TemplateView):
@@ -24,10 +26,17 @@ class GameListView(TemplateView):
         # Obtener todos los juegos activos ordenados por su orden de visualización
         juegos = Juego.objects.filter(activo=True).order_by('orden_visualizacion', 'nombre')
         
+        # Obtener el profesional actual directamente desde el usuario
+        profesional = self.request.user
+
+        # Obtener los niños asociados al profesional actual
+        ninos = Nino.objects.filter(profesional=profesional)
+
         context.update({
             'page_title': 'Juegos - DislexIA',
             'active_section': 'games',
             'juegos': juegos,
+            'ninos': ninos,
         })
         return context
 
@@ -42,12 +51,30 @@ class InitGameView(TemplateView):
         # Obtener el juego
         juego = get_object_or_404(Juego, slug=juego_slug, activo=True)
         
-        # IMPORTANTE: Por ahora usar el niño con ID=1 por defecto
-        try:
-            nino = Nino.objects.get(id=1)
-        except Nino.DoesNotExist:
-            messages.error(request, "No se encontró un niño configurado. Por favor, configure al menos un niño antes de continuar.")
-            return redirect('games:game_list')
+        # Priorizar nino_id pasado por querystring
+        nino = None
+        nino_id = request.GET.get('nino_id')
+        if nino_id:
+            try:
+                nino = Nino.objects.get(id=int(nino_id))
+            except (Nino.DoesNotExist, ValueError):
+                messages.error(request, "Niño no encontrado (nino_id inválido).")
+                return redirect('games:game_list')
+
+        # Si no se pasó nino_id, intentar usar el primer niño asociado al profesional
+        if not nino:
+            user = getattr(request, 'user', None)
+            if user and user.is_authenticated and isinstance(user, Profesional):
+                # intentar obtener un niño asociado a este profesional
+                nino = Nino.objects.filter(profesional=user, activo=True).order_by('-fecha_registro').first()
+
+        # Si aún no hay niño, usar por defecto id=1 (legacy) o pedir crear uno
+        if not nino:
+            try:
+                nino = Nino.objects.get(id=1)
+            except Nino.DoesNotExist:
+                messages.error(request, "No se encontró un niño configurado. Por favor, configure al menos un niño antes de continuar.")
+                return redirect('games:game_list')
         
         # Crear nueva evaluación
         evaluacion = Evaluacion.objects.create(
@@ -176,6 +203,34 @@ def save_question_response(request):
 
 @csrf_exempt
 @require_http_methods(["POST"])
+def crear_nino_ajax(request):
+    """Crear un niño asociado al profesional autenticado vía AJAX.
+    Espera campos del NinoForm en POST.
+    """
+    try:
+        # Si el usuario no está autenticado, retornar error
+        user = getattr(request, 'user', None)
+        if not user or not user.is_authenticated:
+            return JsonResponse({'success': False, 'error': 'Autenticación requerida'}, status=401)
+
+        # Bind form
+        form = NinoForm(request.POST)
+        if form.is_valid():
+            nino = form.save(commit=False)
+            # Asignar profesional si es instancia de Profesional
+            if isinstance(user, Profesional):
+                nino.profesional = user
+            nino.save()
+            return JsonResponse({'success': True, 'nino': {'id': nino.id, 'nombre_completo': nino.nombre_completo}})
+        else:
+            return JsonResponse({'success': False, 'errors': form.errors}, status=400)
+
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)}, status=500)
+
+
+@csrf_exempt
+@require_http_methods(["POST"])
 def save_level_complete(request):
     """API endpoint para guardar la finalización de un nivel"""
     try:
@@ -263,3 +318,30 @@ def finish_game_session(request, url_sesion):
             'success': False,
             'error': str(e)
         }, status=400)
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def asignar_nino(request):
+    """Asocia un niño existente con un juego."""
+    nino_id = request.POST.get('nino_id')
+    juego_slug = request.POST.get('juego_slug')
+
+    if not nino_id or not juego_slug:
+        return JsonResponse({'success': False, 'error': 'Datos incompletos.'}, status=400)
+
+    try:
+        nino = Nino.objects.get(id=nino_id, profesional=request.user)
+        juego = Juego.objects.get(slug=juego_slug)
+
+        # Crear o actualizar la sesión del juego
+        sesion, created = SesionJuego.objects.get_or_create(
+            nino=nino,
+            juego=juego,
+            defaults={'fecha_inicio': timezone.now()}
+        )
+
+        return JsonResponse({'success': True, 'redirect_url': f"{juego.get_absolute_url()}?nino_id={nino.id}"})
+    except Nino.DoesNotExist:
+        return JsonResponse({'success': False, 'error': 'Niño no encontrado.'}, status=404)
+    except Juego.DoesNotExist:
+        return JsonResponse({'success': False, 'error': 'Juego no encontrado.'}, status=404)

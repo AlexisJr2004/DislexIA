@@ -14,4 +14,8 @@ urlpatterns = [
     path('api/question-response/', views.save_question_response, name='save_question_response'),
     path('api/level-complete/', views.save_level_complete, name='save_level_complete'),
     path('api/finish/<str:url_sesion>/', views.finish_game_session, name='finish_game_session'),
+    # Endpoint AJAX para crear niño y asociarlo al profesional
+    path('api/crear-nino/', views.crear_nino_ajax, name='crear_nino_ajax'),
+    # Endpoint para asignar un niño existente a un juego
+    path('asignar-nino/', views.asignar_nino, name='asignar_nino'),
 ]
