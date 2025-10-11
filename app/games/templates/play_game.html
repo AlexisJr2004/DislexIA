@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+
 {% load static %}
 
 {% block title %}{{ page_title }}{% endblock %}
@@ -7,13 +8,14 @@
 <style>
     .game-container {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        min-height: calc(100vh - 80px);
+        min-height: 100vh;
     }
     
     .game-header {
-        background: rgba(255, 255, 255, 0.95);
+        background: rgba(255, 255, 255, 0.98);
         backdrop-filter: blur(10px);
-        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        border-bottom: 2px solid rgba(139, 92, 246, 0.1);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     }
     
     .config-viewer {
@@ -49,78 +51,95 @@
         from { opacity: 1; }
         to { opacity: 0.6; }
     }
+        /* Ocultar sidebar */
+    body > div.w-56.fixed {
+        display: none !important;
+    }
+    
+    /* Ocultar topbar */
+    body > div.ml-56 > div.bg-white.dark\:bg-gray-900.px-8 {
+        display: none !important;
+    }
+    
+    /* Eliminar margen izquierdo del contenedor principal */
+    body > div.ml-56 {
+        margin-left: 0 !important;
+    }
+    
+    /* Hacer que el contenedor de contenido ocupe toda la pantalla */
+    #content-area {
+        padding: 0 !important;
+        min-height: 100vh !important;
+    }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="game-container">
-    <!-- Header del juego -->
-    <div class="game-header px-6 py-4">
-        <div class="flex items-center justify-between">
-            <div class="flex items-center gap-4">
-                <a href="{% url 'games:game_list' %}" 
-                   class="text-gray-600 hover:text-gray-800 transition-colors">
-                    <i class="fas fa-arrow-left text-xl"></i>
-                </a>
-                <div>
-                    <h1 class="text-2xl font-bold text-gray-900">{{ juego.nombre }}</h1>
-                    <p class="text-gray-600">{{ nino.nombre_completo }} - Evaluación #{{ evaluacion.id }}</p>
-                </div>
+<div class="game-container" style="margin: 0; padding: 0;">
+    <!-- Barra superior compacta con toda la info -->
+    <div class="game-header px-4 py-2 flex justify-between items-center">
+        <!-- Izquierda: Título del juego -->
+        <div class="flex items-center gap-3">
+            <div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
+                <i class="fas fa-gamepad text-purple-600 text-sm"></i>
+            </div>
+            <h1 class="text-lg font-bold text-gray-900">{{ juego.nombre }}</h1>
+        </div>
+        
+        <!-- Centro: Indicadores en línea -->
+        <div class="flex items-center gap-4">
+            <!-- Timer -->
+            <div class="flex items-center gap-2 bg-gray-100 px-3 py-1.5 rounded-full">
+                <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                <span class="text-gray-700 font-medium text-sm" id="tiempo-transcurrido-mini">00:00</span>
             </div>
             
-            <div class="flex items-center gap-4">
-                <div class="px-4 py-2 bg-green-100 text-green-800 rounded-lg">
-                    <i class="fas fa-play-circle mr-2"></i>
-                    <span class="font-medium">En Progreso</span>
-                </div>
-                <button id="btn-finish-game" 
-                        class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors">
-                    <i class="fas fa-stop mr-2"></i>
-                    Finalizar Juego
-                </button>
+            <!-- Puntaje -->
+            <div class="bg-purple-100 px-3 py-1.5 rounded-full">
+                <span class="text-purple-600 font-bold text-sm" id="puntaje-actual">{{ sesion.puntaje_total }}</span>
+                <span class="text-purple-500 text-xs ml-1">pts</span>
             </div>
         </div>
+        
+        <!-- Derecha: Botón de salida -->
+        <button id="btn-finish-game" 
+                class="px-4 py-1.5 bg-red-500 hover:bg-red-600 text-white text-sm rounded-lg transition-all flex items-center gap-2">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>Salir</span>
+        </button>
     </div>
-
     <!-- Contenido principal del juego -->
-    <div class="px-6 py-8">
-        <div class="max-w-6xl mx-auto">
-            
-            <!-- Información de la sesión -->
-            <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
+    <div class="px-4 py-3">
+        <div class="max-w-7xl mx-auto">
+            <!-- Información de la sesión (oculta durante el juego, visible al finalizar) -->
+            <div id="session-stats" class="hidden bg-white rounded-xl shadow-lg p-6 mb-6">
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    <div class="text-center">
-                        <div class="text-2xl font-bold text-purple-600">{{ sesion.nivel_seleccionado }}</div>
-                        <div class="text-sm text-gray-500">Nivel</div>
-                    </div>
-                    <div class="text-center">
-                        <div class="text-2xl font-bold text-blue-600">{{ sesion.puntaje_total }}</div>
-                        <div class="text-sm text-gray-500">Puntaje</div>
-                    </div>
-                    <div class="text-center">
-                        <div class="text-2xl font-bold text-green-600">{{ sesion.preguntas_respondidas }}</div>
-                        <div class="text-sm text-gray-500">Preguntas</div>
-                    </div>
-                    <div class="text-center">
-                        <div class="text-2xl font-bold text-orange-600" id="tiempo-transcurrido">00:00</div>
-                        <div class="text-sm text-gray-500">Tiempo</div>
+                    <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                            <div class="text-center">
+                                <div class="text-2xl font-bold text-purple-600">{{ sesion.nivel_seleccionado }}</div>
+                                <div class="text-sm text-gray-500">Nivel</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-2xl font-bold text-blue-600">{{ sesion.puntaje_total }}</div>
+                                <div class="text-sm text-gray-500">Puntaje</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-2xl font-bold text-green-600">{{ sesion.preguntas_respondidas }}</div>
+                                <div class="text-sm text-gray-500">Preguntas</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-2xl font-bold text-orange-600" id="tiempo-transcurrido">00:00</div>
+                                <div class="text-sm text-gray-500">Tiempo</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <!-- Área principal del juego -->
             <div class="bg-white rounded-xl shadow-lg overflow-hidden">
-                <div class="bg-gray-50 px-6 py-4 border-b">
-                    <h2 class="text-lg font-semibold text-gray-800">
-                        <i class="fas fa-gamepad mr-2 text-purple-600"></i>
-                        Contenido del Juego - {{ juego.nombre }}
-                    </h2>
-                    <!-- <p class="text-sm text-gray-600 mt-1">
-                        URL de sesión: <code class="bg-gray-200 px-2 py-1 rounded text-xs">{{ sesion.url_sesion }}</code>
-                    </p> -->
-                </div>
-                
-                <div class="p-6">
+                <div class="p-4">
                     <!-- Por ahora mostrar la configuración JSON -->
                     <!-- <div class="mb-6">
                         <h3 class="text-md font-medium text-gray-700 mb-3">
@@ -134,16 +153,15 @@
                     </div> -->
 
                     <!-- Área principal del juego -->
-                    <div id="game-area" class="mt-8">
+                    <div id="game-area" class="flex items-center justify-center" style="min-height: calc(100vh - 120px);">
                         <!-- El contenido del juego se carga dinámicamente aquí -->
                         <div class="text-center py-12">
                             <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
                             <p class="text-gray-600">Cargando juego...</p>
                         </div>
                     </div>
-
-                    <!-- Información adicional -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Información adicional (solo para el profesional, oculta durante el juego) -->
+                    <div id="professional-info" class="hidden grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
                         <div class="bg-gray-50 rounded-lg p-4">
                             <h4 class="font-medium text-gray-700 mb-2">Información del Juego</h4>
                             <div class="space-y-2 text-sm">
@@ -235,8 +253,24 @@
             if (timerElement) {
                 timerElement.textContent = timeString;
             }
+
+            const timerMiniElement = document.getElementById('tiempo-transcurrido-mini');
+            if (timerMiniElement) {
+                timerMiniElement.textContent = timeString;
+            }
         }
-        
+        // Función para actualizar el puntaje (llamar desde el juego)
+        window.updateScore = function(newScore) {
+            const scoreElement = document.getElementById('puntaje-actual');
+            if (scoreElement) {
+                scoreElement.textContent = newScore;
+                // Animación de cambio
+                scoreElement.classList.add('scale-125');
+                setTimeout(() => {
+                    scoreElement.classList.remove('scale-125');
+                }, 200);
+            }
+        };
         // Modal de finalización
         const btnFinish = document.getElementById('btn-finish-game');
         const modal = document.getElementById('modal-finish');
@@ -282,8 +316,18 @@
                     const data = await response.json();
                     
                     if (data.success) {
-                        alert('Sesión finalizada correctamente');
-                        window.location.href = '{% url "games:game_list" %}';
+                        // Mostrar estadísticas antes de salir
+                        document.getElementById('session-stats').classList.remove('hidden');
+                        document.getElementById('professional-info').classList.remove('hidden');
+                        document.getElementById('game-area').classList.add('hidden');
+                        
+                        // Scroll hacia arriba para ver las estadísticas
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                        
+                        // Dar tiempo para revisar antes de redirigir
+                        setTimeout(() => {
+                            window.location.href = '{% url "games:game_list" %}';
+                        }, 3000);
                     } else {
                         alert('Error al finalizar sesión: ' + data.error);
                     }
