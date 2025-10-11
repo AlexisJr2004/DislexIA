@@ -13,6 +13,9 @@ class SeleccionaPalabraCorrectaGame {
         this.score = 0;
         this.correctAnswers = 0;
         this.incorrectAnswers = 0;
+        // Agregar totales generales
+        this.totalCorrectAnswers = 0;
+        this.totalIncorrectAnswers = 0;
         this.startTime = Date.now();
         this.questionStartTime = null;
         this.isGameActive = false;
@@ -34,58 +37,69 @@ class SeleccionaPalabraCorrectaGame {
         }
         
         gameArea.innerHTML = `
-            <div class="word-selection-game">
+            <div class="word-selection-game max-w-7xl mx-auto p-4">
                 <!-- Encabezado del juego -->
-                <div class="game-header bg-gradient-to-r from-purple-600 to-blue-600 text-white p-6 rounded-lg mb-6">
-                    <div class="flex justify-between items-center">
-                        <div>
-                            <h2 class="text-2xl font-bold mb-2">🎯 Selecciona la Palabra Correcta</h2>
-                            <p class="text-purple-100">Nivel ${this.currentLevel} - Pregunta <span id="current-question">1</span> de <span id="total-questions">5</span></p>
-                            <p class="text-purple-200 text-sm mt-1">🎲 Ejercicios seleccionados aleatoriamente</p>
+                <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-6 mb-6 transition-colors duration-200">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 bg-gradient-to-r from-purple-500 to-blue-500 rounded-xl flex items-center justify-center">
+                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                </svg>
+                            </div>
+                            <div>
+                                <h2 class="text-xl font-bold text-gray-900 dark:text-white">Selecciona la Palabra Correcta</h2>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">Nivel 1 • Pregunta <span id="current-question">1</span> de <span id="total-questions">5</span></p>
+                            </div>
                         </div>
                         <div class="text-right">
-                            <div class="text-3xl font-bold" id="game-score">${this.score}</div>
-                            <div class="text-sm text-purple-200">Puntos</div>
+                            <div class="text-3xl font-bold text-gray-900 dark:text-white" id="game-score">0</div>
+                            <div class="text-xs font-medium text-gray-500 dark:text-gray-400">Puntos</div>
                         </div>
                     </div>
                 </div>
-                
-                <!-- Progreso -->
-                <div class="progress-bar bg-gray-200 rounded-full h-3 mb-6">
-                    <div class="progress-fill bg-gradient-to-r from-green-400 to-blue-500 h-3 rounded-full transition-all duration-500" 
-                         style="width: 0%" id="progress-bar"></div>
-                </div>
-                
-                <!-- Área de la pregunta -->
-                <div class="question-area bg-white rounded-xl shadow-lg p-8 mb-6">
-                    <div class="text-center">
+
+                <!-- Contenedor de dos columnas -->
+                <div class="grid grid-cols-2 gap-6">
+                    <!-- COLUMNA IZQUIERDA - Imagen y timer -->
+                    <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-8 transition-colors duration-200">
                         <!-- Timer -->
-                        <div class="timer-container mb-4">
-                            <div class="inline-flex items-center gap-2 bg-orange-100 text-orange-800 px-4 py-2 rounded-full">
-                                <i class="fas fa-clock"></i>
-                                <span id="question-timer">30</span>s
+                        <div class="flex justify-center mb-6">
+                            <div class="inline-flex items-center gap-2 bg-orange-50 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 px-4 py-2 rounded-lg border border-orange-200 dark:border-orange-800">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <span id="question-timer" class="font-semibold">30</span>
+                                <span class="text-sm">segundos</span>
                             </div>
                         </div>
                         
                         <!-- Imagen -->
-                        <div class="image-container mb-6">
-                            <img id="question-image" 
-                                 src="" 
-                                 alt="Imagen de la palabra" 
-                                 class="mx-auto max-w-xs h-48 object-contain rounded-lg border-4 border-gray-200 shadow-md">
+                        <div class="flex justify-center">
+                            <div class="relative">
+                                <img id="question-image" 
+                                    src="" 
+                                    alt="Imagen de la palabra" 
+                                    class="w-80 h-64 object-contain rounded-xl border-2 border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 shadow-sm">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- COLUMNA DERECHA - Pregunta y opciones -->
+                    <div class="space-y-6">
+                        <!-- Pregunta -->
+                        <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-6 transition-colors duration-200">
+                            <h3 id="question-text" class="text-center text-lg font-semibold text-gray-900 dark:text-white">
+                                Selecciona la palabra correcta de acuerdo a la imagen
+                            </h3>
                         </div>
                         
-                        <!-- Pregunta -->
-                        <h3 id="question-text" class="text-xl font-semibold text-gray-800 mb-6">
-                            Selecciona la palabra correcta de acuerdo a la imagen.
-                        </h3>
-                    </div>
-                </div>
-                
-                <!-- Opciones de respuesta -->
-                <div class="options-area">
-                    <div class="grid grid-cols-2 gap-4" id="options-container">
-                        <!-- Las opciones se generan dinámicamente -->
+                        <!-- Opciones de respuesta -->
+                        <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-6 transition-colors duration-200">
+                            <div class="grid grid-cols-2 gap-4" id="options-container">
+                                <!-- Las opciones se generan dinámicamente -->
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -188,9 +202,10 @@ class SeleccionaPalabraCorrectaGame {
         shuffledOptions.forEach((option, index) => {
             const optionButton = document.createElement('button');
             optionButton.className = `
-                option-button p-4 bg-gray-50 hover:bg-gray-100 border-2 border-gray-300 
-                hover:border-gray-400 rounded-lg transition-all duration-200 text-lg font-medium
-                focus:outline-none focus:ring-2 focus:ring-gray-400 hover:shadow-md
+                option-button p-5 bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 
+                border-2 border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 
+                rounded-xl transition-all duration-200 text-base font-medium text-gray-900 dark:text-white
+                focus:outline-none focus:ring-2 focus:ring-purple-500 hover:shadow-md
             `;
             optionButton.textContent = option.text;
             optionButton.dataset.optionIndex = index;
@@ -263,37 +278,59 @@ class SeleccionaPalabraCorrectaGame {
     highlightCorrectAnswer() {
         document.querySelectorAll('.option-button').forEach(btn => {
             if (btn.dataset.isCorrect === 'true') {
-                btn.classList.remove('bg-gray-50', 'bg-gray-100', 'border-gray-300', 'border-gray-400');
-                btn.classList.add('bg-green-100', 'border-green-500', 'text-green-800', 'font-semibold');
-                btn.innerHTML = `<i class="fas fa-check-circle mr-2 text-green-600"></i>${btn.textContent}`;
+                btn.className = `
+                    option-button p-5 bg-green-50 dark:bg-green-900/30 border-2 border-green-500 dark:border-green-600
+                    text-green-800 dark:text-green-300 rounded-xl text-base font-semibold shadow-sm
+                `;
+                const originalText = btn.textContent;
+                btn.innerHTML = `
+                    <div class="flex items-center justify-center gap-2">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                        </svg>
+                        <span>${originalText}</span>
+                    </div>
+                `;
             }
         });
     }
     
     showCorrectAnimation(buttonEl) {
         // Limpiar estilos previos y aplicar animación de respuesta correcta
-        buttonEl.classList.remove('bg-gray-50', 'bg-gray-100', 'border-gray-300', 'border-gray-400');
-        buttonEl.classList.add('bg-green-500', 'text-white', 'border-green-600', 'transform', 'scale-105', 'shadow-lg');
-        
-        // Crear efecto de pulso
-        buttonEl.style.animation = 'pulse 0.6s ease-in-out';
+        buttonEl.className = `
+            option-button p-5 bg-green-500 dark:bg-green-600 text-white border-2 border-green-600 dark:border-green-700
+            rounded-xl transition-all duration-200 text-base font-semibold transform scale-105 shadow-lg
+        `;
         
         // Mostrar checkmark temporal
         const originalText = buttonEl.textContent;
-        buttonEl.innerHTML = `<i class="fas fa-check-circle mr-2"></i>${originalText}`;
+        buttonEl.innerHTML = `
+            <div class="flex items-center justify-center gap-2">
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                </svg>
+                <span>${originalText}</span>
+            </div>
+        `;
     }
     
     showIncorrectAnimation(buttonEl) {
         // Limpiar estilos previos y aplicar animación de respuesta incorrecta
-        buttonEl.classList.remove('bg-gray-50', 'bg-gray-100', 'border-gray-300', 'border-gray-400');
-        buttonEl.classList.add('bg-red-500', 'text-white', 'border-red-600', 'shadow-lg');
-        
-        // Crear efecto de shake
-        buttonEl.style.animation = 'shake 0.6s ease-in-out';
+        buttonEl.className = `
+            option-button p-5 bg-red-500 dark:bg-red-600 text-white border-2 border-red-600 dark:border-red-700
+            rounded-xl transition-all duration-200 text-base font-semibold shadow-lg
+        `;
         
         // Mostrar X temporal
         const originalText = buttonEl.textContent;
-        buttonEl.innerHTML = `<i class="fas fa-times-circle mr-2"></i>${originalText}`;
+        buttonEl.innerHTML = `
+            <div class="flex items-center justify-center gap-2">
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                </svg>
+                <span>${originalText}</span>
+            </div>
+        `;
     }
     
     proceedToNext() {
@@ -314,6 +351,9 @@ class SeleccionaPalabraCorrectaGame {
     
     finishLevel() {
         this.isGameActive = false;
+        // Acumular totales antes de mostrar resultados
+        this.totalCorrectAnswers += this.correctAnswers;
+        this.totalIncorrectAnswers += this.incorrectAnswers;
         this.showLevelResults();
     }
     
@@ -324,36 +364,54 @@ class SeleccionaPalabraCorrectaGame {
         
         const gameArea = document.getElementById('game-area');
         gameArea.innerHTML = `
-            <div class="level-results text-center">
-                <div class="bg-gradient-to-r from-purple-600 to-blue-600 text-white p-8 rounded-xl mb-6">
-                    <h2 class="text-3xl font-bold mb-4">🎉 ¡Nivel ${this.currentLevel} Completado!</h2>
-                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                        <div class="bg-white bg-opacity-20 rounded-lg p-4">
-                            <div class="text-2xl font-bold">${this.score}</div>
-                            <div class="text-sm">Puntos Totales</div>
+            <div class="level-results max-w-3xl mx-auto">
+                <!-- Encabezado de resultados -->
+                <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-8 mb-6 transition-colors duration-200">
+                    <div class="text-center mb-6">
+                        <div class="w-20 h-20 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                            </svg>
                         </div>
-                        <div class="bg-white bg-opacity-20 rounded-lg p-4">
-                            <div class="text-2xl font-bold text-green-300">${this.correctAnswers}</div>
-                            <div class="text-sm">Aciertos</div>
+                        <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">¡Nivel ${this.currentLevel} Completado!</h2>
+                        <p class="text-gray-500 dark:text-gray-400">Excelente trabajo, aquí están tus resultados</p>
+                    </div>
+                    
+                    <hr class="bg-gray-200 dark:bg-gray-700 my-6">
+                    
+                    <!-- Estadísticas -->
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="bg-purple-50 dark:bg-purple-900/30 border border-purple-200 dark:border-purple-800 rounded-xl p-4 text-center">
+                            <div class="text-3xl font-bold text-purple-600 dark:text-purple-400 mb-1">${this.score}</div>
+                            <div class="text-xs font-medium text-gray-600 dark:text-gray-400">Puntos Totales</div>
                         </div>
-                        <div class="bg-white bg-opacity-20 rounded-lg p-4">
-                            <div class="text-2xl font-bold text-red-300">${this.incorrectAnswers}</div>
-                            <div class="text-sm">Errores</div>
+                        <div class="bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-800 rounded-xl p-4 text-center">
+                            <div class="text-3xl font-bold text-green-600 dark:text-green-400 mb-1">${this.correctAnswers}</div>
+                            <div class="text-xs font-medium text-gray-600 dark:text-gray-400">Aciertos</div>
                         </div>
-                        <div class="bg-white bg-opacity-20 rounded-lg p-4">
-                            <div class="text-2xl font-bold text-yellow-300">${accuracy}%</div>
-                            <div class="text-sm">Precisión</div>
+                        <div class="bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-xl p-4 text-center">
+                            <div class="text-3xl font-bold text-red-600 dark:text-red-400 mb-1">${this.incorrectAnswers}</div>
+                            <div class="text-xs font-medium text-gray-600 dark:text-gray-400">Errores</div>
+                        </div>
+                        <div class="bg-yellow-50 dark:bg-yellow-900/30 border border-yellow-200 dark:border-yellow-800 rounded-xl p-4 text-center">
+                            <div class="text-3xl font-bold text-yellow-600 dark:text-yellow-400 mb-1">${accuracy}%</div>
+                            <div class="text-xs font-medium text-gray-600 dark:text-gray-400">Precisión</div>
                         </div>
                     </div>
                 </div>
                 
-                <div class="flex gap-4 justify-center">
-                    <button id="btn-next-level" class="px-6 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors">
-                        <i class="fas fa-arrow-up mr-2"></i>
+                <!-- Botones de acción -->
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <button id="btn-next-level" class="px-6 py-3 bg-green-500 hover:bg-green-600 dark:bg-green-600 dark:hover:bg-green-700 text-white rounded-xl transition-all duration-200 font-semibold flex items-center justify-center gap-2 shadow-sm hover:shadow-md">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                        </svg>
                         Siguiente Nivel
                     </button>
-                    <button id="btn-finish-level" class="px-6 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors">
-                        <i class="fas fa-stop mr-2"></i>
+                    <button id="btn-finish-level" class="px-6 py-3 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-xl transition-all duration-200 font-semibold flex items-center justify-center gap-2 border border-gray-300 dark:border-gray-700">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
                         Finalizar Juego
                     </button>
                 </div>
@@ -380,13 +438,13 @@ class SeleccionaPalabraCorrectaGame {
         // Verificar si existe el siguiente nivel
         const nextLevel = this.gameConfig.levels.find(l => l.level === this.currentLevel);
         if (!nextLevel) {
-            // Mostrar mensaje de finalización completa del juego
+            // Mostrar mensaje de finalización completa del juego con totales generales
             setTimeout(() => {
                 alert('🎉 ¡Felicidades! Has completado todos los niveles disponibles.\n\n' +
                       `✨ Puntuación final: ${this.score} puntos\n` +
                       `🎯 Niveles completados: ${this.currentLevel - 1}\n` +
-                      `✅ Total de aciertos: ${this.correctAnswers}\n` +
-                      `❌ Total de errores: ${this.incorrectAnswers}`);
+                      `✅ Total de aciertos: ${this.totalCorrectAnswers}\n` +
+                      `❌ Total de errores: ${this.totalIncorrectAnswers}`);
                 this.finishGame();
             }, 500);
             return;
@@ -413,7 +471,27 @@ class SeleccionaPalabraCorrectaGame {
     }
     
     updateScore() {
-        document.getElementById('game-score').textContent = this.score;
+        // Actualizar el puntaje en el encabezado del juego
+        const gameScoreEl = document.getElementById('game-score');
+        if (gameScoreEl) {
+            gameScoreEl.textContent = this.score;
+        }
+        
+        // Actualizar el puntaje en el panel lateral
+        const puntajeActualEl = document.getElementById('puntaje-actual');
+        if (puntajeActualEl) {
+            puntajeActualEl.textContent = this.score;
+            // Animación de actualización
+            puntajeActualEl.style.animation = 'pulse 0.3s ease-in-out';
+            setTimeout(() => {
+                puntajeActualEl.style.animation = '';
+            }, 300);
+        }
+        
+        // Llamar a la función global si existe
+        if (typeof window.updateScore === 'function') {
+            window.updateScore(this.score);
+        }
     }
     
     updateProgress() {
@@ -543,8 +621,8 @@ class SeleccionaPalabraCorrectaGame {
         const data = {
             session_url: this.sessionData.url_sesion,
             total_score: this.score,
-            total_correct: this.correctAnswers,
-            total_incorrect: this.incorrectAnswers,
+            total_correct: this.totalCorrectAnswers,
+            total_incorrect: this.totalIncorrectAnswers,
             total_time_seconds: totalTimeSeconds,
             levels_completed: this.currentLevel
         };

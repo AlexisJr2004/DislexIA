@@ -1,11 +1,12 @@
 {% load static %}
+{% load i18n %}
 <!DOCTYPE html>
-<html lang="es" class="h-full">
+<html lang="{{ LANGUAGE_CODE }}" class="h-full">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}DislexIA - Panel Administrativo{% endblock %}</title>
+    <title>{% block title %}{% trans "DislexIA - Panel Administrativo" %}{% endblock %}</title>
     <link rel="icon" type="image/x-icon" href="{% static 'img/favicon.ico' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="{% static 'style.css' %}">
@@ -204,6 +205,148 @@
                 font-size: 16px;
             }
         }
+
+        /* Estilos para el dropdown de idiomas */
+        .language-dropdown {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 100%;
+            margin-top: 0.5rem;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            z-index: 50;
+            overflow: hidden;
+        }
+
+        .dark .language-dropdown {
+            background: #1f2937;
+            border-color: #374151;
+        }
+
+        .language-dropdown.active {
+            display: block;
+        }
+
+        .language-option {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            color: #374151;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            background: transparent;
+            width: 100%;
+            text-align: left;
+        }
+
+        .dark .language-option {
+            color: #d1d5db;
+        }
+
+        .language-option:hover {
+            background: #f3f4f6;
+        }
+
+        .dark .language-option:hover {
+            background: #374151;
+        }
+
+        .language-option.selected {
+            background: #f3e8ff;
+            color: #7c3aed;
+        }
+
+        .dark .language-option.selected {
+            background: rgba(124, 58, 237, 0.2);
+            color: #a78bfa;
+        }
+
+        .language-option:first-child {
+            border-radius: 0.5rem 0.5rem 0 0;
+        }
+
+        .language-option:last-child {
+            border-radius: 0 0 0.5rem 0.5rem;
+        }
+
+        /* Estilos para sidebar derecho */
+        .right-sidebar {
+            width: 280px; /* Mismo ancho que el sidebar izquierdo */
+            position: fixed;
+            top: 0;
+            right: 0;
+            height: 100vh;
+            overflow-y: auto;
+            background: white;
+            border-left: 1px solid #e5e7eb;
+            z-index: 20;
+        }
+
+        .dark .right-sidebar {
+            background: #111827;
+            border-left-color: #374151;
+        }
+
+        .mini-calendar-day {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            transition: all 0.2s;
+        }
+
+        .mini-calendar-day:hover {
+            background-color: #f3f4f6;
+        }
+
+        .dark .mini-calendar-day:hover {
+            background-color: #374151;
+        }
+
+        .mini-calendar-day.selected {
+            background-color: #8b5cf6;
+            color: white;
+            font-weight: 600;
+        }
+
+        .mini-calendar-day.has-cita::after {
+            content: '';
+            position: absolute;
+            bottom: 2px;
+            width: 4px;
+            height: 4px;
+            background-color: #8b5cf6;
+            border-radius: 50%;
+        }
+
+        .mini-calendar-day.selected.has-cita::after {
+            background-color: white;
+        }
+
+        .cita-card {
+            transition: all 0.2s;
+        }
+
+        .cita-card:hover {
+            transform: translateX(-4px);
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.2);
+        }
+
+        /* Ajustar main content para el nuevo sidebar */
+        .main-content-with-sidebars {
+            margin-left: 280px; /* Mismo ancho que el sidebar izquierdo */
+            margin-right: 280px; /* Mismo ancho que el sidebar derecho */
+        }
     </style>
     
     {% block extra_head %}{% endblock %}
@@ -212,21 +355,21 @@
 <body class="bg-gray-100 dark:bg-gray-950 transition-colors duration-200 h-full">
     <!-- Pantalla de Carga -->
     <div id="preloader" class="preloader" aria-hidden="true">
-        <img src="{% static 'img/carga.gif' %}" alt="Cargando..." />
+        <img src="{% static 'img/carga.gif' %}" alt="{% trans 'Cargando...' %}" />
     </div>
 
-    <!-- Sidebar -->
-    <div class="w-56 fixed top-0 left-0 h-screen border-r border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 transition-colors duration-200 shadow-sm dark:shadow-2xl">
+    <!-- Sidebar Izquierdo -->
+    <div class="fixed top-0 left-0 h-screen border-r border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 transition-colors duration-200 shadow-sm dark:shadow-2xl" style="width: 280px;">
         <div class="flex flex-col h-full">
             <!-- Logo -->
             <div class="p-6">
                 <div class="flex items-center gap-2">
                     <div class="w-10 h-10 rounded-full overflow-hidden">
-                        <img src="{% static 'img/favicon.ico' %}" alt="Foto de perfil" class="w-full h-full object-cover">
+                        <img src="{% static 'img/favicon.ico' %}" alt="{% trans 'Foto de perfil' %}" class="w-full h-full object-cover">
                     </div>
                     <div>
                         <h1 class="text-sm font-bold text-gray-900 dark:text-white">DislexIA</h1>
-                        <p class="text-xs text-gray-500 dark:text-gray-400">Tu neuropsicólogo amigo</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">{% trans "Tu neuropsicólogo amigo" %}</p>
                     </div>
                 </div>
             </div>
@@ -240,7 +383,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
                     </svg>
-                    Panel Administrativo
+                    {% trans "Panel Administrativo" %}
                 </a>
 
                 <a href="{% url 'games:game_list' %}"
@@ -249,7 +392,7 @@
                         <path
                             d="M6 12h2m-1-1v2m8-1h2m-1-1v2m-9 5a4 4 0 01-4-4V9a4 4 0 014-4h10a4 4 0 014 4v4a4 4 0 01-4 4h-3l-2 2-2-2H8z" />
                     </svg>
-                    Juegos
+                    {% trans "Juegos" %}
                 </a>
 
                 <a href="{% url 'core:calendar' %}"
@@ -258,7 +401,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 01-2 2z" />
                     </svg>
-                    Calendario
+                    {% trans "Calendario" %}
                 </a>
 
                 <a href="{% url 'core:documents' %}"
@@ -267,7 +410,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                     </svg>
-                    Recursos Digitales
+                    {% trans "Recursos Digitales" %}
                 </a>
             </nav>
 
@@ -281,7 +424,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09c.7 0 1.31-.4 1.51-1a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06c.51.51 1.27.67 1.82.33.5-.29 1-.81 1-1.51V3a2 2 0 1 1 4 0v.09c0 .7.4 1.31 1 1.51.55.34 1.31.18 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06c-.51.51-.67 1.27-.33 1.82.29.5.81 1 1.51 1H21a2 2 0 1 1 0 4h-.09c-.7 0-1.31.4-1.51 1z" />
                     </svg>
-                    Configuraciones
+                    {% trans "Configuraciones" %}
                 </a>
 
                 <a href="{% url 'core:support' %}"
@@ -290,7 +433,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8-1.09 0-2.13-.18-3.08-.5L3 20l1.5-2.5A8.962 8.962 0 013 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                     </svg>
-                    Soporte
+                    {% trans "Soporte" %}
                 </a>
 
                 <!-- User Profile con borde superior -->
@@ -299,9 +442,9 @@
                         class="nav-link flex items-center gap-2 p-2 {% if request.resolver_match.url_name == 'profile' %}bg-purple-100 dark:bg-purple-500/20{% else %}hover:bg-gray-100 dark:hover:bg-gray-800{% endif %} rounded-lg cursor-pointer transition-all duration-200 hover:scale-105 mb-2">
                         <div class="w-10 h-10 rounded-full overflow-hidden bg-purple-100 dark:bg-purple-900/50 ring-2 ring-purple-200 dark:ring-purple-500/30">
                             {% if user.imagen %}
-                                <img src="{{ user.imagen.url }}" alt="Foto de perfil" class="w-full h-full object-cover">
+                                <img src="{{ user.imagen.url }}" alt="{% trans 'Foto de perfil' %}" class="w-full h-full object-cover">
                             {% else %}
-                                <img src="{% static 'img/profile.png' %}" alt="Foto de perfil" class="w-full h-full object-cover">
+                                <img src="{% static 'img/profile.png' %}" alt="{% trans 'Foto de perfil' %}" class="w-full h-full object-cover">
                             {% endif %}
                         </div>
                         <div class="flex-1 min-w-0">
@@ -321,7 +464,7 @@
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                             </svg>
-                            Cerrar Sesión
+                            {% trans "Cerrar Sesión" %}
                         </button>
                     </form>
                 </div>
@@ -329,64 +472,144 @@
         </div>
     </div>
 
+    <!-- Right Sidebar - Citas del Día -->
+    <div class="right-sidebar">
+        <div class="p-6">
+            <!-- Título -->
+            <h2 class="text-lg font-bold text-gray-900 dark:text-white mb-4">
+                <i class="fas fa-calendar-check text-purple-600 dark:text-purple-400 mr-2"></i>
+                {% trans "Citas del Día" %}
+            </h2>
+
+            <!-- Mini Calendario -->
+            <div class="bg-gray-50 dark:bg-gray-800 rounded-xl p-4 mb-4">
+                <div class="flex items-center justify-between mb-3">
+                    <button id="mini-prev-month" class="p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700">
+                        <i class="fas fa-chevron-left text-sm text-gray-600 dark:text-gray-400"></i>
+                    </button>
+                    <h3 id="mini-current-month" class="text-sm font-semibold text-gray-900 dark:text-white"></h3>
+                    <button id="mini-next-month" class="p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700">
+                        <i class="fas fa-chevron-right text-sm text-gray-600 dark:text-gray-400"></i>
+                    </button>
+                </div>
+
+                <!-- Días de la semana -->
+                <div class="grid grid-cols-7 gap-1 mb-2">
+                    <div class="text-center text-xs text-gray-500 dark:text-gray-400">{% trans "D" %}</div>
+                    <div class="text-center text-xs text-gray-500 dark:text-gray-400">{% trans "L" %}</div>
+                    <div class="text-center text-xs text-gray-500 dark:text-gray-400">{% trans "M" %}</div>
+                    <div class="text-center text-xs text-gray-500 dark:text-gray-400">{% trans "X" %}</div>
+                    <div class="text-center text-xs text-gray-500 dark:text-gray-400">{% trans "J" %}</div>
+                    <div class="text-center text-xs text-gray-500 dark:text-gray-400">{% trans "V" %}</div>
+                    <div class="text-center text-xs text-gray-500 dark:text-gray-400">{% trans "S" %}</div>
+                </div>
+
+                <!-- Días del mes -->
+                <div id="mini-calendar-days" class="grid grid-cols-7 gap-1">
+                    <!-- Se llenará con JavaScript -->
+                </div>
+            </div>
+
+            <!-- Lista de Citas -->
+            <div class="space-y-3" id="citas-list">
+                <div class="text-center py-8 text-gray-500 dark:text-gray-400">
+                    <i class="fas fa-calendar-times text-3xl mb-2 opacity-50"></i>
+                    <p class="text-sm">{% trans "No hay citas para hoy" %}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Main Content -->
-    <div class="ml-56">
+    <div class="main-content-with-sidebars">
         <!-- Top Bar -->
         <div class="bg-white dark:bg-gray-900 px-8 py-4 flex items-center justify-between sticky top-0 z-10 border-b border-gray-200 dark:border-gray-800 transition-colors duration-200 shadow-sm dark:shadow-lg">
             <div class="flex items-center gap-3">
                 <!-- Imagen de perfil -->
                 <div class="w-10 h-10 rounded-full overflow-hidden bg-purple-100 dark:bg-purple-900/50">
                     {% if user.imagen %}
-                        <img src="{{ user.imagen.url }}" alt="Foto de perfil" class="w-full h-full object-cover">
+                        <img src="{{ user.imagen.url }}" alt="{% trans 'Foto de perfil' %}" class="w-full h-full object-cover">
                     {% else %}
-                        <img src="{% static 'img/profile.png' %}" alt="Foto de perfil" class="w-full h-full object-cover">
+                        <img src="{% static 'img/profile.png' %}" alt="{% trans 'Foto de perfil' %}" class="w-full h-full object-cover">
                     {% endif %}
                 </div>
                 <div>
                     <p class="text-sm font-semibold text-gray-900 dark:text-white">{{ user.nombre_completo }}</p>
-                    <p class="text-xs text-gray-500 dark:text-gray-400">Bienvenido de nuevo</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">{% trans "Bienvenido de nuevo" %}</p>
                 </div>
             </div>
 
             <div class="flex items-center gap-2">
                 
-                <button type="button" data-dropdown-toggle="language-dropdown-menu"
-                    class="inline-flex items-center font-medium justify-center px-4 py-2 text-sm text-gray-700 dark:text-gray-300 rounded-lg cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800">
-                    <svg class="w-5 h-5 rounded-full me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                        xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 3900 3900">
-                        <path fill="#b22234" d="M0 0h7410v3900H0z" />
-                        <path d="M0 450h7410m0 600H0m0 600h7410m0 600H0m0 600h7410m0 600H0" stroke="#fff"
-                            stroke-width="300" />
-                        <path fill="#3c3b6e" d="M0 0h2964v2100H0z" />
-                        <g fill="#fff">
-                            <g id="d">
-                                <g id="c">
-                                    <g id="e">
-                                        <g id="b">
-                                            <path id="a"
-                                                d="M247 90l70.534 217.082-184.66-134.164h228.253L176.466 307.082z" />
-                                            <use xlink:href="#a" y="420" />
-                                            <use xlink:href="#a" y="840" />
-                                            <use xlink:href="#a" y="1260" />
-                                        </g>
-                                        <use xlink:href="#a" y="1680" />
-                                    </g>
-                                    <use xlink:href="#b" x="247" y="210" />
-                                </g>
-                                <use xlink:href="#c" x="494" />
+                <!-- Language Selector -->
+                <div class="relative">
+                    <button type="button" id="languageDropdownBtn"
+                        class="inline-flex items-center font-medium justify-center px-4 py-2 text-sm text-gray-700 dark:text-gray-300 rounded-lg cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800">
+                        {% get_current_language as LANGUAGE_CODE %}
+                        {% if LANGUAGE_CODE == 'es' %}
+                        <svg class="w-5 h-5 rounded-full me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 750 500">
+                            <rect width="750" height="500" fill="#c60b1e"/>
+                            <rect width="750" height="250" y="125" fill="#ffc400"/>
+                        </svg>
+                        Español (ES)
+                        {% else %}
+                        <svg class="w-5 h-5 rounded-full me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 30">
+                            <clipPath id="s"><path d="M0,0 v30 h60 v-30 z"/></clipPath>
+                            <clipPath id="t"><path d="M30,15 h30 v15 z v-30 h-30 z h-30 v15 z v-30 h30 z"/></clipPath>
+                            <g clip-path="url(#s)">
+                                <path d="M0,0 v30 h60 v-30 z" fill="#012169"/>
+                                <path d="M0,0 L60,30 M60,0 L0,30" stroke="#fff" stroke-width="6"/>
+                                <path d="M0,0 L60,30 M60,0 L0,30" clip-path="url(#t)" stroke="#C8102E" stroke-width="4"/>
+                                <path d="M30,0 v30 M0,15 h60" stroke="#fff" stroke-width="10"/>
+                                <path d="M30,0 v30 M0,15 h60" stroke="#C8102E" stroke-width="6"/>
                             </g>
-                            <use xlink:href="#d" x="988" />
-                            <use xlink:href="#c" x="1976" />
-                            <use xlink:href="#e" x="2470" />
-                        </g>
-                    </svg>
-                    English (US)
-                </button>
+                        </svg>
+                        English (US)
+                        {% endif %}
+                    </button>
+                    
+                    <!-- Dropdown Menu -->
+                    <div id="languageDropdown" class="language-dropdown">
+                        <form action="{% url 'set_language' %}" method="post" id="languageForm">
+                            {% csrf_token %}
+                            <input name="next" type="hidden" value="{{ request.get_full_path }}" />
+                            
+                            <button type="submit" name="language" value="es" 
+                                class="language-option {% if LANGUAGE_CODE == 'es' %}selected{% endif %}">
+                                <svg class="w-5 h-5 rounded-full flex-shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 750 500">
+                                    <rect width="750" height="500" fill="#c60b1e"/>
+                                    <rect width="750" height="250" y="125" fill="#ffc400"/>
+                                </svg>
+                                <span class="flex-1 text-left">Español(ES)</span>
+                                {% if LANGUAGE_CODE == 'es' %}
+                                {% endif %}
+                            </button>
+                            
+                            <button type="submit" name="language" value="en" 
+                                class="language-option {% if LANGUAGE_CODE == 'en' %}selected{% endif %}">
+                                <svg class="w-5 h-5 rounded-full flex-shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 30">
+                                    <clipPath id="s2"><path d="M0,0 v30 h60 v-30 z"/></clipPath>
+                                    <clipPath id="t2"><path d="M30,15 h30 v15 z v-30 h-30 z h-30 v15 z v-30 h30 z"/></clipPath>
+                                    <g clip-path="url(#s2)">
+                                        <path d="M0,0 v30 h60 v-30 z" fill="#012169"/>
+                                        <path d="M0,0 L60,30 M60,0 L0,30" stroke="#fff" stroke-width="6"/>
+                                        <path d="M0,0 L60,30 M60,0 L0,30" clip-path="url(#t2)" stroke="#C8102E" stroke-width="4"/>
+                                        <path d="M30,0 v30 M0,15 h60" stroke="#fff" stroke-width="10"/>
+                                        <path d="M30,0 v30 M0,15 h60" stroke="#C8102E" stroke-width="6"/>
+                                    </g>
+                                </svg>
+                                <span class="flex-1 text-left">English(US)</span>
+                                {% if LANGUAGE_CODE == 'en' %}
+                                {% endif %}
+                            </button>
+                        </form>
+                    </div>
+                </div>
                 
                 <button data-collapse-toggle="navbar-language" type="button"
                     class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-700"
                     aria-controls="navbar-language" aria-expanded="false">
-                    <span class="sr-only">Open main menu</span>
+                    <span class="sr-only">{% trans "Abrir menú principal" %}</span>
                     <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
                         viewBox="0 0 17 14">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -400,7 +623,7 @@
                                 d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                         </svg>
                     </div>
-                    <input type="text" placeholder="Search..."
+                    <input type="text" placeholder="{% trans 'Buscar...' %}"
                         class="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-700 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200 placeholder-gray-500 dark:placeholder-gray-600">
                 </div>
 
@@ -416,14 +639,14 @@
                 <button
                     class="px-5 py-2.5 border border-gray-300 dark:border-gray-700 hover:border-gray-400 dark:hover:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-2.5 transition-all hover:shadow-sm">
                     <i class="far fa-calendar text-base"></i>
-                    Schedule
+                    {% trans "Agenda" %}
                 </button>
 
                 <!-- Create Request Button -->
                 <button
                     class="px-5 py-2.5 bg-gradient-to-r from-purple-600 to-purple-800 hover:from-purple-500 hover:to-purple-700 text-white rounded-xl text-sm font-semibold flex items-center gap-2.5 transition-all shadow-md hover:shadow-lg hover:scale-105">
                     <i class="fas fa-plus text-base"></i>
-                    Create request
+                    {% trans "Crear solicitud" %}
                 </button>
             </div>
         </div>
@@ -450,7 +673,7 @@
     </div>
 
     <!-- Botón Ir Arriba -->
-    <button id="scrollToTopBtn" title="Ir arriba" aria-label="Volver arriba">
+    <button id="scrollToTopBtn" title="{% trans 'Ir arriba' %}" aria-label="{% trans 'Volver arriba' %}">
         <i class="fas fa-arrow-up"></i>
     </button>
 
@@ -466,6 +689,28 @@
                     toast.remove();
                 }, 3000);
             });
+        });
+    </script>
+
+    <!-- Script para dropdown de idiomas -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const languageBtn = document.getElementById('languageDropdownBtn');
+            const languageDropdown = document.getElementById('languageDropdown');
+            
+            if (languageBtn && languageDropdown) {
+                languageBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    languageDropdown.classList.toggle('active');
+                });
+                
+                // Cerrar al hacer clic fuera
+                document.addEventListener('click', function(e) {
+                    if (!languageBtn.contains(e.target) && !languageDropdown.contains(e.target)) {
+                        languageDropdown.classList.remove('active');
+                    }
+                });
+            }
         });
     </script>
 
@@ -533,6 +778,199 @@
 
             // Verificar scroll inicial
             checkScroll();
+        })();
+    </script>
+    
+    <!-- Script para gestión de citas en sidebar -->
+    <script>
+        (function initCitasSidebar() {
+            let miniCurrentMonth = new Date().getMonth();
+            let miniCurrentYear = new Date().getFullYear();
+            let selectedDate = new Date();
+            let citasConFecha = new Set();
+
+            const miniCalendarDays = document.getElementById('mini-calendar-days');
+            const miniCurrentMonthEl = document.getElementById('mini-current-month');
+            const miniPrevBtn = document.getElementById('mini-prev-month');
+            const miniNextBtn = document.getElementById('mini-next-month');
+            const citasList = document.getElementById('citas-list');
+
+            // Cargar citas con fechas del mes
+            async function load_citas_del_mes() {
+                try {
+                    const firstDay = new Date(miniCurrentYear, miniCurrentMonth, 1);
+                    const lastDay = new Date(miniCurrentYear, miniCurrentMonth + 1, 0);
+                    
+                    // Cargar todas las citas del mes para marcar días
+                    citasConFecha.clear();
+                    for (let d = new Date(firstDay); d <= lastDay; d.setDate(d.getDate() + 1)) {
+                        const fecha = d.toISOString().split('T')[0];
+                        const response = await fetch("{% url 'core:get_citas_dia' %}?fecha=" + fecha);
+                        const data = await response.json();
+                        if (data.citas.length > 0) {
+                            citasConFecha.add(fecha);
+                        }
+                    }
+                    renderMiniCalendar();
+                } catch (error) {
+                    console.error('Error cargando citas del mes:', error);
+                }
+            }
+
+            function renderMiniCalendar() {
+                miniCalendarDays.innerHTML = '';
+                
+                const monthNames = [
+                    '{% trans "Ene" %}', '{% trans "Feb" %}', '{% trans "Mar" %}', 
+                    '{% trans "Abr" %}', '{% trans "May" %}', '{% trans "Jun" %}', 
+                    '{% trans "Jul" %}', '{% trans "Ago" %}', '{% trans "Sep" %}', 
+                    '{% trans "Oct" %}', '{% trans "Nov" %}', '{% trans "Dic" %}'
+                ];
+                miniCurrentMonthEl.textContent = `${monthNames[miniCurrentMonth]} ${miniCurrentYear}`;
+                miniCurrentMonthEl.textContent = `${monthNames[miniCurrentMonth]} ${miniCurrentYear}`;
+                
+                const firstDay = new Date(miniCurrentYear, miniCurrentMonth, 1);
+                const lastDay = new Date(miniCurrentYear, miniCurrentMonth + 1, 0);
+                const daysInMonth = lastDay.getDate();
+                const startingDay = firstDay.getDay();
+                
+                // Días vacíos al inicio
+                for (let i = 0; i < startingDay; i++) {
+                    const emptyDay = document.createElement('div');
+                    miniCalendarDays.appendChild(emptyDay);
+                }
+                
+                // Días del mes
+                const today = new Date();
+                for (let day = 1; day <= daysInMonth; day++) {
+                    const dayEl = document.createElement('div');
+                    const dateStr = `${miniCurrentYear}-${String(miniCurrentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                    const hasCita = citasConFecha.has(dateStr);
+                    
+                    dayEl.className = `mini-calendar-day relative ${hasCita ? 'has-cita' : ''}`;
+                    dayEl.textContent = day;
+                    
+                    if (day === today.getDate() && miniCurrentMonth === today.getMonth() && miniCurrentYear === today.getFullYear()) {
+                        dayEl.classList.add('text-purple-600', 'dark:text-purple-400', 'font-semibold');
+                    }
+                    
+                    if (day === selectedDate.getDate() && miniCurrentMonth === selectedDate.getMonth() && miniCurrentYear === selectedDate.getFullYear()) {
+                        dayEl.classList.add('selected');
+                    }
+                    
+                    dayEl.addEventListener('click', () => selectMiniDate(day));
+                    miniCalendarDays.appendChild(dayEl);
+                }
+            }
+
+            async function selectMiniDate(day) {
+                selectedDate = new Date(miniCurrentYear, miniCurrentMonth, day);
+                renderMiniCalendar();
+                await loadCitasDelDia();
+            }
+
+            async function loadCitasDelDia() {
+                const fecha = selectedDate.toISOString().split('T')[0];
+                
+                try {
+                    const response = await fetch("{% url 'core:get_citas_dia' %}?fecha=" + fecha);
+                    const data = await response.json();
+                    
+                    citasList.innerHTML = '';
+                    
+                    if (data.citas.length === 0) {
+                        citasList.innerHTML = `
+                            <div class="text-center py-8 text-gray-500 dark:text-gray-400">
+                                <i class="fas fa-calendar-times text-3xl mb-2 opacity-50"></i>
+                                <p class="text-sm">{% trans "No hay citas para este día" %}</p>
+                            </div>
+                        `;
+                    } else {
+                        data.citas.forEach(cita => {
+                            const citaCard = document.createElement('div');
+                            citaCard.className = 'cita-card bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-3';
+                            
+                            const fotoUrl = cita.foto_paciente || '{% static "img/profile.png" %}';
+                            const completadaClass = cita.completada ? 'opacity-50' : '';
+                            const checkIcon = cita.completada ? 'fa-check-circle text-green-500' : 'fa-circle text-gray-300';
+                            
+                            citaCard.innerHTML = `
+                                <div class="flex items-center gap-3 ${completadaClass}">
+                                    <img src="${fotoUrl}" alt="${cita.nombre_paciente}" 
+                                         class="w-12 h-12 rounded-full object-cover">
+                                    <div class="flex-1 min-w-0">
+                                        <h4 class="font-medium text-gray-900 dark:text-white text-sm truncate">
+                                            ${cita.nombre_paciente}
+                                        </h4>
+                                        <p class="text-xs text-gray-500 dark:text-gray-400">
+                                            <i class="far fa-clock mr-1"></i>${cita.hora}
+                                        </p>
+                                    </div>
+                                    <button onclick="toggleCitaCompletada(${cita.id})" 
+                                            class="text-lg hover:scale-110 transition-transform">
+                                        <i class="fas ${checkIcon}"></i>
+                                    </button>
+                                </div>
+                                ${cita.notas ? `<p class="text-xs text-gray-600 dark:text-gray-400 mt-2 pl-15">${cita.notas}</p>` : ''}
+                            `;
+                            
+                            citasList.appendChild(citaCard);
+                        });
+                    }
+                } catch (error) {
+                    console.error('Error cargando citas:', error);
+                }
+            }
+
+            window.toggleCitaCompletada = async function(citaId) {
+                try {
+                    const response = await fetch("{% url 'core:marcar_cita_completada' cita_id=0 %}".replace('/0/', `/${citaId}/`), {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRFToken': '{{ csrf_token }}',
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    
+                    if (response.ok) {
+                        await loadCitasDelDia();
+                    }
+                } catch (error) {
+                    console.error('Error al marcar cita:', error);
+                }
+            };
+
+            miniPrevBtn.addEventListener('click', () => {
+                miniCurrentMonth--;
+                if (miniCurrentMonth < 0) {
+                    miniCurrentMonth = 11;
+                    miniCurrentYear--;
+                }
+                load_citas_del_mes();
+            });
+
+            miniNextBtn.addEventListener('click', () => {
+                miniCurrentMonth++;
+                if (miniCurrentMonth > 11) {
+                    miniCurrentMonth = 0;
+                    miniCurrentYear++;
+                }
+                load_citas_del_mes();
+            });
+
+            // Inicializar
+            load_citas_del_mes();
+            loadCitasDelDia();
+
+            // Recargar citas cada 30 segundos
+            setInterval(() => {
+                load_citas_del_mes();
+                loadCitasDelDia();
+            }, 30000);
+
+            // Exponer funciones globalmente
+            window.loadCitasDelDia = loadCitasDelDia;
+            window.load_citas_del_mes = load_citas_del_mes;
         })();
     </script>
     

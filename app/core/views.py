@@ -8,6 +8,11 @@ from django.contrib import messages
 from django.shortcuts import redirect
 from .forms import ProfesionalLoginForm, ProfesionalRegistrationForm, ProfesionalUpdateForm, ProfesionalPasswordResetForm, ProfesionalSetPasswordForm
 from django.contrib.auth import login
+from django.http import JsonResponse
+from django.views.decorators.http import require_http_methods
+import json
+from datetime import datetime, date
+from .models import Cita
 
 
 # ==================== VISTAS DE AUTENTICACIÓN ====================
@@ -258,3 +263,122 @@ class ProfesionalPasswordResetConfirmView(PasswordResetConfirmView):
 class ProfesionalPasswordResetCompleteView(PasswordResetCompleteView):
     """Vista final después de cambiar la contraseña"""
     template_name = 'auth/password_reset_complete.html'
+
+
+@login_required
+def get_citas_dia(request):
+    """Obtener citas del día para el sidebar"""
+    fecha_str = request.GET.get('fecha', date.today().isoformat())
+    try:
+        fecha = datetime.strptime(fecha_str, '%Y-%m-%d').date()
+    except ValueError:
+        fecha = date.today()
+    
+    citas = Cita.objects.filter(
+        usuario=request.user,
+        fecha=fecha
+    ).order_by('hora')
+    
+    citas_data = [{
+        'id': cita.id,
+        'nombre_paciente': cita.nombre_paciente,
+        'foto_paciente': cita.foto_paciente.url if cita.foto_paciente else None,
+        'hora': cita.hora.strftime('%H:%M'),
+        'fecha': cita.fecha.isoformat(),
+        'completada': cita.completada,
+        'notas': cita.notas
+    } for cita in citas]
+    
+    return JsonResponse({'citas': citas_data})
+
+@login_required
+@require_http_methods(["POST"])
+def crear_cita(request):
+    """Crear una nueva cita"""
+    try:
+        print("=== DEBUG: Iniciando crear_cita ===")
+        print(f"POST data: {request.POST}")
+        print(f"FILES: {request.FILES}")
+        
+        # Manejar FormData en lugar de JSON
+        nombre_paciente = request.POST.get('nombre_paciente')
+        fecha_str = request.POST.get('fecha')
+        hora_str = request.POST.get('hora')
+        notas = request.POST.get('notas', '')
+        
+        print(f"Datos recibidos - Paciente: {nombre_paciente}, Fecha: {fecha_str}, Hora: {hora_str}")
+        
+        if not nombre_paciente or not fecha_str or not hora_str:
+            return JsonResponse({
+                'success': False, 
+                'error': 'Faltan campos requeridos'
+            }, status=400)
+        
+        # Convertir strings a objetos date y time
+        from datetime import datetime
+        fecha = datetime.strptime(fecha_str, '%Y-%m-%d').date()
+        hora = datetime.strptime(hora_str, '%H:%M').time()
+        
+        cita = Cita.objects.create(
+            usuario=request.user,
+            nombre_paciente=nombre_paciente,
+            fecha=fecha,
+            hora=hora,
+            notas=notas
+        )
+        
+        print(f"Cita creada con ID: {cita.id}")
+        
+        # Manejar archivo de foto si existe
+        if 'foto_paciente' in request.FILES:
+            cita.foto_paciente = request.FILES['foto_paciente']
+            cita.save()
+            print("Foto agregada exitosamente")
+        
+        return JsonResponse({
+            'success': True,
+            'cita': {
+                'id': cita.id,
+                'nombre_paciente': cita.nombre_paciente,
+                'fecha': cita.fecha.isoformat(),  # Ahora sí es un objeto date
+                'hora': cita.hora.strftime('%H:%M'),  # Ahora sí es un objeto time
+                'foto_paciente': cita.foto_paciente.url if cita.foto_paciente else None
+            }
+        })
+    except ValueError as e:
+        print(f"=== ERROR de formato en crear_cita: {str(e)} ===")
+        return JsonResponse({
+            'success': False, 
+            'error': f'Formato de fecha u hora inválido: {str(e)}'
+        }, status=400)
+    except Exception as e:
+        print(f"=== ERROR en crear_cita: {str(e)} ===")
+        import traceback
+        traceback.print_exc()
+        return JsonResponse({
+            'success': False, 
+            'error': str(e)
+        }, status=400)
+
+@login_required
+@require_http_methods(["DELETE"])
+def eliminar_cita(request, cita_id):
+    """Eliminar una cita"""
+    try:
+        cita = Cita.objects.get(id=cita_id, usuario=request.user)
+        cita.delete()
+        return JsonResponse({'success': True})
+    except Cita.DoesNotExist:
+        return JsonResponse({'success': False, 'error': 'Cita no encontrada'}, status=404)
+
+@login_required
+@require_http_methods(["POST"])
+def marcar_cita_completada(request, cita_id):
+    """Marcar cita como completada"""
+    try:
+        cita = Cita.objects.get(id=cita_id, usuario=request.user)
+        cita.completada = not cita.completada
+        cita.save()
+        return JsonResponse({'success': True, 'completada': cita.completada})
+    except Cita.DoesNotExist:
+        return JsonResponse({'success': False, 'error': 'Cita no encontrada'}, status=404)

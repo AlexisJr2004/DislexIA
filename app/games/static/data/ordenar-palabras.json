@@ -2,20 +2,215 @@
   "game_info": {
     "game_slug": "ordenar-palabras",
     "json_version": "1.0",
-    "total_questions": 0,
+    "total_questions": 20,
     "created_date": "2025-10-08",
     "last_updated": "2025-10-08"
   },
-  "levels": [],
+  "levels": [
+    {
+      "level": 1,
+      "difficulty": "facil",
+      "description": "Palabras cortas de 2-3 sílabas",
+      "questions": [
+        {
+          "id": 1,
+          "correct_word": "CASA",
+          "scrambled_letters": ["S", "A", "C", "A"],
+          "hint": "Lugar donde vivimos",
+          "image_path": "/static/img/casa.jpg",
+          "time_limit": 45,
+          "points": 10
+        },
+        {
+          "id": 2,
+          "correct_word": "GATO",
+          "scrambled_letters": ["T", "O", "G", "A"],
+          "hint": "Animal doméstico que dice miau",
+          "image_path": "/static/img/gato.jpg",
+          "time_limit": 45,
+          "points": 10
+        },
+        {
+          "id": 3,
+          "correct_word": "PERRO",
+          "scrambled_letters": ["R", "O", "P", "E", "R"],
+          "hint": "Mejor amigo del hombre",
+          "image_path": "/static/img/perro.jpg",
+          "time_limit": 50,
+          "points": 10
+        },
+        {
+          "id": 4,
+          "correct_word": "LUNA",
+          "scrambled_letters": ["N", "A", "L", "U"],
+          "hint": "Brilla en el cielo nocturno",
+          "image_path": "/static/img/luna.jpg",
+          "time_limit": 45,
+          "points": 10
+        },
+        {
+          "id": 5,
+          "correct_word": "FLOR",
+          "scrambled_letters": ["R", "O", "F", "L"],
+          "hint": "Planta con pétalos de colores",
+          "image_path": "/static/img/flor.jpg",
+          "time_limit": 45,
+          "points": 10
+        },
+        {
+          "id": 6,
+          "correct_word": "MESA",
+          "scrambled_letters": ["S", "A", "M", "E"],
+          "hint": "Mueble para comer o estudiar",
+          "image_path": "/static/img/mesa.jpg",
+          "time_limit": 45,
+          "points": 10
+        },
+        {
+          "id": 7,
+          "correct_word": "PATO",
+          "scrambled_letters": ["T", "A", "P", "O"],
+          "hint": "Ave que nada en el agua",
+          "image_path": "/static/img/pato.jpg",
+          "time_limit": 45,
+          "points": 10
+        },
+        {
+          "id": 8,
+          "correct_word": "BOCA",
+          "scrambled_letters": ["C", "A", "B", "O"],
+          "hint": "Usamos esto para hablar y comer",
+          "image_path": "/static/img/boca.jpg",
+          "time_limit": 45,
+          "points": 10
+        },
+        {
+          "id": 9,
+          "correct_word": "DADO",
+          "scrambled_letters": ["D", "O", "A", "D"],
+          "hint": "Cubo con números del 1 al 6",
+          "image_path": "/static/img/dado.jpg",
+          "time_limit": 45,
+          "points": 10
+        },
+        {
+          "id": 10,
+          "correct_word": "SILLA",
+          "scrambled_letters": ["L", "I", "S", "L", "A"],
+          "hint": "Mueble para sentarse",
+          "image_path": "/static/img/silla.jpg",
+          "time_limit": 50,
+          "points": 10
+        }
+      ]
+    },
+    {
+      "level": 2,
+      "difficulty": "medio",
+      "description": "Palabras de 3-4 sílabas",
+      "questions": [
+        {
+          "id": 11,
+          "correct_word": "MARIPOSA",
+          "scrambled_letters": ["M", "A", "R", "I", "P", "O", "S", "A"],
+          "hint": "Insecto con alas de colores",
+          "image_path": "/static/img/mariposa.jpg",
+          "time_limit": 60,
+          "points": 15
+        },
+        {
+          "id": 12,
+          "correct_word": "ELEFANTE",
+          "scrambled_letters": ["E", "L", "E", "F", "A", "N", "T", "E"],
+          "hint": "Animal grande con trompa",
+          "image_path": "/static/img/elefante.jpg",
+          "time_limit": 60,
+          "points": 15
+        },
+        {
+          "id": 13,
+          "correct_word": "TELEFONO",
+          "scrambled_letters": ["T", "E", "L", "E", "F", "O", "N", "O"],
+          "hint": "Aparato para llamar a alguien",
+          "image_path": "/static/img/telefono.jpg",
+          "time_limit": 60,
+          "points": 15
+        },
+        {
+          "id": 14,
+          "correct_word": "BICICLETA",
+          "scrambled_letters": ["B", "I", "C", "I", "C", "L", "E", "T", "A"],
+          "hint": "Vehículo de dos ruedas",
+          "image_path": "/static/img/bicicleta.jpg",
+          "time_limit": 70,
+          "points": 20
+        },
+        {
+          "id": 15,
+          "correct_word": "DINOSAURIO",
+          "scrambled_letters": ["D", "I", "N", "O", "S", "A", "U", "R", "I", "O"],
+          "hint": "Animal prehistórico extinto",
+          "image_path": "/static/img/dinosaurio.jpg",
+          "time_limit": 70,
+          "points": 20
+        },
+        {
+          "id": 16,
+          "correct_word": "PRINCESA",
+          "scrambled_letters": ["P", "R", "I", "N", "C", "E", "S", "A"],
+          "hint": "Hija del rey y la reina",
+          "image_path": "/static/img/princesa.jpg",
+          "time_limit": 60,
+          "points": 15
+        },
+        {
+          "id": 17,
+          "correct_word": "HELICOPTERO",
+          "scrambled_letters": ["H", "E", "L", "I", "C", "O", "P", "T", "E", "R", "O"],
+          "hint": "Vehículo que vuela con hélices",
+          "image_path": "/static/img/helicoptero.jpg",
+          "time_limit": 75,
+          "points": 25
+        },
+        {
+          "id": 18,
+          "correct_word": "COMPUTADORA",
+          "scrambled_letters": ["C", "O", "M", "P", "U", "T", "A", "D", "O", "R", "A"],
+          "hint": "Máquina electrónica para trabajar",
+          "image_path": "/static/img/computadora.jpg",
+          "time_limit": 75,
+          "points": 25
+        },
+        {
+          "id": 19,
+          "correct_word": "BIBLIOTECA",
+          "scrambled_letters": ["B", "I", "B", "L", "I", "O", "T", "E", "C", "A"],
+          "hint": "Lugar con muchos libros",
+          "image_path": "/static/img/biblioteca.jpg",
+          "time_limit": 70,
+          "points": 20
+        },
+        {
+          "id": 20,
+          "correct_word": "REFRIGERADOR",
+          "scrambled_letters": ["R", "E", "F", "R", "I", "G", "E", "R", "A", "D", "O", "R"],
+          "hint": "Aparato que mantiene la comida fría",
+          "image_path": "/static/img/refrigerador.jpg",
+          "time_limit": 80,
+          "points": 30
+        }
+      ]
+    }
+  ],
   "scoring": {
     "correct_answer": 10,
-    "time_bonus": 5,
-    "perfect_level": 50
+    "time_bonus": 2,
+    "perfect_level": 50,
+    "hint_penalty": 5
   },
-  "confusion_types": {
-    "inversion_letras": "Inversión de letras (b/d, p/q)",
-    "sustitucion_letras": "Sustitución de letras similares (m/n, r/l)",
-    "inversion_silabas": "Inversión de sílabas",
-    "omision_letras": "Omisión de letras"
+  "game_mechanics": {
+    "max_attempts": 3,
+    "shuffle_on_wrong": true,
+    "show_hint_after_attempts": 2
   }
 }

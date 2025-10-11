@@ -8,6 +8,7 @@ function initializeApplication() {
     initializePreloader();
     initializeFontSettings();
     initializeFontFamilySettings();
+    initializeLanguageSettings();
     
     // Precargar ejemplos en background
     loadExamplesData().catch(console.warn);
@@ -157,6 +158,31 @@ function initializeFontFamilySettings() {
             loadFontFamilySettings();
         }
     });
+}
+
+// ============ Sistema de persistencia de idioma ============
+function initializeLanguageSettings() {
+    'use strict';
+    
+    // Guardar idioma seleccionado en localStorage
+    const languageForm = document.getElementById('languageForm');
+    if (languageForm) {
+        languageForm.addEventListener('submit', function(e) {
+            const selectedLang = this.querySelector('button[type="submit"]:focus').value || this.querySelector('select[name="language"]')?.value;
+            if (selectedLang) {
+                localStorage.setItem('preferred-language', selectedLang);
+                console.log(`Idioma cambiado a: ${selectedLang}`);
+            }
+        });
+    }
+    
+    // Cargar idioma preferido
+    const preferredLang = localStorage.getItem('preferred-language');
+    const currentLang = document.documentElement.lang;
+    
+    if (preferredLang && preferredLang !== currentLang) {
+        console.log(`Idioma preferido detectado: ${preferredLang}`);
+    }
 }
 
 

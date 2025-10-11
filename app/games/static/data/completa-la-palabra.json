@@ -2,20 +2,299 @@
   "game_info": {
     "game_slug": "completa-la-palabra",
     "json_version": "1.0",
-    "total_questions": 0,
+    "total_questions": 20,
     "created_date": "2025-10-08",
     "last_updated": "2025-10-08"
   },
-  "levels": [],
+  "levels": [
+    {
+      "level": 1,
+      "difficulty": "facil",
+      "description": "Palabras cortas con una letra faltante",
+      "questions": [
+        {
+          "id": 1,
+          "complete_word": "CASA",
+          "incomplete_word": "C_SA",
+          "missing_letter": "A",
+          "missing_position": 1,
+          "options": ["A", "E", "I", "O"],
+          "hint": "Lugar donde vivimos",
+          "image_path": "/static/img/casa.jpg",
+          "time_limit": 30,
+          "points": 10,
+          "confusion_type": "sustitucion_letras"
+        },
+        {
+          "id": 2,
+          "complete_word": "PERRO",
+          "incomplete_word": "PE_RO",
+          "missing_letter": "R",
+          "missing_position": 2,
+          "options": ["R", "L", "N", "M"],
+          "hint": "Mejor amigo del hombre",
+          "image_path": "/static/img/perro.jpg",
+          "time_limit": 30,
+          "points": 10,
+          "confusion_type": "sustitucion_letras"
+        },
+        {
+          "id": 3,
+          "complete_word": "GATO",
+          "incomplete_word": "GA_O",
+          "missing_letter": "T",
+          "missing_position": 2,
+          "options": ["T", "D", "B", "P"],
+          "hint": "Animal que dice miau",
+          "image_path": "/static/img/gato.jpg",
+          "time_limit": 30,
+          "points": 10,
+          "confusion_type": "inversion_letras"
+        },
+        {
+          "id": 4,
+          "complete_word": "BOCA",
+          "incomplete_word": "_OCA",
+          "missing_letter": "B",
+          "missing_position": 0,
+          "options": ["B", "D", "P", "Q"],
+          "hint": "Usamos esto para hablar",
+          "image_path": "/static/img/boca.jpg",
+          "time_limit": 30,
+          "points": 10,
+          "confusion_type": "inversion_letras"
+        },
+        {
+          "id": 5,
+          "complete_word": "LUNA",
+          "incomplete_word": "LU_A",
+          "missing_letter": "N",
+          "missing_position": 2,
+          "options": ["N", "M", "Ñ", "R"],
+          "hint": "Brilla en la noche",
+          "image_path": "/static/img/luna.jpg",
+          "time_limit": 30,
+          "points": 10,
+          "confusion_type": "sustitucion_letras"
+        },
+        {
+          "id": 6,
+          "complete_word": "DADO",
+          "incomplete_word": "_ADO",
+          "missing_letter": "D",
+          "missing_position": 0,
+          "options": ["D", "B", "P", "Q"],
+          "hint": "Cubo con números",
+          "image_path": "/static/img/dado.jpg",
+          "time_limit": 30,
+          "points": 10,
+          "confusion_type": "inversion_letras"
+        },
+        {
+          "id": 7,
+          "complete_word": "MESA",
+          "incomplete_word": "ME_A",
+          "missing_letter": "S",
+          "missing_position": 2,
+          "options": ["S", "Z", "C", "X"],
+          "hint": "Mueble para comer",
+          "image_path": "/static/img/mesa.jpg",
+          "time_limit": 30,
+          "points": 10,
+          "confusion_type": "sustitucion_letras"
+        },
+        {
+          "id": 8,
+          "complete_word": "PATO",
+          "incomplete_word": "_ATO",
+          "missing_letter": "P",
+          "missing_position": 0,
+          "options": ["P", "B", "D", "Q"],
+          "hint": "Ave que nada",
+          "image_path": "/static/img/pato.jpg",
+          "time_limit": 30,
+          "points": 10,
+          "confusion_type": "inversion_letras"
+        },
+        {
+          "id": 9,
+          "complete_word": "FLOR",
+          "incomplete_word": "FLO_",
+          "missing_letter": "R",
+          "missing_position": 3,
+          "options": ["R", "L", "N", "M"],
+          "hint": "Planta bonita",
+          "image_path": "/static/img/flor.jpg",
+          "time_limit": 30,
+          "points": 10,
+          "confusion_type": "sustitucion_letras"
+        },
+        {
+          "id": 10,
+          "complete_word": "SILLA",
+          "incomplete_word": "SI_LA",
+          "missing_letter": "L",
+          "missing_position": 2,
+          "options": ["L", "R", "N", "M"],
+          "hint": "Mueble para sentarse",
+          "image_path": "/static/img/silla.jpg",
+          "time_limit": 35,
+          "points": 10,
+          "confusion_type": "sustitucion_letras"
+        }
+      ]
+    },
+    {
+      "level": 2,
+      "difficulty": "medio",
+      "description": "Palabras más largas con letras faltantes",
+      "questions": [
+        {
+          "id": 11,
+          "complete_word": "MARIPOSA",
+          "incomplete_word": "MA_IPOSA",
+          "missing_letter": "R",
+          "missing_position": 2,
+          "options": ["R", "L", "N", "M"],
+          "hint": "Insecto con alas de colores",
+          "image_path": "/static/img/mariposa.jpg",
+          "time_limit": 40,
+          "points": 15,
+          "confusion_type": "sustitucion_letras"
+        },
+        {
+          "id": 12,
+          "complete_word": "ELEFANTE",
+          "incomplete_word": "ELE_ANTE",
+          "missing_letter": "F",
+          "missing_position": 3,
+          "options": ["F", "V", "B", "P"],
+          "hint": "Animal grande con trompa",
+          "image_path": "/static/img/elefante.jpg",
+          "time_limit": 40,
+          "points": 15,
+          "confusion_type": "sustitucion_letras"
+        },
+        {
+          "id": 13,
+          "complete_word": "TELEFONO",
+          "incomplete_word": "TELE_ONO",
+          "missing_letter": "F",
+          "missing_position": 4,
+          "options": ["F", "V", "B", "P"],
+          "hint": "Aparato para llamar",
+          "image_path": "/static/img/telefono.jpg",
+          "time_limit": 40,
+          "points": 15,
+          "confusion_type": "sustitucion_letras"
+        },
+        {
+          "id": 14,
+          "complete_word": "BICICLETA",
+          "incomplete_word": "_ICICLETA",
+          "missing_letter": "B",
+          "missing_position": 0,
+          "options": ["B", "D", "P", "Q"],
+          "hint": "Vehículo de dos ruedas",
+          "image_path": "/static/img/bicicleta.jpg",
+          "time_limit": 45,
+          "points": 20,
+          "confusion_type": "inversion_letras"
+        },
+        {
+          "id": 15,
+          "complete_word": "DINOSAURIO",
+          "incomplete_word": "_INOSAUR­IO",
+          "missing_letter": "D",
+          "missing_position": 0,
+          "options": ["D", "B", "P", "Q"],
+          "hint": "Animal prehistórico",
+          "image_path": "/static/img/dinosaurio.jpg",
+          "time_limit": 45,
+          "points": 20,
+          "confusion_type": "inversion_letras"
+        },
+        {
+          "id": 16,
+          "complete_word": "PRINCESA",
+          "incomplete_word": "P_INCESA",
+          "missing_letter": "R",
+          "missing_position": 1,
+          "options": ["R", "L", "N", "M"],
+          "hint": "Hija del rey",
+          "image_path": "/static/img/princesa.jpg",
+          "time_limit": 40,
+          "points": 15,
+          "confusion_type": "sustitucion_letras"
+        },
+        {
+          "id": 17,
+          "complete_word": "HELICOPTERO",
+          "incomplete_word": "HELI_OPTERO",
+          "missing_letter": "C",
+          "missing_position": 4,
+          "options": ["C", "S", "Z", "K"],
+          "hint": "Vuela con hélices",
+          "image_path": "/static/img/helicoptero.jpg",
+          "time_limit": 50,
+          "points": 25,
+          "confusion_type": "sustitucion_letras"
+        },
+        {
+          "id": 18,
+          "complete_word": "COMPUTADORA",
+          "incomplete_word": "COMPU_ADORA",
+          "missing_letter": "T",
+          "missing_position": 5,
+          "options": ["T", "D", "B", "P"],
+          "hint": "Máquina electrónica",
+          "image_path": "/static/img/computadora.jpg",
+          "time_limit": 50,
+          "points": 25,
+          "confusion_type": "inversion_letras"
+        },
+        {
+          "id": 19,
+          "complete_word": "BIBLIOTECA",
+          "incomplete_word": "_IBLIOTECA",
+          "missing_letter": "B",
+          "missing_position": 0,
+          "options": ["B", "D", "P", "V"],
+          "hint": "Lugar con libros",
+          "image_path": "/static/img/biblioteca.jpg",
+          "time_limit": 45,
+          "points": 20,
+          "confusion_type": "inversion_letras"
+        },
+        {
+          "id": 20,
+          "complete_word": "REFRIGERADOR",
+          "incomplete_word": "REF_IGERADOR",
+          "missing_letter": "R",
+          "missing_position": 3,
+          "options": ["R", "L", "N", "M"],
+          "hint": "Mantiene comida fría",
+          "image_path": "/static/img/refrigerador.jpg",
+          "time_limit": 55,
+          "points": 30,
+          "confusion_type": "sustitucion_letras"
+        }
+      ]
+    }
+  ],
   "scoring": {
     "correct_answer": 10,
-    "time_bonus": 5,
-    "perfect_level": 50
+    "time_bonus": 2,
+    "perfect_level": 50,
+    "hint_penalty": 5
+  },
+  "game_mechanics": {
+    "max_attempts": 3,
+    "show_hint_after_attempts": 2
   },
   "confusion_types": {
     "inversion_letras": "Inversión de letras (b/d, p/q)",
     "sustitucion_letras": "Sustitución de letras similares (m/n, r/l)",
-    "inversion_silabas": "Inversión de sílabas",
     "omision_letras": "Omisión de letras"
   }
 }

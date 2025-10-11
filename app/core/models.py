@@ -1,6 +1,7 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.contrib.auth.models import AbstractUser
+from django.conf import settings
 
 # Importar constantes
 from .constants import (
@@ -184,3 +185,22 @@ class ValidacionProfesional(models.Model):
         
     def __str__(self):
         return f"Validación - {self.evaluacion} por {self.profesional}"
+
+class Cita(models.Model):
+    usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='citas')
+    nombre_paciente = models.CharField(max_length=200, verbose_name="Nombre del Paciente")
+    foto_paciente = models.ImageField(upload_to='pacientes/', null=True, blank=True, verbose_name="Foto del Paciente")
+    fecha = models.DateField(verbose_name="Fecha de la Cita")
+    hora = models.TimeField(verbose_name="Hora de la Cita")
+    notas = models.TextField(blank=True, null=True, verbose_name="Notas adicionales")
+    completada = models.BooleanField(default=False, verbose_name="Completada")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "Cita"
+        verbose_name_plural = "Citas"
+        ordering = ['fecha', 'hora']
+
+    def __str__(self):
+        return f"{self.nombre_paciente} - {self.fecha} {self.hora}"
