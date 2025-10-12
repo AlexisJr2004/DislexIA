@@ -125,18 +125,6 @@ class CalendarView(TemplateView):
         return context
 
 @method_decorator(login_required, name='dispatch')
-class DocumentsView(TemplateView):
-    template_name = 'documents.html'
-    
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context.update({
-            'page_title': 'Recursos Digitales - DislexIA',
-            'active_section': 'documents',
-        })
-        return context
-
-@method_decorator(login_required, name='dispatch')
 class SettingsView(TemplateView):
     template_name = 'settings.html'
     
@@ -386,12 +374,13 @@ def marcar_cita_completada(request, cita_id):
         return JsonResponse({'success': False, 'error': 'Cita no encontrada'}, status=404)
 
 @login_required
-@require_http_methods(["GET"])
-def recursos_view(request):
+def documents_view(request):
+    """Vista para mostrar los recursos educativos"""
     recursos = Recurso.objects.filter(activo=True)
     
     context = {
-        'page_title': 'Recursos sobre Dislexia',
+        'page_title': 'Recursos Digitales - DislexIA',
+        'active_section': 'documents',
         'recursos': recursos,
     }
     return render(request, 'documents.html', context)

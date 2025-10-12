@@ -18,7 +18,7 @@ urlpatterns = [
     
     # Vistas protegidas
     path('calendar/', views.CalendarView.as_view(), name='calendar'),
-    path('documents/', views.DocumentsView.as_view(), name='documents'),
+    #path('documents/', views.DocumentsView.as_view(), name='documents'),
     path('settings/', views.SettingsView.as_view(), name='settings'),
     path('support/', views.SupportView.as_view(), name='support'),
     path('profile/', views.ProfileView.as_view(), name='profile'),
@@ -32,5 +32,6 @@ urlpatterns = [
     path('citas/<int:cita_id>/completar/', marcar_cita_completada, name='marcar_cita_completada'),
 
     # Recursos
-    path('documentos/', views.recursos_view, name='documentos'),
+    path('documents/', views.documents_view, name='documents'),
+
 ]
