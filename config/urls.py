@@ -38,7 +38,7 @@ urlpatterns += i18n_patterns(
     path('', include('app.core.urls')),
     path('dashboard/', include('app.dashboard.urls')),
     path('games/', include('app.games.urls')),
-    
+    path('recursos/', include('app.resources.urls')),
     prefix_default_language=True,
 )
 if settings.DEBUG:

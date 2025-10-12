@@ -30,4 +30,7 @@ urlpatterns = [
     path('citas/crear/', crear_cita, name='crear_cita'),
     path('citas/<int:cita_id>/eliminar/', eliminar_cita, name='eliminar_cita'),
     path('citas/<int:cita_id>/completar/', marcar_cita_completada, name='marcar_cita_completada'),
+
+    # Recursos
+    path('documentos/', views.recursos_view, name='documentos'),
 ]

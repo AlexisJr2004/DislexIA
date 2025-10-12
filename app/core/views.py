@@ -13,6 +13,8 @@ from django.views.decorators.http import require_http_methods
 import json
 from datetime import datetime, date
 from .models import Cita
+from app.resources.models import Recurso
+from django.shortcuts import render
 
 
 # ==================== VISTAS DE AUTENTICACIÓN ====================
@@ -382,3 +384,14 @@ def marcar_cita_completada(request, cita_id):
         return JsonResponse({'success': True, 'completada': cita.completada})
     except Cita.DoesNotExist:
         return JsonResponse({'success': False, 'error': 'Cita no encontrada'}, status=404)
+
+@login_required
+@require_http_methods(["GET"])
+def recursos_view(request):
+    recursos = Recurso.objects.filter(activo=True)
+    
+    context = {
+        'page_title': 'Recursos sobre Dislexia',
+        'recursos': recursos,
+    }
+    return render(request, 'documents.html', context)
