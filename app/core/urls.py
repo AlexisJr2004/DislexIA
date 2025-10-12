@@ -37,4 +37,13 @@ urlpatterns = [
     path('lista-ninos/', views.ListaNinosView.as_view(), name='lista_ninos'),
     path('nino/<int:pk>/eliminar/', views.EliminarNinoView.as_view(), name='eliminar_nino'),
     path('nino/agregar/', agregar_nino_ajax, name='agregar_nino'),
+
+    # API endpoints para citas
+    path('api/citas/dia/', views.get_citas_dia, name='get_citas_dia'),
+    path('api/citas/crear/', views.crear_cita, name='crear_cita'),
+    path('api/citas/<int:cita_id>/eliminar/', views.eliminar_cita, name='eliminar_cita'),
+    path('api/citas/<int:cita_id>/completar/', views.marcar_cita_completada, name='marcar_cita_completada'),
+    
+    # API endpoint para notificaciones
+    path('api/notificaciones/', views.get_notificaciones, name='get_notificaciones'),
 ]

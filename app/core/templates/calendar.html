@@ -265,6 +265,19 @@
                                 <p class="mt-1 text-xs text-red-600 dark:text-red-400 hidden" id="error-nombre"></p>
                             </div>
 
+                            <!-- Email de los Padres -->
+                            <div class="md:col-span-2">
+                                <label for="cita-email" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    {% trans "Correo Electrónico de los Padres" %} <span class="text-red-500">*</span>
+                                </label>
+                                <input type="email" 
+                                       id="cita-email" 
+                                       required
+                                       class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200"
+                                       placeholder="{% trans 'correo@ejemplo.com' %}">
+                                <p class="mt-1 text-xs text-red-600 dark:text-red-400 hidden" id="error-email"></p>
+                            </div>
+
                             <!-- Fecha -->
                             <div>
                                 <label for="cita-fecha" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -728,6 +741,7 @@
                 
                 const formData = new FormData();
                 formData.append('nombre_paciente', document.getElementById('cita-nombre').value);
+                formData.append('email_padres', document.getElementById('cita-email').value);
                 formData.append('fecha', document.getElementById('cita-fecha').value);
                 formData.append('hora', document.getElementById('cita-hora').value);
                 formData.append('notas', document.getElementById('cita-notas').value);

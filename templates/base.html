@@ -474,7 +474,7 @@
     <!-- Main Content -->
     <div class="main-content-with-sidebars">
         <!-- Top Bar -->
-        <div class="bg-white/50 dark:bg-gray-900/50 backdrop-blur-md px-8 py-4 flex items-center justify-between sticky top-0 z-10 dark:border-gray-800 transition-colors duration-200 ">
+        <div class="bg-white/50 dark:bg-gray-900/50 backdrop-blur-md px-8 py-4 flex items-center justify-between sticky top-0 z-[50] dark:border-gray-800 transition-colors duration-200 ">
             <div class="flex items-center gap-3">
                 <!-- Imagen de perfil -->
                 <div class="w-10 h-10 rounded-full overflow-hidden bg-purple-100 dark:bg-purple-900/50">
@@ -579,12 +579,49 @@
                 </div>
 
                 <!-- Notification Button -->
-                <button
-                    class="p-2.5 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl text-gray-600 dark:text-gray-400 relative transition-all hover:scale-105">
-                    <i class="far fa-bell text-lg"></i>
-                    <span
-                        class="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white dark:border-gray-900 animate-pulse"></span>
-                </button>
+                <div class="relative">
+                    <button id="notificationBtn"
+                        class="p-2.5 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl text-gray-600 dark:text-gray-400 relative transition-all hover:scale-105">
+                        <i class="far fa-bell text-lg"></i>
+                        <span id="notificationBadge"
+                            class="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white dark:border-gray-900 animate-pulse hidden"></span>
+                    </button>
+                    
+                    <!-- Dropdown de Notificaciones -->
+                    <div id="notificationDropdown" 
+                         class="hidden absolute right-0 mt-2 w-96 bg-white dark:bg-gray-900 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-800 z-[60] max-h-[32rem] overflow-hidden">
+                        <!-- Header -->
+                        <div class="p-4 border-b border-gray-200 dark:border-gray-800">
+                            <div class="flex items-center justify-between">
+                                <h3 class="text-lg font-bold text-gray-900 dark:text-white">
+                                    <i class="fas fa-bell text-purple-600 dark:text-purple-400 mr-2"></i>
+                                    {% trans "Notificaciones" %}
+                                </h3>
+                                <button id="markAllReadBtn" 
+                                        class="text-xs text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 font-medium">
+                                    {% trans "Marcar todas como leídas" %}
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Lista de Notificaciones -->
+                        <div id="notificationList" class="overflow-y-auto max-h-96">
+                            <!-- Se llenará con JavaScript -->
+                            <div class="flex flex-col items-center justify-center py-12 px-4">
+                                <i class="fas fa-spinner fa-spin text-4xl text-gray-400 dark:text-gray-600 mb-3"></i>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">{% trans "Cargando notificaciones..." %}</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Footer -->
+                        <div class="p-3 border-t border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-800">
+                            <a href="{% url 'core:calendar' %}" 
+                               class="block text-center text-sm font-medium text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300">
+                                {% trans "Ver todas las citas" %} →
+                            </a>
+                        </div>
+                    </div>
+                </div>
 
                 <!-- Schedule Button -->
                 <a href="{% url 'core:calendar' %}"
@@ -937,6 +974,164 @@
             // Exponer funciones globalmente
             window.loadCitasDelDia = loadCitasDelDia;
             window.load_citas_del_mes = load_citas_del_mes;
+        })();
+    </script>
+    
+    <!-- Script para sistema de notificaciones -->
+    <script>
+        (function initNotificationSystem() {
+            const notificationBtn = document.getElementById('notificationBtn');
+            const notificationDropdown = document.getElementById('notificationDropdown');
+            const notificationBadge = document.getElementById('notificationBadge');
+            const notificationList = document.getElementById('notificationList');
+            const markAllReadBtn = document.getElementById('markAllReadBtn');
+            
+            let notificaciones = [];
+            
+            // Cargar notificaciones
+            async function loadNotificaciones() {
+                try {
+                    const response = await fetch("{% url 'core:get_notificaciones' %}");
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        notificaciones = data.notificaciones;
+                        updateNotificationUI();
+                    }
+                } catch (error) {
+                    console.error('Error cargando notificaciones:', error);
+                    notificationList.innerHTML = `
+                        <div class="flex flex-col items-center justify-center py-12 px-4">
+                            <i class="fas fa-exclamation-triangle text-4xl text-red-400 mb-3"></i>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">{% trans "Error al cargar notificaciones" %}</p>
+                        </div>
+                    `;
+                }
+            }
+            
+            function updateNotificationUI() {
+                // Actualizar badge
+                const noLeidas = notificaciones.filter(n => n.tipo === 'urgente' || n.tipo === 'error').length;
+                if (noLeidas > 0) {
+                    notificationBadge.classList.remove('hidden');
+                } else {
+                    notificationBadge.classList.add('hidden');
+                }
+                
+                // Actualizar lista
+                if (notificaciones.length === 0) {
+                    notificationList.innerHTML = `
+                        <div class="flex flex-col items-center justify-center py-12 px-4">
+                            <i class="fas fa-check-circle text-4xl text-green-400 mb-3"></i>
+                            <p class="text-sm font-medium text-gray-900 dark:text-white mb-1">{% trans "¡Todo al día!" %}</p>
+                            <p class="text-xs text-gray-500 dark:text-gray-400">{% trans "No tienes notificaciones pendientes" %}</p>
+                        </div>
+                    `;
+                } else {
+                    notificationList.innerHTML = notificaciones.map(notif => {
+                        const iconColor = {
+                            'urgente': 'text-red-500',
+                            'error': 'text-red-500',
+                            'advertencia': 'text-yellow-500',
+                            'info': 'text-blue-500',
+                            'success': 'text-green-500'
+                        }[notif.tipo] || 'text-gray-500';
+                        
+                        const bgColor = {
+                            'urgente': 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800',
+                            'error': 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800',
+                            'advertencia': 'bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-800',
+                            'info': 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800',
+                            'success': 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800'
+                        }[notif.tipo] || 'bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700';
+                        
+                        return `
+                            <div class="notification-item p-4 border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors cursor-pointer"
+                                 data-id="${notif.id || ''}"
+                                 data-accion="${notif.accion || ''}">
+                                <div class="flex items-start gap-3">
+                                    <div class="w-10 h-10 rounded-full ${bgColor} border flex items-center justify-center flex-shrink-0">
+                                        <i class="fas ${notif.icono} ${iconColor}"></i>
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-sm font-medium text-gray-900 dark:text-white mb-1">
+                                            ${notif.mensaje}
+                                        </p>
+                                        ${notif.paciente ? `
+                                            <div class="flex items-center gap-2 mt-2">
+                                                ${notif.foto ? `
+                                                    <img src="${notif.foto}" alt="${notif.paciente}" 
+                                                         class="w-6 h-6 rounded-full object-cover">
+                                                ` : ''}
+                                                <span class="text-xs text-gray-500 dark:text-gray-400">${notif.paciente}</span>
+                                            </div>
+                                        ` : ''}
+                                        ${notif.tiempo ? `
+                                            <div class="mt-2">
+                                                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${bgColor}">
+                                                    <i class="far fa-clock mr-1"></i>
+                                                    ${notif.tiempo}
+                                                </span>
+                                            </div>
+                                        ` : ''}
+                                    </div>
+                                    ${notif.tipo === 'urgente' || notif.tipo === 'error' ? `
+                                        <div class="w-2 h-2 rounded-full bg-red-500 flex-shrink-0 mt-2"></div>
+                                    ` : ''}
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+                    
+                    // Agregar event listeners a las notificaciones
+                    document.querySelectorAll('.notification-item').forEach(item => {
+                        item.addEventListener('click', function() {
+                            const accion = this.dataset.accion;
+                            const citaId = this.dataset.id;
+                            
+                            // Cerrar dropdown
+                            notificationDropdown.classList.add('hidden');
+                            
+                            // Ejecutar acción
+                            if (accion === 'ver_calendario') {
+                                window.location.href = "{% url 'core:calendar' %}";
+                            } else if (accion === 'agregar_paciente') {
+                                window.location.href = "{% url 'core:lista_ninos' %}";
+                            } else if (citaId) {
+                                window.location.href = "{% url 'core:calendar' %}";
+                            }
+                        });
+                    });
+                }
+            }
+            
+            // Toggle dropdown
+            notificationBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                notificationDropdown.classList.toggle('hidden');
+                if (!notificationDropdown.classList.contains('hidden')) {
+                    loadNotificaciones();
+                }
+            });
+            
+            // Cerrar al hacer clic fuera
+            document.addEventListener('click', function(e) {
+                if (!notificationBtn.contains(e.target) && !notificationDropdown.contains(e.target)) {
+                    notificationDropdown.classList.add('hidden');
+                }
+            });
+            
+            // Marcar todas como leídas
+            markAllReadBtn.addEventListener('click', function() {
+                notificaciones = [];
+                updateNotificationUI();
+            });
+            
+            // Cargar notificaciones iniciales
+            loadNotificaciones();
+            
+            // Recargar cada 60 segundos
+            setInterval(loadNotificaciones, 60000);
         })();
     </script>
     
