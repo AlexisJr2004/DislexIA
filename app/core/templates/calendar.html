@@ -24,11 +24,11 @@
             color: white;
         }
         
-        .calendar-day.has-activity {
+        .calendar-day.has-cita {
             position: relative;
         }
         
-        .calendar-day.has-activity::after {
+        .calendar-day.has-cita::after {
             content: '';
             position: absolute;
             bottom: 2px;
@@ -40,20 +40,37 @@
             border-radius: 50%;
         }
         
-        .dark .calendar-day.has-activity::after {
+        .dark .calendar-day.has-cita::after {
             background-color: #a78bfa;
         }
         
-        .calendar-day.selected.has-activity::after {
+        .calendar-day.selected.has-cita::after {
             background-color: white;
         }
         
-        .activity-item {
+        .cita-item {
             transition: all 0.2s ease;
         }
         
-        .activity-item:hover {
-            transform: translateX(4px);
+        .cita-item:hover {
+            transform: translateX(-4px);
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.2);
+        }
+        
+        /* Animaciones del modal */
+        @keyframes scale-in {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        .animate-scale-in {
+            animation: scale-in 0.2s ease-out;
         }
 </style>
 {% endblock %}
@@ -62,21 +79,18 @@
         <!-- Header -->
         <div class="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
             <div>
-                <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">{% trans "Calendario de Actividades" %}</h1>
-                <p class="text-gray-600 dark:text-gray-400">{% trans "Organiza y revisa tus sesiones de entrenamiento" %}</p>
+                <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">{% trans "Calendario de Citas" %}</h1>
+                <p class="text-gray-600 dark:text-gray-400">{% trans "Organiza y gestiona tus citas con pacientes" %}</p>
             </div>
             
             <div class="flex gap-3">
                 <button id="today-btn" class="px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-xl text-sm font-medium transition-all hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300">
+                    <i class="fas fa-calendar-day mr-2"></i>
                     {% trans "Hoy" %}
                 </button>
-                <button id="add-cita-btn" class="px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl text-sm font-medium transition-all hover:from-blue-600 hover:to-blue-700 flex items-center gap-2">
+                <button id="add-cita-btn" class="px-4 py-2 bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-xl text-sm font-medium transition-all hover:from-purple-600 hover:to-purple-700 flex items-center gap-2 shadow-md hover:shadow-lg">
                     <i class="fas fa-calendar-plus"></i>
                     {% trans "Agendar Cita" %}
-                </button>
-                <button id="add-activity-btn" class="px-4 py-2 bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-xl text-sm font-medium transition-all hover:from-purple-600 hover:to-purple-700 flex items-center gap-2">
-                    <i class="fas fa-plus"></i>
-                    {% trans "Nueva Actividad" %}
                 </button>
             </div>
         </div>
@@ -91,7 +105,7 @@
                             <i class="fas fa-chevron-left text-gray-600 dark:text-gray-400"></i>
                         </button>
                         
-                        <h2 id="current-month" class="text-xl font-bold text-gray-900 dark:text-white">{% trans "Febrero 2024" %}</h2>
+                        <h2 id="current-month" class="text-xl font-bold text-gray-900 dark:text-white"></h2>
                         
                         <button id="next-month" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
                             <i class="fas fa-chevron-right text-gray-600 dark:text-gray-400"></i>
@@ -119,10 +133,10 @@
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
                     <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 text-center">
                         <div class="w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center mx-auto mb-2">
-                            <i class="fas fa-play text-purple-600 dark:text-purple-400"></i>
+                            <i class="fas fa-calendar-check text-purple-600 dark:text-purple-400"></i>
                         </div>
-                        <p class="text-lg font-bold text-gray-900 dark:text-white" id="sessions-count">0</p>
-                        <p class="text-xs text-gray-500 dark:text-gray-400">{% trans "Sesiones este mes" %}</p>
+                        <p class="text-lg font-bold text-gray-900 dark:text-white" id="citas-count">0</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">{% trans "Citas este mes" %}</p>
                     </div>
                     
                     <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 text-center">
@@ -137,149 +151,183 @@
                         <div class="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mx-auto mb-2">
                             <i class="fas fa-clock text-blue-600 dark:text-blue-400"></i>
                         </div>
-                        <p class="text-lg font-bold text-gray-900 dark:text-white" id="time-count">0h</p>
-                        <p class="text-xs text-gray-500 dark:text-gray-400">{% trans "Tiempo total" %}</p>
+                        <p class="text-lg font-bold text-gray-900 dark:text-white" id="pendientes-count">0</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">{% trans "Pendientes" %}</p>
                     </div>
                 </div>
             </div>
 
-            <!-- Registros del día seleccionado -->
+            <!-- Citas del día seleccionado -->
             <div class="lg:col-span-1">
                 <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 sticky top-8">
                     <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4" id="selected-date">{% trans "Hoy" %}</h3>
                     
-                    <!-- Lista de actividades -->
-                    <div id="activities-list" class="space-y-3 mb-6">
+                    <!-- Lista de citas - ID único para evitar conflictos con base.html -->
+                    <div id="calendar-citas-list" class="space-y-3">
                         <div class="text-center py-8 text-gray-500 dark:text-gray-400">
-                            <i class="fas fa-calendar-day text-3xl mb-2 opacity-50"></i>
-                            <p>{% trans "No hay actividades para este día" %}</p>
-                        </div>
-                    </div>
-                    
-                    <!-- Resumen del día -->
-                    <div class="border-t border-gray-200 dark:border-gray-700 pt-4">
-                        <h4 class="font-medium text-gray-900 dark:text-white mb-3">{% trans "Resumen del día" %}</h4>
-                        <div class="space-y-2 text-sm">
-                            <div class="flex justify-between">
-                                <span class="text-gray-600 dark:text-gray-400">{% trans "Sesiones completadas:" %}</span>
-                                <span class="font-medium text-gray-900 dark:text-white" id="day-sessions">0</span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span class="text-gray-600 dark:text-gray-400">{% trans "Tiempo total:" %}</span>
-                                <span class="font-medium text-gray-900 dark:text-white" id="day-time">0 min</span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span class="text-gray-600 dark:text-gray-400">{% trans "Puntos ganados:" %}</span>
-                                <span class="font-medium text-green-600 dark:text-green-400" id="day-points">0</span>
-                            </div>
+                            <i class="fas fa-calendar-times text-3xl mb-2 opacity-50"></i>
+                            <p class="text-sm">{% trans "No hay citas para este día" %}</p>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-    <!-- Modal para agendar cita -->
-    <div id="cita-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 hidden">
-        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl max-w-md w-full p-6">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-xl font-bold text-gray-900 dark:text-white">{% trans "Agendar Cita" %}</h3>
-                <button id="close-cita-modal" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-                    <i class="fas fa-times text-gray-500 dark:text-gray-400"></i>
+    <!-- Modal para agendar cita - Diseño mejorado -->
+    <div id="cita-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center z-50 overflow-y-auto p-4">
+        <div class="bg-white dark:bg-gray-900 rounded-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto shadow-2xl border border-gray-200 dark:border-gray-800 animate-scale-in">
+            <!-- Header del Modal -->
+            <div class="sticky top-0 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 p-6 flex items-center justify-between z-10">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center">
+                        <i class="fas fa-calendar-plus text-purple-600 dark:text-purple-400"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 dark:text-white">
+                        {% trans "Agendar Nueva Cita" %}
+                    </h3>
+                </div>
+                <button id="close-cita-modal" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors">
+                    <i class="fas fa-times text-xl"></i>
                 </button>
             </div>
-            
-            <form id="cita-form" class="space-y-4" enctype="multipart/form-data">
+
+            <!-- Contenido del Modal -->
+            <form id="cita-form" class="p-6" enctype="multipart/form-data">
                 {% csrf_token %}
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{% trans "Nombre del Paciente" %}</label>
-                    <input type="text" id="cita-nombre" required
-                           class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
-                </div>
                 
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{% trans "Foto del Paciente" %}</label>
-                    <input type="file" id="cita-foto" accept="image/*"
-                           class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
-                </div>
-                
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{% trans "Fecha" %}</label>
-                        <input type="date" id="cita-fecha" required
-                               class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Columna izquierda - Foto del Paciente -->
+                    <div class="lg:col-span-1">
+                        <h4 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-4">
+                            <i class="fas fa-user-circle text-purple-600 dark:text-purple-400 mr-2"></i>
+                            {% trans "Foto del Paciente" %}
+                        </h4>
+                        
+                        <!-- Image Preview -->
+                        <div class="mb-4">
+                            <div class="image-preview relative w-full aspect-square rounded-xl overflow-hidden bg-gray-100 dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700">
+                                <div id="imagePreviewCita" class="w-full h-full flex flex-col items-center justify-center text-gray-400 dark:text-gray-600">
+                                    <i class="fas fa-user-circle text-6xl mb-2"></i>
+                                    <p class="text-sm">{% trans "Sin foto" %}</p>
+                                </div>
+                                <img id="imageCitaSrc" src="" alt="Preview" class="w-full h-full object-cover hidden">
+                            </div>
+                        </div>
+                        
+                        <!-- Drag & Drop Area -->
+                        <div class="drag-drop-area border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-xl p-6 text-center cursor-pointer hover:border-purple-500 dark:hover:border-purple-400 transition-all"
+                             id="dragDropAreaCita">
+                            <input type="file" 
+                                   id="cita-foto" 
+                                   accept="image/*" 
+                                   class="hidden">
+                            <label for="cita-foto" class="cursor-pointer block">
+                                <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 dark:text-gray-600 mb-2 block"></i>
+                                <p class="text-sm text-gray-600 dark:text-gray-400 mb-1">
+                                    {% trans "Haz clic para subir" %}
+                                </p>
+                                <p class="text-xs text-gray-500 dark:text-gray-500">
+                                    {% trans "o arrastra y suelta" %}
+                                </p>
+                                <p class="text-xs text-gray-400 dark:text-gray-600 mt-2">
+                                    PNG, JPG (max. 5MB)
+                                </p>
+                            </label>
+                        </div>
+                        
+                        <!-- Remove Image Button -->
+                        <button type="button" 
+                                id="removeImageBtnCita"
+                                class="w-full mt-4 px-4 py-2 bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-lg text-sm font-medium hover:bg-red-100 dark:hover:bg-red-900/50 transition-all hidden">
+                            <i class="fas fa-trash mr-2"></i>
+                            {% trans "Eliminar foto" %}
+                        </button>
                     </div>
-                    
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{% trans "Hora" %}</label>
-                        <input type="time" id="cita-hora" required
-                               class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
-                    </div>
-                </div>
-                
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{% trans "Notas" %}</label>
-                    <textarea id="cita-notas" rows="3" 
-                              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                              placeholder="{% trans 'Motivo de la consulta, observaciones...' %}"></textarea>
-                </div>
-                
-                <div class="flex gap-3 pt-2">
-                    <button type="button" id="cancel-cita" class="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 font-medium rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
-                        {% trans "Cancelar" %}
-                    </button>
-                    <button type="submit" class="flex-1 px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-medium rounded-xl hover:from-blue-600 hover:to-blue-700 transition-colors">
-                        {% trans "Agendar" %}
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
 
-    <!-- Modal para agregar actividad -->
-    <div id="activity-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 hidden">
-        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl max-w-md w-full p-6">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-xl font-bold text-gray-900 dark:text-white">{% trans "Nueva Actividad" %}</h3>
-                <button id="close-modal" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-                    <i class="fas fa-times text-gray-500 dark:text-gray-400"></i>
-                </button>
-            </div>
-            
-            <form id="activity-form" class="space-y-4">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{% trans "Juego" %}</label>
-                    <select id="activity-game" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
-                        <option value="quiz">{% trans "Quiz Interactivo" %}</option>
-                        <option value="search">{% trans "Búsqueda de Palabras" %}</option>
-                        <option value="order">{% trans "Ordenar Oraciones" %}</option>
-                    </select>
+                    <!-- Columna derecha - Datos de la Cita -->
+                    <div class="lg:col-span-2">
+                        <h4 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-4">
+                            <i class="fas fa-info-circle text-purple-600 dark:text-purple-400 mr-2"></i>
+                            {% trans "Información de la Cita" %}
+                        </h4>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <!-- Nombre del Paciente -->
+                            <div class="md:col-span-2">
+                                <label for="cita-nombre" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    {% trans "Nombre del Paciente" %} <span class="text-red-500">*</span>
+                                </label>
+                                <input type="text" 
+                                       id="cita-nombre" 
+                                       required
+                                       class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200"
+                                       placeholder="{% trans 'Ej: Juan Pérez López' %}">
+                                <p class="mt-1 text-xs text-red-600 dark:text-red-400 hidden" id="error-nombre"></p>
+                            </div>
+
+                            <!-- Fecha -->
+                            <div>
+                                <label for="cita-fecha" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    {% trans "Fecha" %} <span class="text-red-500">*</span>
+                                </label>
+                                <input type="date" 
+                                       id="cita-fecha" 
+                                       required
+                                       class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200">
+                                <p class="mt-1 text-xs text-red-600 dark:text-red-400 hidden" id="error-fecha"></p>
+                            </div>
+                            
+                            <!-- Hora -->
+                            <div>
+                                <label for="cita-hora" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    {% trans "Hora" %} <span class="text-red-500">*</span>
+                                </label>
+                                <input type="time" 
+                                       id="cita-hora" 
+                                       required
+                                       class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200">
+                                <p class="mt-1 text-xs text-red-600 dark:text-red-400 hidden" id="error-hora"></p>
+                            </div>
+
+                            <!-- Notas / Motivo de Consulta -->
+                            <div class="md:col-span-2">
+                                <label for="cita-notas" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    {% trans "Notas / Motivo de Consulta" %}
+                                </label>
+                                <textarea id="cita-notas" 
+                                          rows="4" 
+                                          class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200"
+                                          placeholder="{% trans 'Motivo de la consulta, observaciones importantes...' %}"></textarea>
+                            </div>
+
+                            <!-- Recordatorio -->
+                            <div class="md:col-span-2">
+                                <div class="bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-lg p-3">
+                                    <p class="text-xs font-medium text-purple-900 dark:text-purple-300 mb-1 flex items-center">
+                                        <i class="fas fa-bell mr-1"></i>{% trans "Recordatorio:" %}
+                                    </p>
+                                    <p class="text-xs text-purple-700 dark:text-purple-400">
+                                        {% trans "Se enviará un recordatorio de esta cita 30 minutos antes de la hora programada." %}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{% trans "Duración (minutos)" %}</label>
-                    <input type="number" id="activity-duration" min="5" max="60" value="15" 
-                           class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
-                </div>
-                
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{% trans "Puntos obtenidos" %}</label>
-                    <input type="number" id="activity-points" min="0" max="100" value="25" 
-                           class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
-                </div>
-                
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{% trans "Notas" %}</label>
-                    <textarea id="activity-notes" rows="3" 
-                              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                              placeholder="{% trans 'Agrega alguna observación...' %}"></textarea>
-                </div>
-                
-                <div class="flex gap-3 pt-2">
-                    <button type="button" id="cancel-activity" class="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 font-medium rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+
+                <!-- Botones de acción -->
+                <div class="flex gap-3 mt-6 pt-6 border-t border-gray-200 dark:border-gray-800">
+                    <button type="button"
+                            id="cancel-cita"
+                            class="flex-1 px-6 py-3 bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-xl text-sm font-semibold hover:bg-gray-300 dark:hover:bg-gray-700 transition-all">
+                        <i class="fas fa-times mr-2"></i>
                         {% trans "Cancelar" %}
                     </button>
-                    <button type="submit" class="flex-1 px-4 py-2 bg-gradient-to-r from-purple-500 to-purple-600 text-white font-medium rounded-xl hover:from-purple-600 hover:to-purple-700 transition-colors">
-                        {% trans "Guardar" %}
+                    <button type="submit"
+                            id="btnGuardarCita"
+                            class="flex-1 px-6 py-3 bg-gradient-to-r from-purple-600 to-purple-800 hover:from-purple-500 hover:to-purple-700 text-white rounded-xl text-sm font-bold transition-all shadow-md hover:shadow-lg">
+                        <i class="fas fa-calendar-check mr-2"></i>
+                        {% trans "Agendar Cita" %}
                     </button>
                 </div>
             </form>
@@ -289,61 +337,16 @@
 
 {% block extra_scripts %}
 <script>
-        // IIFE para ejecutar inmediatamente sin esperar DOMContentLoaded
+        // Sistema de gestión de calendario de citas
         (function initCalendarPage() {
-            console.log('{% trans "Inicializando calendario..." %}');
+            console.log('{% trans "Inicializando calendario de citas..." %}');
             
-            // Datos de ejemplo para actividades
-            let activities = {
-                '2024-02-15': [
-                    {
-                        id: 1,
-                        game: 'quiz',
-                        gameName: '{% trans "Quiz Interactivo" %}',
-                        duration: 12,
-                        points: 80,
-                        notes: '{% trans "Excelente rendimiento en comprensión lectora" %}',
-                        time: '10:30 AM'
-                    },
-                    {
-                        id: 2,
-                        game: 'search',
-                        gameName: '{% trans "Búsqueda de Palabras" %}',
-                        duration: 8,
-                        points: 65,
-                        notes: '{% trans "Encontró 12 de 15 palabras" %}',
-                        time: '04:15 PM'
-                    }
-                ],
-                '2024-02-10': [
-                    {
-                        id: 3,
-                        game: 'order',
-                        gameName: '{% trans "Ordenar Oraciones" %}',
-                        duration: 15,
-                        points: 45,
-                        notes: '{% trans "Dificultad con oraciones complejas" %}',
-                        time: '03:00 PM'
-                    }
-                ],
-                '2024-02-05': [
-                    {
-                        id: 4,
-                        game: 'quiz',
-                        gameName: '{% trans "Quiz Interactivo" %}',
-                        duration: 10,
-                        points: 70,
-                        notes: '{% trans "Mejoró 15% respecto a la última sesión" %}',
-                        time: '11:00 AM'
-                    }
-                ]
-            };
-
             // Estado del calendario
             let currentDate = new Date();
             let selectedDate = new Date();
             let currentMonth = currentDate.getMonth();
             let currentYear = currentDate.getFullYear();
+            let citasConFecha = new Set();
 
             // Elementos DOM
             const calendarDays = document.getElementById('calendar-days');
@@ -352,32 +355,49 @@
             const nextMonthBtn = document.getElementById('next-month');
             const todayBtn = document.getElementById('today-btn');
             const selectedDateElement = document.getElementById('selected-date');
-            const activitiesList = document.getElementById('activities-list');
-            const activityModal = document.getElementById('activity-modal');
-            const addActivityBtn = document.getElementById('add-activity-btn');
-            const closeModalBtn = document.getElementById('close-modal');
-            const cancelActivityBtn = document.getElementById('cancel-activity');
-            const activityForm = document.getElementById('activity-form');
+            const citasList = document.getElementById('calendar-citas-list'); // ID único
             
             // Elementos de estadísticas
-            const sessionsCount = document.getElementById('sessions-count');
+            const citasCount = document.getElementById('citas-count');
             const completedCount = document.getElementById('completed-count');
-            const timeCount = document.getElementById('time-count');
-            const daySessions = document.getElementById('day-sessions');
-            const dayTime = document.getElementById('day-time');
-            const dayPoints = document.getElementById('day-points');
+            const pendientesCount = document.getElementById('pendientes-count');
 
-            console.log('{% trans "Elementos encontrados:" %}', {
-                calendarDays: calendarDays ? '{% trans "Sí" %}' : '{% trans "No" %}',
-                prevMonthBtn: prevMonthBtn ? '{% trans "Sí" %}' : '{% trans "No" %}',
-                activityModal: activityModal ? '{% trans "Sí" %}' : '{% trans "No" %}'
-            });
+            // Cargar citas con fechas del mes
+            async function loadCitasDelMes() {
+                try {
+                    const firstDay = new Date(currentYear, currentMonth, 1);
+                    const lastDay = new Date(currentYear, currentMonth + 1, 0);
+                    
+                    citasConFecha.clear();
+                    let totalCitas = 0;
+                    let totalCompletadas = 0;
+                    
+                    for (let d = new Date(firstDay); d <= lastDay; d.setDate(d.getDate() + 1)) {
+                        const fecha = d.toISOString().split('T')[0];
+                        const response = await fetch("{% url 'core:get_citas_dia' %}?fecha=" + fecha);
+                        const data = await response.json();
+                        if (data.citas.length > 0) {
+                            citasConFecha.add(fecha);
+                            totalCitas += data.citas.length;
+                            totalCompletadas += data.citas.filter(c => c.completada).length;
+                        }
+                    }
+                    
+                    // Actualizar estadísticas
+                    citasCount.textContent = totalCitas;
+                    completedCount.textContent = totalCompletadas;
+                    pendientesCount.textContent = totalCitas - totalCompletadas;
+                    
+                    renderCalendar();
+                } catch (error) {
+                    console.error('Error cargando citas del mes:', error);
+                }
+            }
 
             // Renderizar calendario
             function renderCalendar() {
                 calendarDays.innerHTML = '';
                 
-                // Actualizar título del mes
                 const monthNames = [
                     '{% trans "Enero" %}', '{% trans "Febrero" %}', '{% trans "Marzo" %}', 
                     '{% trans "Abril" %}', '{% trans "Mayo" %}', '{% trans "Junio" %}', 
@@ -386,52 +406,37 @@
                 ];
                 currentMonthElement.textContent = `${monthNames[currentMonth]} ${currentYear}`;
                 
-                // Obtener primer día del mes y cantidad de días
                 const firstDay = new Date(currentYear, currentMonth, 1);
                 const lastDay = new Date(currentYear, currentMonth + 1, 0);
                 const daysInMonth = lastDay.getDate();
                 const startingDay = firstDay.getDay();
                 
-                // Días del mes anterior
-                const prevMonthLastDay = new Date(currentYear, currentMonth, 0).getDate();
+                // Días vacíos al inicio
                 for (let i = 0; i < startingDay; i++) {
-                    const dayElement = document.createElement('div');
-                    dayElement.className = 'calendar-day text-center py-2 text-gray-400 dark:text-gray-600';
-                    dayElement.textContent = prevMonthLastDay - startingDay + i + 1;
-                    calendarDays.appendChild(dayElement);
+                    const emptyDay = document.createElement('div');
+                    calendarDays.appendChild(emptyDay);
                 }
                 
-                // Días del mes actual
+                // Días del mes
                 const today = new Date();
                 for (let day = 1; day <= daysInMonth; day++) {
-                    const dayElement = document.createElement('div');
+                    const dayEl = document.createElement('div');
                     const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-                    const hasActivity = activities[dateStr] && activities[dateStr].length > 0;
+                    const hasCita = citasConFecha.has(dateStr);
                     
-                    dayElement.className = `calendar-day text-center py-2 rounded-lg text-gray-900 dark:text-gray-100 ${hasActivity ? 'has-activity' : ''}`;
+                    dayEl.className = `calendar-day relative text-center py-2 rounded-lg text-gray-900 dark:text-gray-100 ${hasCita ? 'has-cita' : ''}`;
+                    dayEl.textContent = day;
                     
                     if (day === today.getDate() && currentMonth === today.getMonth() && currentYear === today.getFullYear()) {
-                        dayElement.classList.add('font-bold', 'text-purple-600', 'dark:text-purple-400');
+                        dayEl.classList.add('text-purple-600', 'dark:text-purple-400', 'font-semibold');
                     }
                     
                     if (day === selectedDate.getDate() && currentMonth === selectedDate.getMonth() && currentYear === selectedDate.getFullYear()) {
-                        dayElement.classList.add('selected');
+                        dayEl.classList.add('selected');
                     }
                     
-                    dayElement.textContent = day;
-                    dayElement.dataset.date = dateStr;
-                    dayElement.addEventListener('click', () => selectDate(day));
-                    calendarDays.appendChild(dayElement);
-                }
-                
-                // Días del próximo mes
-                const totalCells = 42;
-                const remainingCells = totalCells - (startingDay + daysInMonth);
-                for (let i = 1; i <= remainingCells; i++) {
-                    const dayElement = document.createElement('div');
-                    dayElement.className = 'calendar-day text-center py-2 text-gray-400 dark:text-gray-600';
-                    dayElement.textContent = i;
-                    calendarDays.appendChild(dayElement);
+                    dayEl.addEventListener('click', () => selectDate(day));
+                    calendarDays.appendChild(dayEl);
                 }
             }
 
@@ -441,90 +446,108 @@
                 updateSelectedDateInfo();
             }
 
-            function updateSelectedDateInfo() {
+            async function updateSelectedDateInfo() {
                 const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
                 const locale = '{{ LANGUAGE_CODE }}' === 'en' ? 'en-US' : 'es-ES';
                 selectedDateElement.textContent = selectedDate.toLocaleDateString(locale, options);
                 
-                const dateStr = formatDate(selectedDate);
-                const dayActivities = activities[dateStr] || [];
+                const fecha = selectedDate.toISOString().split('T')[0];
                 
-                activitiesList.innerHTML = '';
-                
-                if (dayActivities.length === 0) {
-                    activitiesList.innerHTML = `
-                        <div class="text-center py-8 text-gray-500 dark:text-gray-400">
-                            <i class="fas fa-calendar-day text-3xl mb-2 opacity-50"></i>
-                            <p>{% trans "No hay actividades para este día" %}</p>
-                        </div>
-                    `;
-                } else {
-                    dayActivities.forEach(activity => {
-                        const activityElement = document.createElement('div');
-                        activityElement.className = 'activity-item bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl p-4';
-                        
-                        let gameIcon = 'fa-gamepad';
-                        let gameColor = 'purple';
-                        
-                        if (activity.game === 'search') {
-                            gameIcon = 'fa-search';
-                            gameColor = 'blue';
-                        } else if (activity.game === 'order') {
-                            gameIcon = 'fa-sort-alpha-down';
-                            gameColor = 'orange';
-                        }
-                        
-                        activityElement.innerHTML = `
-                            <div class="flex justify-between items-start mb-2">
-                                <div class="flex items-center gap-2">
-                                    <div class="w-8 h-8 bg-${gameColor}-100 dark:bg-${gameColor}-900/30 rounded-lg flex items-center justify-center">
-                                        <i class="fas ${gameIcon} text-${gameColor}-600 dark:text-${gameColor}-400 text-sm"></i>
-                                    </div>
-                                    <div>
-                                        <h4 class="font-medium text-gray-900 dark:text-white">${activity.gameName}</h4>
-                                        <p class="text-xs text-gray-500 dark:text-gray-400">${activity.time}</p>
-                                    </div>
-                                </div>
-                                <div class="text-right">
-                                    <span class="inline-block bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 text-xs font-medium px-2 py-1 rounded-full">
-                                        +${activity.points} {% trans "pts" %}
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="flex justify-between text-sm text-gray-600 dark:text-gray-400">
-                                <span>${activity.duration} {% trans "min" %}</span>
-                                <span>${activity.notes}</span>
+                try {
+                    const response = await fetch("{% url 'core:get_citas_dia' %}?fecha=" + fecha);
+                    const data = await response.json();
+                    
+                    if (!citasList) {
+                        console.error('No se encontró el elemento calendar-citas-list');
+                        return;
+                    }
+                    
+                    citasList.innerHTML = '';
+                    
+                    if (data.citas.length === 0) {
+                        citasList.innerHTML = `
+                            <div class="text-center py-8 text-gray-500 dark:text-gray-400">
+                                <i class="fas fa-calendar-times text-3xl mb-2 opacity-50"></i>
+                                <p class="text-sm">{% trans "No hay citas para este día" %}</p>
                             </div>
                         `;
-                        
-                        activitiesList.appendChild(activityElement);
-                    });
+                    } else {
+                        data.citas.forEach(cita => {
+                            const citaCard = document.createElement('div');
+                            citaCard.className = 'cita-item bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl p-3';
+                            
+                            const fotoUrl = cita.foto_paciente || '{% static "img/profile.png" %}';
+                            const completadaClass = cita.completada ? 'opacity-50' : '';
+                            const checkIcon = cita.completada ? 'fa-check-circle text-green-500' : 'fa-circle text-gray-300';
+                            
+                            citaCard.innerHTML = `
+                                <div class="flex items-center gap-3 ${completadaClass}">
+                                    <img src="${fotoUrl}" alt="${cita.nombre_paciente}" 
+                                         class="w-12 h-12 rounded-full object-cover border-2 border-gray-200 dark:border-gray-600">
+                                    <div class="flex-1 min-w-0">
+                                        <h4 class="font-medium text-gray-900 dark:text-white text-sm truncate">
+                                            ${cita.nombre_paciente}
+                                        </h4>
+                                        <p class="text-xs text-gray-500 dark:text-gray-400">
+                                            <i class="far fa-clock mr-1"></i>${cita.hora}
+                                        </p>
+                                    </div>
+                                    <button onclick="window.toggleCitaCompletadaCalendar(${cita.id})" 
+                                            class="text-lg hover:scale-110 transition-transform"
+                                            title="${cita.completada ? '{% trans "Marcar como pendiente" %}' : '{% trans "Marcar como completada" %}'}">
+                                        <i class="fas ${checkIcon}"></i>
+                                    </button>
+                                </div>
+                                ${cita.notas ? `<p class="text-xs text-gray-600 dark:text-gray-400 mt-2 pl-15">${cita.notas}</p>` : ''}
+                            `;
+                            
+                            citasList.appendChild(citaCard);
+                        });
+                    }
+                } catch (error) {
+                    console.error('Error cargando citas:', error);
+                    if (citasList) {
+                        citasList.innerHTML = `
+                            <div class="text-center py-8 text-red-500 dark:text-red-400">
+                                <i class="fas fa-exclamation-triangle text-3xl mb-2"></i>
+                                <p class="text-sm">{% trans "Error al cargar las citas" %}</p>
+                            </div>
+                        `;
+                    }
                 }
-                
-                daySessions.textContent = dayActivities.length;
-                const totalTime = dayActivities.reduce((sum, activity) => sum + activity.duration, 0);
-                dayTime.textContent = `${totalTime} {% trans "min" %}`;
-                const totalPoints = dayActivities.reduce((sum, activity) => sum + activity.points, 0);
-                dayPoints.textContent = totalPoints;
             }
 
-            function updateStatistics() {
-                let totalSessions = 0;
-                let totalTime = 0;
-                
-                Object.values(activities).forEach(dayActivities => {
-                    totalSessions += dayActivities.length;
-                    dayActivities.forEach(activity => {
-                        totalTime += activity.duration;
+            // Función específica del calendario para marcar citas como completadas
+            window.toggleCitaCompletadaCalendar = async function(citaId) {
+                try {
+                    const response = await fetch("{% url 'core:marcar_cita_completada' cita_id=0 %}".replace('/0/', `/${citaId}/`), {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRFToken': '{{ csrf_token }}',
+                            'Content-Type': 'application/json'
+                        }
                     });
-                });
-                
-                sessionsCount.textContent = totalSessions;
-                completedCount.textContent = totalSessions;
-                const hours = Math.round(totalTime / 60);
-                const minutes = totalTime % 60;
-                timeCount.textContent = `${hours}h ${minutes}m`;
-            }
+                    
+                    if (response.ok) {
+                        // Recargar vista de calendario
+                        await updateSelectedDateInfo();
+                        await loadCitasDelMes();
+                        
+                        // Actualizar sidebar de base.html si está disponible
+                        if (typeof window.loadCitasDelDia === 'function') {
+                            await window.loadCitasDelDia();
+                        }
+                        if (typeof window.load_citas_del_mes === 'function') {
+                            await window.load_citas_del_mes();
+                        }
+                        
+                        mostrarToast('success', '{% trans "Estado de la cita actualizado" %}');
+                    }
+                } catch (error) {
+                    console.error('Error al marcar cita:', error);
+                    mostrarToast('error', '{% trans "Error al actualizar la cita" %}');
+                }
+            };
 
             function goToPreviousMonth() {
                 currentMonth--;
@@ -532,7 +555,7 @@
                     currentMonth = 11;
                     currentYear--;
                 }
-                renderCalendar();
+                loadCitasDelMes();
             }
 
             function goToNextMonth() {
@@ -541,7 +564,7 @@
                     currentMonth = 0;
                     currentYear++;
                 }
-                renderCalendar();
+                loadCitasDelMes();
             }
 
             function goToToday() {
@@ -549,95 +572,50 @@
                 currentMonth = currentDate.getMonth();
                 currentYear = currentDate.getFullYear();
                 selectedDate = new Date();
-                renderCalendar();
+                loadCitasDelMes();
                 updateSelectedDateInfo();
-            }
-
-            function openActivityModal() {
-                activityModal.classList.remove('hidden');
-            }
-
-            function closeActivityModal() {
-                activityModal.classList.add('hidden');
-                activityForm.reset();
-            }
-
-            function saveActivity(e) {
-                e.preventDefault();
-                
-                const game = document.getElementById('activity-game').value;
-                const duration = parseInt(document.getElementById('activity-duration').value);
-                const points = parseInt(document.getElementById('activity-points').value);
-                const notes = document.getElementById('activity-notes').value;
-                
-                const dateStr = formatDate(selectedDate);
-                
-                if (!activities[dateStr]) {
-                    activities[dateStr] = [];
-                }
-                
-                const gameNames = {
-                    'quiz': '{% trans "Quiz Interactivo" %}',
-                    'search': '{% trans "Búsqueda de Palabras" %}',
-                    'order': '{% trans "Ordenar Oraciones" %}'
-                };
-                
-                const newActivity = {
-                    id: Date.now(),
-                    game: game,
-                    gameName: gameNames[game],
-                    duration: duration,
-                    points: points,
-                    notes: notes,
-                    time: new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })
-                };
-                
-                activities[dateStr].push(newActivity);
-                
-                closeActivityModal();
-                renderCalendar();
-                updateSelectedDateInfo();
-                updateStatistics();
-            }
-
-            function formatDate(date) {
-                return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
             }
 
             // Inicializar
-            renderCalendar();
+            loadCitasDelMes();
             updateSelectedDateInfo();
-            updateStatistics();
             
             // Event listeners
             prevMonthBtn.addEventListener('click', goToPreviousMonth);
             nextMonthBtn.addEventListener('click', goToNextMonth);
             todayBtn.addEventListener('click', goToToday);
-            addActivityBtn.addEventListener('click', openActivityModal);
-            closeModalBtn.addEventListener('click', closeActivityModal);
-            cancelActivityBtn.addEventListener('click', closeActivityModal);
-            activityForm.addEventListener('submit', saveActivity);
             
-            // Exponer formatDate y selectedDate globalmente para uso en funciones de citas
+            // Exponer funciones globalmente
             window.calendarUtils = {
-                formatDate: formatDate,
-                getSelectedDate: () => selectedDate
+                formatDate: (date) => date.toISOString().split('T')[0],
+                getSelectedDate: () => selectedDate,
+                refreshCalendar: () => {
+                    loadCitasDelMes();
+                    updateSelectedDateInfo();
+                }
             };
             
-            console.log('{% trans "Calendario inicializado correctamente" %}');
+            console.log('{% trans "Calendario de citas inicializado correctamente" %}');
         })();
 
-        // Funcionalidad de citas
-        (function initCitas() {
+        // Funcionalidad del modal de citas
+        (function initCitasModal() {
             const citaModal = document.getElementById('cita-modal');
             const addCitaBtn = document.getElementById('add-cita-btn');
             const closeCitaModalBtn = document.getElementById('close-cita-modal');
             const cancelCitaBtn = document.getElementById('cancel-cita');
             const citaForm = document.getElementById('cita-form');
+            const fotoInput = document.getElementById('cita-foto');
+            const dragDropArea = document.getElementById('dragDropAreaCita');
+            const imagePreview = document.getElementById('imagePreviewCita');
+            const imageSrc = document.getElementById('imageCitaSrc');
+            const removeImageBtn = document.getElementById('removeImageBtnCita');
 
             function openCitaModal() {
                 citaModal.classList.remove('hidden');
-                // Pre-llenar con la fecha seleccionada
+                citaModal.classList.add('flex');
+                document.body.style.overflow = 'hidden';
+                
                 const selectedDate = window.calendarUtils ? window.calendarUtils.getSelectedDate() : new Date();
                 const formatDate = window.calendarUtils ? window.calendarUtils.formatDate : (date) => date.toISOString().split('T')[0];
                 document.getElementById('cita-fecha').value = formatDate(selectedDate);
@@ -645,13 +623,108 @@
 
             function closeCitaModal() {
                 citaModal.classList.add('hidden');
+                citaModal.classList.remove('flex');
+                document.body.style.overflow = 'auto';
                 citaForm.reset();
+                
+                // Reset image preview
+                imageSrc.src = '';
+                imageSrc.classList.add('hidden');
+                imagePreview.classList.remove('hidden');
+                removeImageBtn.classList.add('hidden');
+                
+                // Reset errors
+                document.querySelectorAll('[id^="error-"]').forEach(el => {
+                    el.classList.add('hidden');
+                    el.textContent = '';
+                });
             }
+
+            // Preview de imagen
+            function handleFileSelect(file) {
+                if (file) {
+                    if (file.size > 5 * 1024 * 1024) {
+                        mostrarToast('error', '{% trans "El archivo es demasiado grande. Máximo 5MB." %}');
+                        fotoInput.value = '';
+                        return;
+                    }
+
+                    if (!file.type.startsWith('image/')) {
+                        mostrarToast('error', '{% trans "Por favor selecciona una imagen válida." %}');
+                        fotoInput.value = '';
+                        return;
+                    }
+
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        imageSrc.src = e.target.result;
+                        imageSrc.classList.remove('hidden');
+                        imagePreview.classList.add('hidden');
+                        removeImageBtn.classList.remove('hidden');
+                    };
+                    reader.readAsDataURL(file);
+                }
+            }
+
+            // Event listeners para imagen
+            fotoInput.addEventListener('change', function(e) {
+                handleFileSelect(e.target.files[0]);
+            });
+
+            // Drag and drop
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                dragDropArea.addEventListener(eventName, (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                }, false);
+            });
+
+            ['dragenter', 'dragover'].forEach(eventName => {
+                dragDropArea.addEventListener(eventName, () => {
+                    dragDropArea.classList.add('border-purple-500', 'bg-purple-50', 'dark:bg-purple-900/20');
+                }, false);
+            });
+
+            ['dragleave', 'drop'].forEach(eventName => {
+                dragDropArea.addEventListener(eventName, () => {
+                    dragDropArea.classList.remove('border-purple-500', 'bg-purple-50', 'dark:bg-purple-900/20');
+                }, false);
+            });
+
+            dragDropArea.addEventListener('drop', function(e) {
+                const file = e.dataTransfer.files[0];
+                if (file && file.type.startsWith('image/')) {
+                    const dataTransfer = new DataTransfer();
+                    dataTransfer.items.add(file);
+                    fotoInput.files = dataTransfer.files;
+                    handleFileSelect(file);
+                } else {
+                    mostrarToast('error', '{% trans "Por favor, arrastra un archivo de imagen válido." %}');
+                }
+            });
+
+            // Remover imagen
+            removeImageBtn.addEventListener('click', function() {
+                fotoInput.value = '';
+                imageSrc.src = '';
+                imageSrc.classList.add('hidden');
+                imagePreview.classList.remove('hidden');
+                removeImageBtn.classList.add('hidden');
+            });
 
             async function saveCita(e) {
                 e.preventDefault();
                 
-                console.log('Enviando cita...');
+                const btnGuardar = document.getElementById('btnGuardarCita');
+                const originalText = btnGuardar.innerHTML;
+                
+                btnGuardar.disabled = true;
+                btnGuardar.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>{% trans "Guardando..." %}';
+
+                document.querySelectorAll('[id^="error-"]').forEach(el => {
+                    el.classList.add('hidden');
+                    el.textContent = '';
+                });
                 
                 const formData = new FormData();
                 formData.append('nombre_paciente', document.getElementById('cita-nombre').value);
@@ -659,13 +732,11 @@
                 formData.append('hora', document.getElementById('cita-hora').value);
                 formData.append('notas', document.getElementById('cita-notas').value);
                 
-                const fotoInput = document.getElementById('cita-foto');
                 if (fotoInput.files[0]) {
                     formData.append('foto_paciente', fotoInput.files[0]);
                 }
                 
                 try {
-                    // Usar la URL correcta con el namespace
                     const response = await fetch("{% url 'core:crear_cita' %}", {
                         method: 'POST',
                         headers: {
@@ -674,73 +745,47 @@
                         body: formData
                     });
                     
-                    console.log('Response status:', response.status);
-                    console.log('Response headers:', response.headers.get('content-type'));
-                    
-                    // Verificar si la respuesta es realmente JSON
-                    const contentType = response.headers.get('content-type');
-                    if (!contentType || !contentType.includes('application/json')) {
-                        const text = await response.text();
-                        console.error('Respuesta no es JSON:', text);
-                        throw new Error('El servidor no retornó JSON. Posible error en la ruta o permisos.');
-                    }
-                    
                     const data = await response.json();
-                    console.log('Response data:', data);
                     
                     if (response.ok && data.success) {
                         closeCitaModal();
                         
-                        // Recargar sidebar de citas
+                        // Recargar calendario
+                        if (window.calendarUtils && window.calendarUtils.refreshCalendar) {
+                            window.calendarUtils.refreshCalendar();
+                        }
+                        
+                        // Recargar sidebar de base.html
                         if (typeof window.loadCitasDelDia === 'function') {
                             await window.loadCitasDelDia();
                         }
-                        if (typeof window.loadCitasDelMes === 'function') {
-                            await window.loadCitasDelMes();
+                        if (typeof window.load_citas_del_mes === 'function') {
+                            await window.load_citas_del_mes();
                         }
                         
-                        // Mostrar notificación de éxito
-                        showToast('success', '{% trans "Cita agendada exitosamente" %}');
+                        mostrarToast('success', '{% trans "Cita agendada exitosamente" %}');
                     } else {
-                        throw new Error(data.error || '{% trans "Error al agendar la cita" %}');
+                        if (data.errors) {
+                            Object.keys(data.errors).forEach(field => {
+                                const errorEl = document.getElementById(`error-${field}`);
+                                if (errorEl) {
+                                    const errorMsg = Array.isArray(data.errors[field]) 
+                                        ? data.errors[field][0] 
+                                        : data.errors[field];
+                                    errorEl.textContent = errorMsg;
+                                    errorEl.classList.remove('hidden');
+                                }
+                            });
+                        }
+                        mostrarToast('error', data.error || '{% trans "Error al agendar la cita" %}');
                     }
                 } catch (error) {
-                    console.error('Error completo al agendar cita:', error);
-                    showToast('error', error.message || '{% trans "Error al agendar la cita" %}');
+                    console.error('Error al agendar cita:', error);
+                    mostrarToast('error', error.message || '{% trans "Error al agendar la cita" %}');
+                } finally {
+                    btnGuardar.disabled = false;
+                    btnGuardar.innerHTML = originalText;
                 }
-            }
-
-            // Función para mostrar toast notifications
-            function showToast(type, message) {
-                let toastContainer = document.getElementById('toastContainer');
-                
-                if (!toastContainer) {
-                    toastContainer = document.createElement('div');
-                    toastContainer.id = 'toastContainer';
-                    toastContainer.className = 'toast-container';
-                    document.body.appendChild(toastContainer);
-                }
-                
-                const toast = document.createElement('div');
-                toast.className = `toast toast-${type}`;
-                
-                const icons = {
-                    'success': 'fa-check-circle',
-                    'error': 'fa-exclamation-circle',
-                    'warning': 'fa-exclamation-triangle',
-                    'info': 'fa-info-circle'
-                };
-                
-                toast.innerHTML = `
-                    <i class="toast-icon fas ${icons[type] || icons['info']}"></i>
-                    <span class="toast-message">${message}</span>
-                `;
-                
-                toastContainer.appendChild(toast);
-                
-                setTimeout(() => {
-                    toast.remove();
-                }, 3000);
             }
 
             // Event listeners
@@ -749,7 +794,19 @@
             if (cancelCitaBtn) cancelCitaBtn.addEventListener('click', closeCitaModal);
             if (citaForm) citaForm.addEventListener('submit', saveCita);
             
-            console.log('{% trans "Sistema de citas inicializado" %}');
+            // Cerrar modal con ESC
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && citaModal.classList.contains('flex')) {
+                    closeCitaModal();
+                }
+            });
+
+            // Cerrar al hacer clic fuera
+            citaModal.addEventListener('click', function(e) {
+                if (e.target === citaModal) {
+                    closeCitaModal();
+                }
+            });
         })();
 </script>
 {% endblock %}

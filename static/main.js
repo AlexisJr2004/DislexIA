@@ -185,4 +185,102 @@ function initializeLanguageSettings() {
     }
 }
 
+// ============ Sistema Global de Notificaciones Toast ============
+/**
+ * Sistema de notificaciones Toast moderno
+ * Disponible globalmente en todas las páginas
+ * Uso: mostrarToast('success', 'Mensaje aquí', 4000)
+ */
+(function initToastSystem() {
+    'use strict';
+
+    /**
+     * Muestra una notificación toast
+     * @param {string} tipo - Tipo de notificación: 'success', 'error', 'warning', 'info'
+     * @param {string} mensaje - Mensaje a mostrar
+     * @param {number} duracion - Duración en ms (0 = no auto-cerrar)
+     */
+    window.mostrarToast = function(tipo, mensaje, duracion = 4000) {
+        const toast = document.getElementById('toast-notification');
+        const icon = document.getElementById('toast-icon');
+        const messageEl = document.getElementById('toast-message');
+
+        if (!toast || !icon || !messageEl) {
+            console.error('Elementos del toast no encontrados en el DOM');
+            return;
+        }
+
+        // Configurar el icono y color según el tipo
+        const configs = {
+            'success': {
+                className: 'w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 bg-green-100 dark:bg-green-900/30',
+                iconHTML: '<i class="fas fa-check text-green-600 dark:text-green-400"></i>'
+            },
+            'error': {
+                className: 'w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 bg-red-100 dark:bg-red-900/30',
+                iconHTML: '<i class="fas fa-exclamation-circle text-red-600 dark:text-red-400"></i>'
+            },
+            'warning': {
+                className: 'w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 bg-yellow-100 dark:bg-yellow-900/30',
+                iconHTML: '<i class="fas fa-exclamation-triangle text-yellow-600 dark:text-yellow-400"></i>'
+            },
+            'info': {
+                className: 'w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 bg-blue-100 dark:bg-blue-900/30',
+                iconHTML: '<i class="fas fa-info-circle text-blue-600 dark:text-blue-400"></i>'
+            }
+        };
+
+        const config = configs[tipo] || configs['info'];
+        icon.className = config.className;
+        icon.innerHTML = config.iconHTML;
+
+        // Establecer el mensaje
+        messageEl.textContent = mensaje;
+
+        // Mostrar el toast
+        toast.classList.remove('hidden');
+        
+        // Auto-ocultar después de la duración especificada
+        if (duracion > 0) {
+            setTimeout(() => {
+                cerrarToast();
+            }, duracion);
+        }
+    };
+
+    /**
+     * Cierra la notificación toast con animación
+     */
+    window.cerrarToast = function() {
+        const toast = document.getElementById('toast-notification');
+        if (!toast) return;
+
+        toast.style.transition = 'all 0.3s ease-out';
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateX(100%)';
+        
+        setTimeout(() => {
+            toast.classList.add('hidden');
+            toast.style.opacity = '1';
+            toast.style.transform = 'translateX(0)';
+        }, 300);
+    };
+
+    /**
+     * Procesa y muestra mensajes de Django desde el template
+     * @param {Array} messages - Array de objetos {tags: string, message: string}
+     */
+    window.procesarMensajesDjango = function(messages) {
+        if (!messages || messages.length === 0) return;
+        
+        messages.forEach((msg, index) => {
+            setTimeout(() => {
+                mostrarToast(msg.tags, msg.message);
+            }, index * 500); // Delay entre mensajes múltiples
+        });
+    };
+
+    console.log('✓ Sistema de Notificaciones Toast cargado correctamente');
+})();
+
 

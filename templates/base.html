@@ -55,83 +55,20 @@
             animation: fade-in 0.3s ease-out;
         }
 
-        /* Toast Notifications - Estilo Samsung */
-        .toast-container {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 9999;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            max-width: 350px;
-        }
-
-        .toast {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 10px 16px;
-            border-radius: 50px;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(8px);
-            animation: slideInRight 0.3s ease-out, fadeOut 0.3s ease-in 2.7s;
-            opacity: 0;
-            animation-fill-mode: forwards;
-            min-width: 280px;
-        }
-
-        .toast-success {
-            background: linear-gradient(135deg, rgba(34, 197, 94, 0.95), rgba(22, 163, 74, 0.95));
-            color: white;
-        }
-
-        .toast-error {
-            background: linear-gradient(135deg, rgba(239, 68, 68, 0.95), rgba(220, 38, 38, 0.95));
-            color: white;
-        }
-
-        .toast-info {
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.95), rgba(37, 99, 235, 0.95));
-            color: white;
-        }
-
-        .toast-warning {
-            background: linear-gradient(135deg, rgba(251, 191, 36, 0.95), rgba(245, 158, 11, 0.95));
-            color: white;
-        }
-
-        .toast-icon {
-            font-size: 16px;
-            flex-shrink: 0;
-        }
-
-        .toast-message {
-            flex: 1;
-            font-size: 13px;
-            font-weight: 500;
-        }
-
-        @keyframes slideInRight {
+        /* Toast Notifications - Estilo consistente */
+        @keyframes slide-in {
             from {
+                opacity: 0;
                 transform: translateX(100%);
-                opacity: 0;
             }
             to {
-                transform: translateX(0);
                 opacity: 1;
+                transform: translateX(0);
             }
         }
-
-        @keyframes fadeOut {
-            from {
-                opacity: 1;
-                transform: translateX(0);
-            }
-            to {
-                opacity: 0;
-                transform: translateX(20px);
-            }
+        
+        .animate-slide-in {
+            animation: slide-in 0.3s ease-out;
         }
 
         /* Botón Ir Arriba */
@@ -303,6 +240,11 @@
             cursor: pointer;
             font-size: 0.875rem;
             transition: all 0.2s;
+            color: #374151; /* Color por defecto en modo claro */
+        }
+
+        .dark .mini-calendar-day {
+            color: #f9fafb; /* Color blanco en modo oscuro */
         }
 
         .mini-calendar-day:hover {
@@ -368,7 +310,7 @@
                         <img src="{% static 'img/favicon.ico' %}" alt="{% trans 'Foto de perfil' %}" class="w-full h-full object-cover">
                     </div>
                     <div>
-                        <h1 class="text-sm font-bold text-gray-900 dark:text-white">DislexIA</h1>
+                        <h1 class="text-sm font-bold text-gray-900 dark:text-white">{% trans "DislexIA" %}</h1>
                         <p class="text-xs text-gray-500 dark:text-gray-400">{% trans "Tu neuropsicólogo amigo" %}</p>
                     </div>
                 </div>
@@ -411,6 +353,15 @@
                             d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                     </svg>
                     {% trans "Recursos Digitales" %}
+                </a>
+
+                <a href="{% url 'core:lista_ninos' %}"
+                    class="nav-link flex items-center gap-3 px-3 py-2 mb-1 {% if request.resolver_match.url_name == 'lista_ninos' %}text-purple-600 dark:text-purple-400 bg-purple-100 dark:bg-purple-500/20{% else %}text-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800{% endif %} rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 hover:shadow-sm">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                    {% trans "Datos de Pacientes" %}
                 </a>
             </nav>
 
@@ -523,7 +474,7 @@
     <!-- Main Content -->
     <div class="main-content-with-sidebars">
         <!-- Top Bar -->
-        <div class="bg-white dark:bg-gray-900 px-8 py-4 flex items-center justify-between sticky top-0 z-10 border-b border-gray-200 dark:border-gray-800 transition-colors duration-200 shadow-sm dark:shadow-lg">
+        <div class="bg-white/50 dark:bg-gray-900/50 backdrop-blur-md px-8 py-4 flex items-center justify-between sticky top-0 z-10 dark:border-gray-800 transition-colors duration-200 ">
             <div class="flex items-center gap-3">
                 <!-- Imagen de perfil -->
                 <div class="w-10 h-10 rounded-full overflow-hidden bg-purple-100 dark:bg-purple-900/50">
@@ -551,7 +502,7 @@
                             <rect width="750" height="500" fill="#c60b1e"/>
                             <rect width="750" height="250" y="125" fill="#ffc400"/>
                         </svg>
-                        Español (ES)
+                        {% trans "Español" %} (ES)
                         {% else %}
                         <svg class="w-5 h-5 rounded-full me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 30">
                             <clipPath id="s"><path d="M0,0 v30 h60 v-30 z"/></clipPath>
@@ -564,7 +515,7 @@
                                 <path d="M30,0 v30 M0,15 h60" stroke="#C8102E" stroke-width="6"/>
                             </g>
                         </svg>
-                        English (US)
+                        {% trans "Inglés" %} (US)
                         {% endif %}
                     </button>
                     
@@ -580,7 +531,7 @@
                                     <rect width="750" height="500" fill="#c60b1e"/>
                                     <rect width="750" height="250" y="125" fill="#ffc400"/>
                                 </svg>
-                                <span class="flex-1 text-left">Español(ES)</span>
+                                <span class="flex-1 text-left">{% trans "Español" %}(ES)</span>
                                 {% if LANGUAGE_CODE == 'es' %}
                                 {% endif %}
                             </button>
@@ -598,7 +549,7 @@
                                         <path d="M30,0 v30 M0,15 h60" stroke="#C8102E" stroke-width="6"/>
                                     </g>
                                 </svg>
-                                <span class="flex-1 text-left">English(US)</span>
+                                <span class="flex-1 text-left">{% trans "Inglés" %}(US)</span>
                                 {% if LANGUAGE_CODE == 'en' %}
                                 {% endif %}
                             </button>
@@ -636,11 +587,11 @@
                 </button>
 
                 <!-- Schedule Button -->
-                <button
+                <a href="{% url 'core:calendar' %}"
                     class="px-5 py-2.5 border border-gray-300 dark:border-gray-700 hover:border-gray-400 dark:hover:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-2.5 transition-all hover:shadow-sm">
                     <i class="far fa-calendar text-base"></i>
                     {% trans "Agenda" %}
-                </button>
+                </a>
 
                 <!-- Create Request Button -->
                 <button
@@ -652,17 +603,18 @@
         </div>
         <hr class="bg-gray-200 dark:bg-gray-800 mx-12 mt-2">
 
-        <!-- Toast Notifications Container -->
-        {% if messages %}
-        <div class="toast-container" id="toastContainer">
-            {% for message in messages %}
-            <div class="toast {% if message.tags == 'error' %}toast-error{% elif message.tags == 'success' %}toast-success{% elif message.tags == 'warning' %}toast-warning{% else %}toast-info{% endif %}">
-                <i class="toast-icon fas {% if message.tags == 'error' %}fa-exclamation-circle{% elif message.tags == 'success' %}fa-check-circle{% elif message.tags == 'warning' %}fa-exclamation-triangle{% else %}fa-info-circle{% endif %}"></i>
-                <span class="toast-message">{{ message }}</span>
+        <!-- Toast de Notificación -->
+        <div id="toast-notification" class="fixed top-4 right-4 z-[9999] hidden">
+            <div class="bg-white dark:bg-gray-900 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-800 p-4 flex items-center gap-3 animate-slide-in">
+                <div id="toast-icon" class="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"></div>
+                <div>
+                    <p id="toast-message" class="text-sm font-semibold text-gray-900 dark:text-white"></p>
+                </div>
+                <button onclick="cerrarToast()" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 ml-2">
+                    <i class="fas fa-times"></i>
+                </button>
             </div>
-            {% endfor %}
         </div>
-        {% endif %}
 
         <!-- Dynamic Content Area -->
         <div id="content-area" class="p-8 bg-gray-50 dark:bg-gray-950 min-h-screen transition-colors duration-200">
@@ -679,6 +631,20 @@
 
     <!-- Scripts Base -->
     <script src="{% static 'main.js' %}"></script>
+    
+    <!-- Inicializar mensajes de Django -->
+    <script>
+        {% if messages %}
+        document.addEventListener('DOMContentLoaded', function() {
+            const djangoMessages = [
+                {% for message in messages %}
+                { tags: '{{ message.tags }}', message: '{{ message|escapejs }}' }{% if not forloop.last %},{% endif %}
+                {% endfor %}
+            ];
+            procesarMensajesDjango(djangoMessages);
+        });
+        {% endif %}
+    </script>
     
     <!-- Script para auto-eliminar toasts después de 3 segundos -->
     <script>

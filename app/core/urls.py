@@ -1,6 +1,6 @@
 from django.urls import include, path
 from . import views
-from .views import get_citas_dia, crear_cita, eliminar_cita, marcar_cita_completada
+from .views import get_citas_dia, crear_cita, eliminar_cita, marcar_cita_completada, agregar_nino_ajax
 
 app_name = 'core'
 
@@ -30,4 +30,11 @@ urlpatterns = [
     path('citas/crear/', crear_cita, name='crear_cita'),
     path('citas/<int:cita_id>/eliminar/', eliminar_cita, name='eliminar_cita'),
     path('citas/<int:cita_id>/completar/', marcar_cita_completada, name='marcar_cita_completada'),
+
+    # Gestión de niños
+    path('nino/<int:pk>/editar/', views.EditarNinoView.as_view(), name='editar_nino'),
+    path('nino/<int:pk>/datos/', views.ObtenerDatosNinoView.as_view(), name='obtener_datos_nino'),
+    path('lista-ninos/', views.ListaNinosView.as_view(), name='lista_ninos'),
+    path('nino/<int:pk>/eliminar/', views.EliminarNinoView.as_view(), name='eliminar_nino'),
+    path('nino/agregar/', agregar_nino_ajax, name='agregar_nino'),
 ]

@@ -1,0 +1,784 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans "Gestión de Niños" %}{% endblock %}
+
+{% block content %}
+<div class="p-8">
+    <!-- Header Section -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
+        <div>
+            <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+                <i class="fas fa-users text-purple-600 dark:text-purple-400 mr-2"></i>
+                {% trans "Gestión de Niños" %}
+            </h1>
+            <p class="text-gray-600 dark:text-gray-400">
+                {% trans "Administra la información de los niños registrados" %}
+            </p>
+        </div>
+        
+        <!-- Botón Agregar Niño -->
+        <button onclick="abrirModalAgregar()" 
+                class="px-6 py-3 bg-gradient-to-r from-purple-600 to-purple-800 hover:from-purple-500 hover:to-purple-700 text-white rounded-xl font-semibold flex items-center gap-2 transition-all shadow-md hover:shadow-lg">
+            <i class="fas fa-plus"></i>
+            {% trans "Agregar Niño" %}
+        </button>
+    </div>
+
+    <!-- Search and Filter Section -->
+    <div class="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-6 mb-6 transition-colors duration-200">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <!-- Search Input -->
+            <div class="md:col-span-2">
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                        <i class="fas fa-search text-gray-400 dark:text-gray-600"></i>
+                    </div>
+                    <input type="text" 
+                           id="searchInput" 
+                           placeholder="{% trans 'Buscar por nombre, apellido o edad...' %}"
+                           class="search-input w-full pl-11 pr-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200 placeholder-gray-500 dark:placeholder-gray-600 transition-all">
+                </div>
+            </div>
+            
+            <!-- Filter by Age -->
+            <div>
+                <select id="ageFilter" 
+                        class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200 transition-all">
+                    <option value="">{% trans "Todas las edades" %}</option>
+                    <option value="6">6 {% trans "años" %}</option>
+                    <option value="7">7 {% trans "años" %}</option>
+                    <option value="8">8 {% trans "años" %}</option>
+                    <option value="9">9 {% trans "años" %}</option>
+                    <option value="10">10 {% trans "años" %}</option>
+                    <option value="11">11 {% trans "años" %}</option>
+                    <option value="12">12 {% trans "años" %}</option>
+                </select>
+            </div>
+        </div>
+        
+        <!-- Results Counter -->
+        <div class="mt-4 text-sm text-gray-600 dark:text-gray-400">
+            <span id="resultsCounter">{% trans "Mostrando" %} <strong>{{ ninos|length }}</strong> {% trans "niño(s)" %}</span>
+        </div>
+    </div>
+
+    <!-- Cards Grid -->
+    <div id="ninosGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for nino in ninos %}
+        <div class="nino-card bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-6 transition-colors duration-200"
+             data-nino-id="{{ nino.id }}"
+             data-nombre="{{ nino.nombres|lower }}"
+             data-apellido="{{ nino.apellidos|lower }}"
+             data-edad="{{ nino.edad }}">
+            
+            <!-- Header with Avatar -->
+            <div class="flex items-center gap-4 mb-4">
+                <div class="w-16 h-16 rounded-full overflow-hidden ring-2 ring-purple-200 dark:ring-purple-500/30 flex-shrink-0">
+                    {% if nino.imagen %}
+                        <img src="{{ nino.imagen.url }}" alt="{{ nino.nombres }} {{ nino.apellidos }}" class="w-full h-full object-cover">
+                    {% else %}
+                        <div class="w-full h-full bg-gradient-to-br from-purple-400 to-purple-600 flex items-center justify-center text-white text-2xl font-bold">
+                            {{ nino.nombres.0 }}{{ nino.apellidos.0 }}
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="flex-1 min-w-0">
+                    <h3 class="text-lg font-bold text-gray-900 dark:text-white truncate">
+                        {{ nino.nombres }} {{ nino.apellidos }}
+                    </h3>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">
+                        <i class="fas fa-birthday-cake mr-1"></i>
+                        {{ nino.edad }} {% trans "años" %}
+                    </p>
+                </div>
+            </div>
+
+            <hr class="border-gray-200 dark:border-gray-800 my-4">
+
+            <!-- Details -->
+            <div class="space-y-3 mb-4">
+                <div class="flex items-center gap-2 text-sm">
+                    <i class="fas fa-calendar text-purple-600 dark:text-purple-400 w-5"></i>
+                    <span class="text-gray-700 dark:text-gray-300">
+                        {{ nino.fecha_nacimiento|date:"d/m/Y" }}
+                    </span>
+                </div>
+                
+                <div class="flex items-center gap-2 text-sm">
+                    <i class="fas fa-venus-mars text-purple-600 dark:text-purple-400 w-5"></i>
+                    <span class="text-gray-700 dark:text-gray-300">
+                        {{ nino.genero }}
+                    </span>
+                </div>
+                
+                <div class="flex items-center gap-2 text-sm">
+                    <i class="fas fa-language text-purple-600 dark:text-purple-400 w-5"></i>
+                    <span class="text-gray-700 dark:text-gray-300">
+                        {{ nino.idioma_nativo }}
+                    </span>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="flex gap-2">
+                <a href="{% url 'core:editar_nino' nino.id %}" 
+                   class="flex-1 px-4 py-2 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-lg text-sm font-medium hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-all text-center">
+                    <i class="fas fa-edit mr-1"></i>
+                    {% trans "Editar" %}
+                </a>
+                <a href="{% url 'core:eliminar_nino' nino.id %}"
+                   class="flex-1 px-4 py-2 bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-lg text-sm font-medium hover:bg-red-100 dark:hover:bg-red-900/50 transition-all text-center">
+                    <i class="fas fa-trash mr-1"></i>
+                    {% trans "Eliminar" %}
+                </a>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-span-full text-center py-16">
+            <i class="fas fa-users text-6xl text-gray-300 dark:text-gray-700 mb-4"></i>
+            <p class="text-gray-500 dark:text-gray-400 text-lg mb-4">
+                {% trans "No hay niños registrados" %}
+            </p>
+            <a href="#" 
+                onclick="abrirModalAgregar(); return false;"
+                class="inline-flex items-center gap-2 px-6 py-3 bg-purple-600 text-white rounded-xl font-semibold hover:bg-purple-700 transition-all">
+                <i class="fas fa-plus"></i>
+                {% trans "Agregar el primer niño" %}
+                </a>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- No Results Message (hidden by default) -->
+    <div id="noResults" class="hidden text-center py-16">
+        <i class="fas fa-search text-6xl text-gray-300 dark:text-gray-700 mb-4"></i>
+        <p class="text-gray-500 dark:text-gray-400 text-lg">
+            {% trans "No se encontraron resultados para tu búsqueda" %}
+        </p>
+    </div>
+</div>
+
+<!-- Modal de Agregar Niño -->
+<div id="modal-agregar" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center z-50 overflow-y-auto p-4">
+    <div class="bg-white dark:bg-gray-900 rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto shadow-2xl border border-gray-200 dark:border-gray-800 animate-scale-in">
+        <!-- Header del Modal -->
+        <div class="sticky top-0 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 p-6 flex items-center justify-between z-10">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center">
+                    <i class="fas fa-user-plus text-purple-600 dark:text-purple-400"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 dark:text-white">
+                    {% trans "Agregar Nuevo Niño" %}
+                </h3>
+            </div>
+            <button onclick="cerrarModalAgregar()" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+        </div>
+
+        <!-- Contenido del Modal -->
+        <form id="formAgregarNino" class="p-6" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Columna izquierda - Foto -->
+                <div class="lg:col-span-1">
+                    <h4 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-4">
+                        <i class="fas fa-camera text-purple-600 dark:text-purple-400 mr-2"></i>
+                        {% trans "Foto del Niño" %}
+                    </h4>
+                    
+                    <!-- Image Preview -->
+                    <div class="mb-4">
+                        <div class="image-preview relative w-full aspect-square rounded-xl overflow-hidden bg-gray-100 dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700">
+                            <div id="imagePlaceholderAgregar" class="w-full h-full flex flex-col items-center justify-center text-gray-400 dark:text-gray-600">
+                                <i class="fas fa-user text-6xl mb-2"></i>
+                                <p class="text-sm">{% trans "Sin foto" %}</p>
+                            </div>
+                            <img id="imagePreviewAgregar" src="" alt="Preview" class="w-full h-full object-cover hidden">
+                        </div>
+                    </div>
+                    
+                    <!-- Drag & Drop Area -->
+                    <div class="drag-drop-area border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-xl p-6 text-center cursor-pointer hover:border-purple-500 dark:hover:border-purple-400 transition-all"
+                         id="dragDropAreaAgregar">
+                        <input type="file" 
+                               name="imagen" 
+                               id="imagenAgregar" 
+                               accept="image/*" 
+                               class="hidden">
+                        <label for="imagenAgregar" class="cursor-pointer block">
+                            <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 dark:text-gray-600 mb-2 block"></i>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-1">
+                                {% trans "Haz clic para subir" %}
+                            </p>
+                            <p class="text-xs text-gray-500 dark:text-gray-500">
+                                {% trans "o arrastra y suelta" %}
+                            </p>
+                            <p class="text-xs text-gray-400 dark:text-gray-600 mt-2">
+                                PNG, JPG (max. 5MB)
+                            </p>
+                        </label>
+                    </div>
+                    
+                    <!-- Remove Image Button -->
+                    <button type="button" 
+                            id="removeImageBtnAgregar"
+                            class="w-full mt-4 px-4 py-2 bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-lg text-sm font-medium hover:bg-red-100 dark:hover:bg-red-900/50 transition-all hidden">
+                        <i class="fas fa-trash mr-2"></i>
+                        {% trans "Eliminar foto" %}
+                    </button>
+                </div>
+
+                <!-- Columna derecha - Formulario -->
+                <div class="lg:col-span-2">
+                    <h4 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-4">
+                        <i class="fas fa-info-circle text-purple-600 dark:text-purple-400 mr-2"></i>
+                        {% trans "Información Personal" %}
+                    </h4>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Nombres -->
+                        <div>
+                            <label for="nombresAgregar" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                {% trans "Nombres" %} <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text" 
+                                   name="nombres" 
+                                   id="nombresAgregar"
+                                   required
+                                   class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200"
+                                   placeholder="{% trans 'Ej: Juan Carlos' %}">
+                            <p class="mt-1 text-xs text-red-600 dark:text-red-400 hidden" id="error-nombres"></p>
+                        </div>
+
+                        <!-- Apellidos -->
+                        <div>
+                            <label for="apellidosAgregar" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                {% trans "Apellidos" %} <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text" 
+                                   name="apellidos" 
+                                   id="apellidosAgregar"
+                                   required
+                                   class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200"
+                                   placeholder="{% trans 'Ej: García López' %}">
+                            <p class="mt-1 text-xs text-red-600 dark:text-red-400 hidden" id="error-apellidos"></p>
+                        </div>
+
+                        <!-- Fecha de Nacimiento -->
+                        <div>
+                            <label for="fechaNacimientoAgregar" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                {% trans "Fecha de Nacimiento" %} <span class="text-red-500">*</span>
+                            </label>
+                            <input type="date" 
+                                   name="fecha_nacimiento" 
+                                   id="fechaNacimientoAgregar"
+                                   required
+                                   class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200">
+                            <p class="mt-1 text-xs text-red-600 dark:text-red-400 hidden" id="error-fecha_nacimiento"></p>
+                        </div>
+
+                        <!-- Edad -->
+                        <div>
+                            <label for="edadAgregar" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                {% trans "Edad" %} <span class="text-red-500">*</span>
+                            </label>
+                            <input type="number" 
+                                   name="edad" 
+                                   id="edadAgregar"
+                                   min="6" 
+                                   max="12"
+                                   required
+                                   class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200"
+                                   placeholder="{% trans 'Entre 6 y 12 años' %}">
+                            <p class="mt-1 text-xs text-red-600 dark:text-red-400 hidden" id="error-edad"></p>
+                        </div>
+
+                        <!-- Género -->
+                        <div>
+                            <label for="generoAgregar" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                {% trans "Género" %} <span class="text-red-500">*</span>
+                            </label>
+                            <select name="genero" 
+                                    id="generoAgregar"
+                                    required
+                                    class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200">
+                                <option value="">{% trans "Seleccionar género" %}</option>
+                                <option value="Masculino">{% trans "Masculino" %}</option>
+                                <option value="Femenino">{% trans "Femenino" %}</option>
+                                <option value="Otro">{% trans "Otro" %}</option>
+                            </select>
+                            <p class="mt-1 text-xs text-red-600 dark:text-red-400 hidden" id="error-genero"></p>
+                        </div>
+
+                        <!-- Idioma Nativo -->
+                        <div>
+                            <label for="idiomaNativoAgregar" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                {% trans "Idioma Nativo" %} <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text" 
+                                   name="idioma_nativo" 
+                                   id="idiomaNativoAgregar"
+                                   required
+                                   class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200"
+                                   placeholder="{% trans 'Ej: Español' %}">
+                            <p class="mt-1 text-xs text-red-600 dark:text-red-400 hidden" id="error-idioma_nativo"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botones de acción -->
+            <div class="flex gap-3 mt-6 pt-6 border-t border-gray-200 dark:border-gray-800">
+                <button type="button"
+                        onclick="cerrarModalAgregar()"
+                        class="flex-1 px-6 py-3 bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-xl text-sm font-semibold hover:bg-gray-300 dark:hover:bg-gray-700 transition-all">
+                    <i class="fas fa-times mr-2"></i>
+                    {% trans "Cancelar" %}
+                </button>
+                <button type="submit"
+                        id="btnGuardarNino"
+                        class="flex-1 px-6 py-3 bg-gradient-to-r from-purple-600 to-purple-800 hover:from-purple-500 hover:to-purple-700 text-white rounded-xl text-sm font-bold transition-all shadow-md hover:shadow-lg">
+                    <i class="fas fa-save mr-2"></i>
+                    {% trans "Guardar Niño" %}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    @keyframes scale-in {
+        from {
+            opacity: 0;
+            transform: scale(0.9);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+    
+    @keyframes slide-in {
+        from {
+            opacity: 0;
+            transform: translateX(100%);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+    
+    .animate-scale-in {
+        animation: scale-in 0.2s ease-out;
+    }
+    
+    .animate-slide-in {
+        animation: slide-in 0.3s ease-out;
+    }
+</style>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Los mensajes de Django ya se muestran automáticamente desde base.html
+        
+        const searchInput = document.getElementById('searchInput');
+        const ageFilter = document.getElementById('ageFilter');
+        const ninosGrid = document.getElementById('ninosGrid');
+        const resultsCounter = document.getElementById('resultsCounter');
+        const noResults = document.getElementById('noResults');
+        const ninoCards = document.querySelectorAll('.nino-card');
+
+        function filterNinos() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const selectedAge = ageFilter.value;
+            let visibleCount = 0;
+
+            ninoCards.forEach(card => {
+                const nombre = card.dataset.nombre;
+                const apellido = card.dataset.apellido;
+                const edad = card.dataset.edad;
+
+                const matchesSearch = nombre.includes(searchTerm) || 
+                                    apellido.includes(searchTerm) ||
+                                    edad.includes(searchTerm);
+                const matchesAge = !selectedAge || edad === selectedAge;
+
+                if (matchesSearch && matchesAge) {
+                    card.style.display = 'block';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            resultsCounter.innerHTML = `{% trans "Mostrando" %} <strong>${visibleCount}</strong> {% trans "niño(s)" %}`;
+            
+            if (visibleCount === 0) {
+                ninosGrid.classList.add('hidden');
+                noResults.classList.remove('hidden');
+            } else {
+                ninosGrid.classList.remove('hidden');
+                noResults.classList.add('hidden');
+            }
+        }
+
+        searchInput.addEventListener('input', filterNinos);
+        ageFilter.addEventListener('change', filterNinos);
+
+        searchInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                searchInput.value = '';
+                ageFilter.value = '';
+                filterNinos();
+            }
+        });
+    });
+
+    function actualizarContadorNinos() {
+        const ninoCards = document.querySelectorAll('.nino-card');
+        const resultsCounter = document.getElementById('resultsCounter');
+        
+        let visibleCount = Array.from(ninoCards).filter(card => {
+            return card.style.display !== 'none' && card.parentElement;
+        }).length;
+        
+        resultsCounter.innerHTML = `{% trans "Mostrando" %} <strong>${visibleCount}</strong> {% trans "niño(s)" %}`;
+        
+        return visibleCount;
+    }
+
+    function verificarListaVacia() {
+        const ninosGrid = document.getElementById('ninosGrid');
+        const noResults = document.getElementById('noResults');
+        const ninoCards = document.querySelectorAll('.nino-card');
+        
+        const count = ninoCards.length;
+        
+        if (count === 0) {
+            if (noResults) {
+                noResults.classList.add('hidden');
+            }
+            
+            ninosGrid.innerHTML = `
+                <div class="col-span-full text-center py-16">
+                    <i class="fas fa-users text-6xl text-gray-300 dark:text-gray-700 mb-4"></i>
+                    <p class="text-gray-500 dark:text-gray-400 text-lg mb-4">
+                        {% trans "No hay niños registrados" %}
+                    </p>
+                    <button onclick="abrirModalAgregar()" 
+                       class="inline-flex items-center gap-2 px-6 py-3 bg-purple-600 text-white rounded-xl font-semibold hover:bg-purple-700 transition-all">
+                        <i class="fas fa-plus"></i>
+                        {% trans "Agregar el primer niño" %}
+                    </button>
+                </div>
+            `;
+        }
+    }
+
+    function agregarNinoAlGrid(nino) {
+        const ninosGrid = document.getElementById('ninosGrid');
+        const noResults = document.getElementById('noResults');
+        
+        const emptyMessage = ninosGrid.querySelector('.col-span-full');
+        if (emptyMessage) {
+            emptyMessage.remove();
+        }
+        
+        if (noResults && !noResults.classList.contains('hidden')) {
+            noResults.classList.add('hidden');
+            ninosGrid.classList.remove('hidden');
+        }
+        
+        const ninoCard = document.createElement('div');
+        ninoCard.className = 'nino-card bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-6 transition-colors duration-200';
+        ninoCard.setAttribute('data-nino-id', nino.id);
+        ninoCard.setAttribute('data-nombre', nino.nombres.toLowerCase());
+        ninoCard.setAttribute('data-apellido', nino.apellidos.toLowerCase());
+        ninoCard.setAttribute('data-edad', nino.edad);
+        
+        const iniciales = `${nino.nombres.charAt(0)}${nino.apellidos.charAt(0)}`.toUpperCase();
+        
+        ninoCard.innerHTML = `
+            <div class="flex items-center gap-4 mb-4">
+                <div class="w-16 h-16 rounded-full overflow-hidden ring-2 ring-purple-200 dark:ring-purple-500/30 flex-shrink-0">
+                    ${nino.imagen_url ? 
+                        `<img src="${nino.imagen_url}" alt="${nino.nombres} ${nino.apellidos}" class="w-full h-full object-cover">` :
+                        `<div class="w-full h-full bg-gradient-to-br from-purple-400 to-purple-600 flex items-center justify-center text-white text-2xl font-bold">
+                            ${iniciales}
+                        </div>`
+                    }
+                </div>
+                <div class="flex-1 min-w-0">
+                    <h3 class="text-lg font-bold text-gray-900 dark:text-white truncate">
+                        ${nino.nombres} ${nino.apellidos}
+                    </h3>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">
+                        <i class="fas fa-birthday-cake mr-1"></i>
+                        ${nino.edad} {% trans "años" %}
+                    </p>
+                </div>
+            </div>
+            <hr class="border-gray-200 dark:border-gray-800 my-4">
+            <div class="space-y-3 mb-4">
+                <div class="flex items-center gap-2 text-sm">
+                    <i class="fas fa-calendar text-purple-600 dark:text-purple-400 w-5"></i>
+                    <span class="text-gray-700 dark:text-gray-300">
+                        ${nino.fecha_nacimiento_formatted}
+                    </span>
+                </div>
+                <div class="flex items-center gap-2 text-sm">
+                    <i class="fas fa-venus-mars text-purple-600 dark:text-purple-400 w-5"></i>
+                    <span class="text-gray-700 dark:text-gray-300">
+                        ${nino.genero}
+                    </span>
+                </div>
+                <div class="flex items-center gap-2 text-sm">
+                    <i class="fas fa-language text-purple-600 dark:text-purple-400 w-5"></i>
+                    <span class="text-gray-700 dark:text-gray-300">
+                        ${nino.idioma_nativo}
+                    </span>
+                </div>
+            </div>
+            <div class="flex gap-2">
+                <a href="/nino/${nino.id}/editar/" 
+                   class="flex-1 px-4 py-2 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-lg text-sm font-medium hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-all text-center">
+                    <i class="fas fa-edit mr-1"></i>
+                    {% trans "Editar" %}
+                </a>
+                <a href="/nino/${nino.id}/eliminar/"
+                   class="flex-1 px-4 py-2 bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-lg text-sm font-medium hover:bg-red-100 dark:hover:bg-red-900/50 transition-all text-center">
+                    <i class="fas fa-trash mr-1"></i>
+                    {% trans "Eliminar" %}
+                </a>
+            </div>
+        `;
+        
+        ninoCard.style.opacity = '0';
+        ninoCard.style.transform = 'scale(0.9)';
+        ninosGrid.insertBefore(ninoCard, ninosGrid.firstChild);
+        
+        setTimeout(() => {
+            ninoCard.style.transition = 'all 0.3s ease-out';
+            ninoCard.style.opacity = '1';
+            ninoCard.style.transform = 'scale(1)';
+            
+            setTimeout(() => {
+                actualizarContadorNinos();
+            }, 300);
+        }, 10);
+    }
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            cerrarModalAgregar();
+        }
+    });
+
+    document.getElementById('modal-agregar')?.addEventListener('click', function(e) {
+        if (e.target === this) {
+            cerrarModalAgregar();
+        }
+    });
+    
+    function abrirModalAgregar() {
+        const modal = document.getElementById('modal-agregar');
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function cerrarModalAgregar() {
+        const modal = document.getElementById('modal-agregar');
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+        document.body.style.overflow = 'auto';
+        
+        document.getElementById('formAgregarNino').reset();
+        document.getElementById('imagePreviewAgregar').src = '';
+        document.getElementById('imagePreviewAgregar').classList.add('hidden');
+        document.getElementById('imagePlaceholderAgregar').classList.remove('hidden');
+        document.getElementById('removeImageBtnAgregar').classList.add('hidden');
+        
+        document.querySelectorAll('[id^="error-"]').forEach(el => {
+            el.classList.add('hidden');
+            el.textContent = '';
+        });
+    }
+
+    function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+
+    document.getElementById('imagenAgregar').addEventListener('change', function(e) {
+        handleFileSelectAgregar(e);
+    });
+
+    function handleFileSelectAgregar(event) {
+        const file = event.target.files[0];
+        if (file) {
+            if (file.size > 5 * 1024 * 1024) {
+                // Usar mostrarToast del sistema centralizado
+                mostrarToast('error', '{% trans "El archivo es demasiado grande. Máximo 5MB." %}');
+                event.target.value = '';
+                return;
+            }
+
+            if (!file.type.startsWith('image/')) {
+                // Usar mostrarToast del sistema centralizado
+                mostrarToast('error', '{% trans "Por favor selecciona una imagen válida." %}');
+                event.target.value = '';
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const preview = document.getElementById('imagePreviewAgregar');
+                const placeholder = document.getElementById('imagePlaceholderAgregar');
+                const removeBtn = document.getElementById('removeImageBtnAgregar');
+                
+                preview.src = e.target.result;
+                preview.classList.remove('hidden');
+                placeholder.classList.add('hidden');
+                removeBtn.classList.remove('hidden');
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+
+    const dragDropAreaAgregar = document.getElementById('dragDropAreaAgregar');
+    const fileInputAgregar = document.getElementById('imagenAgregar');
+
+    if (dragDropAreaAgregar && fileInputAgregar) {
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dragDropAreaAgregar.addEventListener(eventName, preventDefaults, false);
+        });
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dragDropAreaAgregar.addEventListener(eventName, () => {
+                dragDropAreaAgregar.classList.add('border-purple-500', 'bg-purple-50', 'dark:bg-purple-900/20');
+            }, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dragDropAreaAgregar.addEventListener(eventName, () => {
+                dragDropAreaAgregar.classList.remove('border-purple-500', 'bg-purple-50', 'dark:bg-purple-900/20');
+            }, false);
+        });
+
+        dragDropAreaAgregar.addEventListener('drop', function(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            fileInputAgregar.files = files;
+            handleFileSelectAgregar({ target: fileInputAgregar });
+        });
+    }
+
+    document.getElementById('removeImageBtnAgregar').addEventListener('click', function() {
+        const preview = document.getElementById('imagePreviewAgregar');
+        const placeholder = document.getElementById('imagePlaceholderAgregar');
+        const fileInput = document.getElementById('imagenAgregar');
+        const removeBtn = document.getElementById('removeImageBtnAgregar');
+        
+        preview.src = '';
+        preview.classList.add('hidden');
+        placeholder.classList.remove('hidden');
+        fileInput.value = '';
+        removeBtn.classList.add('hidden');
+    });
+
+    document.getElementById('fechaNacimientoAgregar').addEventListener('change', function() {
+        const fechaNac = new Date(this.value);
+        const hoy = new Date();
+        let edad = hoy.getFullYear() - fechaNac.getFullYear();
+        const mes = hoy.getMonth() - fechaNac.getMonth();
+        
+        if (mes < 0 || (mes === 0 && hoy.getDate() < fechaNac.getDate())) {
+            edad--;
+        }
+        
+        document.getElementById('edadAgregar').value = edad;
+    });
+
+    document.getElementById('formAgregarNino').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const btnGuardar = document.getElementById('btnGuardarNino');
+        const originalText = btnGuardar.innerHTML;
+        
+        btnGuardar.disabled = true;
+        btnGuardar.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Guardando...';
+
+        document.querySelectorAll('[id^="error-"]').forEach(el => {
+            el.classList.add('hidden');
+            el.textContent = '';
+        });
+
+        const formData = new FormData(this);
+
+        try {
+            const response = await fetch('{% url "core:agregar_nino" %}', {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken'),
+                },
+                body: formData
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                cerrarModalAgregar();
+                // Usar mostrarToast del sistema centralizado
+                mostrarToast('success', data.message);
+                agregarNinoAlGrid(data.nino);
+                actualizarContadorNinos();
+            } else {
+                if (data.errors) {
+                    Object.keys(data.errors).forEach(field => {
+                        const errorEl = document.getElementById(`error-${field}`);
+                        if (errorEl) {
+                            const errorMsg = Array.isArray(data.errors[field]) 
+                                ? data.errors[field][0] 
+                                : data.errors[field];
+                            errorEl.textContent = errorMsg;
+                            errorEl.classList.remove('hidden');
+                        }
+                    });
+                }
+                // Usar mostrarToast del sistema centralizado
+                mostrarToast('error', data.error || 'Error al guardar el niño. Revisa los campos.');
+            }
+        } catch (error) {
+            console.error('Error en la petición:', error);
+            // Usar mostrarToast del sistema centralizado
+            mostrarToast('error', 'Error de conexión al guardar el niño');
+        } finally {
+            btnGuardar.disabled = false;
+            btnGuardar.innerHTML = originalText;
+        }
+    });
+</script>
+{% endblock %}

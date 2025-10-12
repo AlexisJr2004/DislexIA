@@ -2,6 +2,7 @@ from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.contrib.auth.models import AbstractUser
 from django.conf import settings
+from django.db.models import Count
 
 # Importar constantes
 from .constants import (
@@ -41,6 +42,14 @@ class Nino(models.Model):
         verbose_name="Género"
     )
     idioma_nativo = models.CharField(max_length=50, verbose_name="Idioma Nativo")
+    profesional = models.ForeignKey(
+        'Profesional',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='ninos',
+        verbose_name='Profesional'
+    )
     fecha_registro = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de Registro")
     activo = models.BooleanField(default=DEFAULTS['nino_activo'], verbose_name="Activo")
     
@@ -55,6 +64,10 @@ class Nino(models.Model):
     @property
     def nombre_completo(self):
         return f"{self.nombres} {self.apellidos}"
+
+    def cantidad_juegos(self):
+        """Retorna la cantidad de juegos asociados a este niño"""
+        return self.juego_set.count()
 
 # Modelo de usuario personalizado usando AbstractUser de Django
 class Profesional(AbstractUser):

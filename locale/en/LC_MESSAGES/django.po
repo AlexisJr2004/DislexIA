@@ -21,21 +21,18 @@ msgstr ""
 # BASE TEMPLATE
 # ========================================
 
-# Head
 msgid "DislexIA - Panel Administrativo"
 msgstr "DislexIA - Administrative Panel"
 
 msgid "Cargando..."
 msgstr "Loading..."
 
-# Sidebar - Logo section
-msgid "Foto de perfil"
-msgstr "Profile photo"
+msgid "DislexIA"
+msgstr "DislexIA"
 
 msgid "Tu neuropsicólogo amigo"
 msgstr "Your friendly neuropsychologist"
 
-# Sidebar - Navigation
 msgid "Panel Administrativo"
 msgstr "Administrative Panel"
 
@@ -48,18 +45,56 @@ msgstr "Calendar"
 msgid "Recursos Digitales"
 msgstr "Digital Resources"
 
+msgid "Datos de Pacientes"
+msgstr "Patient Data"
+
 msgid "Configuraciones"
 msgstr "Settings"
 
 msgid "Soporte"
 msgstr "Support"
 
-msgid "Cerrar Sesión"
-msgstr "Logout"
+msgid "Foto de perfil"
+msgstr "Profile picture"
 
-# Top Bar
+msgid "Cerrar Sesión"
+msgstr "Log Out"
+
+msgid "Citas del Día"
+msgstr "Today's Appointments"
+
+msgid "D"
+msgstr "S"
+
+msgid "L"
+msgstr "M"
+
+msgid "M"
+msgstr "T"
+
+msgid "X"
+msgstr "W"
+
+msgid "J"
+msgstr "T"
+
+msgid "V"
+msgstr "F"
+
+msgid "S"
+msgstr "S"
+
+msgid "No hay citas para hoy"
+msgstr "No appointments for today"
+
 msgid "Bienvenido de nuevo"
 msgstr "Welcome back"
+
+msgid "Español"
+msgstr "Spanish"
+
+msgid "Inglés"
+msgstr "English"
 
 msgid "Abrir menú principal"
 msgstr "Open main menu"
@@ -73,19 +108,549 @@ msgstr "Schedule"
 msgid "Crear solicitud"
 msgstr "Create request"
 
-# Scroll button
 msgid "Ir arriba"
 msgstr "Go to top"
 
 msgid "Volver arriba"
 msgstr "Back to top"
 
+msgid "Ene"
+msgstr "Jan"
+
+msgid "Feb"
+msgstr "Feb"
+
+msgid "Mar"
+msgstr "Mar"
+
+msgid "Abr"
+msgstr "Apr"
+
+msgid "May"
+msgstr "May"
+
+msgid "Jun"
+msgstr "Jun"
+
+msgid "Jul"
+msgstr "Jul"
+
+msgid "Ago"
+msgstr "Aug"
+
+msgid "Sep"
+msgstr "Sep"
+
+msgid "Oct"
+msgstr "Oct"
+
+msgid "Nov"
+msgstr "Nov"
+
+msgid "Dic"
+msgstr "Dec"
+
+msgid "No hay citas para este día"
+msgstr "No appointments for this day"
+
 # ========================================
-# COMMON / SHARED
+# GAME LIST TEMPLATE
 # ========================================
+
+msgid "Juegos de Entrenamiento"
+msgstr "Training Games"
+
+msgid "Mejora tus habilidades cognitivas con nuestros juegos interactivos"
+msgstr "Improve your cognitive skills with our interactive games"
+
+msgid "Buscar juegos..."
+msgstr "Search games..."
+
+msgid "Todos"
+msgstr "All"
+
+msgid "Fácil"
+msgstr "Easy"
+
+msgid "Medio"
+msgstr "Medium"
+
+msgid "Difícil"
+msgstr "Hard"
+
+msgid "min"
+msgstr "min"
+
+msgid "jugadas"
+msgstr "plays"
+
+msgid "completados"
+msgstr "completed"
+
+msgid "Jugar Ahora"
+msgstr "Play Now"
+
+msgid "No hay juegos disponibles"
+msgstr "No games available"
+
+msgid "Los juegos están siendo configurados. Vuelve pronto."
+msgstr "Games are being set up. Come back soon."
+
+msgid "Tiempo estimado total"
+msgstr "Total estimated time"
+
+msgid "Juegos disponibles"
+msgstr "Available games"
+
+msgid "Puntuación promedio"
+msgstr "Average score"
+
+msgid "Total jugadas"
+msgstr "Total plays"
+
+msgid "Selecciona un Niño"
+msgstr "Select a Child"
+
+msgid "Elige quién jugará esta sesión"
+msgstr "Choose who will play this session"
+
+msgid "Buscar por nombre, apellido o edad..."
+msgstr "Search by name, last name or age..."
+
+msgid "Mostrando"
+msgstr "Showing"
+
+msgid "niño(s)"
+msgstr "child(ren)"
+
+msgid "años"
+msgstr "years old"
+
+msgid "Seleccionar"
+msgstr "Select"
+
+msgid "No se encontraron niños con ese criterio de búsqueda"
+msgstr "No children found with that search criteria"
+
+msgid "No hay niños registrados"
+msgstr "No children registered"
+
+msgid "Para poder jugar, primero debes registrar al menos un niño en el sistema"
+msgstr "To play, you must first register at least one child in the system"
+
+msgid "Registrar Primer Niño"
+msgstr "Register First Child"
+
+msgid "Gestionar Niños Registrados"
+msgstr "Manage Registered Children"
+
+msgid "Confirmar Selección"
+msgstr "Confirm Selection"
+
+msgid "Verifica antes de continuar"
+msgstr "Verify before continuing"
+
+msgid "El niño seleccionado para jugar es:"
+msgstr "The selected child to play is:"
+
+msgid "¿Estás seguro de continuar con este niño?"
+msgstr "Are you sure you want to continue with this child?"
+
+msgid "No, Cambiar"
+msgstr "No, Change"
+
+msgid "Sí, Continuar"
+msgstr "Yes, Continue"
+
+# ========================================
+# PLAY GAME TEMPLATE
+# ========================================
+
+msgid "Pausar juego"
+msgstr "Pause game"
+
+msgid "Pausar"
+msgstr "Pause"
+
+msgid "Pantalla completa"
+msgstr "Fullscreen"
+
+msgid "Pantalla"
+msgstr "Screen"
+
+msgid "Salir del juego"
+msgstr "Exit game"
+
+msgid "Salir"
+msgstr "Exit"
+
+msgid "Tiempo"
+msgstr "Time"
+
+msgid "Activo"
+msgstr "Active"
+
+msgid "Transcurrido"
+msgstr "Elapsed"
+
+msgid "En juego"
+msgstr "In game"
+
+msgid "Progreso"
+msgstr "Progress"
+
+msgid "Nivel"
+msgstr "Level"
+
+msgid "Puntos totales"
+msgstr "Total points"
+
+msgid "Preguntas"
+msgstr "Questions"
+
+msgid "Participante"
+msgstr "Participant"
+
+msgid "a."
+msgstr "y.o."
+
+msgid "Cargando juego"
+msgstr "Loading game"
+
+msgid "Preparando tu experiencia de aprendizaje"
+msgstr "Preparing your learning experience"
+
+msgid "Juego en Pausa"
+msgstr "Game Paused"
+
+msgid "Tómate un descanso. Continúa cuando estés listo."
+msgstr "Take a break. Continue when you're ready."
+
+msgid "Puntos"
+msgstr "Points"
+
+msgid "Continuar"
+msgstr "Continue"
+
+msgid "¿Finalizar juego?"
+msgstr "Finish game?"
+
+msgid "No se puede deshacer"
+msgstr "Cannot be undone"
+
+msgid "Tu progreso se guardará automáticamente. ¿Estás seguro de que deseas salir?"
+msgstr "Your progress will be saved automatically. Are you sure you want to exit?"
 
 msgid "Cancelar"
 msgstr "Cancel"
+
+msgid "Finalizar"
+msgstr "Finish"
+
+msgid "En pausa"
+msgstr "Paused"
+
+msgid "Pausado"
+msgstr "Paused"
+
+msgid "Error:"
+msgstr "Error:"
+
+msgid "Intenta de nuevo"
+msgstr "Try again"
+
+msgid "Error de conexión"
+msgstr "Connection error"
+
+# ========================================
+# DASHBOARD TEMPLATE
+# ========================================
+
+msgid "Resumen de actividades y rendimiento"
+msgstr "Summary of activities and performance"
+
+msgid "Análisis de Entrenamiento"
+msgstr "Training Analysis"
+
+msgid "Detalles"
+msgstr "Details"
+
+msgid "12 cursos"
+msgstr "12 courses"
+
+msgid "Completados en este trimestre"
+msgstr "Completed in this quarter"
+
+msgid "26 Asistieron"
+msgstr "26 Attended"
+
+msgid "Progreso del Curso"
+msgstr "Course Progress"
+
+msgid "Ver todos"
+msgstr "See all"
+
+msgid "Capacitación en Experiencia de Usuario"
+msgstr "User Experience Training"
+
+msgid "Diseñado para desarrolladores frontend para comprender el comportamiento del usuario."
+msgstr "Designed for frontend developers to understand user behavior."
+
+msgid "Reanudar Curso"
+msgstr "Resume Course"
+
+msgid "Destacados del Equipo"
+msgstr "Employee Spotlight"
+
+msgid "compartir"
+msgstr "share"
+
+msgid "Vista General"
+msgstr "Overview"
+
+msgid "Comentarios"
+msgstr "Comments"
+
+msgid "Recompensas"
+msgstr "Rewards"
+
+msgid "Comentar"
+msgstr "Comment"
+
+msgid "Rastreador de Tiempo"
+msgstr "Time Tracker"
+
+msgid "Historial"
+msgstr "History"
+
+msgid "Diseño de Aplicación"
+msgstr "App Design"
+
+msgid "En espera"
+msgstr "Awaiting"
+
+msgid "Iniciar Rastreador de Tiempo"
+msgstr "Start Time Tracker"
+
+msgid "Tareas Anteriores"
+msgstr "Previous Tasks"
+
+msgid "Grabación de Loom"
+msgstr "Loom recording"
+
+msgid "Wireframe del sitio web"
+msgstr "Wireframe website"
+
+msgid "Notas"
+msgstr "Notes"
+
+msgid "Agregar nueva"
+msgstr "Add new"
+
+msgid "Página de destino"
+msgstr "Landing page"
+
+msgid "Buscar inspiración para crear página de destino para startup de IA."
+msgstr "Search for inspiration to create landing page for AI startup."
+
+msgid "Hoy"
+msgstr "Today"
+
+msgid "Pendiente"
+msgstr "To-do"
+
+msgid "Reunión con CTO"
+msgstr "Meeting with CTO"
+
+msgid "Discutir sobre la arquitectura de la aplicación y el enfoque."
+msgstr "Discuss about application architecture and approach."
+
+msgid "Reunión"
+msgstr "Meeting"
+
+msgid "Reunión de equipo"
+msgstr "Team meeting"
+
+msgid "Discutir sobre los requisitos del cliente y el plazo."
+msgstr "Discuss about client requirements and deadline."
+
+msgid "Rastreador de Estado"
+msgstr "Status Tracker"
+
+msgid "Ausente"
+msgstr "Absent"
+
+msgid "Diseñadora UI"
+msgstr "UI Designer"
+
+msgid "Fuera"
+msgstr "Away"
+
+msgid "Desarrollador Backend"
+msgstr "Backend Developer"
+
+msgid "Ingeniero DevOps"
+msgstr "DevOps Engineer"
+
+msgid "Proyecto Actual"
+msgstr "Current Project"
+
+msgid "Nombre del proyecto"
+msgstr "Project name"
+
+msgid "En progreso"
+msgstr "In progress"
+
+msgid "Gerente de proyecto"
+msgstr "Project manager"
+
+msgid "Líder técnico"
+msgstr "Tech lead"
+
+msgid "personas"
+msgstr "people"
+
+msgid "Cronograma"
+msgstr "Timeline"
+
+msgid "Descripción"
+msgstr "Description"
+
+msgid "Sitio web frontend para aplicación de IA"
+msgstr "Frontend website for AI app"
+
+# ========================================
+# SUPPORT TEMPLATE
+# ========================================
+
+msgid "Centro de Soporte - DislexIA"
+msgstr "Support Center - DislexIA"
+
+msgid "Centro de Soporte"
+msgstr "Support Center"
+
+msgid "Estamos aquí para ayudarte con cualquier duda o consulta"
+msgstr "We're here to help you with any questions or concerns"
+
+msgid "Disponible de Lun-Vie 9:00 AM - 6:00 PM"
+msgstr "Available Mon-Fri 9:00 AM - 6:00 PM"
+
+msgid "Contacta con un Especialista"
+msgstr "Contact a Specialist"
+
+msgid "Rápido"
+msgstr "Fast"
+
+msgid "Chatea en tiempo real con nuestros especialistas"
+msgstr "Chat in real-time with our specialists"
+
+msgid "Respuesta inmediata"
+msgstr "Immediate response"
+
+msgid "Atención personalizada"
+msgstr "Personalized attention"
+
+msgid "Hola, necesito ayuda con DislexIA"
+msgstr "Hello, I need help with DislexIA"
+
+msgid "Abrir WhatsApp"
+msgstr "Open WhatsApp"
+
+msgid "Formal"
+msgstr "Formal"
+
+msgid "Correo Electrónico"
+msgstr "Email"
+
+msgid "Envíanos un correo detallado sobre tu consulta"
+msgstr "Send us a detailed email about your inquiry"
+
+msgid "Respuesta en 24h"
+msgstr "Response in 24h"
+
+msgid "Documentación adjunta"
+msgstr "Attached documentation"
+
+msgid "Enviar Correo"
+msgstr "Send Email"
+
+msgid "Preguntas Frecuentes"
+msgstr "Frequently Asked Questions"
+
+msgid "¿Cómo funcionan los juegos de entrenamiento?"
+msgstr "How do the training games work?"
+
+msgid "Los juegos están diseñados específicamente para ayudar a personas con dislexia. Cada juego trabaja diferentes habilidades cognitivas como la memoria, comprensión lectora y reconocimiento de patrones. Puedes jugar a tu propio ritmo y el sistema se adapta a tu nivel."
+msgstr "The games are specifically designed to help people with dyslexia. Each game works on different cognitive skills such as memory, reading comprehension, and pattern recognition. You can play at your own pace and the system adapts to your level."
+
+msgid "¿Cuánto tiempo debo practicar cada día?"
+msgstr "How long should I practice each day?"
+
+msgid "Recomendamos sesiones de 15-20 minutos diarios. La consistencia es más importante que la duración. El calendario te ayudará a seguir tu progreso y mantener una rutina regular."
+msgstr "We recommend 15-20 minute daily sessions. Consistency is more important than duration. The calendar will help you track your progress and maintain a regular routine."
+
+msgid "¿Puedo usar la plataforma en dispositivos móviles?"
+msgstr "Can I use the platform on mobile devices?"
+
+msgid "Sí, DislexIA está optimizado para funcionar en computadoras, tablets y teléfonos móviles. Puedes acceder desde cualquier navegador web moderno."
+msgstr "Yes, DislexIA is optimized to work on computers, tablets, and mobile phones. You can access it from any modern web browser."
+
+msgid "¿Cómo puedo ver mi progreso?"
+msgstr "How can I view my progress?"
+
+msgid "En el Dashboard encontrarás estadísticas detalladas de tu rendimiento. El calendario muestra tu historial de actividades y en cada juego puedes ver tus puntuaciones y mejoras a lo largo del tiempo."
+msgstr "In the Dashboard you'll find detailed statistics of your performance. The calendar shows your activity history and in each game you can see your scores and improvements over time."
+
+msgid "¿Es necesaria supervisión de un adulto?"
+msgstr "Is adult supervision necessary?"
+
+msgid "Para niños menores de 12 años, recomendamos supervisión de un adulto durante las primeras sesiones. La plataforma es segura y fácil de usar, pero el acompañamiento ayuda a establecer buenos hábitos y resolver dudas iniciales."
+msgstr "For children under 12, we recommend adult supervision during the first sessions. The platform is safe and easy to use, but accompaniment helps establish good habits and resolve initial questions."
+
+msgid "Horarios de Atención"
+msgstr "Business Hours"
+
+msgid "Lunes - Viernes"
+msgstr "Monday - Friday"
+
+msgid "Sábado"
+msgstr "Saturday"
+
+msgid "Domingo"
+msgstr "Sunday"
+
+msgid "Cerrado"
+msgstr "Closed"
+
+msgid "Los mensajes fuera del horario de atención serán respondidos el siguiente día hábil."
+msgstr "Messages outside business hours will be answered the next business day."
+
+msgid "Información de Contacto"
+msgstr "Contact Information"
+
+msgid "Teléfono"
+msgstr "Phone"
+
+msgid "Ubicación"
+msgstr "Location"
+
+msgid "Recursos Útiles"
+msgstr "Useful Resources"
+
+msgid "Guía de Usuario"
+msgstr "User Guide"
+
+msgid "Video Tutoriales"
+msgstr "Video Tutorials"
+
+msgid "Comunidad"
+msgstr "Community"
+
+msgid "Inicializando página de soporte..."
+msgstr "Initializing support page..."
+
+msgid "Elementos encontrados:"
+msgstr "Elements found:"
 
 msgid "Sí"
 msgstr "Yes"
@@ -93,17 +658,20 @@ msgstr "Yes"
 msgid "No"
 msgstr "No"
 
-msgid "Correo Electrónico"
-msgstr "Email"
+msgid "Consulta sobre DislexIA"
+msgstr "Inquiry about DislexIA"
 
-msgid "Especialidad"
-msgstr "Specialty"
+msgid "Hola,"
+msgstr "Hello,"
 
-msgid "Número de Licencia"
-msgstr "License Number"
+msgid "Me gustaría obtener más información sobre:"
+msgstr "I would like more information about:"
+
+msgid "Página de soporte inicializada correctamente"
+msgstr "Support page initialized successfully"
 
 # ========================================
-# SETTINGS PAGE
+# SETTINGS TEMPLATE
 # ========================================
 
 msgid "Configuración - DislexIA"
@@ -115,47 +683,35 @@ msgstr "Settings"
 msgid "Personaliza tu experiencia en DislexIA"
 msgstr "Customize your DislexIA experience"
 
-# Tabs
 msgid "General"
 msgstr "General"
 
 msgid "Accesibilidad"
 msgstr "Accessibility"
 
-msgid "Notificaciones"
-msgstr "Notifications"
-
 msgid "Cuenta"
 msgstr "Account"
 
-# General Settings
 msgid "Modo Oscuro"
 msgstr "Dark Mode"
 
 msgid "Activa el tema oscuro para reducir el cansancio visual"
 msgstr "Enable dark theme to reduce eye strain"
 
-msgid "Idioma"
-msgstr "Language"
-
-msgid "Selecciona el idioma de la interfaz"
-msgstr "Select interface language"
-
-# Accessibility Settings
 msgid "Tamaño de Fuente"
 msgstr "Font Size"
 
 msgid "Elige el tamaño de texto que mejor se adapte a tus necesidades"
 msgstr "Choose the text size that best suits your needs"
 
+msgid "Mediano (Estándar)"
+msgstr "Medium (Standard)"
+
 msgid "Pequeño (Compacto)"
 msgstr "Small (Compact)"
 
 msgid "Ideal para pantallas grandes donde quieres ver más contenido a la vez."
 msgstr "Ideal for large screens where you want to see more content at once."
-
-msgid "Mediano (Estándar)"
-msgstr "Medium (Standard)"
 
 msgid "Recomendado"
 msgstr "Recommended"
@@ -203,28 +759,8 @@ msgid "Especialmente diseñada para personas con dislexia."
 msgstr "Specially designed for people with dyslexia."
 
 msgid "Fuente amigable y fácil de leer con estilo casual."
-msgstr "Friendly and easy to read font with casual style."
+msgstr "Friendly and easy-to-read font with casual style."
 
-# Notifications Settings
-msgid "Notificaciones por Email"
-msgstr "Email Notifications"
-
-msgid "Recibe actualizaciones importantes por correo electrónico"
-msgstr "Receive important updates via email"
-
-msgid "Recordatorios de Progreso"
-msgstr "Progress Reminders"
-
-msgid "Recibe recordatorios sobre tu progreso y próximas sesiones"
-msgstr "Receive reminders about your progress and upcoming sessions"
-
-msgid "Notificaciones de Logros"
-msgstr "Achievement Notifications"
-
-msgid "Celebra tus logros con notificaciones especiales"
-msgstr "Celebrate your achievements with special notifications"
-
-# Account Settings
 msgid "Eliminar Cuenta"
 msgstr "Delete Account"
 
@@ -234,9 +770,8 @@ msgstr "Permanently delete your account and all your data"
 msgid "Eliminar Mi Cuenta"
 msgstr "Delete My Account"
 
-# Delete Account Modal
 msgid "Eliminar Cuenta Permanentemente"
-msgstr "Permanently Delete Account"
+msgstr "Delete Account Permanently"
 
 msgid "Esta acción no se puede deshacer"
 msgstr "This action cannot be undone"
@@ -251,7 +786,7 @@ msgid "Todos tus datos personales y profesionales"
 msgstr "All your personal and professional data"
 
 msgid "Todas las evaluaciones y reportes realizados"
-msgstr "All evaluations and reports performed"
+msgstr "All evaluations and reports made"
 
 msgid "Tu progreso en los juegos y ejercicios"
 msgstr "Your progress in games and exercises"
@@ -266,7 +801,7 @@ msgid "Advertencia Final"
 msgstr "Final Warning"
 
 msgid "Esta acción es irreversible. No podrás recuperar tu cuenta ni tus datos después de eliminarlos."
-msgstr "This action is irreversible. You will not be able to recover your account or data after deletion."
+msgstr "This action is irreversible. You will not be able to recover your account or data after deleting them."
 
 msgid "Para confirmar, escribe"
 msgstr "To confirm, type"
@@ -277,147 +812,23 @@ msgstr "Type DELETE to confirm"
 msgid "Debes escribir exactamente 'ELIMINAR' para continuar"
 msgstr "You must type exactly 'DELETE' to continue"
 
-# ========================================
-# SUPPORT PAGE
-# ========================================
+msgid "Eliminando..."
+msgstr "Deleting..."
 
-msgid "Centro de Soporte - DislexIA"
-msgstr "Support Center - DislexIA"
+msgid "⚠️ ÚLTIMA ADVERTENCIA"
+msgstr "⚠️ FINAL WARNING"
 
-msgid "Centro de Soporte"
-msgstr "Support Center"
+msgid "Esta es tu última oportunidad para cancelar."
+msgstr "This is your last chance to cancel."
 
-msgid "Estamos aquí para ayudarte con cualquier duda o consulta"
-msgstr "We are here to help you with any questions or concerns"
+msgid "¿Estás COMPLETAMENTE SEGURO de que deseas eliminar tu cuenta?"
+msgstr "Are you ABSOLUTELY SURE you want to delete your account?"
 
-msgid "Disponible de Lun-Vie 9:00 AM - 6:00 PM"
-msgstr "Available Mon-Fri 9:00 AM - 6:00 PM"
-
-msgid "Contacta con un Especialista"
-msgstr "Contact a Specialist"
-
-msgid "Rápido"
-msgstr "Fast"
-
-msgid "Chatea en tiempo real con nuestros especialistas"
-msgstr "Chat in real time with our specialists"
-
-msgid "Respuesta inmediata"
-msgstr "Immediate response"
-
-msgid "Atención personalizada"
-msgstr "Personalized attention"
-
-msgid "Hola, necesito ayuda con DislexIA"
-msgstr "Hello, I need help with DislexIA"
-
-msgid "Abrir WhatsApp"
-msgstr "Open WhatsApp"
-
-msgid "Formal"
-msgstr "Formal"
-
-msgid "Envíanos un correo detallado sobre tu consulta"
-msgstr "Send us a detailed email about your inquiry"
-
-msgid "Respuesta en 24h"
-msgstr "Response in 24h"
-
-msgid "Documentación adjunta"
-msgstr "Attached documentation"
-
-msgid "Enviar Correo"
-msgstr "Send Email"
-
-msgid "Preguntas Frecuentes"
-msgstr "Frequently Asked Questions"
-
-msgid "¿Cómo funcionan los juegos de entrenamiento?"
-msgstr "How do the training games work?"
-
-msgid "Los juegos están diseñados específicamente para ayudar a personas con dislexia. Cada juego trabaja diferentes habilidades cognitivas como la memoria, comprensión lectora y reconocimiento de patrones. Puedes jugar a tu propio ritmo y el sistema se adapta a tu nivel."
-msgstr "The games are specifically designed to help people with dyslexia. Each game works on different cognitive skills such as memory, reading comprehension and pattern recognition. You can play at your own pace and the system adapts to your level."
-
-msgid "¿Cuánto tiempo debo practicar cada día?"
-msgstr "How long should I practice each day?"
-
-msgid "Recomendamos sesiones de 15-20 minutos diarios. La consistencia es más importante que la duración. El calendario te ayudará a seguir tu progreso y mantener una rutina regular."
-msgstr "We recommend 15-20 minute daily sessions. Consistency is more important than duration. The calendar will help you track your progress and maintain a regular routine."
-
-msgid "¿Puedo usar la plataforma en dispositivos móviles?"
-msgstr "Can I use the platform on mobile devices?"
-
-msgid "Sí, DislexIA está optimizado para funcionar en computadoras, tablets y teléfonos móviles. Puedes acceder desde cualquier navegador web moderno."
-msgstr "Yes, DislexIA is optimized to work on computers, tablets and mobile phones. You can access it from any modern web browser."
-
-msgid "¿Cómo puedo ver mi progreso?"
-msgstr "How can I see my progress?"
-
-msgid "En el Dashboard encontrarás estadísticas detalladas de tu rendimiento. El calendario muestra tu historial de actividades y en cada juego puedes ver tus puntuaciones y mejoras a lo largo del tiempo."
-msgstr "In the Dashboard you will find detailed statistics of your performance. The calendar shows your activity history and in each game you can see your scores and improvements over time."
-
-msgid "¿Es necesaria supervisión de un adulto?"
-msgstr "Is adult supervision necessary?"
-
-msgid "Para niños menores de 12 años, recomendamos supervisión de un adulto durante las primeras sesiones. La plataforma es segura y fácil de usar, pero el acompañamiento ayuda a establecer buenos hábitos y resolver dudas iniciales."
-msgstr "For children under 12 years old, we recommend adult supervision during the first sessions. The platform is safe and easy to use, but accompaniment helps establish good habits and resolve initial doubts."
-
-msgid "Horarios de Atención"
-msgstr "Business Hours"
-
-msgid "Lunes - Viernes"
-msgstr "Monday - Friday"
-
-msgid "Sábado"
-msgstr "Saturday"
-
-msgid "Domingo"
-msgstr "Sunday"
-
-msgid "Cerrado"
-msgstr "Closed"
-
-msgid "Los mensajes fuera del horario de atención serán respondidos el siguiente día hábil."
-msgstr "Messages outside business hours will be answered the next business day."
-
-msgid "Información de Contacto"
-msgstr "Contact Information"
-
-msgid "Teléfono"
-msgstr "Phone"
-
-msgid "Ubicación"
-msgstr "Location"
-
-msgid "Recursos Útiles"
-msgstr "Useful Resources"
-
-msgid "Guía de Usuario"
-msgstr "User Guide"
-
-msgid "Video Tutoriales"
-msgstr "Video Tutorials"
-
-msgid "Comunidad"
-msgstr "Community"
-
-msgid "Inicializando página de soporte..."
-msgstr "Initializing support page..."
-
-msgid "Consulta sobre DislexIA"
-msgstr "Inquiry about DislexIA"
-
-msgid "Hola,"
-msgstr "Hello,"
-
-msgid "Me gustaría obtener más información sobre:"
-msgstr "I would like to get more information about:"
-
-msgid "Página de soporte inicializada correctamente"
-msgstr "Support page initialized successfully"
+msgid "Esta acción es PERMANENTE e IRREVERSIBLE."
+msgstr "This action is PERMANENT and IRREVERSIBLE."
 
 # ========================================
-# PROFILE PAGE
+# PROFILE TEMPLATE
 # ========================================
 
 msgid "Perfil"
@@ -432,26 +843,17 @@ msgstr "License N°"
 msgid "Editar Perfil"
 msgstr "Edit Profile"
 
-msgid "Registrado"
-msgstr "Registered"
-
-msgid "Último acceso:"
-msgstr "Last access:"
-
 msgid "Validaciones Realizadas"
-msgstr "Validations Performed"
+msgstr "Validations Completed"
 
 msgid "Tiempo en la plataforma"
 msgstr "Time on platform"
 
-msgid "Activo"
-msgstr "Active"
+msgid "Estado de la Cuenta"
+msgstr "Account Status"
 
 msgid "Inactivo"
 msgstr "Inactive"
-
-msgid "Estado de la Cuenta"
-msgstr "Account Status"
 
 msgid "Rol en el Sistema"
 msgstr "System Role"
@@ -482,6 +884,9 @@ msgstr "Professional Information"
 
 msgid "Especialidad:"
 msgstr "Specialty:"
+
+msgid "No especificada"
+msgstr "Not specified"
 
 msgid "Número de Licencia:"
 msgstr "License Number:"
@@ -522,6 +927,12 @@ msgstr "First Names"
 msgid "Apellidos"
 msgstr "Last Names"
 
+msgid "Especialidad"
+msgstr "Specialty"
+
+msgid "Número de Licencia"
+msgstr "License Number"
+
 msgid "Guardar Cambios"
 msgstr "Save Changes"
 
@@ -529,7 +940,7 @@ msgid "Perfil cargado"
 msgstr "Profile loaded"
 
 msgid "La imagen no debe superar los 2MB"
-msgstr "The image must not exceed 2MB"
+msgstr "Image must not exceed 2MB"
 
 msgid "Por favor, selecciona un archivo de imagen válido"
 msgstr "Please select a valid image file"
@@ -540,34 +951,187 @@ msgstr "Please complete all required fields (*)"
 msgid "Por favor, ingresa un correo electrónico válido"
 msgstr "Please enter a valid email address"
 
+msgid "Registrado"
+msgstr "Registered"
+
+msgid "Último acceso:"
+msgstr "Last access:"
+
 # ========================================
-# CALENDAR PAGE
+# DOCUMENTS TEMPLATE
 # ========================================
 
-msgid "Calendario de Actividades"
-msgstr "Activity Calendar"
+msgid "Biblioteca de Recursos"
+msgstr "Resource Library"
 
-msgid "Organiza y revisa tus sesiones de entrenamiento"
-msgstr "Organize and review your training sessions"
+msgid "Descarga guías, hojas de trabajo y materiales para apoyar el aprendizaje con dislexia"
+msgstr "Download guides, worksheets, and materials to support dyslexia learning"
 
-msgid "Hoy"
-msgstr "Today"
+msgid "48 Recursos Disponibles"
+msgstr "48 Resources Available"
 
-msgid "Nueva Actividad"
-msgstr "New Activity"
+msgid "Buscar recursos..."
+msgstr "Search resources..."
 
-msgid "Febrero 2024"
-msgstr "February 2024"
+msgid "Todos los Recursos"
+msgstr "All Resources"
 
-# Days of the week
+msgid "Guías"
+msgstr "Guides"
+
+msgid "Hojas de Trabajo"
+msgstr "Worksheets"
+
+msgid "Actividades"
+msgstr "Activities"
+
+msgid "Herramientas"
+msgstr "Tools"
+
+msgid "Recursos Destacados"
+msgstr "Featured Resources"
+
+msgid "Más Populares"
+msgstr "Most Popular"
+
+msgid "Guía"
+msgstr "Guide"
+
+msgid "Guía Completa para Padres"
+msgstr "Complete Parent Guide"
+
+msgid "Guía completa para que los padres apoyen a los niños con dislexia en casa."
+msgstr "Comprehensive guide for parents to support children with dyslexia at home."
+
+msgid "Descargar"
+msgstr "Download"
+
+msgid "Hoja de Trabajo"
+msgstr "Worksheet"
+
+msgid "Paquete de Práctica de Lectura"
+msgstr "Reading Practice Pack"
+
+msgid "20 hojas de trabajo diseñadas para mejorar la comprensión y fluidez lectora."
+msgstr "20 worksheets designed to improve reading comprehension and fluency."
+
+msgid "Actividad"
+msgstr "Activity"
+
+msgid "Juegos de Aprendizaje Divertidos"
+msgstr "Fun Learning Games"
+
+msgid "Juegos y actividades interactivas para hacer el aprendizaje divertido y atractivo."
+msgstr "Interactive games and activities to make learning enjoyable and engaging."
+
+msgid "Herramienta"
+msgstr "Tool"
+
+msgid "Rastreador de Progreso"
+msgstr "Progress Tracker"
+
+msgid "Plantilla para rastrear el progreso de aprendizaje y celebrar logros a lo largo del tiempo."
+msgstr "Template to track learning progress and celebrate achievements over time."
+
+msgid "Manual del Docente"
+msgstr "Teacher's Handbook"
+
+msgid "Estrategias esenciales para educadores que trabajan con estudiantes disléxicos."
+msgstr "Essential strategies for educators working with dyslexic students."
+
+msgid "Ejercicios de Ortografía"
+msgstr "Spelling Exercises"
+
+msgid "Actividades de ortografía estructuradas para desarrollar confianza y precisión."
+msgstr "Structured spelling activities to build confidence and accuracy."
+
+msgid "Más Recursos"
+msgstr "More Resources"
+
+msgid "Guía de Técnicas de Memoria"
+msgstr "Memory Techniques Guide"
+
+msgid "Estrategias para mejorar la memoria y retención • PDF • 1.2 MB"
+msgstr "Strategies to improve memory and retention • PDF • 1.2 MB"
+
+msgid "Tarjetas de Fonética"
+msgstr "Phonics Flashcards"
+
+msgid "Tarjetas imprimibles para práctica de fonética • PDF • 2.1 MB"
+msgstr "Printable flashcards for phonics practice • PDF • 2.1 MB"
+
+msgid "Folleto de Consejos de Estudio"
+msgstr "Study Tips Booklet"
+
+msgid "Estrategias de estudio efectivas para estudiantes • PDF • 1.7 MB"
+msgstr "Effective study strategies for students • PDF • 1.7 MB"
+
+msgid "Estadísticas de la Biblioteca"
+msgstr "Library Statistics"
+
+msgid "Más Descargados"
+msgstr "Most Downloaded"
+
+msgid "Guía para Padres"
+msgstr "Parent Guide"
+
+msgid "3.2k descargas"
+msgstr "3.2k downloads"
+
+msgid "Paquete de Lectura"
+msgstr "Reading Pack"
+
+msgid "2.8k descargas"
+msgstr "2.8k downloads"
+
+msgid "Juegos Divertidos"
+msgstr "Fun Games"
+
+msgid "2.5k descargas"
+msgstr "2.5k downloads"
+
+msgid "¿Necesitas Ayuda?"
+msgstr "Need Help?"
+
+msgid "¿No encuentras lo que buscas? Contacta a nuestro equipo de soporte."
+msgstr "Can't find what you're looking for? Contact our support team."
+
+msgid "Contactar Soporte"
+msgstr "Contact Support"
+
+msgid "Solicitar un Recurso"
+msgstr "Request a Resource"
+
+msgid "¿No ves lo que necesitas? Háznoslo saber y lo crearemos."
+msgstr "Don't see what you need? Let us know and we'll create it."
+
+msgid "Enviar Solicitud"
+msgstr "Submit Request"
+
+msgid "Descargando..."
+msgstr "Downloading..."
+
+msgid "¡Descargado!"
+msgstr "Downloaded!"
+
+# ========================================
+# CALENDAR TEMPLATE
+# ========================================
+
+msgid "Calendario de Citas"
+msgstr "Appointments Calendar"
+
+msgid "Organiza y gestiona tus citas con pacientes"
+msgstr "Organize and manage your patient appointments"
+
+msgid "Agendar Cita"
+msgstr "Schedule Appointment"
+
 msgid "Dom"
 msgstr "Sun"
 
 msgid "Lun"
 msgstr "Mon"
-
-msgid "Mar"
-msgstr "Tue"
 
 msgid "Mié"
 msgstr "Wed"
@@ -581,51 +1145,60 @@ msgstr "Fri"
 msgid "Sáb"
 msgstr "Sat"
 
-# Stats
-msgid "Sesiones este mes"
-msgstr "Sessions this month"
+msgid "Citas este mes"
+msgstr "Appointments this month"
 
 msgid "Completadas"
 msgstr "Completed"
 
-msgid "Tiempo total"
-msgstr "Total time"
+msgid "Pendientes"
+msgstr "Pending"
 
-msgid "No hay actividades para este día"
-msgstr "No activities for this day"
+msgid "Agendar Nueva Cita"
+msgstr "Schedule New Appointment"
 
-msgid "Resumen del día"
-msgstr "Day summary"
+msgid "Foto del Paciente"
+msgstr "Patient Photo"
 
-msgid "Sesiones completadas:"
-msgstr "Completed sessions:"
+msgid "Sin foto"
+msgstr "No photo"
 
-msgid "Tiempo total:"
-msgstr "Total time:"
+msgid "Haz clic para subir"
+msgstr "Click to upload"
 
-msgid "Puntos ganados:"
-msgstr "Points earned:"
+msgid "o arrastra y suelta"
+msgstr "or drag and drop"
 
-# Activity Modal
-msgid "Juego"
-msgstr "Game"
+msgid "Eliminar foto"
+msgstr "Remove photo"
 
-msgid "Duración (minutos)"
-msgstr "Duration (minutes)"
+msgid "Información de la Cita"
+msgstr "Appointment Information"
 
-msgid "Puntos obtenidos"
-msgstr "Points obtained"
+msgid "Nombre del Paciente"
+msgstr "Patient Name"
 
-msgid "Notas"
-msgstr "Notes"
+msgid "Ej: Juan Pérez López"
+msgstr "E.g: John Doe Smith"
 
-msgid "Agrega alguna observación..."
-msgstr "Add some observation..."
+msgid "Fecha"
+msgstr "Date"
 
-msgid "Guardar"
-msgstr "Save"
+msgid "Hora"
+msgstr "Time"
 
-# Month names
+msgid "Notas / Motivo de Consulta"
+msgstr "Notes / Reason for Consultation"
+
+msgid "Motivo de la consulta, observaciones importantes..."
+msgstr "Reason for consultation, important observations..."
+
+msgid "Recordatorio:"
+msgstr "Reminder:"
+
+msgid "Se enviará un recordatorio de esta cita 30 minutos antes de la hora programada."
+msgstr "A reminder will be sent for this appointment 30 minutes before the scheduled time."
+
 msgid "Enero"
 msgstr "January"
 
@@ -662,182 +1235,174 @@ msgstr "November"
 msgid "Diciembre"
 msgstr "December"
 
-# Sample activities
-msgid "Excelente rendimiento en comprensión lectora"
-msgstr "Excellent performance in reading comprehension"
+msgid "Inicializando calendario de citas..."
+msgstr "Initializing appointments calendar..."
 
-msgid "Encontró 12 de 15 palabras"
-msgstr "Found 12 of 15 words"
+msgid "Calendario de citas inicializado correctamente"
+msgstr "Appointments calendar initialized successfully"
 
-msgid "Dificultad con oraciones complejas"
-msgstr "Difficulty with complex sentences"
+msgid "Marcar como pendiente"
+msgstr "Mark as pending"
 
-msgid "Mejoró 15% respecto a la última sesión"
-msgstr "Improved 15% compared to last session"
+msgid "Marcar como completada"
+msgstr "Mark as completed"
 
-# JavaScript messages
-msgid "Inicializando calendario..."
-msgstr "Initializing calendar..."
+msgid "Error al cargar las citas"
+msgstr "Error loading appointments"
 
-msgid "Elementos encontrados:"
-msgstr "Elements found:"
+msgid "Estado de la cita actualizado"
+msgstr "Appointment status updated"
 
-msgid "Calendario inicializado correctamente"
-msgstr "Calendar initialized successfully"
+msgid "Error al actualizar la cita"
+msgstr "Error updating appointment"
 
-msgid "pts"
-msgstr "pts"
+msgid "El archivo es demasiado grande. Máximo 5MB."
+msgstr "File is too large. Maximum 5MB."
 
-msgid "min"
-msgstr "min"
+msgid "Por favor selecciona una imagen válida."
+msgstr "Please select a valid image."
+
+msgid "Por favor, arrastra un archivo de imagen válido."
+msgstr "Please drag a valid image file."
+
+msgid "Guardando..."
+msgstr "Saving..."
+
+msgid "Cita agendada exitosamente"
+msgstr "Appointment scheduled successfully"
+
+msgid "Error al agendar la cita"
+msgstr "Error scheduling appointment"
 
 # ========================================
-# CALENDAR PAGE
+# LISTA NINOS TEMPLATE
 # ========================================
 
-msgid "Calendario de Actividades"
-msgstr "Activity Calendar"
+msgid "Gestión de Niños"
+msgstr "Children Management"
 
-msgid "Organiza y revisa tus sesiones de entrenamiento"
-msgstr "Organize and review your training sessions"
+msgid "Administra la información de los niños registrados"
+msgstr "Manage registered children information"
 
-msgid "Hoy"
-msgstr "Today"
+msgid "Agregar Niño"
+msgstr "Add Child"
 
-msgid "Nueva Actividad"
-msgstr "New Activity"
+msgid "Todas las edades"
+msgstr "All ages"
 
-msgid "Febrero 2024"
-msgstr "February 2024"
+msgid "No se encontraron resultados para tu búsqueda"
+msgstr "No results found for your search"
 
-# Days of the week
-msgid "Dom"
-msgstr "Sun"
+msgid "Editar"
+msgstr "Edit"
 
-msgid "Lun"
-msgstr "Mon"
+msgid "Agregar el primer niño"
+msgstr "Add the first child"
 
-msgid "Mar"
-msgstr "Tue"
+msgid "Agregar Nuevo Niño"
+msgstr "Add New Child"
 
-msgid "Mié"
-msgstr "Wed"
+msgid "Foto del Niño"
+msgstr "Child's Photo"
 
-msgid "Jue"
-msgstr "Thu"
+msgid "PNG, JPG (max. 5MB)"
+msgstr "PNG, JPG (max. 5MB)"
 
-msgid "Vie"
-msgstr "Fri"
+msgid "Ej: Juan Carlos"
+msgstr "E.g: John Michael"
 
-msgid "Sáb"
-msgstr "Sat"
+msgid "Ej: García López"
+msgstr "E.g: Smith Johnson"
 
-# Stats
-msgid "Sesiones este mes"
-msgstr "Sessions this month"
+msgid "Fecha de Nacimiento"
+msgstr "Date of Birth"
 
-msgid "Completadas"
-msgstr "Completed"
+msgid "Entre 6 y 12 años"
+msgstr "Between 6 and 12 years old"
 
-msgid "Tiempo total"
-msgstr "Total time"
+msgid "Género"
+msgstr "Gender"
 
-msgid "No hay actividades para este día"
-msgstr "No activities for this day"
+msgid "Seleccionar género"
+msgstr "Select gender"
 
-msgid "Resumen del día"
-msgstr "Day summary"
+msgid "Masculino"
+msgstr "Male"
 
-msgid "Sesiones completadas:"
-msgstr "Completed sessions:"
+msgid "Femenino"
+msgstr "Female"
 
-msgid "Tiempo total:"
-msgstr "Total time:"
+msgid "Otro"
+msgstr "Other"
 
-msgid "Puntos ganados:"
-msgstr "Points earned:"
+msgid "Idioma Nativo"
+msgstr "Native Language"
 
-# Activity Modal
-msgid "Juego"
-msgstr "Game"
+msgid "Ej: Español"
+msgstr "E.g: Spanish"
 
-msgid "Duración (minutos)"
-msgstr "Duration (minutes)"
+msgid "Guardar Niño"
+msgstr "Save Child"
 
-msgid "Puntos obtenidos"
-msgstr "Points obtained"
+# ========================================
+# EDITAR NINO TEMPLATE
+# ========================================
 
-msgid "Notas"
-msgstr "Notes"
+msgid "Editar Niño"
+msgstr "Edit Child"
 
-msgid "Agrega alguna observación..."
-msgstr "Add some observation..."
+msgid "Actualiza la información del niño"
+msgstr "Update child information"
 
-msgid "Guardar"
-msgstr "Save"
+msgid "Volver a la lista"
+msgstr "Back to list"
 
-# Month names
-msgid "Enero"
-msgstr "January"
+msgid "La edad debe estar entre 6 y 12 años."
+msgstr "Age must be between 6 and 12 years old."
 
-msgid "Febrero"
-msgstr "February"
+# ========================================
+# CONFIRMAR ELIMINAR NINO TEMPLATE
+# ========================================
 
-msgid "Marzo"
-msgstr "March"
+msgid "Confirmar Eliminación"
+msgstr "Confirm Deletion"
 
-msgid "Abril"
-msgstr "April"
+msgid "Información del Niño"
+msgstr "Child Information"
 
-msgid "Mayo"
-msgstr "May"
+msgid "Nombre Completo"
+msgstr "Full Name"
 
-msgid "Junio"
-msgstr "June"
+msgid "Advertencia Importante"
+msgstr "Important Warning"
 
-msgid "Julio"
-msgstr "July"
+msgid "Estás a punto de eliminar permanentemente toda la información de"
+msgstr "You are about to permanently delete all information for"
 
-msgid "Agosto"
-msgstr "August"
+msgid "Se eliminarán:"
+msgstr "Will be deleted:"
 
-msgid "Septiembre"
-msgstr "September"
+msgid "Toda la información personal del niño"
+msgstr "All personal information of the child"
 
-msgid "Octubre"
-msgstr "October"
+msgid "Historial de evaluaciones y resultados"
+msgstr "Evaluation history and results"
 
-msgid "Noviembre"
-msgstr "November"
+msgid "Reportes y diagnósticos asociados"
+msgstr "Associated reports and diagnoses"
 
-msgid "Diciembre"
-msgstr "December"
+msgid "Fotografías y documentos adjuntos"
+msgstr "Photographs and attached documents"
 
-# Sample activities
-msgid "Excelente rendimiento en comprensión lectora"
-msgstr "Excellent performance in reading comprehension"
+msgid "Esta acción es permanente e irreversible. No podrás recuperar esta información posteriormente."
+msgstr "This action is permanent and irreversible. You will not be able to recover this information later."
 
-msgid "Encontró 12 de 15 palabras"
-msgstr "Found 12 of 15 words"
+msgid "Confirmar Acción"
+msgstr "Confirm Action"
 
-msgid "Dificultad con oraciones complejas"
-msgstr "Difficulty with complex sentences"
+msgid "Para continuar con la eliminación, confirma tu decisión presionando el botón inferior."
+msgstr "To proceed with deletion, confirm your decision by pressing the button below."
 
-msgid "Mejoró 15% respecto a la última sesión"
-msgstr "Improved 15% compared to last session"
+msgid "Eliminar Definitivamente"
+msgstr "Delete Permanently"
 
-# JavaScript messages
-msgid "Inicializando calendario..."
-msgstr "Initializing calendar..."
-
-msgid "Elementos encontrados:"
-msgstr "Elements found:"
-
-msgid "Calendario inicializado correctamente"
-msgstr "Calendar initialized successfully"
-
-msgid "pts"
-msgstr "pts"
-
-msgid "min"
-msgstr "min"
