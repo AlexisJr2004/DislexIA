@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # 'livereload',  # Comentado temporalmente
+    'livereload',  # Comentado temporalmente
     # Aplicaciones locales
     'app.dashboard',
     'app.core',

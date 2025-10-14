@@ -40,6 +40,29 @@ class GameListView(TemplateView):
         return context
 
 @method_decorator(login_required, name='dispatch')
+class GameSessionListView(TemplateView):
+    """Vista para listar las sesiones de juegos del profesional autenticado"""
+    template_name = 'game_session_list.html'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        
+        # Obtener el profesional actual directamente desde el usuario
+        profesional = self.request.user
+
+        # Obtener las sesiones de juegos asociadas a los niños del profesional
+        sesiones = SesionJuego.objects.filter(
+            evaluacion__nino__profesional=profesional
+        ).select_related('juego', 'evaluacion__nino').order_by('-fecha_inicio')
+
+        context.update({
+            'page_title': 'Sesiones de Juegos - DislexIA',
+            'active_section': 'games',
+            'sesiones': sesiones,
+        })
+        return context
+
+@method_decorator(login_required, name='dispatch')
 class InitGameView(TemplateView):
     """Vista para inicializar un juego y crear la sesión"""
     template_name = 'init_game.html'

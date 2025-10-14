@@ -328,6 +328,15 @@
                     {% trans "Panel Administrativo" %}
                 </a>
 
+                <a href="{% url 'games:session_list' %}"
+                    class="nav-link flex items-center gap-3 px-3 py-2 mb-1 {% if request.resolver_match.url_name == 'session_list' %}text-purple-600 dark:text-purple-400 bg-purple-100 dark:bg-purple-500/20{% else %}text-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800{% endif %} rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 hover:shadow-sm">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path
+                            d="M6 12h2m-1-1v2m8-1h2m-1-1v2m-9 5a4 4 0 01-4-4V9a4 4 0 014-4h10a4 4 0 014 4v4a4 4 0 01-4 4h-3l-2 2-2-2H8z" />
+                    </svg>
+                    {% trans "Gestión de Sesiones" %}
+                </a>
+
                 <a href="{% url 'games:game_list' %}"
                     class="nav-link flex items-center gap-3 px-3 py-2 mb-1 {% if request.resolver_match.url_name == 'game_list' %}text-purple-600 dark:text-purple-400 bg-purple-100 dark:bg-purple-500/20{% else %}text-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800{% endif %} rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 hover:shadow-sm">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
