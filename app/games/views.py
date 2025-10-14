@@ -12,9 +12,14 @@ import os
 from django.conf import settings
 
 from .models import Juego, SesionJuego, Evaluacion
+<<<<<<< HEAD
 from app.core.models import Nino
 from app.core.forms import NinoForm
 from app.core.models import Profesional
+=======
+from app.core.models import Nino, Profesional
+from app.core.forms import NinoForm
+>>>>>>> origin/develop
 
 @method_decorator(login_required, name='dispatch')
 class GameListView(TemplateView):
@@ -321,6 +326,43 @@ def finish_game_session(request, url_sesion):
 
 @csrf_exempt
 @require_http_methods(["POST"])
+def crear_nino_ajax(request):
+    """Crear un niño asociado al profesional autenticado vía AJAX.
+    Espera campos del NinoForm en POST.
+    """
+    try:
+        # Si el usuario no está autenticado, retornar error
+        user = getattr(request, 'user', None)
+        if not user or not user.is_authenticated:
+            return JsonResponse({'success': False, 'error': 'Autenticación requerida'}, status=401)
+
+        # Bind form
+        form = NinoForm(request.POST, request.FILES)
+        if form.is_valid():
+            nino = form.save(commit=False)
+            # Asignar profesional si es instancia de Profesional
+            if isinstance(user, Profesional):
+                nino.profesional = user
+            nino.save()
+            return JsonResponse({
+                'success': True, 
+                'nino': {
+                    'id': nino.id, 
+                    'nombres': nino.nombres,
+                    'apellidos': nino.apellidos,
+                    'nombre_completo': nino.nombre_completo,
+                    'edad': nino.edad,
+                    'genero': nino.genero
+                }
+            })
+        else:
+            return JsonResponse({'success': False, 'errors': form.errors}, status=400)
+
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)}, status=500)
+
+@csrf_exempt
+@require_http_methods(["POST"])
 def asignar_nino(request):
     """Asocia un niño existente con un juego."""
     nino_id = request.POST.get('nino_id')
@@ -334,14 +376,27 @@ def asignar_nino(request):
         juego = Juego.objects.get(slug=juego_slug)
 
         # Crear o actualizar la sesión del juego
-        sesion, created = SesionJuego.objects.get_or_create(
+        # Nota: Aquí puedes ajustar la lógica según tu modelo
+        # Por ejemplo, crear una evaluación primero
+        evaluacion = Evaluacion.objects.create(
             nino=nino,
+            fecha_hora_inicio=timezone.now(),
+            estado='en_proceso'
+        )
+        
+        sesion = SesionJuego.crear_nueva_sesion(
+            evaluacion=evaluacion,
             juego=juego,
-            defaults={'fecha_inicio': timezone.now()}
+            nivel=1
         )
 
-        return JsonResponse({'success': True, 'redirect_url': f"{juego.get_absolute_url()}?nino_id={nino.id}"})
+        return JsonResponse({
+            'success': True, 
+            'redirect_url': f"/games/play/{sesion.url_sesion}/"
+        })
     except Nino.DoesNotExist:
         return JsonResponse({'success': False, 'error': 'Niño no encontrado.'}, status=404)
     except Juego.DoesNotExist:
         return JsonResponse({'success': False, 'error': 'Juego no encontrado.'}, status=404)
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)}, status=500)

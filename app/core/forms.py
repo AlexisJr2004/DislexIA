@@ -210,37 +210,80 @@ class ProfesionalSetPasswordForm(SetPasswordForm):
 
 
 class NinoForm(forms.ModelForm):
-    """Formulario mínimo para crear/editar un Niño."""
+    """Formulario para crear y editar niños"""
+    
     class Meta:
         model = Nino
-        fields = ['nombres', 'apellidos', 'fecha_nacimiento', 'edad', 'genero', 'idioma_nativo', 'imagen']
+        fields = ['nombres', 'apellidos', 'fecha_nacimiento', 'edad', 'genero', 
+                  'idioma_nativo', 'imagen']
+        
         widgets = {
             'nombres': forms.TextInput(attrs={
-                'class': 'w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all',
-                'placeholder': 'Nombres del niño'
+                'class': 'w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200',
+                'placeholder': 'Ej: Juan Carlos'
             }),
             'apellidos': forms.TextInput(attrs={
-                'class': 'w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all',
-                'placeholder': 'Apellidos del niño'
+                'class': 'w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200',
+                'placeholder': 'Ej: García López'
             }),
             'fecha_nacimiento': forms.DateInput(attrs={
-                'class': 'w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all',
-                'type': 'date'
+                'type': 'date',
+                'class': 'w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200'
             }),
             'edad': forms.NumberInput(attrs={
-                'class': 'w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all',
-                'placeholder': 'Edad en años'
+                'class': 'w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200',
+                'min': '6',
+                'max': '12',
+                'placeholder': 'Entre 6 y 12 años'
             }),
             'genero': forms.Select(attrs={
-                'class': 'w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all'
+                'class': 'w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200'
             }),
             'idioma_nativo': forms.TextInput(attrs={
-                'class': 'w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all',
-                'placeholder': 'Idioma nativo del niño'
+                'class': 'w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200',
+                'placeholder': 'Ej: Español'
             }),
             'imagen': forms.FileInput(attrs={
                 'class': 'hidden',
-                'accept': 'image/*',
-                'id': 'imagen-nino-input'
+                'accept': 'image/*'
             })
         }
+        
+        labels = {
+            'nombres': 'Nombres',
+            'apellidos': 'Apellidos',
+            'fecha_nacimiento': 'Fecha de Nacimiento',
+            'edad': 'Edad',
+            'genero': 'Género',
+            'idioma_nativo': 'Idioma Nativo',
+            'imagen': 'Imagen'
+        }
+    
+    def clean_edad(self):
+        """Validar que la edad esté entre 6 y 12 años"""
+        edad = self.cleaned_data.get('edad')
+        if edad and (edad < 6 or edad > 12):
+            raise forms.ValidationError('La edad debe estar entre 6 y 12 años')
+        return edad
+    
+    def clean_imagen(self):
+        """Validar tamaño y tipo de imagen solo si es un archivo nuevo"""
+        imagen = self.cleaned_data.get('imagen')
+        
+        # Si imagen es None o False, no hay archivo nuevo
+        if not imagen:
+            return imagen
+        
+        # Si es un ImageFieldFile (imagen existente), no validar
+        # Solo validar si es un archivo nuevo (UploadedFile)
+        if hasattr(imagen, 'content_type'):
+            # Es un archivo nuevo subido
+            # Validar tamaño (5MB máximo)
+            if imagen.size > 5 * 1024 * 1024:
+                raise forms.ValidationError('El archivo es demasiado grande. Máximo 5MB.')
+            
+            # Validar tipo de archivo
+            if not imagen.content_type.startswith('image/'):
+                raise forms.ValidationError('El archivo debe ser una imagen.')
+        
+        return imagen

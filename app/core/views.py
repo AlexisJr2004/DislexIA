@@ -15,10 +15,15 @@ from .models import Nino
 from django.views import View
 from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
+from django.views import View
+from django.db.utils import OperationalError
 import json
-from datetime import datetime, date
-from .models import Cita
+import logging
+from datetime import datetime, date, time, timedelta
+from .models import Cita, Nino
+from .utils.email_utils import enviar_correo_cita_doctor, enviar_correo_cita_padres
 
+logger = logging.getLogger(__name__)
 
 # ==================== VISTAS DE AUTENTICACIÓN ====================
 
@@ -385,70 +390,77 @@ def get_citas_dia(request):
 @require_http_methods(["POST"])
 def crear_cita(request):
     """Crear una nueva cita"""
-    try:
-        print("=== DEBUG: Iniciando crear_cita ===")
-        print(f"POST data: {request.POST}")
-        print(f"FILES: {request.FILES}")
-        
-        # Manejar FormData en lugar de JSON
-        nombre_paciente = request.POST.get('nombre_paciente')
-        fecha_str = request.POST.get('fecha')
-        hora_str = request.POST.get('hora')
-        notas = request.POST.get('notas', '')
-        
-        print(f"Datos recibidos - Paciente: {nombre_paciente}, Fecha: {fecha_str}, Hora: {hora_str}")
-        
-        if not nombre_paciente or not fecha_str or not hora_str:
+    if request.method == 'POST':
+        try:
+            nombre_paciente = request.POST.get('nombre_paciente')
+            email_padres = request.POST.get('email_padres')
+            fecha_str = request.POST.get('fecha')
+            hora_str = request.POST.get('hora')
+            notas = request.POST.get('notas', '')
+            foto_paciente = request.FILES.get('foto_paciente')
+            
+            # Validaciones
+            errors = {}
+            if not nombre_paciente:
+                errors['nombre'] = 'El nombre del paciente es requerido'
+            if not email_padres:
+                errors['email'] = 'El correo electrónico es requerido'
+            if not fecha_str:
+                errors['fecha'] = 'La fecha es requerida'
+            if not hora_str:
+                errors['hora'] = 'La hora es requerida'
+            
+            if errors:
+                return JsonResponse({'success': False, 'errors': errors}, status=400)
+            
+            # Convertir strings a objetos date y time
+            try:
+                fecha_obj = datetime.strptime(fecha_str, '%Y-%m-%d').date()
+                hora_obj = datetime.strptime(hora_str, '%H:%M').time()
+            except ValueError as e:
+                return JsonResponse({
+                    'success': False,
+                    'error': f'Formato de fecha u hora inválido: {str(e)}'
+                }, status=400)
+            
+            # Crear la cita
+            cita = Cita.objects.create(
+                usuario=request.user,
+                nombre_paciente=nombre_paciente,
+                email_padres=email_padres,
+                fecha=fecha_obj,
+                hora=hora_obj,
+                notas=notas,
+                foto_paciente=foto_paciente
+            )
+            
+            # Enviar correos
+            email_doctor_enviado = enviar_correo_cita_doctor(request.user, cita)
+            email_padres_enviado = enviar_correo_cita_padres(email_padres, cita, request.user)
+            
+            # Mensaje de respuesta
+            mensaje = 'Cita agendada exitosamente'
+            if email_doctor_enviado and email_padres_enviado:
+                mensaje += '. Se han enviado las confirmaciones por correo.'
+            elif email_doctor_enviado or email_padres_enviado:
+                mensaje += '. Algunos correos no pudieron ser enviados.'
+            else:
+                mensaje += ', pero hubo un error al enviar las confirmaciones por correo.'
+            
             return JsonResponse({
-                'success': False, 
-                'error': 'Faltan campos requeridos'
-            }, status=400)
-        
-        # Convertir strings a objetos date y time
-        from datetime import datetime
-        fecha = datetime.strptime(fecha_str, '%Y-%m-%d').date()
-        hora = datetime.strptime(hora_str, '%H:%M').time()
-        
-        cita = Cita.objects.create(
-            usuario=request.user,
-            nombre_paciente=nombre_paciente,
-            fecha=fecha,
-            hora=hora,
-            notas=notas
-        )
-        
-        print(f"Cita creada con ID: {cita.id}")
-        
-        # Manejar archivo de foto si existe
-        if 'foto_paciente' in request.FILES:
-            cita.foto_paciente = request.FILES['foto_paciente']
-            cita.save()
-            print("Foto agregada exitosamente")
-        
-        return JsonResponse({
-            'success': True,
-            'cita': {
-                'id': cita.id,
-                'nombre_paciente': cita.nombre_paciente,
-                'fecha': cita.fecha.isoformat(),  # Ahora sí es un objeto date
-                'hora': cita.hora.strftime('%H:%M'),  # Ahora sí es un objeto time
-                'foto_paciente': cita.foto_paciente.url if cita.foto_paciente else None
-            }
-        })
-    except ValueError as e:
-        print(f"=== ERROR de formato en crear_cita: {str(e)} ===")
-        return JsonResponse({
-            'success': False, 
-            'error': f'Formato de fecha u hora inválido: {str(e)}'
-        }, status=400)
-    except Exception as e:
-        print(f"=== ERROR en crear_cita: {str(e)} ===")
-        import traceback
-        traceback.print_exc()
-        return JsonResponse({
-            'success': False, 
-            'error': str(e)
-        }, status=400)
+                'success': True,
+                'message': mensaje,
+                'cita_id': cita.id
+            })
+            
+        except Exception as e:
+            logger.exception(f"Error al crear cita: {str(e)}")
+            return JsonResponse({
+                'success': False,
+                'error': f'Error al crear la cita: {str(e)}'
+            }, status=500)
+    
+    return JsonResponse({'success': False, 'error': 'Método no permitido'}, status=405)
 
 @login_required
 @require_http_methods(["DELETE"])
@@ -472,3 +484,260 @@ def marcar_cita_completada(request, cita_id):
         return JsonResponse({'success': True, 'completada': cita.completada})
     except Cita.DoesNotExist:
         return JsonResponse({'success': False, 'error': 'Cita no encontrada'}, status=404)
+
+
+@method_decorator(login_required, name='dispatch')
+class EditarNinoView(UpdateView):
+    """Vista para editar los datos de un niño asociado a un profesional"""
+    model = Nino
+    form_class = NinoForm
+    template_name = 'nino/editar_nino.html'
+    success_url = reverse_lazy('core:lista_ninos')
+
+    def get_object(self, queryset=None):
+        """Asegurarse de que el profesional solo pueda editar sus propios niños."""
+        return get_object_or_404(Nino, pk=self.kwargs['pk'], profesional=self.request.user)
+
+    def form_valid(self, form):
+        messages.success(self.request, 'El niño ha sido actualizado exitosamente.')
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, 'Hubo un error al actualizar el niño. Por favor, verifica los datos ingresados.')
+        return super().form_invalid(form)
+
+    def get_initial(self):
+        """Asegurar que los valores iniciales incluyan la fecha de nacimiento."""
+        initial = super().get_initial()
+        nino = self.get_object()
+        initial['fecha_nacimiento'] = nino.fecha_nacimiento.strftime('%Y-%m-%d')
+        return initial
+
+
+@method_decorator(login_required, name='dispatch')
+class ObtenerDatosNinoView(View):
+    """Vista para obtener datos de un niño en formato JSON"""
+    
+    def get(self, request, pk):
+        """Devuelve los datos de un niño en formato JSON."""
+        try:
+            nino = Nino.objects.get(pk=pk, profesional=request.user)
+            return JsonResponse({
+                'success': True,
+                'nino': {
+                    'id': nino.id,
+                    'nombres': nino.nombres,
+                    'apellidos': nino.apellidos,
+                    'fecha_nacimiento': nino.fecha_nacimiento.strftime('%Y-%m-%d'),
+                    'edad': nino.edad,
+                    'genero': nino.genero,
+                    'idioma_nativo': nino.idioma_nativo,
+                    'imagen': nino.imagen.url if nino.imagen else None,
+                }
+            })
+        except Nino.DoesNotExist:
+            return JsonResponse({'success': False, 'error': 'Niño no encontrado.'}, status=404)
+
+
+@method_decorator(login_required, name='dispatch')
+class ListaNinosView(ListView):
+    """Vista para listar todos los niños asociados al profesional"""
+    model = Nino
+    template_name = 'nino/lista_ninos.html'
+    context_object_name = 'ninos'
+    
+    def get_queryset(self):
+        """Filtrar solo los niños del profesional actual"""
+        return Nino.objects.filter(profesional=self.request.user).order_by('-fecha_registro')
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update({
+            'page_title': 'Lista de Niños - DislexIA',
+            'active_section': 'lista_ninos',
+        })
+        return context
+
+
+@method_decorator(login_required, name='dispatch')
+class EliminarNinoView(DeleteView):
+    """Vista para eliminar un niño con confirmación"""
+    model = Nino
+    template_name = 'nino/confirmar_eliminar_nino.html'
+    success_url = reverse_lazy('core:lista_ninos')
+    
+    def get_object(self, queryset=None):
+        """Asegurarse de que el profesional solo pueda eliminar sus propios niños."""
+        return get_object_or_404(Nino, pk=self.kwargs['pk'], profesional=self.request.user)
+    
+    def delete(self, request, *args, **kwargs):
+        """Personalizar el mensaje de éxito"""
+        nino = self.get_object()
+        nombre_completo = nino.nombre_completo
+        response = super().delete(request, *args, **kwargs)
+        messages.success(self.request, f'El niño {nombre_completo} ha sido eliminado exitosamente.')
+        return response
+
+
+@login_required
+@require_http_methods(["POST"])
+def agregar_nino_ajax(request):
+    """Agregar un niño mediante AJAX"""
+    try:
+        logger.info(f"=== Iniciando agregar_nino_ajax para usuario {request.user} ===")
+        logger.info(f"POST data: {request.POST}")
+        logger.info(f"FILES: {request.FILES}")
+        
+        form = NinoForm(request.POST, request.FILES)
+        
+        if form.is_valid():
+            nino = form.save(commit=False)
+            nino.profesional = request.user
+            nino.save()
+            
+            logger.info(f"Niño guardado exitosamente: {nino.id} - {nino.nombre_completo}")
+            
+            # Formatear fecha de nacimiento
+            from datetime import datetime
+            fecha_formatted = nino.fecha_nacimiento.strftime('%d/%m/%Y')
+            
+            return JsonResponse({
+                'success': True,
+                'message': f'El niño {nino.nombre_completo} ha sido agregado exitosamente.',
+                'nino': {
+                    'id': nino.id,
+                    'nombres': nino.nombres,
+                    'apellidos': nino.apellidos,
+                    'nombre_completo': nino.nombre_completo,
+                    'edad': nino.edad,
+                    'genero': nino.genero,
+                    'idioma_nativo': nino.idioma_nativo,
+                    'fecha_nacimiento_formatted': fecha_formatted,
+                    'imagen_url': nino.imagen.url if nino.imagen else None
+                }
+            })
+        else:
+            logger.error(f"Errores de validación del formulario: {form.errors}")
+            logger.error(f"Errores por campo: {dict(form.errors)}")
+            
+            return JsonResponse({
+                'success': False,
+                'error': 'Error de validación. Por favor revisa los campos.',
+                'errors': dict(form.errors)
+            }, status=400)
+            
+    except Exception as e:
+        logger.exception(f"Error inesperado en agregar_nino_ajax: {str(e)}")
+        return JsonResponse({
+            'success': False,
+            'error': f'Error del servidor: {str(e)}'
+        }, status=500)
+
+@login_required
+def get_notificaciones(request):
+    """Obtener notificaciones del usuario"""
+    try:
+        ahora = datetime.now()
+        hoy = date.today()
+        manana = hoy + timedelta(days=1)
+        
+        # 1. Citas próximas (próximas 24 horas)
+        citas_proximas = Cita.objects.filter(
+            usuario=request.user,
+            fecha__gte=hoy,
+            fecha__lte=manana,
+            completada=False
+        ).order_by('fecha', 'hora')[:5]
+        
+        # 2. Citas de hoy pendientes
+        citas_hoy = Cita.objects.filter(
+            usuario=request.user,
+            fecha=hoy,
+            completada=False
+        ).count()
+        
+        # 3. Citas vencidas (pasadas y no completadas)
+        citas_vencidas = Cita.objects.filter(
+            usuario=request.user,
+            fecha__lt=hoy,
+            completada=False
+        ).count()
+        
+        # 4. Total de pacientes registrados
+        total_pacientes = Nino.objects.filter(
+            profesional=request.user,
+            activo=True
+        ).count()
+        
+        notificaciones = []
+        
+        # Agregar notificaciones de citas próximas
+        for cita in citas_proximas:
+            hora_cita = datetime.combine(cita.fecha, cita.hora)
+            tiempo_restante = hora_cita - ahora
+            
+            if tiempo_restante.total_seconds() > 0:
+                horas_restantes = int(tiempo_restante.total_seconds() / 3600)
+                
+                if horas_restantes <= 1:
+                    mensaje = f"Cita con {cita.nombre_paciente} en menos de 1 hora"
+                    tipo = 'urgente'
+                elif horas_restantes <= 3:
+                    mensaje = f"Cita con {cita.nombre_paciente} en {horas_restantes} horas"
+                    tipo = 'advertencia'
+                else:
+                    mensaje = f"Cita con {cita.nombre_paciente} mañana a las {cita.hora.strftime('%H:%M')}"
+                    tipo = 'info'
+                
+                notificaciones.append({
+                    'id': cita.id,
+                    'tipo': tipo,
+                    'mensaje': mensaje,
+                    'fecha': cita.fecha.isoformat(),
+                    'hora': cita.hora.strftime('%H:%M'),
+                    'paciente': cita.nombre_paciente,
+                    'foto': cita.foto_paciente.url if cita.foto_paciente else None,
+                    'icono': 'fa-clock',
+                    'tiempo': f"{horas_restantes}h"
+                })
+        
+        # Notificación de citas vencidas
+        if citas_vencidas > 0:
+            notificaciones.append({
+                'tipo': 'error',
+                'mensaje': f'Tienes {citas_vencidas} cita{"s" if citas_vencidas > 1 else ""} pendiente{"s" if citas_vencidas > 1 else ""} de completar',
+                'icono': 'fa-exclamation-triangle',
+                'accion': 'revisar_vencidas'
+            })
+        
+        # Notificación resumen del día
+        if citas_hoy > 0:
+            notificaciones.append({
+                'tipo': 'info',
+                'mensaje': f'Tienes {citas_hoy} cita{"s" if citas_hoy > 1 else ""} programada{"s" if citas_hoy > 1 else ""} para hoy',
+                'icono': 'fa-calendar-check',
+                'accion': 'ver_calendario'
+            })
+        
+        # Notificación de bienvenida si es nuevo usuario
+        if total_pacientes == 0:
+            notificaciones.append({
+                'tipo': 'info',
+                'mensaje': '¡Bienvenido! Comienza agregando tus primeros pacientes',
+                'icono': 'fa-user-plus',
+                'accion': 'agregar_paciente'
+            })
+        
+        return JsonResponse({
+            'success': True,
+            'notificaciones': notificaciones,
+            'total': len(notificaciones),
+            'no_leidas': len([n for n in notificaciones if n.get('tipo') in ['urgente', 'error']])
+        })
+        
+    except Exception as e:
+        logger.exception(f"Error al obtener notificaciones: {str(e)}")
+        return JsonResponse({
+            'success': False,
+            'error': str(e)
+        }, status=500)

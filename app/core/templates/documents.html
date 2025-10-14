@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load i18n %}
 
 {% block title %}{{ page_title }}{% endblock %}
 
@@ -65,15 +66,15 @@
         <div class="mb-8 fade-in">
             <div class="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
                 <div>
-                    <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">Resource Library</h1>
-                    <p class="text-gray-600 dark:text-gray-400">Download guides, worksheets, and materials to support dyslexia learning</p>
+                    <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">{% trans "Biblioteca de Recursos" %}</h1>
+                    <p class="text-gray-600 dark:text-gray-400">{% trans "Descarga guías, hojas de trabajo y materiales para apoyar el aprendizaje con dislexia" %}</p>
                 </div>
                 
                 <div class="flex items-center gap-2 px-4 py-2 bg-purple-50 dark:bg-purple-900/30 border border-purple-200 dark:border-purple-800 rounded-xl">
                     <svg class="w-5 h-5 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                     </svg>
-                    <span class="text-sm font-medium text-purple-700 dark:text-purple-300">48 Resources Available</span>
+                    <span class="text-sm font-medium text-purple-700 dark:text-purple-300">{% trans "48 Recursos Disponibles" %}</span>
                 </div>
             </div>
 
@@ -86,25 +87,25 @@
                     <input 
                         type="text" 
                         id="search-input"
-                        placeholder="Search resources..." 
+                        placeholder="{% trans 'Buscar recursos...' %}" 
                         class="search-input w-full pl-12 pr-4 py-3 border border-gray-200 dark:border-gray-700 rounded-xl text-sm focus:outline-none focus:border-purple-300 transition-all bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
                 </div>
                 
                 <div class="flex gap-2 overflow-x-auto pb-2">
                     <button class="filter-btn active px-5 py-3 rounded-xl text-sm font-semibold whitespace-nowrap bg-white dark:bg-gray-800 text-gray-900 dark:text-white" data-category="all">
-                        All Resources
+                        {% trans "Todos los Recursos" %}
                     </button>
                     <button class="filter-btn px-5 py-3 rounded-xl text-sm font-semibold text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 whitespace-nowrap bg-white dark:bg-gray-800" data-category="guides">
-                        Guides
+                        {% trans "Guías" %}
                     </button>
                     <button class="filter-btn px-5 py-3 rounded-xl text-sm font-semibold text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 whitespace-nowrap bg-white dark:bg-gray-800" data-category="worksheets">
-                        Worksheets
+                        {% trans "Hojas de Trabajo" %}
                     </button>
                     <button class="filter-btn px-5 py-3 rounded-xl text-sm font-semibold text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 whitespace-nowrap bg-white dark:bg-gray-800" data-category="activities">
-                        Activities
+                        {% trans "Actividades" %}
                     </button>
                     <button class="filter-btn px-5 py-3 rounded-xl text-sm font-semibold text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 whitespace-nowrap bg-white dark:bg-gray-800" data-category="tools">
-                        Tools
+                        {% trans "Herramientas" %}
                     </button>
                 </div>
             </div>
@@ -116,8 +117,8 @@
                 <!-- Featured Resources -->
                 <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-8">
                     <div class="flex items-center justify-between mb-6">
-                        <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Featured Resources</h2>
-                        <span class="text-sm text-purple-600 dark:text-purple-400 font-medium">Most Popular</span>
+                        <h2 class="text-2xl font-bold text-gray-900 dark:text-white">{% trans "Recursos Destacados" %}</h2>
+                        <span class="text-sm text-purple-600 dark:text-purple-400 font-medium">{% trans "Más Populares" %}</span>
                     </div>
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="resources-container">
@@ -129,11 +130,11 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                                     </svg>
                                 </div>
-                                <span class="category-badge bg-purple-500 text-white text-xs font-bold px-3 py-1.5 rounded-full">Guide</span>
+                                <span class="category-badge bg-purple-500 text-white text-xs font-bold px-3 py-1.5 rounded-full">{% trans "Guía" %}</span>
                             </div>
                             
-                            <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">Complete Parent Guide</h3>
-                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">Comprehensive guide for parents to support children with dyslexia at home.</p>
+                            <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">{% trans "Guía Completa para Padres" %}</h3>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">{% trans "Guía completa para que los padres apoyen a los niños con dislexia en casa." %}</p>
                             
                             <div class="flex items-center gap-4 mb-4 text-xs text-gray-600 dark:text-gray-400">
                                 <span class="flex items-center gap-1">
@@ -160,7 +161,7 @@
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                                 </svg>
-                                Download
+                                {% trans "Descargar" %}
                             </button>
                         </div>
 
@@ -172,11 +173,11 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                     </svg>
                                 </div>
-                                <span class="category-badge bg-blue-500 text-white text-xs font-bold px-3 py-1.5 rounded-full">Worksheet</span>
+                                <span class="category-badge bg-blue-500 text-white text-xs font-bold px-3 py-1.5 rounded-full">{% trans "Hoja de Trabajo" %}</span>
                             </div>
                             
-                            <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">Reading Practice Pack</h3>
-                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">20 worksheets designed to improve reading comprehension and fluency.</p>
+                            <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">{% trans "Paquete de Práctica de Lectura" %}</h3>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">{% trans "20 hojas de trabajo diseñadas para mejorar la comprensión y fluidez lectora." %}</p>
                             
                             <div class="flex items-center gap-4 mb-4 text-xs text-gray-600 dark:text-gray-400">
                                 <span class="flex items-center gap-1">
@@ -203,7 +204,7 @@
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                                 </svg>
-                                Download
+                                {% trans "Descargar" %}
                             </button>
                         </div>
 
@@ -215,11 +216,11 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                     </svg>
                                 </div>
-                                <span class="category-badge bg-green-500 text-white text-xs font-bold px-3 py-1.5 rounded-full">Activity</span>
+                                <span class="category-badge bg-green-500 text-white text-xs font-bold px-3 py-1.5 rounded-full">{% trans "Actividad" %}</span>
                             </div>
                             
-                            <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">Fun Learning Games</h3>
-                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">Interactive games and activities to make learning enjoyable and engaging.</p>
+                            <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">{% trans "Juegos de Aprendizaje Divertidos" %}</h3>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">{% trans "Juegos y actividades interactivas para hacer el aprendizaje divertido y atractivo." %}</p>
                             
                             <div class="flex items-center gap-4 mb-4 text-xs text-gray-600 dark:text-gray-400">
                                 <span class="flex items-center gap-1">
@@ -246,7 +247,7 @@
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                                 </svg>
-                                Download
+                                {% trans "Descargar" %}
                             </button>
                         </div>
 
@@ -258,11 +259,11 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
                                     </svg>
                                 </div>
-                                <span class="category-badge bg-orange-500 text-white text-xs font-bold px-3 py-1.5 rounded-full">Tool</span>
+                                <span class="category-badge bg-orange-500 text-white text-xs font-bold px-3 py-1.5 rounded-full">{% trans "Herramienta" %}</span>
                             </div>
                             
-                            <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">Progress Tracker</h3>
-                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">Template to track learning progress and celebrate achievements over time.</p>
+                            <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">{% trans "Rastreador de Progreso" %}</h3>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">{% trans "Plantilla para rastrear el progreso de aprendizaje y celebrar logros a lo largo del tiempo." %}</p>
                             
                             <div class="flex items-center gap-4 mb-4 text-xs text-gray-600 dark:text-gray-400">
                                 <span class="flex items-center gap-1">
@@ -289,7 +290,7 @@
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                                 </svg>
-                                Download
+                                {% trans "Descargar" %}
                             </button>
                         </div>
 
@@ -301,11 +302,11 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                                     </svg>
                                 </div>
-                                <span class="category-badge bg-pink-500 text-white text-xs font-bold px-3 py-1.5 rounded-full">Guide</span>
+                                <span class="category-badge bg-pink-500 text-white text-xs font-bold px-3 py-1.5 rounded-full">{% trans "Guía" %}</span>
                             </div>
                             
-                            <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">Teacher's Handbook</h3>
-                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">Essential strategies for educators working with dyslexic students.</p>
+                            <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">{% trans "Manual del Docente" %}</h3>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">{% trans "Estrategias esenciales para educadores que trabajan con estudiantes disléxicos." %}</p>
                             
                             <div class="flex items-center gap-4 mb-4 text-xs text-gray-600 dark:text-gray-400">
                                 <span class="flex items-center gap-1">
@@ -332,7 +333,7 @@
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                                 </svg>
-                                Download
+                                {% trans "Descargar" %}
                             </button>
                         </div>
 
@@ -344,11 +345,11 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                     </svg>
                                 </div>
-                                <span class="category-badge bg-indigo-500 text-white text-xs font-bold px-3 py-1.5 rounded-full">Worksheet</span>
+                                <span class="category-badge bg-indigo-500 text-white text-xs font-bold px-3 py-1.5 rounded-full">{% trans "Hoja de Trabajo" %}</span>
                             </div>
                             
-                            <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">Spelling Exercises</h3>
-                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">Structured spelling activities to build confidence and accuracy.</p>
+                            <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">{% trans "Ejercicios de Ortografía" %}</h3>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">{% trans "Actividades de ortografía estructuradas para desarrollar confianza y precisión." %}</p>
                             
                             <div class="flex items-center gap-4 mb-4 text-xs text-gray-600 dark:text-gray-400">
                                 <span class="flex items-center gap-1">
@@ -375,7 +376,7 @@
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                                 </svg>
-                                Download
+                                {% trans "Descargar" %}
                             </button>
                         </div>
                     </div>
@@ -383,7 +384,7 @@
 
                 <!-- Additional Resources -->
                 <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-8">
-                    <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">More Resources</h2>
+                    <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">{% trans "Más Recursos" %}</h2>
                     
                     <div class="space-y-4">
                         <!-- List Item 1 -->
@@ -394,11 +395,11 @@
                                 </svg>
                             </div>
                             <div class="flex-1">
-                                <h3 class="font-semibold text-gray-900 dark:text-white mb-1">Memory Techniques Guide</h3>
-                                <p class="text-xs text-gray-500 dark:text-gray-400">Strategies to improve memory and retention • PDF • 1.2 MB</p>
+                                <h3 class="font-semibold text-gray-900 dark:text-white mb-1">{% trans "Guía de Técnicas de Memoria" %}</h3>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">{% trans "Estrategias para mejorar la memoria y retención • PDF • 1.2 MB" %}</p>
                             </div>
                             <button class="px-4 py-2 bg-purple-500 hover:bg-purple-600 text-white text-sm font-semibold rounded-lg transition-all">
-                                Download
+                                {% trans "Descargar" %}
                             </button>
                         </div>
 
@@ -410,11 +411,11 @@
                                 </svg>
                             </div>
                             <div class="flex-1">
-                                <h3 class="font-semibold text-gray-900 dark:text-white mb-1">Phonics Flashcards</h3>
-                                <p class="text-xs text-gray-500 dark:text-gray-400">Printable flashcards for phonics practice • PDF • 2.1 MB</p>
+                                <h3 class="font-semibold text-gray-900 dark:text-white mb-1">{% trans "Tarjetas de Fonética" %}</h3>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">{% trans "Tarjetas imprimibles para práctica de fonética • PDF • 2.1 MB" %}</p>
                             </div>
                             <button class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white text-sm font-semibold rounded-lg transition-all">
-                                Download
+                                {% trans "Descargar" %}
                             </button>
                         </div>
 
@@ -426,11 +427,11 @@
                                 </svg>
                             </div>
                             <div class="flex-1">
-                                <h3 class="font-semibold text-gray-900 dark:text-white mb-1">Study Tips Booklet</h3>
-                                <p class="text-xs text-gray-500 dark:text-gray-400">Effective study strategies for students • PDF • 1.7 MB</p>
+                                <h3 class="font-semibold text-gray-900 dark:text-white mb-1">{% trans "Folleto de Consejos de Estudio" %}</h3>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">{% trans "Estrategias de estudio efectivas para estudiantes • PDF • 1.7 MB" %}</p>
                             </div>
                             <button class="px-4 py-2 bg-green-500 hover:bg-green-600 text-white text-sm font-semibold rounded-lg transition-all">
-                                Download
+                                {% trans "Descargar" %}
                             </button>
                         </div>
                     </div>
@@ -441,7 +442,7 @@
             <div class="lg:col-span-1 space-y-6">
                 <!-- Quick Stats -->
                 <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6">
-                    <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4">Library Statistics</h3>
+                    <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4">{% trans "Estadísticas de la Biblioteca" %}</h3>
                     
                     <div class="space-y-4">
                         <div class="flex items-center justify-between py-3 border-b border-gray-100 dark:border-gray-700">
@@ -451,7 +452,7 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                                     </svg>
                                 </div>
-                                <span class="text-sm text-gray-600 dark:text-gray-400">Guides</span>
+                                <span class="text-sm text-gray-600 dark:text-gray-400">{% trans "Guías" %}</span>
                             </div>
                             <span class="text-lg font-bold text-gray-900 dark:text-white">12</span>
                         </div>
@@ -463,7 +464,7 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                     </svg>
                                 </div>
-                                <span class="text-sm text-gray-600 dark:text-gray-400">Worksheets</span>
+                                <span class="text-sm text-gray-600 dark:text-gray-400">{% trans "Hojas de Trabajo" %}</span>
                             </div>
                             <span class="text-lg font-bold text-gray-900 dark:text-white">18</span>
                         </div>
@@ -475,7 +476,7 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                     </svg>
                                 </div>
-                                <span class="text-sm text-gray-600 dark:text-gray-400">Activities</span>
+                                <span class="text-sm text-gray-600 dark:text-gray-400">{% trans "Actividades" %}</span>
                             </div>
                             <span class="text-lg font-bold text-gray-900 dark:text-white">10</span>
                         </div>
@@ -487,7 +488,7 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
                                     </svg>
                                 </div>
-                                <span class="text-sm text-gray-600 dark:text-gray-400">Tools</span>
+                                <span class="text-sm text-gray-600 dark:text-gray-400">{% trans "Herramientas" %}</span>
                             </div>
                             <span class="text-lg font-bold text-gray-900 dark:text-white">8</span>
                         </div>
@@ -496,7 +497,7 @@
 
                 <!-- Popular Downloads -->
                 <div class="bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl p-6 text-white shadow-lg">
-                    <h3 class="text-lg font-bold mb-4">Most Downloaded</h3>
+                    <h3 class="text-lg font-bold mb-4">{% trans "Más Descargados" %}</h3>
                     
                     <div class="space-y-3">
                         <div class="flex items-center gap-3 p-3 bg-white/10 rounded-lg backdrop-blur">
@@ -504,8 +505,8 @@
                                 <span class="text-sm font-bold">1</span>
                             </div>
                             <div class="flex-1 min-w-0">
-                                <p class="text-sm font-semibold truncate">Parent Guide</p>
-                                <p class="text-xs opacity-75">3.2k downloads</p>
+                                <p class="text-sm font-semibold truncate">{% trans "Guía para Padres" %}</p>
+                                <p class="text-xs opacity-75">{% trans "3.2k descargas" %}</p>
                             </div>
                         </div>
 
@@ -514,8 +515,8 @@
                                 <span class="text-sm font-bold">2</span>
                             </div>
                             <div class="flex-1 min-w-0">
-                                <p class="text-sm font-semibold truncate">Reading Pack</p>
-                                <p class="text-xs opacity-75">2.8k downloads</p>
+                                <p class="text-sm font-semibold truncate">{% trans "Paquete de Lectura" %}</p>
+                                <p class="text-xs opacity-75">{% trans "2.8k descargas" %}</p>
                             </div>
                         </div>
 
@@ -524,8 +525,8 @@
                                 <span class="text-sm font-bold">3</span>
                             </div>
                             <div class="flex-1 min-w-0">
-                                <p class="text-sm font-semibold truncate">Fun Games</p>
-                                <p class="text-xs opacity-75">2.5k downloads</p>
+                                <p class="text-sm font-semibold truncate">{% trans "Juegos Divertidos" %}</p>
+                                <p class="text-xs opacity-75">{% trans "2.5k descargas" %}</p>
                             </div>
                         </div>
                     </div>
@@ -539,10 +540,10 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" />
                             </svg>
                         </div>
-                        <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">Need Help?</h3>
-                        <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">Can't find what you're looking for? Contact our support team.</p>
+                        <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">{% trans "¿Necesitas Ayuda?" %}</h3>
+                        <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">{% trans "¿No encuentras lo que buscas? Contacta a nuestro equipo de soporte." %}</p>
                         <a href="#support" class="inline-block px-6 py-2.5 bg-purple-500 hover:bg-purple-600 text-white font-semibold rounded-xl transition-all">
-                            Contact Support
+                            {% trans "Contactar Soporte" %}
                         </a>
                     </div>
                 </div>
@@ -554,10 +555,10 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                         <div>
-                            <h4 class="font-semibold text-gray-900 dark:text-white mb-1">Request a Resource</h4>
-                            <p class="text-xs text-gray-600 dark:text-gray-400 mb-3">Don't see what you need? Let us know and we'll create it.</p>
+                            <h4 class="font-semibold text-gray-900 dark:text-white mb-1">{% trans "Solicitar un Recurso" %}</h4>
+                            <p class="text-xs text-gray-600 dark:text-gray-400 mb-3">{% trans "¿No ves lo que necesitas? Háznoslo saber y lo crearemos." %}</p>
                             <button class="text-sm font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300">
-                                Submit Request →
+                                {% trans "Enviar Solicitud" %} →
                             </button>
                         </div>
                     </div>
@@ -637,7 +638,7 @@
                         <svg class="w-5 h-5 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                         </svg>
-                        Downloading...
+                        {% trans "Descargando..." %}
                     `;
                     
                     // Simulate download
@@ -646,7 +647,7 @@
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                             </svg>
-                            Downloaded!
+                            {% trans "¡Descargado!" %}
                         `;
                         this.classList.remove('bg-purple-500', 'hover:bg-purple-600');
                         this.classList.add('bg-green-500');

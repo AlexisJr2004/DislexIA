@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load i18n %}
 
 {% block title %}{{ page_title }}{% endblock %}
 
@@ -24,8 +25,8 @@
         <div class="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
             <!-- Título -->
             <div>
-                <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">Panel Administrativo</h1>
-                <p class="text-gray-600 dark:text-gray-400">Resumen de actividades y rendimiento</p>
+                <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">{% trans "Panel Administrativo" %}</h1>
+                <p class="text-gray-600 dark:text-gray-400">{% trans "Resumen de actividades y rendimiento" %}</p>
             </div>
         </div>
         
@@ -41,10 +42,10 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                             </svg>
-                            <h3 class="font-semibold text-gray-900 dark:text-white">Training Analysis</h3>
+                            <h3 class="font-semibold text-gray-900 dark:text-white">{% trans "Análisis de Entrenamiento" %}</h3>
                         </div>
                         <button class="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white px-3 py-1.5 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
-                            Details
+                            {% trans "Detalles" %}
                         </button>
                     </div>
                     <hr class="bg-gray-400 dark:bg-gray-700 my-4">
@@ -54,8 +55,8 @@
                         <!-- Left Side Info -->
                         <div class="space-y-4">
                             <div>
-                                <p class="text-lg font-bold text-gray-900 dark:text-white">12 courses</p>
-                                <p class="text-sm text-gray-500 dark:text-gray-400">Completed in this quarter</p>
+                                <p class="text-lg font-bold text-gray-900 dark:text-white">{% trans "12 cursos" %}</p>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">{% trans "Completados en este trimestre" %}</p>
                             </div>
 
                             <!-- Attendees -->
@@ -68,7 +69,7 @@
                                     <img src="https://i.pravatar.cc/150?img=12" alt="user3"
                                         class="w-7 h-7 rounded-full border-2 border-white dark:border-gray-900 object-cover">
                                 </div>
-                                <p class="text-sm text-gray-600 dark:text-gray-400">26 Attended</p>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">{% trans "26 Asistieron" %}</p>
                             </div>
                         </div>
 
@@ -101,10 +102,10 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                             </svg>
-                            <h3 class="font-semibold text-gray-900 dark:text-white">Course Progress</h3>
+                            <h3 class="font-semibold text-gray-900 dark:text-white">{% trans "Progreso del Curso" %}</h3>
                         </div>
                         <button class="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white px-3 py-1.5 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
-                            See all
+                            {% trans "Ver todos" %}
                         </button>
                     </div>
                     <hr class="bg-gray-400 dark:bg-gray-700 my-4">
@@ -128,12 +129,11 @@
 
                         <!-- Texto del Curso -->
                         <div class="flex-1 min-w-0">
-                            <h4 class="text-base font-semibold text-gray-900 dark:text-white mb-1">User experience Training</h4>
-                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-2 leading-relaxed">Designed for frontend developer to
-                                understand user behaviour.</p>
+                            <h4 class="text-base font-semibold text-gray-900 dark:text-white mb-1">{% trans "Capacitación en Experiencia de Usuario" %}</h4>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-2 leading-relaxed">{% trans "Diseñado para desarrolladores frontend para comprender el comportamiento del usuario." %}</p>
                             <a href="#"
                                 class="text-sm font-medium text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 underline underline-offset-2">
-                                Resume Course
+                                {% trans "Reanudar Curso" %}
                             </a>
                         </div>
                     </div>
@@ -148,22 +148,22 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
                             </svg>
-                            <h3 class="font-semibold text-gray-900 dark:text-white text-base">Employee Spotlight</h3>
+                            <h3 class="font-semibold text-gray-900 dark:text-white text-base">{% trans "Destacados del Equipo" %}</h3>
                         </div>
                         <button class="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
                             </svg>
-                            share
+                            {% trans "compartir" %}
                         </button>
                     </div>
 
                     <!-- Tabs -->
                     <div class="flex gap-2 mb-5 bg-gray-100 dark:bg-gray-800 p-1 rounded-lg">
-                        <button class="flex-1 py-2 px-4 text-sm font-medium text-gray-900 dark:text-white bg-white dark:bg-gray-700 rounded-md shadow-sm">Overview</button>
-                        <button class="flex-1 py-2 px-4 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white rounded-md">Comments</button>
-                        <button class="flex-1 py-2 px-4 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white rounded-md">Rewards</button>
+                        <button class="flex-1 py-2 px-4 text-sm font-medium text-gray-900 dark:text-white bg-white dark:bg-gray-700 rounded-md shadow-sm">{% trans "Vista General" %}</button>
+                        <button class="flex-1 py-2 px-4 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white rounded-md">{% trans "Comentarios" %}</button>
+                        <button class="flex-1 py-2 px-4 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white rounded-md">{% trans "Recompensas" %}</button>
                     </div>
 
                     <!-- Comments List -->
@@ -206,7 +206,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                         </svg>
-                        Comment
+                        {% trans "Comentar" %}
                     </button>
                 </div>
             </div>
@@ -222,7 +222,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
-                            <h3 class="font-semibold text-gray-900 dark:text-white">Time Tracker</h3>
+                            <h3 class="font-semibold text-gray-900 dark:text-white">{% trans "Rastreador de Tiempo" %}</h3>
                         </div>
 
                         <button class="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
@@ -230,7 +230,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
-                            History
+                            {% trans "Historial" %}
                         </button>
                     </div>
                     <hr class="bg-gray-400 dark:bg-gray-700 my-4">
@@ -243,7 +243,7 @@
                                     <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
                                 </svg>
                             </div>
-                            <span class="text-sm font-medium text-gray-700 dark:text-gray-300 flex-1">App Design</span>
+                            <span class="text-sm font-medium text-gray-700 dark:text-gray-300 flex-1">{% trans "Diseño de Aplicación" %}</span>
                             <svg class="w-5 h-5 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                             </svg>
@@ -252,7 +252,7 @@
 
                     <!-- Timer Display -->
                     <div class="text-center mb-6">
-                        <p class="text-xs text-gray-500 dark:text-gray-400 mb-3">Awaiting</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mb-3">{% trans "En espera" %}</p>
                         <div class="flex items-center justify-center gap-2 mb-4">
                             <span class="text-5xl font-bold text-gray-900 dark:text-white">00</span>
                             <span class="text-3xl font-bold text-gray-400 dark:text-gray-600">:</span>
@@ -264,13 +264,13 @@
                             <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24">
                                 <path d="M8 5v14l11-7z" />
                             </svg>
-                            Start Time Tracker
+                            {% trans "Iniciar Rastreador de Tiempo" %}
                         </button>
                     </div>
 
                     <!-- Previous Tasks -->
                     <div class="border-t border-gray-200 dark:border-gray-700 pt-5">
-                        <p class="text-xs font-medium text-gray-500 dark:text-gray-400 mb-4">Previous Tasks</p>
+                        <p class="text-xs font-medium text-gray-500 dark:text-gray-400 mb-4">{% trans "Tareas Anteriores" %}</p>
 
                         <div class="space-y-4">
                             <!-- Task 1 -->
@@ -282,7 +282,7 @@
                                     </svg>
                                 </div>
                                 <div class="flex-1 min-w-0">
-                                    <p class="text-sm font-semibold text-gray-900 dark:text-white">Loom recording</p>
+                                    <p class="text-sm font-semibold text-gray-900 dark:text-white">{% trans "Grabación de Loom" %}</p>
                                     <p class="text-xs text-gray-500 dark:text-gray-400">03:45</p>
                                 </div>
                                 <button class="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-400">
@@ -301,7 +301,7 @@
                                     </svg>
                                 </div>
                                 <div class="flex-1 min-w-0">
-                                    <p class="text-sm font-semibold text-gray-900 dark:text-white">Wireframe website</p>
+                                    <p class="text-sm font-semibold text-gray-900 dark:text-white">{% trans "Wireframe del sitio web" %}</p>
                                     <p class="text-xs text-gray-500 dark:text-gray-400">02:45:40</p>
                                 </div>
                                 <button class="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-400">
@@ -323,10 +323,10 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                             </svg>
-                            <h3 class="font-semibold text-gray-900 dark:text-white">Notes</h3>
+                            <h3 class="font-semibold text-gray-900 dark:text-white">{% trans "Notas" %}</h3>
                         </div>
                         <button class="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
-                            + Add new
+                            + {% trans "Agregar nueva" %}
                         </button>
                     </div>
 
@@ -337,12 +337,11 @@
                             <input type="checkbox"
                                 class="mt-0.5 w-5 h-5 rounded-full border-2 border-gray-300 dark:border-gray-600 appearance-none checked:bg-green-500 checked:border-green-500">
                             <div class="flex-1 min-w-0">
-                                <p class="text-base font-semibold text-gray-900 dark:text-white mb-1">Landing page</p>
-                                <p class="text-sm text-gray-500 dark:text-gray-400 mb-3">Search for inspiration to create landing page
-                                    for AI startup.</p>
+                                <p class="text-base font-semibold text-gray-900 dark:text-white mb-1">{% trans "Página de destino" %}</p>
+                                <p class="text-sm text-gray-500 dark:text-gray-400 mb-3">{% trans "Buscar inspiración para crear página de destino para startup de IA." %}</p>
                                 <div class="flex items-center gap-2">
-                                    <span class="px-2.5 py-1 bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 text-xs font-medium rounded">Today</span>
-                                    <span class="px-2.5 py-1 bg-orange-50 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 text-xs font-medium rounded">To-do</span>
+                                    <span class="px-2.5 py-1 bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 text-xs font-medium rounded">{% trans "Hoy" %}</span>
+                                    <span class="px-2.5 py-1 bg-orange-50 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 text-xs font-medium rounded">{% trans "Pendiente" %}</span>
                                     <div class="ml-auto flex items-center gap-1 text-gray-400 dark:text-gray-500">
                                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -363,12 +362,11 @@
                                 </svg>
                             </div>
                             <div class="flex-1 min-w-0">
-                                <p class="text-base font-semibold text-gray-900 dark:text-white mb-1">Meeting with CTO</p>
-                                <p class="text-sm text-gray-500 dark:text-gray-400 mb-3">Discuss about application architecture and
-                                    approach.</p>
+                                <p class="text-base font-semibold text-gray-900 dark:text-white mb-1">{% trans "Reunión con CTO" %}</p>
+                                <p class="text-sm text-gray-500 dark:text-gray-400 mb-3">{% trans "Discutir sobre la arquitectura de la aplicación y el enfoque." %}</p>
                                 <div class="flex items-center gap-2">
-                                    <span class="px-2.5 py-1 bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 text-xs font-medium rounded">Today</span>
-                                    <span class="px-2.5 py-1 bg-orange-50 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 text-xs font-medium rounded">Meeting</span>
+                                    <span class="px-2.5 py-1 bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 text-xs font-medium rounded">{% trans "Hoy" %}</span>
+                                    <span class="px-2.5 py-1 bg-orange-50 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 text-xs font-medium rounded">{% trans "Reunión" %}</span>
                                     <div class="ml-auto flex items-center gap-1 text-gray-400 dark:text-gray-500">
                                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -389,12 +387,11 @@
                                 </svg>
                             </div>
                             <div class="flex-1 min-w-0">
-                                <p class="text-base font-semibold text-gray-900 dark:text-white mb-1">Team meeting</p>
-                                <p class="text-sm text-gray-500 dark:text-gray-400 mb-3">Discuss about client requirements and
-                                    deadline.</p>
+                                <p class="text-base font-semibold text-gray-900 dark:text-white mb-1">{% trans "Reunión de equipo" %}</p>
+                                <p class="text-sm text-gray-500 dark:text-gray-400 mb-3">{% trans "Discutir sobre los requisitos del cliente y el plazo." %}</p>
                                 <div class="flex items-center gap-2">
-                                    <span class="px-2.5 py-1 bg-purple-50 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 text-xs font-medium rounded">Team</span>
-                                    <span class="px-2.5 py-1 bg-orange-50 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 text-xs font-medium rounded">Meeting</span>
+                                    <span class="px-2.5 py-1 bg-purple-50 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 text-xs font-medium rounded">{% trans "Equipo" %}</span>
+                                    <span class="px-2.5 py-1 bg-orange-50 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 text-xs font-medium rounded">{% trans "Reunión" %}</span>
                                     <div class="ml-auto flex items-center gap-1 text-gray-400 dark:text-gray-500">
                                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -420,10 +417,10 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                             </svg>
-                            <h3 class="font-semibold text-gray-900 dark:text-white">Status Tracker</h3>
+                            <h3 class="font-semibold text-gray-900 dark:text-white">{% trans "Rastreador de Estado" %}</h3>
                         </div>
                         <button class="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white px-3 py-1.5 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
-                            See all
+                            {% trans "Ver todos" %}
                         </button>
                     </div>
                     <hr class="bg-gray-400 dark:bg-gray-700 my-4">
@@ -432,26 +429,26 @@
                     <div class="space-y-6">
                         <!-- Absent Section -->
                         <div>
-                            <p class="text-xs font-medium text-gray-400 dark:text-gray-500 mb-3">Absent</p>
+                            <p class="text-xs font-medium text-gray-400 dark:text-gray-500 mb-3">{% trans "Ausente" %}</p>
                             <div class="flex items-center justify-between">
                                 <div class="flex items-center gap-3">
                                     <img src="https://i.pravatar.cc/150?img=47" alt="Emma Watson"
                                         class="w-11 h-11 rounded-full object-cover">
                                     <div>
                                         <p class="text-sm font-semibold text-gray-900 dark:text-white">Emma Watson</p>
-                                        <p class="text-sm text-gray-500 dark:text-gray-400">UI Designer</p>
+                                        <p class="text-sm text-gray-500 dark:text-gray-400">{% trans "Diseñadora UI" %}</p>
                                     </div>
                                 </div>
                                 <div class="flex items-center gap-2">
                                     <span class="w-2 h-2 bg-gray-400 dark:bg-gray-600 rounded-full"></span>
-                                    <span class="text-sm text-gray-500 dark:text-gray-400">Absent</span>
+                                    <span class="text-sm text-gray-500 dark:text-gray-400">{% trans "Ausente" %}</span>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Away Section -->
                         <div>
-                            <p class="text-xs font-medium text-gray-400 dark:text-gray-500 mb-3">Away</p>
+                            <p class="text-xs font-medium text-gray-400 dark:text-gray-500 mb-3">{% trans "Fuera" %}</p>
                             <div class="space-y-4">
                                 <!-- Person 1 -->
                                 <div class="flex items-center justify-between">
@@ -460,7 +457,7 @@
                                             class="w-11 h-11 rounded-full object-cover">
                                         <div>
                                             <p class="text-sm font-semibold text-gray-900 dark:text-white">Walter White</p>
-                                            <p class="text-sm text-gray-500 dark:text-gray-400">Backend Developer</p>
+                                            <p class="text-sm text-gray-500 dark:text-gray-400">{% trans "Desarrollador Backend" %}</p>
                                         </div>
                                     </div>
                                     <div class="flex items-center gap-2">
@@ -476,7 +473,7 @@
                                             class="w-11 h-11 rounded-full object-cover">
                                         <div>
                                             <p class="text-sm font-semibold text-gray-900 dark:text-white">Dwayne Johnson</p>
-                                            <p class="text-sm text-gray-500 dark:text-gray-400">DevOps Engineer</p>
+                                            <p class="text-sm text-gray-500 dark:text-gray-400">{% trans "Ingeniero DevOps" %}</p>
                                         </div>
                                     </div>
                                     <div class="flex items-center gap-2">
@@ -498,14 +495,14 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M13 10V3L4 14h7v7l9-11h-7z" />
                             </svg>
-                            <h3 class="font-semibold text-gray-900 dark:text-white">Current Project</h3>
+                            <h3 class="font-semibold text-gray-900 dark:text-white">{% trans "Proyecto Actual" %}</h3>
                         </div>
                         <button class="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white flex items-center gap-1.5">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
-                            Details
+                            {% trans "Detalles" %}
                         </button>
                     </div>
                     <hr class="bg-gray-400 dark:bg-gray-700 my-4">
@@ -514,7 +511,7 @@
                     <div class="space-y-5">
                         <!-- Project name -->
                         <div>
-                            <p class="text-xs font-medium text-gray-400 dark:text-gray-500 mb-2">Project name</p>
+                            <p class="text-xs font-medium text-gray-400 dark:text-gray-500 mb-2">{% trans "Nombre del proyecto" %}</p>
                             <div class="flex items-center gap-2">
                                 <div class="w-7 h-7 bg-blue-500 rounded flex items-center justify-center flex-shrink-0">
                                     <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
@@ -528,7 +525,7 @@
                                             d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
                                             clip-rule="evenodd" />
                                     </svg>
-                                    In progress
+                                    {% trans "En progreso" %}
                                 </span>
                             </div>
                         </div>
@@ -536,7 +533,7 @@
                         <!-- Project manager & Tech lead -->
                         <div class="grid grid-cols-2 gap-4">
                             <div>
-                                <p class="text-xs font-medium text-gray-400 dark:text-gray-500 mb-2">Project manager</p>
+                                <p class="text-xs font-medium text-gray-400 dark:text-gray-500 mb-2">{% trans "Gerente de proyecto" %}</p>
                                 <div class="flex items-center gap-2">
                                     <img src="https://i.pravatar.cc/150?img=33" alt="Steve J."
                                         class="w-7 h-7 rounded-full object-cover">
@@ -544,7 +541,7 @@
                                 </div>
                             </div>
                             <div>
-                                <p class="text-xs font-medium text-gray-400 dark:text-gray-500 mb-2">Tech lead</p>
+                                <p class="text-xs font-medium text-gray-400 dark:text-gray-500 mb-2">{% trans "Líder técnico" %}</p>
                                 <div class="flex items-center gap-2">
                                     <img src="https://i.pravatar.cc/150?img=12" alt="Andrew M."
                                         class="w-7 h-7 rounded-full object-cover">
@@ -555,7 +552,7 @@
 
                         <!-- Team -->
                         <div>
-                            <p class="text-xs font-medium text-gray-400 dark:text-gray-500 mb-2">Team</p>
+                            <p class="text-xs font-medium text-gray-400 dark:text-gray-500 mb-2">{% trans "Equipo" %}</p>
                             <div class="flex items-center gap-2">
                                 <div class="flex -space-x-2">
                                     <img src="https://i.pravatar.cc/150?img=33" alt="Team member 1"
@@ -565,13 +562,13 @@
                                     <img src="https://i.pravatar.cc/150?img=12" alt="Team member 3"
                                         class="w-8 h-8 rounded-full border-2 border-white dark:border-gray-900 object-cover">
                                 </div>
-                                <span class="text-sm text-gray-500 dark:text-gray-400">+6 people</span>
+                                <span class="text-sm text-gray-500 dark:text-gray-400">+6 {% trans "personas" %}</span>
                             </div>
                         </div>
 
                         <!-- Timeline -->
                         <div>
-                            <p class="text-xs font-medium text-gray-400 dark:text-gray-500 mb-2">Timeline</p>
+                            <p class="text-xs font-medium text-gray-400 dark:text-gray-500 mb-2">{% trans "Cronograma" %}</p>
                             <div class="flex items-center gap-2">
                                 <svg class="w-4 h-4 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor"
                                     viewBox="0 0 24 24">
@@ -584,14 +581,14 @@
 
                         <!-- Description -->
                         <div>
-                            <p class="text-xs font-medium text-gray-400 dark:text-gray-500 mb-2">Description</p>
+                            <p class="text-xs font-medium text-gray-400 dark:text-gray-500 mb-2">{% trans "Descripción" %}</p>
                             <div class="flex items-center gap-2">
                                 <svg class="w-4 h-4 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor"
                                     viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                 </svg>
-                                <span class="text-sm font-medium text-gray-900 dark:text-white">Frontend website for AI app</span>
+                                <span class="text-sm font-medium text-gray-900 dark:text-white">{% trans "Sitio web frontend para aplicación de IA" %}</span>
                             </div>
                         </div>
                     </div>

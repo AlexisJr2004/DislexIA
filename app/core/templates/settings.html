@@ -278,9 +278,6 @@
             <button class="tab-btn px-4 py-2 rounded-lg text-sm font-medium text-gray-600 dark:text-gray-400" data-tab="accessibility">
                 {% trans "Accesibilidad" %}
             </button>
-            <button class="tab-btn px-4 py-2 rounded-lg text-sm font-medium text-gray-600 dark:text-gray-400" data-tab="notifications">
-                {% trans "Notificaciones" %}
-            </button>
             <button class="tab-btn px-4 py-2 rounded-lg text-sm font-medium text-gray-600 dark:text-gray-400" data-tab="privacy">
                 {% trans "Cuenta" %}
             </button>
@@ -458,68 +455,6 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Notifications Settings -->
-            <div id="notifications-content" class="tab-content hidden">
-                <div class="space-y-4">
-                    <!-- Email Notifications -->
-                    <div class="setting-card bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
-                        <div class="flex items-start justify-between">
-                            <div class="flex items-start gap-4">
-                                <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center flex-shrink-0">
-                                    <i class="fas fa-envelope text-blue-600 dark:text-blue-400 text-lg"></i>
-                                </div>
-                                <div>
-                                    <h3 class="text-base font-semibold text-gray-900 dark:text-white mb-1">{% trans "Notificaciones por Email" %}</h3>
-                                    <p class="text-sm text-gray-500 dark:text-gray-400">{% trans "Recibe actualizaciones importantes por correo electrónico" %}</p>
-                                </div>
-                            </div>
-                            <label class="toggle-switch">
-                                <input type="checkbox" checked id="email-notif-toggle">
-                                <span class="toggle-slider"></span>
-                            </label>
-                        </div>
-                    </div>
-
-                    <!-- Progress Reminders -->
-                    <div class="setting-card bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
-                        <div class="flex items-start justify-between">
-                            <div class="flex items-start gap-4">
-                                <div class="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-xl flex items-center justify-center flex-shrink-0">
-                                    <i class="fas fa-bell text-green-600 dark:text-green-400 text-lg"></i>
-                                </div>
-                                <div>
-                                    <h3 class="text-base font-semibold text-gray-900 dark:text-white mb-1">{% trans "Recordatorios de Progreso" %}</h3>
-                                    <p class="text-sm text-gray-500 dark:text-gray-400">{% trans "Recibe recordatorios sobre tu progreso y próximas sesiones" %}</p>
-                                </div>
-                            </div>
-                            <label class="toggle-switch">
-                                <input type="checkbox" checked id="reminder-toggle">
-                                <span class="toggle-slider"></span>
-                            </label>
-                        </div>
-                    </div>
-
-                    <!-- Achievement Notifications -->
-                    <div class="setting-card bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
-                        <div class="flex items-start justify-between">
-                            <div class="flex items-start gap-4">
-                                <div class="w-12 h-12 bg-yellow-100 dark:bg-yellow-900/30 rounded-xl flex items-center justify-center flex-shrink-0">
-                                    <i class="fas fa-trophy text-yellow-600 dark:text-yellow-400 text-lg"></i>
-                                </div>
-                                <div>
-                                    <h3 class="text-base font-semibold text-gray-900 dark:text-white mb-1">{% trans "Notificaciones de Logros" %}</h3>
-                                    <p class="text-sm text-gray-500 dark:text-gray-400">{% trans "Celebra tus logros con notificaciones especiales" %}</p>
-                                </div>
-                            </div>
-                            <label class="toggle-switch">
-                                <input type="checkbox" checked id="achievement-toggle">
-                                <span class="toggle-slider"></span>
-                            </label>
                         </div>
                     </div>
                 </div>

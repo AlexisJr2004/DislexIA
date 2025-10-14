@@ -1,14 +1,380 @@
 {% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
 
-{% block title %}Editar Niño{% endblock %}
+{% block title %}{% trans "Editar Niño" %}{% endblock %}
+
+{% block extra_head %}
+<style>
+    .form-card {
+        animation: fadeInUp 0.3s ease-out;
+    }
+    
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    @keyframes slide-in {
+        from {
+            opacity: 0;
+            transform: translateX(100%);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+    
+    .animate-slide-in {
+        animation: slide-in 0.3s ease-out;
+    }
+    
+    .image-preview {
+        transition: all 0.3s ease;
+    }
+    
+    .image-preview:hover {
+        transform: scale(1.02);
+    }
+    
+    .drag-drop-area {
+        transition: all 0.3s ease;
+    }
+    
+    .drag-drop-area.dragover {
+        background-color: rgba(139, 92, 246, 0.1);
+        border-color: #8b5cf6;
+        transform: scale(1.02);
+    }
+</style>
+{% endblock %}
 
 {% block content %}
-<div class="container mx-auto p-4">
-    <h1 class="text-2xl font-bold mb-4">Editar Niño</h1>
-    <form method="post">
+<div class="p-8">
+    <!-- Header Section -->
+    <div class="flex items-center justify-between mb-8">
+        <div>
+            <div class="flex items-center gap-3 mb-2">
+                <h1 class="text-3xl font-bold text-gray-900 dark:text-white">
+                    <i class="fas fa-user-edit text-purple-600 dark:text-purple-400 mr-2"></i>
+                    {% trans "Editar Niño" %}
+                </h1>
+            </div>
+            <p class="text-gray-600 dark:text-gray-400">
+                {% trans "Actualiza la información del niño" %}
+            </p>
+        </div>
+        
+        <!-- Botón Volver -->
+        <a href="{% url 'core:lista_ninos' %}" 
+           class="px-6 py-3 bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-xl font-semibold flex items-center gap-2 transition-all hover:bg-gray-300 dark:hover:bg-gray-700">
+            <i class="fas fa-arrow-left"></i>
+            {% trans "Volver a la lista" %}
+        </a>
+    </div>
+
+    <form method="post" enctype="multipart/form-data" id="editarNinoForm" class="max-w-4xl">
         {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Guardar Cambios</button>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Columna izquierda - Foto -->
+            <div class="lg:col-span-1">
+                <div class="form-card bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-6 transition-colors duration-200">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+                        <i class="fas fa-camera text-purple-600 dark:text-purple-400 mr-2"></i>
+                        {% trans "Foto del Niño" %}
+                    </h3>
+                    
+                    <!-- Image Preview -->
+                    <div class="mb-4">
+                        <div class="image-preview relative w-full aspect-square rounded-xl overflow-hidden bg-gray-100 dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700">
+                            {% if form.instance.imagen %}
+                                <img id="imagePreview" src="{{ form.instance.imagen.url }}" alt="Preview" class="w-full h-full object-cover">
+                            {% else %}
+                                <div id="imagePlaceholder" class="w-full h-full flex flex-col items-center justify-center text-gray-400 dark:text-gray-600">
+                                    <i class="fas fa-user text-6xl mb-2"></i>
+                                    <p class="text-sm">{% trans "Sin foto" %}</p>
+                                </div>
+                                <img id="imagePreview" src="" alt="Preview" class="w-full h-full object-cover hidden">
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <!-- Drag & Drop Area -->
+                    <div class="drag-drop-area border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-xl p-6 text-center cursor-pointer hover:border-purple-500 dark:hover:border-purple-400"
+                         id="dragDropArea">
+                        <input type="file" 
+                               name="imagen" 
+                               id="id_imagen" 
+                               accept="image/*" 
+                               class="hidden"
+                               onchange="handleFileSelect(event)">
+                        <label for="id_imagen" class="cursor-pointer">
+                            <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 dark:text-gray-600 mb-2"></i>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-1">
+                                {% trans "Haz clic para subir" %}
+                            </p>
+                            <p class="text-xs text-gray-500 dark:text-gray-500">
+                                {% trans "o arrastra y suelta" %}
+                            </p>
+                            <p class="text-xs text-gray-400 dark:text-gray-600 mt-2">
+                                PNG, JPG (max. 5MB)
+                            </p>
+                        </label>
+                    </div>
+                    
+                    <!-- Remove Image Button -->
+                    <button type="button" 
+                            id="removeImageBtn"
+                            class="w-full mt-4 px-4 py-2 bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-lg text-sm font-medium hover:bg-red-100 dark:hover:bg-red-900/50 transition-all {% if not form.instance.imagen %}hidden{% endif %}">
+                        <i class="fas fa-trash mr-2"></i>
+                        {% trans "Eliminar foto" %}
+                    </button>
+                </div>
+            </div>
+
+            <!-- Columna derecha - Formulario -->
+            <div class="lg:col-span-2">
+                <div class="form-card bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-6 transition-colors duration-200">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-6">
+                        <i class="fas fa-info-circle text-purple-600 dark:text-purple-400 mr-2"></i>
+                        {% trans "Información Personal" %}
+                    </h3>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Nombres -->
+                        <div>
+                            <label for="id_nombres" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                {% trans "Nombres" %} <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text" 
+                                   name="nombres" 
+                                   id="id_nombres"
+                                   value="{{ form.instance.nombres }}"
+                                   required
+                                   class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200 transition-all"
+                                   placeholder="{% trans 'Ej: Juan Carlos' %}">
+                            {% if form.nombres.errors %}
+                                <p class="mt-1 text-xs text-red-600 dark:text-red-400">{{ form.nombres.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+
+                        <!-- Apellidos -->
+                        <div>
+                            <label for="id_apellidos" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                {% trans "Apellidos" %} <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text" 
+                                   name="apellidos" 
+                                   id="id_apellidos"
+                                   value="{{ form.instance.apellidos }}"
+                                   required
+                                   class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200 transition-all"
+                                   placeholder="{% trans 'Ej: García López' %}">
+                            {% if form.apellidos.errors %}
+                                <p class="mt-1 text-xs text-red-600 dark:text-red-400">{{ form.apellidos.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+
+                        <!-- Fecha de Nacimiento -->
+                        <div>
+                            <label for="id_fecha_nacimiento" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                {% trans "Fecha de Nacimiento" %} <span class="text-red-500">*</span>
+                            </label>
+                            <input type="date" 
+                                   name="fecha_nacimiento" 
+                                   id="id_fecha_nacimiento"
+                                   value="{{ form.instance.fecha_nacimiento|date:'Y-m-d' }}"
+                                   required
+                                   class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200 transition-all">
+                            {% if form.fecha_nacimiento.errors %}
+                                <p class="mt-1 text-xs text-red-600 dark:text-red-400">{{ form.fecha_nacimiento.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+
+                        <!-- Edad -->
+                        <div>
+                            <label for="id_edad" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                {% trans "Edad" %} <span class="text-red-500">*</span>
+                            </label>
+                            <input type="number" 
+                                   name="edad" 
+                                   id="id_edad"
+                                   value="{{ form.instance.edad }}"
+                                   min="6" 
+                                   max="12"
+                                   required
+                                   class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200 transition-all"
+                                   placeholder="{% trans 'Entre 6 y 12 años' %}">
+                            {% if form.edad.errors %}
+                                <p class="mt-1 text-xs text-red-600 dark:text-red-400">{{ form.edad.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+
+                        <!-- Género -->
+                        <div>
+                            <label for="id_genero" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                {% trans "Género" %} <span class="text-red-500">*</span>
+                            </label>
+                            <select name="genero" 
+                                    id="id_genero"
+                                    required
+                                    class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200 transition-all">
+                                <option value="">{% trans "Seleccionar género" %}</option>
+                                <option value="Masculino" {% if form.instance.genero == "Masculino" %}selected{% endif %}>{% trans "Masculino" %}</option>
+                                <option value="Femenino" {% if form.instance.genero == "Femenino" %}selected{% endif %}>{% trans "Femenino" %}</option>
+                                <option value="Otro" {% if form.instance.genero == "Otro" %}selected{% endif %}>{% trans "Otro" %}</option>
+                            </select>
+                            {% if form.genero.errors %}
+                                <p class="mt-1 text-xs text-red-600 dark:text-red-400">{{ form.genero.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+
+                        <!-- Idioma Nativo -->
+                        <div>
+                            <label for="id_idioma_nativo" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                {% trans "Idioma Nativo" %} <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text" 
+                                   name="idioma_nativo" 
+                                   id="id_idioma_nativo"
+                                   value="{{ form.instance.idioma_nativo }}"
+                                   required
+                                   class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200 transition-all"
+                                   placeholder="{% trans 'Ej: Español' %}">
+                            {% if form.idioma_nativo.errors %}
+                                <p class="mt-1 text-xs text-red-600 dark:text-red-400">{{ form.idioma_nativo.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Botones de acción -->
+                    <div class="flex flex-col sm:flex-row gap-3 mt-8 pt-6 border-t border-gray-200 dark:border-gray-800">
+                        <button type="submit"
+                                class="flex-1 px-6 py-3 bg-gradient-to-r from-purple-600 to-purple-800 hover:from-purple-500 hover:to-purple-700 text-white rounded-xl text-sm font-semibold flex items-center justify-center gap-2 transition-all shadow-md hover:shadow-lg hover:scale-105">
+                            <i class="fas fa-save"></i>
+                            {% trans "Guardar Cambios" %}
+                        </button>
+                        <a href="{% url 'core:lista_ninos' %}"
+                           class="flex-1 px-6 py-3 bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 hover:bg-gray-300 dark:hover:bg-gray-700 transition-all text-center">
+                            <i class="fas fa-times"></i>
+                            {% trans "Cancelar" %}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </form>
 </div>
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    // Manejo de preview de imagen
+    function handleFileSelect(event) {
+        const file = event.target.files[0];
+        if (file) {
+            if (file.size > 5 * 1024 * 1024) {
+                mostrarToast('error', '{% trans "El archivo es demasiado grande. Máximo 5MB." %}');
+                event.target.value = '';
+                return;
+            }
+
+            if (!file.type.startsWith('image/')) {
+                mostrarToast('error', '{% trans "Por favor selecciona una imagen válida." %}');
+                event.target.value = '';
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const preview = document.getElementById('imagePreview');
+                const placeholder = document.getElementById('imagePlaceholder');
+                const removeBtn = document.getElementById('removeImageBtn');
+                
+                preview.src = e.target.result;
+                preview.classList.remove('hidden');
+                if (placeholder) placeholder.classList.add('hidden');
+                removeBtn.classList.remove('hidden');
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+
+    // Drag and drop functionality
+    const dragDropArea = document.getElementById('dragDropArea');
+    const fileInput = document.getElementById('id_imagen');
+
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        dragDropArea.addEventListener(eventName, preventDefaults, false);
+    });
+
+    function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+
+    ['dragenter', 'dragover'].forEach(eventName => {
+        dragDropArea.addEventListener(eventName, () => {
+            dragDropArea.classList.add('dragover');
+        }, false);
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+        dragDropArea.addEventListener(eventName, () => {
+            dragDropArea.classList.remove('dragover');
+        }, false);
+    });
+
+    dragDropArea.addEventListener('drop', function(e) {
+        const dt = e.dataTransfer;
+        const files = dt.files;
+        fileInput.files = files;
+        handleFileSelect({ target: fileInput });
+    });
+
+    document.getElementById('removeImageBtn').addEventListener('click', function() {
+        const preview = document.getElementById('imagePreview');
+        const placeholder = document.getElementById('imagePlaceholder');
+        const fileInput = document.getElementById('id_imagen');
+        const removeBtn = document.getElementById('removeImageBtn');
+        
+        preview.src = '';
+        preview.classList.add('hidden');
+        if (placeholder) placeholder.classList.remove('hidden');
+        fileInput.value = '';
+        removeBtn.classList.add('hidden');
+    });
+
+    document.getElementById('editarNinoForm').addEventListener('submit', function(e) {
+        const edad = parseInt(document.getElementById('id_edad').value);
+        
+        if (edad < 6 || edad > 12) {
+            e.preventDefault();
+            mostrarToast('error', '{% trans "La edad debe estar entre 6 y 12 años." %}');
+            return false;
+        }
+    });
+
+    document.getElementById('id_fecha_nacimiento').addEventListener('change', function() {
+        const fechaNac = new Date(this.value);
+        const hoy = new Date();
+        let edad = hoy.getFullYear() - fechaNac.getFullYear();
+        const mes = hoy.getMonth() - fechaNac.getMonth();
+        
+        if (mes < 0 || (mes === 0 && hoy.getDate() < fechaNac.getDate())) {
+            edad--;
+        }
+        
+        document.getElementById('id_edad').value = edad;
+    });
+</script>
 {% endblock %}

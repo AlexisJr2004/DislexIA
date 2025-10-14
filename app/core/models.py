@@ -3,6 +3,7 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from django.contrib.auth.models import AbstractUser
 from django.db.models import Count
 from django.conf import settings
+from django.db.models import Count
 
 # Importar constantes
 from .constants import (
@@ -66,6 +67,7 @@ class Nino(models.Model):
         return f"{self.nombres} {self.apellidos}"
 
     def cantidad_juegos(self):
+        """Retorna la cantidad de juegos asociados a este niño"""
         return self.juego_set.count()
 
 # Modelo de usuario personalizado usando AbstractUser de Django
@@ -201,6 +203,7 @@ class ValidacionProfesional(models.Model):
 class Cita(models.Model):
     usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='citas')
     nombre_paciente = models.CharField(max_length=200, verbose_name="Nombre del Paciente")
+    email_padres = models.EmailField(max_length=254, null=True, blank=True, verbose_name="Email de los Padres")
     foto_paciente = models.ImageField(upload_to='pacientes/', null=True, blank=True, verbose_name="Foto del Paciente")
     fecha = models.DateField(verbose_name="Fecha de la Cita")
     hora = models.TimeField(verbose_name="Hora de la Cita")
