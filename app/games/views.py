@@ -12,14 +12,8 @@ import os
 from django.conf import settings
 
 from .models import Juego, SesionJuego, Evaluacion
-<<<<<<< HEAD
-from app.core.models import Nino
-from app.core.forms import NinoForm
-from app.core.models import Profesional
-=======
 from app.core.models import Nino, Profesional
 from app.core.forms import NinoForm
->>>>>>> origin/develop
 
 @method_decorator(login_required, name='dispatch')
 class GameListView(TemplateView):
