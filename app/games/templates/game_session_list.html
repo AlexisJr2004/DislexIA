@@ -1,0 +1,502 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block extra_head %}
+<style>
+    .session-card {
+        transition: all 0.3s ease;
+    }
+
+    .session-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 25px rgba(139, 92, 246, 0.15);
+    }
+
+    .status-badge {
+        backdrop-filter: blur(10px);
+        font-weight: 600;
+        letter-spacing: 0.025em;
+    }
+
+    .status-en_proceso {
+        background: linear-gradient(135deg, #fef3c7, #fcd34d);
+        color: #92400e;
+        border: 1px solid #f59e0b;
+    }
+
+    .status-completada {
+        background: linear-gradient(135deg, #d1fae5, #34d399);
+        color: #065f46;
+        border: 1px solid #10b981;
+    }
+
+    .status-interrumpida {
+        background: linear-gradient(135deg, #fee2e2, #f87171);
+        color: #991b1b;
+        border: 1px solid #ef4444;
+    }
+
+    .action-btn {
+        transition: all 0.2s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .action-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .action-btn:active {
+        transform: translateY(0);
+    }
+
+    .progress-bar {
+        background: linear-gradient(90deg, #8b5cf6, #a78bfa);
+        animation: shimmer 1.5s infinite;
+    }
+
+    @keyframes shimmer {
+        0% { background-position: -200% 0; }
+        100% { background-position: 200% 0; }
+    }
+
+    .table-header {
+        background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+        border-bottom: 2px solid #e2e8f0;
+    }
+
+    .dark .table-header {
+        background: linear-gradient(135deg, #1e293b, #334155);
+        border-bottom-color: #475569;
+    }
+
+    .filter-btn.active {
+        background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+        color: white;
+        transform: scale(1.05);
+    }
+
+    .search-input:focus {
+        box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+    }
+
+    .animate-fade-in {
+        animation: fadeInUp 0.5s ease-out;
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .tooltip {
+        position: relative;
+    }
+
+    .tooltip:hover::after {
+        content: attr(data-tooltip);
+        position: absolute;
+        bottom: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #1f2937;
+        color: white;
+        padding: 8px 12px;
+        border-radius: 8px;
+        font-size: 12px;
+        white-space: nowrap;
+        z-index: 1000;
+        opacity: 0;
+        animation: fadeIn 0.3s ease forwards;
+    }
+
+    @keyframes fadeIn {
+        to { opacity: 1; }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="p-8">
+    <!-- Header Section -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
+        <div>
+            <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2 flex items-center gap-3">
+                <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-blue-600 rounded-xl flex items-center justify-center">
+                    <i class="fas fa-list-ul text-white text-xl"></i>
+                </div>
+                {% trans "Gestión de Sesiones" %}
+            </h1>
+            <p class="text-gray-600 dark:text-gray-400">{% trans "Administra y supervisa todas las sesiones de juegos realizadas" %}</p>
+        </div>
+
+        <!-- Actions -->
+        <div class="flex items-center gap-3">            
+            <a href="{% url 'games:game_list' %}" class="px-5 py-2.5 bg-gradient-to-r from-purple-600 to-purple-800 hover:from-purple-500 hover:to-purple-700 text-white rounded-xl font-semibold flex items-center gap-2 transition-all shadow-md hover:shadow-lg">
+                <i class="fas fa-plus"></i>
+                <span class="hidden sm:inline">{% trans "Nueva Sesión" %}</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+        <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4">
+            <div class="text-center">
+                <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ sesiones|length }}</p>
+                <p class="text-xs text-gray-500 dark:text-gray-400">{% trans "Total" %}</p>
+            </div>
+        </div>
+
+        <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4">
+            <div class="text-center">
+                <p class="text-2xl font-bold text-green-600 dark:text-green-400">
+                    {% for sesion in sesiones %}
+                        {% if sesion.estado == 'completada' %}
+                            {{ forloop.counter0|add:1 }}
+                        {% endif %}
+                    {% empty %}0{% endfor %}
+                </p>
+                <p class="text-xs text-gray-500 dark:text-gray-400">{% trans "Completadas" %}</p>
+            </div>
+        </div>
+
+        <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4">
+            <div class="text-center">
+                <p class="text-2xl font-bold text-yellow-600 dark:text-yellow-400">
+                    {% for sesion in sesiones %}
+                        {% if sesion.estado == 'en_proceso' %}
+                            {{ forloop.counter0|add:1 }}
+                        {% endif %}
+                    {% empty %}0{% endfor %}
+                </p>
+                <p class="text-xs text-gray-500 dark:text-gray-400">{% trans "En Proceso" %}</p>
+            </div>
+        </div>
+
+        <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4">
+            <div class="text-center">
+                <p class="text-2xl font-bold text-red-600 dark:text-red-400">
+                    {% for sesion in sesiones %}
+                        {% if sesion.estado == 'interrumpida' %}
+                            {{ forloop.counter0|add:1 }}
+                        {% endif %}
+                    {% empty %}0{% endfor %}
+                </p>
+                <p class="text-xs text-gray-500 dark:text-gray-400">{% trans "Interrumpidas" %}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filters and Search -->
+    <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6 mb-8">
+        <div class="flex flex-col lg:flex-row gap-4 items-center justify-between">
+            <!-- Search -->
+            <div class="relative flex-1 max-w-md">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <i class="fas fa-search text-gray-400"></i>
+                </div>
+                <input type="text" id="searchInput" placeholder="{% trans 'Buscar por paciente, juego...' %}"
+                       class="search-input w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-200 placeholder-gray-500 transition-all">
+            </div>
+
+            <!-- Filters -->
+            <div class="flex items-center gap-2">
+                <span class="text-sm font-medium text-gray-700 dark:text-gray-300 mr-2">{% trans "Filtrar:" %}</span>
+                <button onclick="filtrarPorEstado('todos')" class="filter-btn active px-4 py-2 text-sm font-medium rounded-lg transition-all" data-estado="todos">
+                    {% trans "Todos" %}
+                </button>
+                <button onclick="filtrarPorEstado('en_proceso')" class="filter-btn px-4 py-2 text-sm font-medium rounded-lg transition-all text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700" data-estado="en_proceso">
+                    {% trans "En Proceso" %}
+                </button>
+                <button onclick="filtrarPorEstado('completada')" class="filter-btn px-4 py-2 text-sm font-medium rounded-lg transition-all text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700" data-estado="completada">
+                    {% trans "Completadas" %}
+                </button>
+                <button onclick="filtrarPorEstado('interrumpida')" class="filter-btn px-4 py-2 text-sm font-medium rounded-lg transition-all text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700" data-estado="interrumpida">
+                    {% trans "Interrumpidas" %}
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sessions Table -->
+    <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+        {% if sesiones %}
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead class="table-header">
+                    <tr>
+                        <th class="px-6 py-4 text-left text-sm font-semibold text-gray-900 dark:text-white">
+                            <div class="flex items-center gap-2">
+                                <i class="fas fa-user text-purple-600 dark:text-purple-400"></i>
+                                {% trans "Paciente" %}
+                            </div>
+                        </th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold text-gray-900 dark:text-white">
+                            <div class="flex items-center gap-2">
+                                <i class="fas fa-gamepad text-purple-600 dark:text-purple-400"></i>
+                                {% trans "Juego" %}
+                            </div>
+                        </th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold text-gray-900 dark:text-white">
+                            <div class="flex items-center gap-2">
+                                <i class="fas fa-calendar text-purple-600 dark:text-purple-400"></i>
+                                {% trans "Fecha" %}
+                            </div>
+                        </th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold text-gray-900 dark:text-white">
+                            <div class="flex items-center gap-2">
+                                <i class="fas fa-info-circle text-purple-600 dark:text-purple-400"></i>
+                                {% trans "Estado" %}
+                            </div>
+                        </th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold text-gray-900 dark:text-white">
+                            <div class="flex items-center gap-2">
+                                <i class="fas fa-chart-bar text-purple-600 dark:text-purple-400"></i>
+                                {% trans "Progreso" %}
+                            </div>
+                        </th>
+                        <th class="px-6 py-4 text-center text-sm font-semibold text-gray-900 dark:text-white">
+                            <div class="flex items-center justify-center gap-2">
+                                <i class="fas fa-cogs text-purple-600 dark:text-purple-400"></i>
+                                {% trans "Acciones" %}
+                            </div>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody id="sessionTableBody">
+                    {% for sesion in sesiones %}
+                    <tr class="session-row border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors" data-estado="{{ sesion.estado }}" data-paciente="{{ sesion.evaluacion.nino.nombre_completo|lower }}" data-juego="{{ sesion.juego.nombre|lower }}">
+                        <!-- Paciente -->
+                        <td class="px-6 py-4">
+                            <div class="flex items-center gap-3">
+                                <div>
+                                    <p class="font-semibold text-gray-900 dark:text-white">{{ sesion.evaluacion.nino.nombre_completo }}</p>
+                                    <ul class="text-sm text-gray-500 dark:text-gray-400 space-y-0.5">
+                                        <li>• {{ sesion.evaluacion.nino.edad }} {% trans "años" %}</li>
+                                        <li>• {{ sesion.evaluacion.nino.get_genero_display }}</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </td>
+
+                        <!-- Juego -->
+                        <td class="px-6 py-4">
+                            <div>
+                                <p class="font-medium text-gray-900 dark:text-white">{{ sesion.juego.nombre }}</p>
+                                <!-- <p class="text-sm text-gray-500 dark:text-gray-400">{% trans "Nivel" %} {{ sesion.nivel_seleccionado }}</p> -->
+                            </div>
+                        </td>
+
+                        <!-- Fecha -->
+                        <td class="px-6 py-4">
+                            <div class="text-sm">
+                                <p class="font-medium text-gray-900 dark:text-white">{{ sesion.fecha_inicio|date:"d/m/Y" }}</p>
+                                <p class="text-gray-500 dark:text-gray-400">{{ sesion.fecha_inicio|time:"H:i" }}</p>
+                                {% if sesion.duracion_sesion %}
+                                <p class="text-xs text-purple-600 dark:text-purple-400 mt-1">
+                                    <i class="fas fa-clock mr-1"></i>{{ sesion.duracion_sesion|floatformat:0 }}min
+                                </p>
+                                {% endif %}
+                            </div>
+                        </td>
+
+                        <!-- Estado -->
+                        <td class="px-6 py-4">
+                            {% if sesion.estado == 'completada' %}
+                                <span class="status-badge status-completada px-3 py-1.5 rounded-full text-xs flex items-center gap-2 w-fit">
+                                    <i class="fas fa-check-circle"></i>
+                                    {% trans "Completada" %}
+                                </span>
+                            {% elif sesion.estado == 'en_proceso' %}
+                                <span class="status-badge status-en_proceso px-3 py-1.5 rounded-full text-xs flex items-center gap-2 w-fit">
+                                    <i class="fas fa-clock animate-pulse"></i>
+                                    {% trans "En Proceso" %}
+                                </span>
+                            {% elif sesion.estado == 'interrumpida' %}
+                                <span class="status-badge status-interrumpida px-3 py-1.5 rounded-full text-xs flex items-center gap-2 w-fit">
+                                    <i class="fas fa-pause-circle"></i>
+                                    {% trans "Interrumpida" %}
+                                </span>
+                            {% endif %}
+                        </td>
+
+                        <!-- Progreso -->
+                        <td class="px-6 py-4">
+                            <div class="space-y-2">
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-gray-600 dark:text-gray-400">{% trans "Puntos:" %}</span>
+                                    <span class="font-semibold text-gray-900 dark:text-white">{{ sesion.puntaje_total }}</span>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-gray-600 dark:text-gray-400">{% trans "Preguntas:" %}</span>
+                                    <span class="font-semibold text-gray-900 dark:text-white">{{ sesion.preguntas_respondidas }}</span>
+                                </div>
+                                {% if sesion.estado == 'completada' %}
+                                <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                                    <div class="progress-bar h-2 rounded-full" style="width: 100%"></div>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </td>
+
+                        <!-- Acciones -->
+                        <td class="px-6 py-4">
+                            <div class="flex items-center justify-center gap-2">
+                                {% if sesion.estado == 'completada' %}
+                                    <!-- Descargar PDF -->
+                                    <button class="action-btn tooltip w-10 h-10 bg-green-100 dark:bg-green-900/30 hover:bg-green-200 dark:hover:bg-green-900/50 text-green-600 dark:text-green-400 rounded-lg flex items-center justify-center transition-all" data-tooltip="{% trans 'Descargar PDF' %}">
+                                        <i class="fas fa-file-pdf"></i>
+                                    </button>
+
+                                    <!-- Editar -->
+                                    <button class="action-btn tooltip w-10 h-10 bg-blue-100 dark:bg-blue-900/30 hover:bg-blue-200 dark:hover:bg-blue-900/50 text-blue-600 dark:text-blue-400 rounded-lg flex items-center justify-center transition-all" data-tooltip="{% trans 'Editar' %}">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+
+                                    <!-- Visualizar -->
+                                    <button class="action-btn tooltip w-10 h-10 bg-purple-100 dark:bg-purple-900/30 hover:bg-purple-200 dark:hover:bg-purple-900/50 text-purple-600 dark:text-purple-400 rounded-lg flex items-center justify-center transition-all" data-tooltip="{% trans 'Visualizar' %}">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+
+                                {% elif sesion.estado == 'en_proceso' %}
+                                    <!-- Continuar Sesión -->
+                                    <a href="{% url 'games:play_game' url_sesion=sesion.url_sesion %}" class="action-btn tooltip w-10 h-10 bg-green-100 dark:bg-green-900/30 hover:bg-green-200 dark:hover:bg-green-900/50 text-green-600 dark:text-green-400 rounded-lg flex items-center justify-center transition-all" data-tooltip="{% trans 'Continuar Sesión' %}">
+                                        <i class="fas fa-play"></i>
+                                    </a>
+
+                                    <!-- Cancelar Sesión -->
+                                    <button class="action-btn tooltip w-10 h-10 bg-red-100 dark:bg-red-900/30 hover:bg-red-200 dark:hover:bg-red-900/50 text-red-600 dark:text-red-400 rounded-lg flex items-center justify-center transition-all" data-tooltip="{% trans 'Cancelar Sesión' %}">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                {% else %}
+                                    <span class="text-sm text-gray-400 dark:text-gray-500">{% trans "Sin acciones" %}</span>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <!-- Empty State -->
+        <div class="flex flex-col items-center justify-center py-20">
+            <div class="w-24 h-24 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mb-6">
+                <i class="fas fa-gamepad text-4xl text-gray-400 dark:text-gray-600"></i>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">{% trans "No hay sesiones de juego" %}</h3>
+            <p class="text-gray-500 dark:text-gray-400 mb-6 text-center max-w-md">
+                {% trans "Aún no se han iniciado sesiones de juego. Los pacientes pueden comenzar a jugar desde el catálogo de juegos." %}
+            </p>
+            <a href="{% url 'games:game_list' %}" class="px-6 py-3 bg-gradient-to-r from-purple-600 to-purple-800 hover:from-purple-500 hover:to-purple-700 text-white rounded-xl font-semibold flex items-center gap-2 transition-all shadow-lg hover:shadow-xl">
+                <i class="fas fa-plus"></i>
+                {% trans "Iniciar Primera Sesión" %}
+            </a>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Results Counter -->
+    {% if sesiones %}
+    <div class="mt-6 flex items-center justify-between">
+        <p class="text-sm text-gray-600 dark:text-gray-400">
+            {% trans "Mostrando" %} <span id="resultCount">{{ sesiones|length }}</span> {% trans "de" %} {{ sesiones|length }} {% trans "sesiones" %}
+        </p>
+        
+        <!-- Pagination could go here if needed -->
+        <div class="flex items-center gap-2">
+            <!-- Add pagination buttons if you implement it -->
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    // Variables globales
+    let currentFilter = 'todos';
+    let searchTerm = '';
+
+    // Función para filtrar por estado
+    function filtrarPorEstado(estado) {
+        currentFilter = estado;
+        
+        // Actualizar botones activos
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.classList.remove('active');
+            btn.classList.add('text-gray-600', 'dark:text-gray-400', 'hover:bg-gray-100', 'dark:hover:bg-gray-700');
+        });
+        
+        const activeBtn = document.querySelector(`[data-estado="${estado}"]`);
+        if (activeBtn) {
+            activeBtn.classList.add('active');
+            activeBtn.classList.remove('text-gray-600', 'dark:text-gray-400', 'hover:bg-gray-100', 'dark:hover:bg-gray-700');
+        }
+        
+        aplicarFiltros();
+    }
+
+    // Función para aplicar filtros
+    function aplicarFiltros() {
+        const rows = document.querySelectorAll('.session-row');
+        let visibleCount = 0;
+
+        rows.forEach(row => {
+            const estado = row.dataset.estado;
+            const paciente = row.dataset.paciente;
+            const juego = row.dataset.juego;
+            
+            const matchesFilter = currentFilter === 'todos' || estado === currentFilter;
+            const matchesSearch = searchTerm === '' || 
+                                paciente.includes(searchTerm.toLowerCase()) || 
+                                juego.includes(searchTerm.toLowerCase());
+            
+            if (matchesFilter && matchesSearch) {
+                row.style.display = 'table-row';
+                visibleCount++;
+            } else {
+                row.style.display = 'none';
+            }
+        });
+
+        // Actualizar contador
+        document.getElementById('resultCount').textContent = visibleCount;
+    }
+
+    // Búsqueda en tiempo real
+    document.getElementById('searchInput').addEventListener('input', function(e) {
+        searchTerm = e.target.value.toLowerCase();
+        aplicarFiltros();
+    });
+
+
+
+    // Inicialización cuando se carga la página
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('{% trans "Vista de sesiones cargada correctamente" %}');
+        
+        // Aplicar animaciones de entrada
+        const cards = document.querySelectorAll('.animate-fade-in');
+        cards.forEach((card, index) => {
+            setTimeout(() => {
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, index * 100);
+        });
+    });
+</script>
+{% endblock %}

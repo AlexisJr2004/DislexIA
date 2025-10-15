@@ -37,7 +37,8 @@ def crear_superusuario_inicial(sender, **kwargs):
             apellidos='DislexIA',
             especialidad='Administrador del Sistema',
             first_name='Administrador',
-            last_name='DislexIA'
+            last_name='DislexIA',
+            rol='administrador'
         )
         
         print(f"✅ Superusuario creado exitosamente:")
@@ -62,6 +63,7 @@ def crear_nino_ejemplo(sender, **kwargs):
     
     # Importar el modelo Nino aquí para evitar problemas de importación circular
     from .models import Nino
+    Profesional = get_user_model()
     
     # Verificar si ya existe al menos un niño
     if Nino.objects.exists():
@@ -69,19 +71,30 @@ def crear_nino_ejemplo(sender, **kwargs):
         return
     
     try:
-        # Crear niño de ejemplo
+        # Obtener el administrador (primer superusuario)
+        administrador = Profesional.objects.filter(is_superuser=True).first()
+        
+        if not administrador:
+            print("⚠️ No se encontró un administrador para asociar al niño")
+            return
+        
+        # Crear niño de ejemplo asociado al administrador
         nino_ejemplo = Nino.objects.create(
             nombres="Javier Ramón",
             apellidos="Haro Valdez",
             fecha_nacimiento=date(2016, 5, 15),  # 9 años aproximadamente
             edad=9,
+            genero='masculino',
             idioma_nativo="Español",
+            profesional=administrador,
             activo=True
         )
         
         print(f"✅ Niño de ejemplo creado exitosamente:")
         print(f"👶 Nombre: {nino_ejemplo.nombre_completo}")
+        print(f"👨‍⚕️ Profesional: {administrador.nombre_completo}")
         print(f"🎂 Edad: {nino_ejemplo.edad} años")
+        print(f"👦 Género: {nino_ejemplo.get_genero_display()}")
         print(f"🗣️ Idioma: {nino_ejemplo.idioma_nativo}")
         print(f"🆔 ID: {nino_ejemplo.id}")
         

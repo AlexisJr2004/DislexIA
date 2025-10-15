@@ -6,6 +6,8 @@ app_name = 'games'
 urlpatterns = [
     # Lista de juegos
     path('game-list/', views.GameListView.as_view(), name='game_list'),
+    # Lista de sesión de juegos 
+    path('session-list/', views.GameSessionListView.as_view(), name='session_list'),
     # Inicializar juego (crear sesión)
     path('init/<slug:juego_slug>/', views.InitGameView.as_view(), name='init_game'),
     # Jugar juego (sesión específica)
