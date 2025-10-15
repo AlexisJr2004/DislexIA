@@ -320,47 +320,86 @@
             <!-- Navigation -->
             <nav class="flex-1 px-3">
                 <a href="{% url 'dashboard' %}"
-                    class="nav-link flex items-center gap-3 px-3 py-2 mb-1 {% if request.resolver_match.url_name == 'dashboard' %}text-purple-600 dark:text-purple-400 bg-purple-100 dark:bg-purple-500/20{% else %}text-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800{% endif %} rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 hover:shadow-sm">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
-                    </svg>
+                    class="nav-link flex items-center gap-3 px-3 py-2 mb-1 
+                    {% if request.resolver_match.url_name == 'dashboard' %}
+                        text-purple-600 dark:text-purple-400 bg-purple-100 dark:bg-purple-500/20
+                    {% else %}
+                        text-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800
+                    {% endif %}
+                    rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 hover:shadow-sm group">
+
+                    <img width="100" height="100" src="https://img.icons8.com/ios/100/laptop-metrics--v1.png" alt="laptop-metrics--v1" 
+                        alt="Panel Administrativo"
+                        class="w-5 h-5 object-contain filter grayscale group-hover:grayscale-0 transition duration-300" />
+
                     {% trans "Panel Administrativo" %}
                 </a>
 
                 <a href="{% url 'games:game_list' %}"
-                    class="nav-link flex items-center gap-3 px-3 py-2 mb-1 {% if request.resolver_match.url_name == 'game_list' %}text-purple-600 dark:text-purple-400 bg-purple-100 dark:bg-purple-500/20{% else %}text-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800{% endif %} rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 hover:shadow-sm">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path
-                            d="M6 12h2m-1-1v2m8-1h2m-1-1v2m-9 5a4 4 0 01-4-4V9a4 4 0 014-4h10a4 4 0 014 4v4a4 4 0 01-4 4h-3l-2 2-2-2H8z" />
-                    </svg>
+                    class="nav-link flex items-center gap-3 px-3 py-2 mb-1 
+                    {% if request.resolver_match.url_name == 'game_list' %}
+                        text-purple-600 dark:text-purple-400 bg-purple-100 dark:bg-purple-500/20
+                    {% else %}
+                        text-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800
+                    {% endif %}
+                    rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 hover:shadow-sm group">
+
+                    <img width="64" height="64" src="https://img.icons8.com/pastel-glyph/64/controller--v2.png" alt="controller--v2"
+                        alt="Juegos"
+                        class="w-5 h-5 object-contain filter grayscale group-hover:grayscale-0 transition duration-300" />
+
                     {% trans "Juegos" %}
                 </a>
 
+                <a href="#"
+                    class="group nav-link flex items-center gap-3 px-3 py-2 mb-1 {% if request.resolver_match.url_name == 'games_ia' %}text-purple-600 dark:text-purple-400 bg-purple-100 dark:bg-purple-500/20{% else %}text-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800{% endif %} rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 hover:shadow-sm">
+
+                        <img width="100" height="100" src="https://img.icons8.com/ios/100/sparkling.png" alt="sparkling"
+                            alt="Icono IA" 
+                            class="w-5 h-5 object-contain grayscale group-hover:grayscale-0 transition duration-300" />
+
+                        {% trans "Análisis con IA" %}
+                </a>
+
                 <a href="{% url 'core:calendar' %}"
-                    class="nav-link flex items-center gap-3 px-3 py-2 mb-1 {% if request.resolver_match.url_name == 'calendar' %}text-purple-600 dark:text-purple-400 bg-purple-100 dark:bg-purple-500/20{% else %}text-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800{% endif %} rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 hover:shadow-sm">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 01-2 2z" />
-                    </svg>
+                class="group nav-link flex items-center gap-3 px-3 py-2 mb-1 {% if request.resolver_match.url_name == 'calendar' %}text-purple-600 dark:text-purple-400 bg-purple-100 dark:bg-purple-500/20{% else %}text-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800{% endif %} rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 hover:shadow-sm">
+
+                    <img width="96" height="96" src="https://img.icons8.com/parakeet-line/96/calendar--v1.png" alt="calendar--v1"
+                        alt="Icono Calendario" 
+                        class="w-5 h-5 object-contain grayscale group-hover:grayscale-0 group-hover:brightness-110 transition duration-300" />
+
                     {% trans "Calendario" %}
                 </a>
 
                 <a href="{% url 'core:documents' %}"
-                    class="nav-link flex items-center gap-3 px-3 py-2 mb-1 {% if request.resolver_match.url_name == 'documents' %}text-purple-600 dark:text-purple-400 bg-purple-100 dark:bg-purple-500/20{% else %}text-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800{% endif %} rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 hover:shadow-sm">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
+                    class="nav-link flex items-center gap-3 px-3 py-2 mb-1 
+                    {% if request.resolver_match.url_name == 'documents' %}
+                        text-purple-600 dark:text-purple-400 bg-purple-100 dark:bg-purple-500/20
+                    {% else %}
+                        text-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800
+                    {% endif %}
+                    rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 hover:shadow-sm group">
+
+                    <img src="https://img.icons8.com/pastel-glyph/128/document--v1.png" 
+                        alt="Recursos Digitales"
+                        class="w-5 h-5 object-contain filter grayscale group-hover:grayscale-0 transition duration-300" />
+
                     {% trans "Recursos Digitales" %}
                 </a>
 
                 <a href="{% url 'core:lista_ninos' %}"
-                    class="nav-link flex items-center gap-3 px-3 py-2 mb-1 {% if request.resolver_match.url_name == 'lista_ninos' %}text-purple-600 dark:text-purple-400 bg-purple-100 dark:bg-purple-500/20{% else %}text-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800{% endif %} rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 hover:shadow-sm">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-                    </svg>
+                    class="nav-link flex items-center gap-3 px-3 py-2 mb-1 
+                    {% if request.resolver_match.url_name == 'lista_ninos' %}
+                        text-purple-600 dark:text-purple-400 bg-purple-100 dark:bg-purple-500/20
+                    {% else %}
+                        text-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800
+                    {% endif %}
+                    rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 hover:shadow-sm group">
+
+                    <img src="https://img.icons8.com/ios/100/contact-card.png" 
+                        alt="Datos de Pacientes"
+                        class="w-5 h-5 object-contain filter grayscale group-hover:grayscale-0 transition duration-300" />
+
                     {% trans "Datos de Pacientes" %}
                 </a>
             </nav>
@@ -368,22 +407,34 @@
             <!-- Bottom Section -->
             <div class="p-3">
                 <a href="{% url 'core:settings' %}"
-                    class="nav-link flex items-center gap-3 px-3 py-2 mb-1 {% if request.resolver_match.url_name == 'settings' %}text-purple-600 dark:text-purple-400 bg-purple-100 dark:bg-purple-500/20{% else %}text-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800{% endif %} rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M12 15.5A3.5 3.5 0 1 0 12 8.5a3.5 3.5 0 0 0 0 7z" />
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09c.7 0 1.31-.4 1.51-1a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06c.51.51 1.27.67 1.82.33.5-.29 1-.81 1-1.51V3a2 2 0 1 1 4 0v.09c0 .7.4 1.31 1 1.51.55.34 1.31.18 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06c-.51.51-.67 1.27-.33 1.82.29.5.81 1 1.51 1H21a2 2 0 1 1 0 4h-.09c-.7 0-1.31.4-1.51 1z" />
-                    </svg>
+                    class="nav-link flex items-center gap-3 px-3 py-2 mb-1 
+                    {% if request.resolver_match.url_name == 'settings' %}
+                        text-purple-600 dark:text-purple-400 bg-purple-100 dark:bg-purple-500/20
+                    {% else %}
+                        text-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800
+                    {% endif %}
+                    rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 hover:shadow-sm group">
+
+                    <img src="https://img.icons8.com/ios/100/settings--v1.png" 
+                        alt="Configuraciones"
+                        class="w-5 h-5 object-contain filter grayscale group-hover:grayscale-0 transition duration-300" />
+
                     {% trans "Configuraciones" %}
                 </a>
 
                 <a href="{% url 'core:support' %}"
-                    class="nav-link flex items-center gap-3 px-3 py-2 mb-3 {% if request.resolver_match.url_name == 'support' %}text-purple-600 dark:text-purple-400 bg-purple-100 dark:bg-purple-500/20{% else %}text-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800{% endif %} rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8-1.09 0-2.13-.18-3.08-.5L3 20l1.5-2.5A8.962 8.962 0 013 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                    </svg>
+                    class="nav-link flex items-center gap-3 px-3 py-2 mb-3 
+                    {% if request.resolver_match.url_name == 'support' %}
+                        text-purple-600 dark:text-purple-400 bg-purple-100 dark:bg-purple-500/20
+                    {% else %}
+                        text-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800
+                    {% endif %}
+                    rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 hover:shadow-sm group">
+
+                    <img src="https://img.icons8.com/fluency-systems-regular/96/chat--v1.png" 
+                        alt="Soporte"
+                        class="w-5 h-5 object-contain filter grayscale group-hover:grayscale-0 transition duration-300" />
+
                     {% trans "Soporte" %}
                 </a>
 
