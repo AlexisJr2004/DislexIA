@@ -1,4 +1,4 @@
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, View
 from django.shortcuts import get_object_or_404, redirect
 from django.http import JsonResponse
 from django.utils import timezone
@@ -63,6 +63,71 @@ class GameSessionListView(TemplateView):
         return context
 
 @method_decorator(login_required, name='dispatch')
+class InitSequentialEvaluationView(View):
+    """Vista para inicializar una evaluación secuencial completa con todos los juegos activos"""
+
+    def get(self, request, *args, **kwargs):
+        print("=== InitSequentialEvaluationView called ===")
+        
+        # Obtener nino_id del querystring
+        nino_id = request.GET.get('nino_id')
+
+        if not nino_id:
+            messages.error(request, "ID de niño no proporcionado.")
+            return redirect('games:game_list')
+
+        try:
+            nino_id = int(nino_id)
+        except (ValueError, TypeError):
+            messages.error(request, "ID de niño inválido.")
+            return redirect('games:game_list')
+
+        # Verificar que el niño pertenece al profesional actual
+        try:
+            nino = Nino.objects.get(id=nino_id, profesional=request.user)
+        except Nino.DoesNotExist:
+            messages.error(request, "Niño no encontrado o no autorizado.")
+            return redirect('games:game_list')
+
+        # Crear nueva evaluación
+        evaluacion = Evaluacion.objects.create(
+            nino=nino,
+            fecha_hora_inicio=timezone.now(),
+            estado='en_proceso'
+        )
+
+        # Obtener todos los juegos activos ordenados por orden_visualizacion
+        juegos = Juego.objects.filter(activo=True).order_by('orden_visualizacion')
+
+        if not juegos.exists():
+            messages.error(request, "No hay juegos activos disponibles.")
+            return redirect('games:game_list')
+
+        # Crear sesiones para todos los juegos
+        sesiones_creadas = []
+        for juego in juegos:
+            try:
+                sesion = SesionJuego.crear_nueva_sesion(
+                    evaluacion=evaluacion,
+                    juego=juego,
+                    nivel=1  # Nivel por defecto
+                )
+                sesiones_creadas.append(sesion)
+            except Exception as e:
+                # Continuar con el siguiente juego
+                continue
+
+        if not sesiones_creadas:
+            messages.error(request, "Error al crear las sesiones de juegos.")
+            return redirect('games:game_list')
+
+        # Redirigir al primer juego
+        primera_sesion = sesiones_creadas[0]
+        print(f"=== Redirecting to first game: {primera_sesion.url_sesion} ===")
+        return redirect('games:play_game', url_sesion=primera_sesion.url_sesion)
+
+
+@method_decorator(login_required, name='dispatch')
 class InitGameView(TemplateView):
     """Vista para inicializar un juego y crear la sesión"""
     template_name = 'init_game.html'
@@ -124,6 +189,7 @@ class PlayGameView(TemplateView):
         context = super().get_context_data(**kwargs)
         
         url_sesion = kwargs.get('url_sesion')
+        print(f"=== PlayGameView called with url_sesion: {url_sesion} ===")
         
         # Obtener la sesión
         sesion = get_object_or_404(SesionJuego, url_sesion=url_sesion)
@@ -149,6 +215,33 @@ class PlayGameView(TemplateView):
             except:
                 game_config = {"error": "No se pudo cargar la configuración del juego"}
         
+        # Obtener todas las sesiones de esta evaluación ordenadas
+        sesiones_evaluacion = SesionJuego.objects.filter(
+            evaluacion=sesion.evaluacion
+        ).select_related('juego').order_by('fecha_inicio')
+
+        # Obtener todos los juegos activos ordenados
+        juegos = Juego.objects.filter(activo=True).order_by('orden_visualizacion')
+
+        # Agregar init_url a cada juego
+        juegos_con_urls = []
+        for juego in juegos:
+            # Buscar si ya existe una sesión para este juego en la evaluación actual
+            sesion_existente = sesiones_evaluacion.filter(juego=juego).first()
+            if sesion_existente:
+                # Usar la URL de la sesión existente
+                init_url = f'/games/play/{sesion_existente.url_sesion}/'
+            else:
+                # Si no existe, crear nueva sesión (caso legacy)
+                init_url = f'/games/init/{juego.slug}/?nino_id={sesion.evaluacion.nino.id}'
+            
+            juegos_con_urls.append({
+                'id': juego.id,
+                'slug': juego.slug,
+                'nombre': juego.nombre,
+                'init_url': init_url
+            })
+        
         context.update({
             'page_title': f'{sesion.juego.nombre} - DislexIA',
             'active_section': 'games',
@@ -158,8 +251,11 @@ class PlayGameView(TemplateView):
             'nino': sesion.evaluacion.nino,
             'game_config': game_config,
             'game_config_json': json.dumps(game_config, ensure_ascii=False, indent=2) if game_config else '{}',
+            'juegos': juegos_con_urls,
+            'juegos_json': json.dumps(juegos_con_urls, ensure_ascii=False),
         })
         
+        print(f"=== PlayGameView returning template for game: {sesion.juego.nombre} ===")
         return context
 
 @csrf_exempt
@@ -287,12 +383,17 @@ def finish_game_session(request, url_sesion):
         # Finalizar sesión
         sesion.finalizar_sesion(puntaje_final, preguntas_contestadas, tiempo_total)
         
-        # También finalizar la evaluación si es necesaria
+        # Verificar si debemos finalizar la evaluación completa
         evaluacion = sesion.evaluacion
-        evaluacion.fecha_hora_fin = timezone.now()
-        evaluacion.estado = 'completada'
-        evaluacion.duracion_total_minutos = tiempo_total // 60
-        evaluacion.save()
+        total_sesiones = SesionJuego.objects.filter(evaluacion=evaluacion).count()
+        sesiones_completadas = SesionJuego.objects.filter(evaluacion=evaluacion, estado='completada').count()
+        
+        # Si todas las sesiones están completadas, finalizar la evaluación
+        if sesiones_completadas == total_sesiones:
+            evaluacion.fecha_hora_fin = timezone.now()
+            evaluacion.estado = 'completada'
+            evaluacion.duracion_total_minutos = tiempo_total // 60
+            evaluacion.save()
         
         return JsonResponse({
             'success': True,
@@ -389,3 +490,95 @@ def asignar_nino(request):
         return JsonResponse({'success': False, 'error': 'Juego no encontrado.'}, status=404)
     except Exception as e:
         return JsonResponse({'success': False, 'error': str(e)}, status=500)
+
+
+@method_decorator(login_required, name='dispatch')
+class SequentialResultsView(TemplateView):
+    """Vista para mostrar los resultados completos de una evaluación secuencial de juegos"""
+    template_name = 'sequential_results.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        evaluacion_id = kwargs.get('evaluacion_id')
+
+        # Obtener la evaluación
+        evaluacion = get_object_or_404(
+            Evaluacion,
+            id=evaluacion_id,
+            nino__profesional=self.request.user  # Solo el profesional asignado puede ver
+        )
+
+        # Obtener todas las sesiones de esta evaluación (no solo completadas)
+        sesiones = SesionJuego.objects.filter(
+            evaluacion=evaluacion
+        ).select_related('juego').order_by('fecha_inicio')
+
+        # Calcular métricas totales desde las pruebas cognitivas
+        from .models import PruebaCognitiva
+        pruebas = PruebaCognitiva.objects.filter(evaluacion=evaluacion)
+
+        total_clics = sum(prueba.clics for prueba in pruebas)
+        total_aciertos = sum(prueba.aciertos for prueba in pruebas)
+        total_errores = sum(prueba.errores for prueba in pruebas)
+        puntaje_total = sum(prueba.puntaje for prueba in pruebas)
+
+        # Calcular precisión promedio
+        precision_promedio = 0
+        if total_clics > 0:
+            precision_promedio = (total_aciertos / total_clics) * 100
+
+        # Calcular tasa de error
+        tasa_error = 0
+        if total_clics > 0:
+            tasa_error = (total_errores / total_clics) * 100
+
+        # Calcular métricas por sesión/juego
+        sesiones_con_metricas = []
+        for sesion in sesiones:
+            # Obtener todas las pruebas cognitivas de este juego en esta evaluación
+            pruebas_juego = pruebas.filter(juego=sesion.juego)
+            
+            # Calcular métricas para este juego
+            juego_clics = sum(prueba.clics for prueba in pruebas_juego)
+            juego_aciertos = sum(prueba.aciertos for prueba in pruebas_juego)
+            juego_errores = sum(prueba.errores for prueba in pruebas_juego)
+            juego_puntaje = sum(prueba.puntaje for prueba in pruebas_juego)
+            
+            # Calcular precisión del juego
+            juego_precision = 0
+            if juego_clics > 0:
+                juego_precision = (juego_aciertos / juego_clics) * 100
+            
+            # Calcular tasa de error del juego
+            juego_tasa_error = 0
+            if juego_clics > 0:
+                juego_tasa_error = (juego_errores / juego_clics) * 100
+            
+            # Agregar métricas a la sesión
+            sesiones_con_metricas.append({
+                'sesion': sesion,
+                'clics': juego_clics,
+                'aciertos': juego_aciertos,
+                'errores': juego_errores,
+                'puntaje': juego_puntaje,
+                'precision': juego_precision,
+                'tasa_error': juego_tasa_error,
+            })
+
+        context.update({
+            'page_title': f'Resultados - {evaluacion.nino.nombre_completo}',
+            'active_section': 'games',
+            'evaluacion': evaluacion,
+            'sesiones': sesiones,
+            'sesiones_con_metricas': sesiones_con_metricas,
+            'total_clics': total_clics,
+            'total_aciertos': total_aciertos,
+            'total_errores': total_errores,
+            'puntaje_total': puntaje_total,
+            'precision_promedio': precision_promedio,
+            'tasa_error': tasa_error,
+        })
+
+        return context
+

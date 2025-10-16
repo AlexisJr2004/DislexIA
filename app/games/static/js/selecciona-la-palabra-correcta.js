@@ -463,11 +463,33 @@ class SeleccionaPalabraCorrectaGame {
         this.startGame();
     }
     
-    finishGame() {
+    async finishGame() {
         const totalTime = Math.floor((Date.now() - this.startTime) / 1000);
-        
+
         // Enviar datos finales al backend
-        this.sendGameResults(totalTime);
+        const result = await this.sendGameResults(totalTime);
+
+        if (result && result.success) {
+            // Obtener la lista de juegos y el índice del juego actual
+            const juegos = this.sessionData.juegos;
+            const juegoActualIndex = juegos.findIndex(juego => juego.slug === this.sessionData.juego_slug);
+
+            // Verificar si hay un siguiente juego
+            if (juegoActualIndex >= 0 && juegoActualIndex < juegos.length - 1) {
+                const siguienteJuego = juegos[juegoActualIndex + 1];
+                setTimeout(() => {
+                    window.location.href = siguienteJuego.init_url;
+                }, 1000); // Redirigir después de 1 segundo
+            } else {
+                // Si no hay más juegos, redirigir a resultados de evaluación secuencial
+                setTimeout(() => {
+                    window.location.href = `/games/results/${this.sessionData.evaluacion_id}/`;
+                }, 1000);
+            }
+        } else {
+            // Mostrar error si falló
+            alert('Error al finalizar el juego: ' + (result ? result.error : 'Error desconocido'));
+        }
     }
     
     updateScore() {
@@ -642,24 +664,22 @@ class SeleccionaPalabraCorrectaGame {
             if (!response.ok) {
                 const errorText = await response.text();
                 console.error('❌ Error del servidor:', errorText);
-                alert(`Error del servidor (${response.status}): ${response.statusText}`);
-                return;
+                return { success: false, error: `Error del servidor (${response.status}): ${response.statusText}` };
             }
             
             const result = await response.json();
             
             if (result.success) {
-                alert('¡Juego finalizado exitosamente!');
-                window.location.href = this.sessionData.api_urls.game_list;
+                return { success: true };
             } else {
-                alert('Error al finalizar el juego: ' + result.error);
+                return { success: false, error: result.error };
             }
         } catch (error) {
             console.error('❌ Error al finalizar juego:', error);
             if (error instanceof SyntaxError) {
-                alert('Error: El servidor devolvió una respuesta inválida. Revisa la consola para más detalles.');
+                return { success: false, error: 'El servidor devolvió una respuesta inválida. Revisa la consola para más detalles.' };
             } else {
-                alert('Error de conexión al finalizar el juego');
+                return { success: false, error: 'Error de conexión al finalizar el juego' };
             }
         }
     }

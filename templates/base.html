@@ -361,7 +361,7 @@
                     {% trans "Juegos" %}
                 </a>
 
-                <a href="#"
+                {% comment %} <a href="{% url 'games:juegos_ia' %}"
                     class="group nav-link flex items-center gap-3 px-3 py-2 mb-1 {% if request.resolver_match.url_name == 'games_ia' %}text-purple-600 dark:text-purple-400 bg-purple-100 dark:bg-purple-500/20{% else %}text-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800{% endif %} rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 hover:shadow-sm">
 
                         <img width="100" height="100" src="https://img.icons8.com/ios/100/sparkling.png" alt="sparkling"
@@ -369,7 +369,7 @@
                             class="w-5 h-5 object-contain grayscale group-hover:grayscale-0 transition duration-300" />
 
                         {% trans "Análisis con IA" %}
-                </a>
+                </a> {% endcomment %}
 
                 <a href="{% url 'core:calendar' %}"
                 class="group nav-link flex items-center gap-3 px-3 py-2 mb-1 {% if request.resolver_match.url_name == 'calendar' %}text-purple-600 dark:text-purple-400 bg-purple-100 dark:bg-purple-500/20{% else %}text-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800{% endif %} rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 hover:shadow-sm">
@@ -848,9 +848,10 @@
     <!-- Script para gestión de citas en sidebar -->
     <script>
         (function initCitasSidebar() {
-            let miniCurrentMonth = new Date().getMonth();
-            let miniCurrentYear = new Date().getFullYear();
-            let selectedDate = new Date();
+            const now = new Date();
+            let miniCurrentMonth = now.getMonth();
+            let miniCurrentYear = now.getFullYear();
+            let selectedDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
             let citasConFecha = new Set();
 
             const miniCalendarDays = document.getElementById('mini-calendar-days');
@@ -871,7 +872,7 @@
                         const fecha = d.toISOString().split('T')[0];
                         const response = await fetch("{% url 'core:get_citas_dia' %}?fecha=" + fecha);
                         const data = await response.json();
-                        if (data.citas.length > 0) {
+                        if (data.citas && data.citas.length > 0) {
                             citasConFecha.add(fecha);
                         }
                     }
@@ -934,6 +935,13 @@
             }
 
             async function loadCitasDelDia() {
+                // Si hay selección manual, usarla; si no, usar la fecha actual solo la primera vez
+                if (typeof window.selectedDateSidebar !== 'undefined' && window.selectedDateSidebar) {
+                    selectedDate = new Date(window.selectedDateSidebar.getFullYear(), window.selectedDateSidebar.getMonth(), window.selectedDateSidebar.getDate());
+                } else if (!selectedDate || isNaN(selectedDate.getTime())) {
+                    const now = new Date();
+                    selectedDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                }
                 const fecha = selectedDate.toISOString().split('T')[0];
                 
                 try {

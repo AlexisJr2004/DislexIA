@@ -1,0 +1,317 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block extra_head %}
+<style>
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes scaleIn {
+        from {
+            opacity: 0;
+            transform: scale(0.9);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+
+    @keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translateY(100%);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .animate-fade-in-up {
+        animation: fadeInUp 0.6s ease-out forwards;
+    }
+
+    .animate-scale-in {
+        animation: scaleIn 0.5s ease-out forwards;
+    }
+
+    .animate-slide-up {
+        animation: slideUp 0.8s ease-out forwards;
+    }
+
+    .result-card {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .result-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 12px 24px rgba(139, 92, 246, 0.15);
+    }
+
+    .chart-bar {
+        animation: slideUp 0.8s ease-out forwards;
+        transform: translateY(100%);
+    }
+
+    .progress-ring {
+        transition: stroke-dashoffset 1s ease-in-out;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="p-8">
+    <!-- Header Section -->
+    <div class="mb-8">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+            <div>
+                <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2 flex items-center gap-3">
+                    <div class="w-12 h-12 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-trophy text-white text-xl"></i>
+                    </div>
+                    {% trans "Resultados de Evaluación" %}
+                </h1>
+                <p class="text-gray-600 dark:text-gray-400">{% trans "Excelente trabajo" %}, <span class="font-bold text-purple-600 dark:text-purple-400">{{ evaluacion.nino.nombre_completo }}</span></p>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Main Grid: Contenido a la izquierda, Acciones a la derecha -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Left Column: Métricas y Resultados de Juegos -->
+        <div class="lg:col-span-2 space-y-6">
+            <!-- Métricas Principales en una fila -->
+            <div class="grid grid-cols-2 md:grid-cols-6 gap-4">
+                <!-- Clicks Totales -->
+                <div class="text-center p-5 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-200 dark:border-blue-800 result-card">
+                    <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <i class="fas fa-mouse-pointer text-blue-600 dark:text-blue-400 text-lg"></i>
+                    </div>
+                    <p class="text-3xl font-bold text-blue-600 dark:text-blue-400">{{ total_clics }}</p>
+                    <p class="text-xs text-gray-600 dark:text-gray-400 font-semibold mt-1">{% trans "Clicks" %}</p>
+                </div>
+
+                <!-- Aciertos -->
+                <div class="text-center p-5 bg-green-50 dark:bg-green-900/20 rounded-xl border border-green-200 dark:border-green-800 result-card">
+                    <div class="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <i class="fas fa-check-circle text-green-600 dark:text-green-400 text-lg"></i>
+                    </div>
+                    <p class="text-3xl font-bold text-green-600 dark:text-green-400">{{ total_aciertos }}</p>
+                    <p class="text-xs text-gray-600 dark:text-gray-400 font-semibold mt-1">{% trans "Aciertos" %}</p>
+                </div>
+
+                <!-- Errores -->
+                <div class="text-center p-5 bg-red-50 dark:bg-red-900/20 rounded-xl border border-red-200 dark:border-red-800 result-card">
+                    <div class="w-12 h-12 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <i class="fas fa-times-circle text-red-600 dark:text-red-400 text-lg"></i>
+                    </div>
+                    <p class="text-3xl font-bold text-red-600 dark:text-red-400">{{ total_errores }}</p>
+                    <p class="text-xs text-gray-600 dark:text-gray-400 font-semibold mt-1">{% trans "Errores" %}</p>
+                </div>
+
+                <!-- Puntaje -->
+                <div class="text-center p-5 bg-purple-50 dark:bg-purple-900/20 rounded-xl border border-purple-200 dark:border-purple-800 result-card">
+                    <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <i class="fas fa-star text-purple-600 dark:text-purple-400 text-lg"></i>
+                    </div>
+                    <p class="text-3xl font-bold text-purple-600 dark:text-purple-400">{{ puntaje_total }}</p>
+                    <p class="text-xs text-gray-600 dark:text-gray-400 font-semibold mt-1">{% trans "Puntaje" %}</p>
+                </div>
+
+                <!-- Precisión -->
+                <div class="text-center p-5 bg-cyan-50 dark:bg-cyan-900/20 rounded-xl border border-cyan-200 dark:border-cyan-800 result-card">
+                    <div class="w-12 h-12 bg-cyan-100 dark:bg-cyan-900/30 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <i class="fas fa-bullseye text-cyan-600 dark:text-cyan-400 text-lg"></i>
+                    </div>
+                    <p class="text-3xl font-bold text-cyan-600 dark:text-cyan-400">{{ precision_promedio|floatformat:1 }}%</p>
+                    <p class="text-xs text-gray-600 dark:text-gray-400 font-semibold mt-1">{% trans "Precisión" %}</p>
+                </div>
+
+                <!-- Tasa de Error -->
+                <div class="text-center p-5 bg-orange-50 dark:bg-orange-900/20 rounded-xl border border-orange-200 dark:border-orange-800 result-card">
+                    <div class="w-12 h-12 bg-orange-100 dark:bg-orange-900/30 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <i class="fas fa-exclamation-triangle text-orange-600 dark:text-orange-400 text-lg"></i>
+                    </div>
+                    <p class="text-3xl font-bold text-orange-600 dark:text-orange-400">{{ tasa_error|floatformat:1 }}%</p>
+                    <p class="text-xs text-gray-600 dark:text-gray-400 font-semibold mt-1">{% trans "Tasa Error" %}</p>
+                </div>
+            </div>
+            
+            <hr class="bg-gray-400 dark:bg-gray-700 my-4">
+            
+            <!-- Rendimiento por Juego -->
+            <div>
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-gamepad text-white"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-gray-900 dark:text-white">{% trans "Rendimiento por Juego" %}</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">{% trans "Detalles de cada juego completado" %}</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {% for item in sesiones_con_metricas %}
+                    <div class="p-4 bg-gradient-to-r from-gray-50 to-white dark:from-gray-800 dark:to-gray-700 rounded-xl border border-gray-200 dark:border-gray-600 hover:shadow-md transition-all result-card">
+                        <!-- Header del juego -->
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="w-10 h-10 bg-gradient-to-br from-{{ item.sesion.juego.color_gradiente_inicio }} to-{{ item.sesion.juego.color_gradiente_fin }} rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-puzzle-piece text-white text-sm"></i>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <h4 class="font-semibold text-gray-900 dark:text-white truncate">{{ item.sesion.juego.nombre }}</h4>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">{{ item.sesion.juego.get_dificultad_display }}</p>
+                            </div>
+                        </div>
+
+                        <!-- Métricas en grid -->
+                        <div class="grid grid-cols-3 gap-2 text-center mb-3">
+                            <div class="p-2 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
+                                <p class="text-lg font-bold text-purple-600 dark:text-purple-400">{{ item.puntaje }}</p>
+                                <p class="text-xs text-gray-600 dark:text-gray-400">{% trans "Puntos" %}</p>
+                            </div>
+                            <div class="p-2 bg-green-50 dark:bg-green-900/20 rounded-lg">
+                                <p class="text-lg font-bold text-green-600 dark:text-green-400">{{ item.aciertos }}</p>
+                                <p class="text-xs text-gray-600 dark:text-gray-400">{% trans "Aciertos" %}</p>
+                            </div>
+                            <div class="p-2 bg-red-50 dark:bg-red-900/20 rounded-lg">
+                                <p class="text-lg font-bold text-red-600 dark:text-red-400">{{ item.errores }}</p>
+                                <p class="text-xs text-gray-600 dark:text-gray-400">{% trans "Errores" %}</p>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-2 text-center mb-3">
+                            <div class="p-2 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                                <p class="text-sm font-bold text-blue-600 dark:text-blue-400">{{ item.precision|floatformat:1 }}%</p>
+                                <p class="text-xs text-gray-600 dark:text-gray-400">{% trans "Precisión" %}</p>
+                            </div>
+                            <div class="p-2 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg">
+                                <p class="text-sm font-bold text-yellow-600 dark:text-yellow-400">{{ item.clics }}</p>
+                                <p class="text-xs text-gray-600 dark:text-gray-400">{% trans "Clics" %}</p>
+                            </div>
+                        </div>
+
+                        <!-- Estado -->
+                        <div class="flex justify-center">
+                            {% if item.sesion.estado == 'completada' %}
+                            <span class="inline-flex items-center gap-2 px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded-full text-xs font-semibold">
+                                <i class="fas fa-check-circle"></i>
+                                {% trans "Completado" %}
+                            </span>
+                            {% else %}
+                            <span class="inline-flex items-center gap-2 px-3 py-1 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400 rounded-full text-xs font-semibold">
+                                <i class="fas fa-clock"></i>
+                                {% trans "En Progreso" %}
+                            </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column: Acciones Disponibles -->
+        <div class="space-y-6">
+            <!-- Mensaje Motivacional -->
+            <div class="bg-gradient-to-r from-purple-100 to-blue-100 dark:from-purple-900/30 dark:to-blue-900/30 rounded-2xl p-6 border border-purple-200 dark:border-purple-700">
+                <div class="flex items-center gap-4">
+                    <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-blue-500 rounded-full flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-star text-white text-2xl"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-lg font-bold text-purple-600 dark:text-purple-400 mb-1">
+                            {% trans "¡Sigue así!" %}
+                        </h4>
+                        <p class="text-gray-600 dark:text-gray-300 text-sm">
+                            {% trans "Cada evaluación es un paso hacia el progreso. ¡Continúa practicando!" %}
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-6 transition-colors duration-200">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-10 h-10 bg-gradient-to-br from-green-500 to-emerald-500 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-cogs text-white"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-gray-900 dark:text-white">{% trans "Acciones" %}</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">{% trans "¿Qué sigue?" %}</p>
+                    </div>
+                </div>
+                <hr class="bg-gray-400 dark:bg-gray-700 my-4">
+
+                <div class="space-y-3">
+                    <a href="{% url 'games:session_list' %}" class="w-full flex items-center gap-3 p-4 bg-gradient-to-r from-purple-600 to-purple-800 hover:from-purple-500 hover:to-purple-700 text-white rounded-xl font-semibold transition-all shadow-lg hover:shadow-xl transform hover:scale-105">
+                        <div class="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-list text-white"></i>
+                        </div>
+                        <div class="text-left">
+                            <p class="font-semibold text-sm">{% trans "Ver Sesiones" %}</p>
+                            <p class="text-xs opacity-90">{% trans "Historial" %}</p>
+                        </div>
+                    </a>
+
+                    <a href="{% url 'games:game_list' %}?modo=evaluacion" class="w-full flex items-center gap-3 p-4 bg-white dark:bg-gray-800 border-2 border-purple-600 dark:border-purple-400 text-purple-600 dark:text-purple-400 rounded-xl font-semibold transition-all hover:bg-purple-50 dark:hover:bg-purple-900/20 shadow-lg hover:shadow-xl transform hover:scale-105">
+                        <div class="w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-redo text-purple-600 dark:text-purple-400"></i>
+                        </div>
+                        <div class="text-left">
+                            <p class="font-semibold text-sm">{% trans "Nueva Eval" %}</p>
+                            <p class="text-xs">{% trans "Prueba again" %}</p>
+                        </div>
+                    </a>
+
+                    <a href="{% url 'dashboard' %}" class="w-full flex items-center gap-3 p-4 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 rounded-xl font-semibold transition-all shadow-lg hover:shadow-xl transform hover:scale-105">
+                        <div class="w-10 h-10 bg-white dark:bg-gray-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-home text-gray-700 dark:text-gray-200"></i>
+                        </div>
+                        <div class="text-left">
+                            <p class="font-semibold text-sm">{% trans "Dashboard" %}</p>
+                            <p class="text-xs">{% trans "Panel principal" %}</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const chartBars = document.querySelectorAll('.chart-bar');
+        chartBars.forEach((bar, index) => {
+            setTimeout(() => {
+                bar.style.animationDelay = `${index * 0.1}s`;
+            }, 100);
+        });
+
+        console.log('🎉 ¡Evaluación completada exitosamente!');
+        console.log('===== Métricas Completas para Análisis del Modelo =====');
+        console.log('Clicks:', {{ total_clics }});
+        console.log('Aciertos (Hits):', {{ total_aciertos }});
+        console.log('Errores (Misses):', {{ total_errores }});
+        console.log('Puntaje (Score):', {{ puntaje_total }});
+        console.log('Precisión (Accuracy):', {{ precision_promedio|floatformat:2 }},'%');
+        console.log('Tasa de Error (Missrate):', {{ tasa_error|floatformat:2 }},'%');
+        console.log('=========================================================');
+    });
+</script>
+{% endblock %}

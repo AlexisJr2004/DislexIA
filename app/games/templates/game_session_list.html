@@ -123,6 +123,22 @@
     @keyframes fadeIn {
         to { opacity: 1; }
     }
+
+    .animate-fade-in {
+        animation: fadeIn 0.2s ease-out;
+    }
+
+    .animate-slide-up {
+        animation: slideUp 0.3s ease-out;
+    }
+
+    .animate-spin-slow {
+    animation: spin-slow 3s linear infinite;
+    }
+
+    .bg-gradient-conic {
+    background: conic-gradient(from 0deg, #60a5fa, #a78bfa, #60a5fa);
+    }
 </style>
 {% endblock %}
 
@@ -141,11 +157,15 @@
         </div>
 
         <!-- Actions -->
-        <div class="flex items-center gap-3">            
-            <a href="{% url 'games:game_list' %}" class="px-5 py-2.5 bg-gradient-to-r from-purple-600 to-purple-800 hover:from-purple-500 hover:to-purple-700 text-white rounded-xl font-semibold flex items-center gap-2 transition-all shadow-md hover:shadow-lg">
-                <i class="fas fa-plus"></i>
-                <span class="hidden sm:inline">{% trans "Nueva Sesión" %}</span>
-            </a>
+        <div class="flex items-center gap-3">
+            <!-- Botón Nueva Sesión con borde animado y GIF -->
+            <div class="relative p-1 rounded-xl animate-spin-slow bg-gradient-conic">
+                <a href="{% url 'games:game_list' %}?abrir_modal=1" 
+                class="relative px-8 py-3 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-lg font-semibold flex items-center gap-2 transition-all hover:shadow-lg">
+                    <img src="{% static 'img/ia_carga.gif' %}" alt="IA Icon" class="w-6 h-6 flex-shrink-0">
+                    <span class="hidden sm:inline">{% trans "Iniciar Prueba Cognitiva" %}</span>
+                </a>
+            </div>
         </div>
     </div>
 

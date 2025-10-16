@@ -642,9 +642,33 @@ class EscribeElNombreGame {
         this.startGame();
     }
     
-    finishGame() {
+    async finishGame() {
         const totalTime = Math.floor((Date.now() - this.startTime) / 1000);
-        this.sendGameResults(totalTime);
+
+        // Enviar datos finales al backend
+        const result = await this.sendGameResults(totalTime);
+
+        if (result && result.success) {
+            // Obtener la lista de juegos y el índice del juego actual
+            const juegos = this.sessionData.juegos;
+            const juegoActualIndex = juegos.findIndex(juego => juego.slug === this.sessionData.juego_slug);
+
+            // Verificar si hay un siguiente juego
+            if (juegoActualIndex >= 0 && juegoActualIndex < juegos.length - 1) {
+                const siguienteJuego = juegos[juegoActualIndex + 1];
+                setTimeout(() => {
+                    window.location.href = siguienteJuego.init_url;
+                }, 1000); // Redirigir después de 1 segundo
+            } else {
+                // Si no hay más juegos, redirigir a resultados de evaluación secuencial
+                setTimeout(() => {
+                    window.location.href = `/games/results/${this.sessionData.evaluacion_id}/`;
+                }, 1000);
+            }
+        } else {
+            // Mostrar error si falló
+            alert('Error al finalizar el juego: ' + (result ? result.error : 'Error desconocido'));
+        }
     }
     
     updateScore() {
@@ -786,11 +810,13 @@ class EscribeElNombreGame {
             const result = await response.json();
             
             if (result.success) {
-                alert('¡Juego finalizado!');
-                window.location.href = this.sessionData.api_urls.game_list;
+                return { success: true };
+            } else {
+                return { success: false, error: result.error };
             }
         } catch (error) {
             console.error('❌ Error:', error);
+            return { success: false, error: 'Error de conexión al finalizar el juego' };
         }
     }
     

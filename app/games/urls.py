@@ -8,6 +8,8 @@ urlpatterns = [
     path('game-list/', views.GameListView.as_view(), name='game_list'),
     # Lista de sesión de juegos 
     path('session-list/', views.GameSessionListView.as_view(), name='session_list'),
+    # Inicializar evaluación IA completa (todos los juegos)
+    path('ia/init/', views.InitSequentialEvaluationView.as_view(), name='init_sequential_evaluation'),
     # Inicializar juego (crear sesión)
     path('init/<slug:juego_slug>/', views.InitGameView.as_view(), name='init_game'),
     # Jugar juego (sesión específica)
@@ -20,4 +22,6 @@ urlpatterns = [
     path('api/crear-nino/', views.crear_nino_ajax, name='crear_nino_ajax'),
     # Endpoint para asignar un niño existente a un juego
     path('asignar-nino/', views.asignar_nino, name='asignar_nino'),
+    # Resultados de evaluación secuencial
+    path('results/<int:evaluacion_id>/', views.SequentialResultsView.as_view(), name='sequential_results'),
 ]
