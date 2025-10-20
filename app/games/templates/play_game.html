@@ -696,6 +696,7 @@
         juego_nombre: '{{ juego.nombre }}',
         evaluacion_id: '{{ evaluacion.id }}',
         nino_id: '{{ nino.id }}',
+        es_evaluacion_ia: {{ es_evaluacion_ia|yesno:"true,false" }}, 
         juegos: {{ juegos_json|safe }},
         api_urls: {
             question_response: '{% url "games:save_question_response" %}',

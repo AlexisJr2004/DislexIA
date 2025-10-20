@@ -158,13 +158,13 @@
 
         <!-- Actions -->
         <div class="flex items-center gap-3">
-            <!-- Botón Nueva Sesión con borde animado y GIF -->
+            <!-- Botón Iniciar Prueba Cognitiva con borde animado y GIF -->
             <div class="relative p-1 rounded-xl animate-spin-slow bg-gradient-conic">
-                <a href="{% url 'games:game_list' %}?abrir_modal=1" 
-                class="relative px-8 py-3 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-lg font-semibold flex items-center gap-2 transition-all hover:shadow-lg">
+                <button onclick="abrirModalEvaluacionIA()"
+                        class="relative px-8 py-3 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-lg font-semibold flex items-center gap-2 transition-all hover:shadow-lg cursor-pointer">
                     <img src="{% static 'img/ia_carga.gif' %}" alt="IA Icon" class="w-6 h-6 flex-shrink-0">
                     <span class="hidden sm:inline">{% trans "Iniciar Prueba Cognitiva" %}</span>
-                </a>
+                </button>
             </div>
         </div>
     </div>
@@ -442,11 +442,161 @@
     {% endif %}
 </div>
 
+<!-- Modal Selección de Niño para Evaluación IA -->
+<div id="modalSeleccionNinoIA" class="hidden fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50 backdrop-blur-sm">
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-md w-full mx-4 transform transition-all">
+        <!-- Header del Modal -->
+        <div class="bg-gradient-to-r from-purple-600 to-blue-600 text-white p-6 rounded-t-2xl">
+            <h3 class="text-2xl font-bold flex items-center gap-3">
+                <i class="fas fa-brain"></i>
+                {% trans "Evaluación con IA" %}
+            </h3>
+            <p class="text-purple-100 text-sm mt-2">
+                {% trans "Evaluación completa de 32 ejercicios para predicción de dislexia" %}
+            </p>
+        </div>
+
+        <!-- Contenido del Modal -->
+        <div class="p-6">
+            <!-- Selector de Niño -->
+            <div class="mb-6">
+                <label for="ninoSelectIA" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                    <i class="fas fa-user-graduate text-purple-600 mr-2"></i>
+                    {% trans "Selecciona el niño a evaluar:" %}
+                </label>
+                <select id="ninoSelectIA" 
+                        class="w-full px-4 py-3 border-2 border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all">
+                    <option value="">{% trans "-- Selecciona un niño --" %}</option>
+                    {% for nino in ninos %}
+                    <option value="{{ nino.id }}" 
+                            data-nombre="{{ nino.nombres }}" 
+                            data-apellidos="{{ nino.apellidos }}"
+                            data-edad="{{ nino.edad }}">
+                        {{ nino.nombres }} {{ nino.apellidos }} ({{ nino.edad }} {% trans "años" %})
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Vista previa del niño seleccionado -->
+            <div id="vistaPreviewNinoIA" class="hidden mb-6 p-4 bg-purple-50 dark:bg-purple-900/20 rounded-xl border-2 border-purple-200 dark:border-purple-800">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center text-white text-xl font-bold">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div>
+                        <p class="font-semibold text-gray-900 dark:text-white" id="nombrePreviewIA"></p>
+                        <p class="text-sm text-gray-600 dark:text-gray-400" id="edadPreviewIA"></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botones de Acción -->
+            <div class="flex gap-3">
+                <button type="button" 
+                        onclick="cerrarModalEvaluacionIA()"
+                        class="flex-1 px-6 py-3 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-xl font-semibold hover:bg-gray-300 dark:hover:bg-gray-600 transition-all">
+                    <i class="fas fa-times mr-2"></i>
+                    {% trans "Cancelar" %}
+                </button>
+                <button type="button" 
+                        onclick="confirmarEvaluacionIA()"
+                        id="btnConfirmarIA"
+                        class="flex-1 px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-xl font-semibold hover:from-purple-700 hover:to-blue-700 transition-all shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed">
+                    <i class="fas fa-rocket mr-2"></i>
+                    {% trans "Iniciar Evaluación" %}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 {% endblock %}
 
 {% block extra_scripts %}
 <script>
+
+    // Variables globales para evaluación IA
+    let ninoSeleccionadoIA = null;
+
+    // Abrir modal de evaluación IA
+    function abrirModalEvaluacionIA() {
+        document.getElementById('modalSeleccionNinoIA').classList.remove('hidden');
+        document.getElementById('ninoSelectIA').value = '';
+        document.getElementById('vistaPreviewNinoIA').classList.add('hidden');
+    }
+
+    // Cerrar modal de evaluación IA
+    function cerrarModalEvaluacionIA() {
+        document.getElementById('modalSeleccionNinoIA').classList.add('hidden');
+        ninoSeleccionadoIA = null;
+    }
+
+    // Manejar cambio en el selector de niño
+    document.addEventListener('DOMContentLoaded', function() {
+        const selectNino = document.getElementById('ninoSelectIA');
+        if (selectNino) {
+            selectNino.addEventListener('change', function() {
+                const selectedOption = this.options[this.selectedIndex];
+                const ninoId = this.value;
+                
+                if (ninoId) {
+                    // Guardar datos del niño seleccionado
+                    ninoSeleccionadoIA = {
+                        id: ninoId,
+                        nombre: selectedOption.dataset.nombre,
+                        apellidos: selectedOption.dataset.apellidos,
+                        edad: selectedOption.dataset.edad
+                    };
+                    
+                    // Mostrar preview
+                    document.getElementById('nombrePreviewIA').textContent = 
+                        `${ninoSeleccionadoIA.nombre} ${ninoSeleccionadoIA.apellidos}`;
+                    document.getElementById('edadPreviewIA').textContent = 
+                        `${ninoSeleccionadoIA.edad} {% trans "años" %}`;
+                    document.getElementById('vistaPreviewNinoIA').classList.remove('hidden');
+                } else {
+                    ninoSeleccionadoIA = null;
+                    document.getElementById('vistaPreviewNinoIA').classList.add('hidden');
+                }
+            });
+        }
+    });
+
+    // Confirmar y comenzar evaluación IA
+    function confirmarEvaluacionIA() {
+        if (!ninoSeleccionadoIA) {
+            alert('⚠️ {% trans "Por favor selecciona un niño para continuar" %}');
+            return;
+        }
+        
+        const btnConfirmar = document.getElementById('btnConfirmarIA');
+        const originalHTML = btnConfirmar.innerHTML;
+        
+        // Deshabilitar botón y mostrar loading
+        btnConfirmar.disabled = true;
+        btnConfirmar.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>{% trans "Iniciando..." %}';
+        
+        // Redirigir a la evaluación IA secuencial
+        const urlInicio = `{% url 'games:init_sequential_evaluation' %}?nino_id=${ninoSeleccionadoIA.id}`;
+        
+        console.log('🚀 Iniciando evaluación IA para:', ninoSeleccionadoIA);
+        console.log('📍 URL:', urlInicio);
+        
+        // Redirigir después de un pequeño delay
+        setTimeout(() => {
+            window.location.href = urlInicio;
+        }, 500);
+    }
+
+    // Cerrar modal al hacer clic fuera
+    document.addEventListener('click', function(event) {
+        const modal = document.getElementById('modalSeleccionNinoIA');
+        if (modal && event.target === modal) {
+            cerrarModalEvaluacionIA();
+        }
+    });
     // Variables globales
     let currentFilter = 'todos';
     let searchTerm = '';

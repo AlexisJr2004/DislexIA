@@ -10,7 +10,7 @@ from django.utils.decorators import method_decorator
 import json
 import os
 from django.conf import settings
-
+import traceback
 from .models import Juego, SesionJuego, Evaluacion
 from app.core.models import Nino, Profesional
 from app.core.forms import NinoForm
@@ -55,11 +55,16 @@ class GameSessionListView(TemplateView):
             evaluacion__nino__profesional=profesional
         ).select_related('juego', 'evaluacion__nino').order_by('-fecha_inicio')
 
+        # Obtener niños del profesional para el modal IA
+        ninos = Nino.objects.filter(profesional=profesional)
+
         context.update({
             'page_title': 'Sesiones de Juegos - DislexIA',
             'active_section': 'games',
             'sesiones': sesiones,
+            'ninos': ninos,  # ← AGREGADO
         })
+        
         return context
 
 @method_decorator(login_required, name='dispatch')
@@ -67,63 +72,120 @@ class InitSequentialEvaluationView(View):
     """Vista para inicializar una evaluación secuencial completa con todos los juegos activos"""
 
     def get(self, request, *args, **kwargs):
-        print("=== InitSequentialEvaluationView called ===")
+        print("="*80)
+        print("🚀 InitSequentialEvaluationView LLAMADA")
+        print("="*80)
         
         # Obtener nino_id del querystring
         nino_id = request.GET.get('nino_id')
+        print(f"📌 nino_id recibido: {nino_id}")
 
         if not nino_id:
             messages.error(request, "ID de niño no proporcionado.")
+            print("❌ ERROR: No se proporcionó nino_id")
             return redirect('games:game_list')
 
         try:
             nino_id = int(nino_id)
+            print(f"✅ nino_id convertido a int: {nino_id}")
         except (ValueError, TypeError):
             messages.error(request, "ID de niño inválido.")
+            print(f"❌ ERROR: nino_id inválido: {nino_id}")
             return redirect('games:game_list')
 
         # Verificar que el niño pertenece al profesional actual
         try:
             nino = Nino.objects.get(id=nino_id, profesional=request.user)
+            print(f"✅ Niño encontrado: {nino.nombre_completo}")
         except Nino.DoesNotExist:
             messages.error(request, "Niño no encontrado o no autorizado.")
+            print(f"❌ ERROR: Niño con ID {nino_id} no encontrado")
             return redirect('games:game_list')
 
         # Crear nueva evaluación
+        print("\n📝 Creando nueva evaluación...")
         evaluacion = Evaluacion.objects.create(
             nino=nino,
             fecha_hora_inicio=timezone.now(),
             estado='en_proceso'
         )
+        print(f"✅ Evaluación creada con ID: {evaluacion.id}")
 
         # Obtener todos los juegos activos ordenados por orden_visualizacion
+        print("\n🎮 Obteniendo juegos activos...")
         juegos = Juego.objects.filter(activo=True).order_by('orden_visualizacion')
+        print(f"📊 Juegos activos encontrados: {juegos.count()}")
 
         if not juegos.exists():
             messages.error(request, "No hay juegos activos disponibles.")
+            print("❌ ERROR: No hay juegos activos")
             return redirect('games:game_list')
 
-        # Crear sesiones para todos los juegos
+        # Convertir a lista para acceso por índice
+        juegos_list = list(juegos)
+        num_juegos = len(juegos_list)
+        print(f"📋 Lista de juegos ({num_juegos}):")
+        for idx, juego in enumerate(juegos_list):
+            print(f"   {idx}: {juego.nombre}")
+
+        # SISTEMA DE BUCLE: Crear 32 sesiones rotando los juegos disponibles
+        TOTAL_SESIONES = 32
         sesiones_creadas = []
-        for juego in juegos:
+        
+        print(f"\n🔄 INICIANDO BUCLE DE CREACIÓN DE {TOTAL_SESIONES} SESIONES...")
+        print("="*80)
+
+        for i in range(TOTAL_SESIONES):
+            print(f"\n🔄 Iteración {i+1}/{TOTAL_SESIONES} iniciada")
+            
             try:
+                # Rotar entre los juegos disponibles usando módulo
+                juego_index = i % num_juegos
+                juego = juegos_list[juego_index]
+                
+                print(f"   🎯 Juego seleccionado: {juego.nombre} (index {juego_index})")
+                
+                # Crear sesión
+                print(f"   ⏳ Llamando a SesionJuego.crear_nueva_sesion...")
                 sesion = SesionJuego.crear_nueva_sesion(
                     evaluacion=evaluacion,
                     juego=juego,
                     nivel=1  # Nivel por defecto
                 )
+                print(f"   ✅ Sesión creada con ID: {sesion.id}")
+                
+                # Asignar número de ejercicio global (1-32)
+                sesion.ejercicio_numero = i + 1
+                sesion.save(update_fields=['ejercicio_numero'])
+                print(f"   ✅ ejercicio_numero asignado: {sesion.ejercicio_numero}")
+                
                 sesiones_creadas.append(sesion)
+                
+                print(f"✅ Sesión {i+1}/32 creada: {juego.nombre} (ejercicio_numero={sesion.ejercicio_numero})")
+                print(f"📊 Sesiones acumuladas: {len(sesiones_creadas)}")
+                
             except Exception as e:
-                # Continuar con el siguiente juego
+                print(f"❌ ERROR creando sesión {i+1}: {e}")
+                print(f"🔍 Tipo de error: {type(e).__name__}")
+                import traceback
+                traceback.print_exc()
                 continue
+
+        print("\n" + "="*80)
+        print(f"🎯 BUCLE FINALIZADO")
+        print(f"📊 Total de sesiones creadas: {len(sesiones_creadas)}/{TOTAL_SESIONES}")
+        print("="*80)
 
         if not sesiones_creadas:
             messages.error(request, "Error al crear las sesiones de juegos.")
+            print("❌ FALLO CRÍTICO: No se crearon sesiones")
             return redirect('games:game_list')
 
         # Redirigir al primer juego
         primera_sesion = sesiones_creadas[0]
-        print(f"=== Redirecting to first game: {primera_sesion.url_sesion} ===")
+        print(f"\n🎮 Redirigiendo al primer juego: {primera_sesion.url_sesion}")
+        print("="*80 + "\n")
+        
         return redirect('games:play_game', url_sesion=primera_sesion.url_sesion)
 
 
@@ -194,6 +256,10 @@ class PlayGameView(TemplateView):
         # Obtener la sesión
         sesion = get_object_or_404(SesionJuego, url_sesion=url_sesion)
         
+        # ⭐ AGREGAR ESTAS 2 LÍNEAS AQUÍ:
+        # Detectar si es evaluación secuencial de IA (tiene evaluacion Y ejercicio_numero)
+        es_evaluacion_ia = sesion.evaluacion is not None and sesion.ejercicio_numero is not None
+
         # Verificar si el archivo de configuración existe
         if not sesion.juego.archivo_configuracion_existe():
             # Crear archivo template si no existe
@@ -253,6 +319,7 @@ class PlayGameView(TemplateView):
             'game_config_json': json.dumps(game_config, ensure_ascii=False, indent=2) if game_config else '{}',
             'juegos': juegos_con_urls,
             'juegos_json': json.dumps(juegos_con_urls, ensure_ascii=False),
+            'es_evaluacion_ia': es_evaluacion_ia,
         })
         
         print(f"=== PlayGameView returning template for game: {sesion.juego.nombre} ===")
@@ -265,33 +332,34 @@ def save_question_response(request):
     try:
         data = json.loads(request.body)
         
+        print(f"📥 question-response recibido:")
+        print(f"   session_url: {data.get('session_url')}")
+        print(f"   question_id: {data.get('question_id')}")
+        print(f"   is_correct: {data.get('is_correct')}")
+        
         session_url = data.get('session_url')
         question_id = data.get('question_id')
         is_correct = data.get('is_correct', False)
         response_time_ms = data.get('response_time_ms', 0)
         points_earned = data.get('points_earned', 0)
         
-        # Obtener la sesión
+        if not session_url:
+            raise ValueError("session_url es requerido")
+        if question_id is None:
+            raise ValueError("question_id es requerido")
+        
         sesion = get_object_or_404(SesionJuego, url_sesion=session_url)
         
-        # Crear o actualizar PruebaCognitiva
         from .models import PruebaCognitiva
         
-        prueba, created = PruebaCognitiva.objects.get_or_create(
-            evaluacion=sesion.evaluacion,
-            juego=sesion.juego,
-            numero_prueba=question_id,
-            defaults={
-                'clics': 1,
-                'aciertos': 1 if is_correct else 0,
-                'errores': 0 if is_correct else 1,
-                'puntaje': points_earned,
-                'tiempo_respuesta_ms': response_time_ms
-            }
-        )
-        
-        if not created:
-            # Actualizar existente
+        # ⭐ CAMBIO: Buscar por (evaluacion, juego, numero_prueba)
+        try:
+            prueba = PruebaCognitiva.objects.get(
+                evaluacion=sesion.evaluacion,
+                juego=sesion.juego,
+                numero_prueba=question_id
+            )
+            # Si existe, actualizar
             prueba.clics += 1
             if is_correct:
                 prueba.aciertos += 1
@@ -299,6 +367,21 @@ def save_question_response(request):
                 prueba.errores += 1
             prueba.puntaje += points_earned
             prueba.save()
+            created = False
+            
+        except PruebaCognitiva.DoesNotExist:
+            # Si no existe, crear
+            prueba = PruebaCognitiva.objects.create(
+                evaluacion=sesion.evaluacion,
+                juego=sesion.juego,
+                numero_prueba=question_id,
+                clics=1,
+                aciertos=1 if is_correct else 0,
+                errores=0 if is_correct else 1,
+                puntaje=points_earned,
+                tiempo_respuesta_ms=response_time_ms
+            )
+            created = True
         
         # Actualizar estadísticas de la sesión
         sesion.puntaje_total += points_earned if is_correct else 0
@@ -312,7 +395,19 @@ def save_question_response(request):
             'prueba_id': prueba.id
         })
         
+    except ValueError as e:
+        print(f"❌ Error de validación en question-response: {e}")
+        print(f"   Datos recibidos: {json.loads(request.body)}")
+        return JsonResponse({
+            'success': False,
+            'error': f'Datos inválidos: {str(e)}'
+        }, status=400)
+        
     except Exception as e:
+        print(f"❌ Error en question-response: {e}")
+        print(f"   Request body: {request.body.decode('utf-8')}")
+        import traceback
+        traceback.print_exc()
         return JsonResponse({
             'success': False,
             'error': str(e)
@@ -375,39 +470,185 @@ def finish_game_session(request, url_sesion):
         
         # Parsear datos del POST
         data = json.loads(request.body)
-        
         puntaje_final = data.get('total_score', sesion.puntaje_total)
-        preguntas_contestadas = data.get('total_correct', 0) + data.get('total_incorrect', 0)
+        total_correct = data.get('total_correct', 0)
+        total_incorrect = data.get('total_incorrect', 0)
+        preguntas_contestadas = total_correct + total_incorrect
         tiempo_total = data.get('total_time_seconds', 0)
-        
-        # Finalizar sesión
-        sesion.finalizar_sesion(puntaje_final, preguntas_contestadas, tiempo_total)
+
+        # === CALCULAR MÉTRICAS AGREGADAS ===
+        # Opción 1: Si el frontend envía las métricas directamente
+        clicks_total = data.get('total_clicks', preguntas_contestadas)
+        hits_total = data.get('total_hits', total_correct)
+        misses_total = data.get('total_misses', total_incorrect)
+
+        # Opción 2: Si no las envía, calcularlas desde PruebaCognitiva
+        if clicks_total == 0 or hits_total == 0:
+            metricas = sesion.calcular_metricas_desde_pruebas()
+            clicks_total = metricas['clicks']
+            hits_total = metricas['hits']
+            misses_total = metricas['misses']
+            print(f"📊 Métricas calculadas desde PruebaCognitiva: {metricas}")
+
+        # Finalizar sesión con métricas agregadas
+        sesion.finalizar_sesion(
+            puntaje_final=puntaje_final,
+            preguntas_contestadas=preguntas_contestadas,
+            tiempo_total=tiempo_total,
+            clicks=clicks_total,
+            hits=hits_total,
+            misses=misses_total
+        )
+
+        print(f"✅ Sesión finalizada - Ejercicio #{sesion.ejercicio_numero}: Clicks={clicks_total}, Hits={hits_total}, Misses={misses_total}")
         
         # Verificar si debemos finalizar la evaluación completa
         evaluacion = sesion.evaluacion
         total_sesiones = SesionJuego.objects.filter(evaluacion=evaluacion).count()
         sesiones_completadas = SesionJuego.objects.filter(evaluacion=evaluacion, estado='completada').count()
-        
+
+        print(f"📊 Progreso: {sesiones_completadas}/{total_sesiones} sesiones completadas")
+
         # Si todas las sesiones están completadas, finalizar la evaluación
         if sesiones_completadas == total_sesiones:
             evaluacion.fecha_hora_fin = timezone.now()
             evaluacion.estado = 'completada'
             evaluacion.duracion_total_minutos = tiempo_total // 60
             evaluacion.save()
-        
-        return JsonResponse({
-            'success': True,
-            'message': 'Sesión finalizada correctamente',
-            'sesion_id': sesion.id,
-            'evaluacion_id': evaluacion.id,
-            'final_stats': {
-                'puntaje_total': sesion.puntaje_total,
-                'preguntas_respondidas': sesion.preguntas_respondidas,
-                'tiempo_total_minutos': evaluacion.duracion_total_minutos,
-                'precision_promedio': float(evaluacion.precision_promedio)
-            }
-        })
-        
+            
+            print(f"✅ ¡EVALUACIÓN COMPLETA! Total: {total_sesiones} sesiones")
+            
+            # === REALIZAR PREDICCIÓN CON MODELO IA ===
+            print("\n🤖 Iniciando predicción de dislexia...")
+            
+            try:
+                from .ml_models.predictor import predecir_dislexia_desde_evaluacion
+                from app.core.models import ReporteIA
+                
+                # Realizar predicción
+                resultado_prediccion = predecir_dislexia_desde_evaluacion(evaluacion.id)
+                
+                if resultado_prediccion['success']:
+                    pred = resultado_prediccion['prediccion']
+                    
+                    print(f"✅ Predicción exitosa:")
+                    print(f"   - Clasificación: {pred['clasificacion']}")
+                    print(f"   - Probabilidad: {pred['probabilidad_porcentaje']}%")
+                    print(f"   - Nivel de riesgo: {pred['nivel_riesgo']}")
+                    
+                    # === GUARDAR RESULTADO EN ReporteIA ===
+                    try:
+                        # Preparar características en formato JSON
+                        caracteristicas_json = {
+                            'total_sesiones': total_sesiones,
+                            'accuracy_promedio': float(evaluacion.precision_promedio),
+                            'total_clicks': evaluacion.total_clics,
+                            'total_aciertos': evaluacion.total_aciertos,
+                            'total_errores': evaluacion.total_errores,
+                            'duracion_minutos': evaluacion.duracion_total_minutos,
+                            'modelo_version': resultado_prediccion.get('modelo_info', {}).get('version', 'v2.2'),
+                            'umbral_utilizado': pred.get('umbral_utilizado', 0.5)
+                        }
+                        
+                        # Preparar métricas relevantes
+                        metricas_relevantes = {
+                            'probabilidad': pred['probabilidad'],
+                            'probabilidad_porcentaje': pred['probabilidad_porcentaje'],
+                            'confianza': pred.get('confianza', 0),
+                            'confianza_porcentaje': pred.get('confianza_porcentaje', 0),
+                            'nivel_riesgo': pred['nivel_riesgo'],
+                            'simulacion': pred.get('simulacion', False)
+                        }
+                        
+                        # Mapear nivel de riesgo a clasificación
+                        if pred['nivel_riesgo'] == 'ALTO':
+                            clasificacion_riesgo = 'alto'
+                        elif pred['nivel_riesgo'] == 'MEDIO':
+                            clasificacion_riesgo = 'medio'
+                        else:
+                            clasificacion_riesgo = 'bajo'
+                        
+                        # Crear o actualizar ReporteIA
+                        reporte, created = ReporteIA.objects.update_or_create(
+                            evaluacion=evaluacion,
+                            defaults={
+                                'indice_riesgo': pred['probabilidad'] * 100,  # Convertir a escala 0-100
+                                'clasificacion_riesgo': clasificacion_riesgo,
+                                'confianza_prediccion': int(pred.get('confianza_porcentaje', 60)),
+                                'caracteristicas_json': caracteristicas_json,
+                                'recomendaciones': pred['recomendacion'],
+                                'metricas_relevantes': metricas_relevantes
+                            }
+                        )
+                        
+                        if created:
+                            print(f"✅ ReporteIA creado con ID: {reporte.id}")
+                        else:
+                            print(f"✅ ReporteIA actualizado con ID: {reporte.id}")
+                        
+                    except Exception as e:
+                        print(f"⚠️ Error al guardar ReporteIA: {e}")
+                        import traceback
+                        traceback.print_exc()
+                
+                else:
+                    print(f"⚠️ Error en predicción: {resultado_prediccion.get('error', 'Error desconocido')}")
+            
+            except Exception as e:
+                print(f"❌ Error al ejecutar predicción: {e}")
+                import traceback
+                traceback.print_exc()
+            
+            # === RETORNAR RESPUESTA ===
+            return JsonResponse({
+                'success': True,
+                'message': '¡Evaluación completa! Predicción de IA realizada.',
+                'evaluacion_completada': True,
+                'redirect_url': f'/games/results/{evaluacion.id}/',
+                'sesion_id': sesion.id,
+                'evaluacion_id': evaluacion.id,
+                'prediccion_realizada': resultado_prediccion['success'] if 'resultado_prediccion' in locals() else False,
+                'final_stats': {
+                    'puntaje_total': sesion.puntaje_total,
+                    'preguntas_respondidas': sesion.preguntas_respondidas,
+                    'tiempo_total_minutos': evaluacion.duracion_total_minutos,
+                    'precision_promedio': float(evaluacion.precision_promedio),
+                    'sesiones_completadas': sesiones_completadas,
+                    'sesiones_totales': total_sesiones
+                }
+            })
+        else:
+            # Buscar la siguiente sesión pendiente
+            siguiente_sesion = SesionJuego.objects.filter(
+                evaluacion=evaluacion,
+                estado='en_proceso'
+            ).order_by('ejercicio_numero').first()
+            
+            if siguiente_sesion:
+                print(f"➡️ Siguiente juego: {siguiente_sesion.juego.nombre} (Ejercicio #{siguiente_sesion.ejercicio_numero})")
+                
+                return JsonResponse({
+                    'success': True,
+                    'message': f'Juego completado. Avanzando al siguiente...',
+                    'evaluacion_completada': False,
+                    'siguiente_url': f'/games/play/{siguiente_sesion.url_sesion}/',
+                    'progreso': {
+                        'completadas': sesiones_completadas,
+                        'totales': total_sesiones,
+                        'porcentaje': round((sesiones_completadas / total_sesiones) * 100, 1)
+                    },
+                    'sesion_id': sesion.id
+                })
+            else:
+                # No hay siguiente sesión (caso raro)
+                return JsonResponse({
+                    'success': True,
+                    'message': 'Sesión finalizada correctamente',
+                    'evaluacion_completada': False,
+                    'redirect_url': f'/games/results/{evaluacion.id}/',
+                    'sesion_id': sesion.id
+                })
+
     except Exception as e:
         return JsonResponse({
             'success': False,
@@ -506,10 +747,10 @@ class SequentialResultsView(TemplateView):
         evaluacion = get_object_or_404(
             Evaluacion,
             id=evaluacion_id,
-            nino__profesional=self.request.user  # Solo el profesional asignado puede ver
+            nino__profesional=self.request.user
         )
 
-        # Obtener todas las sesiones de esta evaluación (no solo completadas)
+        # Obtener todas las sesiones de esta evaluación
         sesiones = SesionJuego.objects.filter(
             evaluacion=evaluacion
         ).select_related('juego').order_by('fecha_inicio')
@@ -533,45 +774,62 @@ class SequentialResultsView(TemplateView):
         if total_clics > 0:
             tasa_error = (total_errores / total_clics) * 100
 
-        # Calcular métricas por sesión/juego
-        sesiones_con_metricas = []
+        # ⭐ NUEVO: Agrupar métricas por juego
+        from collections import defaultdict
+        
+        juegos_agrupados = defaultdict(lambda: {
+            'veces_jugado': 0,
+            'puntaje_total': 0,
+            'clics_total': 0,
+            'aciertos_total': 0,
+            'errores_total': 0,
+            'juego_obj': None
+        })
+        
+        # Agrupar por juego
         for sesion in sesiones:
-            # Obtener todas las pruebas cognitivas de este juego en esta evaluación
-            pruebas_juego = pruebas.filter(juego=sesion.juego)
+            juego_id = sesion.juego.id
             
-            # Calcular métricas para este juego
-            juego_clics = sum(prueba.clics for prueba in pruebas_juego)
-            juego_aciertos = sum(prueba.aciertos for prueba in pruebas_juego)
-            juego_errores = sum(prueba.errores for prueba in pruebas_juego)
-            juego_puntaje = sum(prueba.puntaje for prueba in pruebas_juego)
+            # Obtener métricas de este juego en esta sesión
+            pruebas_sesion = pruebas.filter(juego=sesion.juego)
             
-            # Calcular precisión del juego
-            juego_precision = 0
-            if juego_clics > 0:
-                juego_precision = (juego_aciertos / juego_clics) * 100
+            sesion_clics = sum(p.clics for p in pruebas_sesion)
+            sesion_aciertos = sum(p.aciertos for p in pruebas_sesion)
+            sesion_errores = sum(p.errores for p in pruebas_sesion)
+            sesion_puntaje = sum(p.puntaje for p in pruebas_sesion)
             
-            # Calcular tasa de error del juego
-            juego_tasa_error = 0
-            if juego_clics > 0:
-                juego_tasa_error = (juego_errores / juego_clics) * 100
+            juegos_agrupados[juego_id]['veces_jugado'] += 1
+            juegos_agrupados[juego_id]['puntaje_total'] += sesion_puntaje
+            juegos_agrupados[juego_id]['clics_total'] += sesion_clics
+            juegos_agrupados[juego_id]['aciertos_total'] += sesion_aciertos
+            juegos_agrupados[juego_id]['errores_total'] += sesion_errores
+            juegos_agrupados[juego_id]['juego_obj'] = sesion.juego
+        
+        # Convertir a lista y calcular precisión
+        juegos_resumen = []
+        for juego_id, datos in juegos_agrupados.items():
+            total_respuestas = datos['clics_total']
+            precision = (datos['aciertos_total'] / total_respuestas * 100) if total_respuestas > 0 else 0
             
-            # Agregar métricas a la sesión
-            sesiones_con_metricas.append({
-                'sesion': sesion,
-                'clics': juego_clics,
-                'aciertos': juego_aciertos,
-                'errores': juego_errores,
-                'puntaje': juego_puntaje,
-                'precision': juego_precision,
-                'tasa_error': juego_tasa_error,
+            juegos_resumen.append({
+                'juego': datos['juego_obj'],
+                'veces_jugado': datos['veces_jugado'],
+                'puntaje': datos['puntaje_total'],
+                'clics': datos['clics_total'],
+                'aciertos': datos['aciertos_total'],
+                'errores': datos['errores_total'],
+                'precision': round(precision, 1)
             })
+        
+        # Ordenar por nombre de juego
+        juegos_resumen.sort(key=lambda x: x['juego'].nombre)
 
         context.update({
             'page_title': f'Resultados - {evaluacion.nino.nombre_completo}',
             'active_section': 'games',
             'evaluacion': evaluacion,
             'sesiones': sesiones,
-            'sesiones_con_metricas': sesiones_con_metricas,
+            'juegos_resumen': juegos_resumen,  # ⭐ NUEVO
             'total_clics': total_clics,
             'total_aciertos': total_aciertos,
             'total_errores': total_errores,
@@ -581,4 +839,3 @@ class SequentialResultsView(TemplateView):
         })
 
         return context
-
