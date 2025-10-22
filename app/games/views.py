@@ -701,6 +701,89 @@ def finish_game_session(request, url_sesion):
             'error': str(e)
         }, status=400)
 
+@login_required
+@require_POST
+def finish_individual_game(request, url_sesion):
+    """Finalizar juego individual sin predicción IA - Solo marca como completada"""
+    try:
+        sesion = get_object_or_404(SesionJuego, url_sesion=url_sesion)
+        
+        # Parsear datos
+        data = json.loads(request.body)
+        puntaje_final = data.get('total_score', sesion.puntaje_total)
+        tiempo_total = data.get('total_time_seconds', 0)
+        
+        # Marcar como completada
+        sesion.estado = 'completada'
+        sesion.fecha_fin = timezone.now()
+        sesion.puntaje_total = puntaje_final
+        sesion.tiempo_total_segundos = tiempo_total
+        sesion.save()
+        
+        print(f"✅ Juego individual finalizado: {sesion.juego.nombre}")
+        print(f"   Puntaje: {puntaje_final}, Tiempo: {tiempo_total}s")
+        
+        return JsonResponse({
+            'success': True,
+            'message': 'Juego finalizado correctamente',
+            'redirect_url': '/games/game-list/'
+        })
+    
+    except Exception as e:
+        print(f"❌ Error al finalizar juego individual: {e}")
+        return JsonResponse({
+            'success': False,
+            'error': str(e)
+        }, status=500)
+
+
+@login_required
+@require_POST  
+def finish_evaluation_game(request, url_sesion):
+    """Finalizar juego dentro de evaluación IA - Solo sale sin predecir"""
+    try:
+        sesion = get_object_or_404(SesionJuego, url_sesion=url_sesion)
+        
+        # Parsear datos
+        data = json.loads(request.body)
+        puntaje_final = data.get('total_score', sesion.puntaje_total)
+        tiempo_total = data.get('total_time_seconds', 0)
+        
+        # Marcar como completada
+        sesion.estado = 'completada'
+        sesion.fecha_fin = timezone.now()
+        sesion.puntaje_total = puntaje_final
+        sesion.tiempo_total_segundos = tiempo_total
+        sesion.save()
+        
+        evaluacion = sesion.evaluacion
+        sesiones_completadas = SesionJuego.objects.filter(
+            evaluacion=evaluacion, 
+            estado='completada'
+        ).count()
+        total_sesiones = SesionJuego.objects.filter(evaluacion=evaluacion).count()
+        
+        print(f"✅ Juego de evaluación finalizado manualmente: {sesion.juego.nombre}")
+        print(f"   Progreso: {sesiones_completadas}/{total_sesiones}")
+        
+        return JsonResponse({
+            'success': True,
+            'message': f'Juego finalizado. Progreso: {sesiones_completadas}/{total_sesiones}',
+            'redirect_url': '/games/session-list/',
+            'progreso': {
+                'completadas': sesiones_completadas,
+                'totales': total_sesiones
+            }
+        })
+    
+    except Exception as e:
+        print(f"❌ Error: {e}")
+        return JsonResponse({
+            'success': False,
+            'error': str(e)
+        }, status=500)
+
+
 @csrf_exempt
 @require_http_methods(["POST"])
 def crear_nino_ajax(request):

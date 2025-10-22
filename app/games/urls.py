@@ -26,4 +26,7 @@ urlpatterns = [
     path('results/<int:evaluacion_id>/', views.SequentialResultsView.as_view(), name='sequential_results'),
     # Eliminar evaluación
     path('evaluacion/delete/<int:evaluacion_id>/', views.delete_evaluacion, name='delete_evaluacion'),
+    # Finalizar juegos
+    path('individual/finish/<str:url_sesion>/', views.finish_individual_game, name='finish_individual_game'),
+    path('evaluation/finish/<str:url_sesion>/', views.finish_evaluation_game, name='finish_evaluation_game'),
 ]
