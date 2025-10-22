@@ -400,6 +400,14 @@ class CompletaLaPalabraGame {
         `;
         
         container.parentElement.appendChild(messageDiv);
+
+        // Eliminar el mensaje y la palabra después de un tiempo
+        setTimeout(() => {
+            if (messageDiv.parentElement) {
+                messageDiv.parentElement.removeChild(messageDiv);
+            }
+            container.innerHTML = '';
+        }, isCorrect ? 2500 : 3000);
     }
     
     showErrorAnimation(selectedLetter) {

@@ -216,13 +216,15 @@
         .right-sidebar {
             width: 280px; /* Mismo ancho que el sidebar izquierdo */
             position: fixed;
-            top: 0;
+            top: 96px;
             right: 0;
-            height: 100vh;
+            height: calc(100vh - 96px);
             overflow-y: auto;
             background: white;
             border-left: 1px solid #e5e7eb;
-            z-index: 20;
+            z-index: 30;
+            display: flex;
+            flex-direction: column;
         }
 
         .dark .right-sidebar {
@@ -286,8 +288,16 @@
 
         /* Ajustar main content para el nuevo sidebar */
         .main-content-with-sidebars {
-            margin-left: 280px; /* Mismo ancho que el sidebar izquierdo */
-            margin-right: 280px; /* Mismo ancho que el sidebar derecho */
+            margin-left: 280px;
+            padding-top: 0;
+        }
+        @media (max-width: 1024px) {
+            .main-content-with-sidebars {
+                margin-left: 0;
+            }
+        }
+        #content-area {
+            padding-top: 32px; /* Si quieres más separación debajo de la top bar */
         }
     </style>
     
@@ -301,8 +311,8 @@
     </div>
 
     <!-- Sidebar Izquierdo -->
-    <div class="fixed top-0 left-0 h-screen border-r border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 transition-colors duration-200 shadow-sm dark:shadow-2xl" style="width: 280px;">
-        <div class="flex flex-col h-full">
+    <div class="fixed top-0 left-0 h-screen border-r border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 transition-colors duration-200 shadow-sm dark:shadow-2xl" style="width: 280px; z-index:40;">
+        <div class="flex flex-col h-full"> <!-- Quita el pt-[96px] -->
             <!-- Logo -->
             <div class="p-6">
                 <div class="flex items-center gap-2">
@@ -315,7 +325,6 @@
                     </div>
                 </div>
             </div>
-            <hr class="bg-gray-200 dark:bg-gray-800 mx-3"><br>
 
             <!-- Navigation -->
             <nav class="flex-1 px-3">
@@ -486,7 +495,7 @@
     </div>
 
     <!-- Right Sidebar - Citas del Día -->
-    <div class="right-sidebar">
+    <div class="right-sidebar hidden" id="rightSidebar" style="position:fixed; top:80px; right:0; height:calc(100vh - 80px); z-index:30;">
         <div class="p-6">
             <!-- Título -->
             <h2 class="text-lg font-bold text-gray-900 dark:text-white mb-4">
@@ -536,7 +545,8 @@
     <!-- Main Content -->
     <div class="main-content-with-sidebars">
         <!-- Top Bar -->
-        <div class="bg-white/50 dark:bg-gray-900/50 backdrop-blur-md px-8 py-4 flex items-center justify-between sticky top-0 z-[50] dark:border-gray-800 transition-colors duration-200 ">
+        <div class="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 px-8 py-4 flex items-center justify-between w-full"
+            style="position:fixed; top:0; left:0; right:0; z-index:50; width:100vw; margin-left:280px; max-width:calc(100vw - 280px);">
             <div class="flex items-center gap-3">
                 <!-- Imagen de perfil -->
                 <div class="w-10 h-10 rounded-full overflow-hidden bg-purple-100 dark:bg-purple-900/50">
@@ -553,7 +563,6 @@
             </div>
 
             <div class="flex items-center gap-2">
-                
                 <!-- Language Selector -->
                 <div class="relative">
                     <button type="button" id="languageDropdownBtn"
@@ -688,19 +697,16 @@
                 <!-- Schedule Button -->
                 <a href="{% url 'core:calendar' %}"
                     class="px-5 py-2.5 border border-gray-300 dark:border-gray-700 hover:border-gray-400 dark:hover:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-2.5 transition-all hover:shadow-sm">
-                    <i class="far fa-calendar text-base"></i>
+                    <i class="far fa-calendar-plus text-base"></i>
                     {% trans "Agenda" %}
                 </a>
 
-                <!-- Create Request Button -->
-                <button
-                    class="px-5 py-2.5 bg-gradient-to-r from-purple-600 to-purple-800 hover:from-purple-500 hover:to-purple-700 text-white rounded-xl text-sm font-semibold flex items-center gap-2.5 transition-all shadow-md hover:shadow-lg hover:scale-105">
-                    <i class="fas fa-plus text-base"></i>
-                    {% trans "Crear solicitud" %}
+                <!-- Botón para mostrar/ocultar sidebar derecho -->
+                <button id="toggleRightSidebarBtn" title="{% trans 'Mostrar/Ocultar Citas del Día' %}" class="px-5 py-2.5 border border-gray-300 dark:border-gray-700 hover:border-gray-400 dark:hover:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-2.5 transition-all hover:shadow-sm">
+                    <i class="far fa-calendar text-base"></i>
                 </button>
             </div>
         </div>
-        <hr class="bg-gray-200 dark:bg-gray-800 mx-12 mt-2">
 
         <!-- Toast de Notificación -->
         <div id="toast-notification" class="fixed top-4 right-4 z-[9999] hidden">
@@ -716,7 +722,7 @@
         </div>
 
         <!-- Dynamic Content Area -->
-        <div id="content-area" class="p-8 bg-gray-50 dark:bg-gray-950 min-h-screen transition-colors duration-200">
+        <div id="content-area" class="p-8 min-h-screen transition-colors duration-200" style="padding-top:96px;">
             {% block content %}
             <!-- El contenido específico de cada página se cargará aquí -->
             {% endblock %}
@@ -730,6 +736,17 @@
 
     <!-- Scripts Base -->
     <script src="{% static 'main.js' %}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggleBtn = document.getElementById('toggleRightSidebarBtn');
+            const rightSidebar = document.getElementById('rightSidebar');
+            if (toggleBtn && rightSidebar) {
+                toggleBtn.addEventListener('click', function() {
+                    rightSidebar.classList.toggle('hidden');
+                });
+            }
+        });
+    </script>
     
     <!-- Inicializar mensajes de Django -->
     <script>

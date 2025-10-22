@@ -119,7 +119,7 @@
         {
           "id": 10,
           "correct_word": "SILLA",
-          "incorrect_word": "SILLA",
+          "incorrect_word": "SIRLA",
           "error_type": "sustitucion_letras",
           "error_position": 2,
           "error_letter": "R",
@@ -129,8 +129,8 @@
           "time_limit": 45,
           "points": 10
         }
-      ]
-    },
+            ]
+          },
     {
       "level": 2,
       "difficulty": "medio",
