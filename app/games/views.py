@@ -2,13 +2,17 @@ from django.views.generic import TemplateView, View
 from django.shortcuts import get_object_or_404, redirect
 from django.http import JsonResponse
 from django.utils import timezone
+from django.views.decorators.http import require_POST
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_protect
+
 import json
 import os
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.conf import settings
 import traceback
 from .models import Juego, SesionJuego, Evaluacion
@@ -47,22 +51,64 @@ class GameSessionListView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         
-        # Obtener el profesional actual directamente desde el usuario
         profesional = self.request.user
+        
+        from .models import Evaluacion
+        evaluaciones = Evaluacion.objects.filter(
+            nino__profesional=profesional
+        ).select_related('nino').order_by('-fecha_hora_inicio')
 
-        # Obtener las sesiones de juegos asociadas a los niños del profesional
-        sesiones = SesionJuego.objects.filter(
-            evaluacion__nino__profesional=profesional
-        ).select_related('juego', 'evaluacion__nino').order_by('-fecha_inicio')
+        # Preparar lista de evaluaciones con métricas
+        evaluaciones_con_metricas = []
+        for evaluacion in evaluaciones:
+            sesiones = SesionJuego.objects.filter(evaluacion=evaluacion)
+            sesiones_completadas = sesiones.filter(estado='completada').count()
+            total_sesiones = sesiones.count()
+            
+            sesiones_comp = sesiones.filter(estado='completada')
+            if sesiones_comp.exists():
+                total_clicks = sum(s.clicks_total or 0 for s in sesiones_comp)
+                total_hits = sum(s.hits_total or 0 for s in sesiones_comp)
+                accuracy_promedio = (total_hits / total_clicks * 100) if total_clicks > 0 else 0
+            else:
+                accuracy_promedio = 0
+            
+            evaluaciones_con_metricas.append({
+                'evaluacion': evaluacion,
+                'sesiones_completadas': sesiones_completadas,
+                'total_sesiones': total_sesiones,
+                'accuracy_promedio': round(accuracy_promedio, 1),
+                'progreso_porcentaje': round((sesiones_completadas / total_sesiones * 100), 1) if total_sesiones > 0 else 0
+            })
 
-        # Obtener niños del profesional para el modal IA
+        # ⭐ AGREGAR PAGINACIÓN
+        paginator = Paginator(evaluaciones_con_metricas, 10)  # 10 por página
+        page = self.request.GET.get('page', 1)
+        
+        try:
+            evaluaciones_paginadas = paginator.page(page)
+        except PageNotAnInteger:
+            evaluaciones_paginadas = paginator.page(1)
+        except EmptyPage:
+            evaluaciones_paginadas = paginator.page(paginator.num_pages)
+
+        # Calcular estadísticas
+        total_evaluaciones = len(evaluaciones_con_metricas)
+        completadas = sum(1 for item in evaluaciones_con_metricas if item['evaluacion'].estado == 'completada')
+        en_proceso = sum(1 for item in evaluaciones_con_metricas if item['evaluacion'].estado == 'en_proceso')
+        interrumpidas = total_evaluaciones - completadas - en_proceso
+
         ninos = Nino.objects.filter(profesional=profesional)
 
         context.update({
-            'page_title': 'Sesiones de Juegos - DislexIA',
+            'page_title': 'Evaluaciones - DislexIA',
             'active_section': 'games',
-            'sesiones': sesiones,
-            'ninos': ninos,  # ← AGREGADO
+            'evaluaciones': evaluaciones_paginadas,  # ⭐ CAMBIAR A PAGINADAS
+            'ninos': ninos,
+            'total_evaluaciones': total_evaluaciones,
+            'evaluaciones_completadas': completadas,
+            'evaluaciones_en_proceso': en_proceso,
+            'evaluaciones_interrumpidas': interrumpidas,
         })
         
         return context
@@ -839,3 +885,56 @@ class SequentialResultsView(TemplateView):
         })
 
         return context
+
+
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_protect
+
+@login_required
+@csrf_protect
+@require_POST
+def delete_evaluacion(request, evaluacion_id):
+    """Vista para eliminar una evaluación completa"""
+    
+    # ⭐ AGREGAR LOGGING PARA DEBUG
+    print(f"🗑️ Vista delete_evaluacion llamada - ID: {evaluacion_id}")
+    print(f"👤 Usuario: {request.user}")
+    print(f"📍 Path: {request.path}")
+    print(f"🌐 Method: {request.method}")
+    
+    try:
+        evaluacion = Evaluacion.objects.get(
+            id=evaluacion_id,
+            nino__profesional=request.user
+        )
+        
+        nino_nombre = evaluacion.nino.nombre_completo
+        print(f"✅ Evaluación encontrada: {nino_nombre}")
+        
+        evaluacion.delete()
+        print(f"✅ Evaluación eliminada")
+        
+        response = JsonResponse({
+            'success': True,
+            'message': f'Evaluación de {nino_nombre} eliminada correctamente'
+        })
+        print(f"📤 Retornando JsonResponse")
+        return response
+    
+    except Evaluacion.DoesNotExist:
+        print(f"❌ Evaluación no encontrada")
+        return JsonResponse({
+            'success': False,
+            'error': 'Evaluación no encontrada'
+        }, status=404)
+    
+    except Exception as e:
+        print(f"❌ Error: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        return JsonResponse({
+            'success': False,
+            'error': str(e)
+        }, status=500)

@@ -173,46 +173,28 @@
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
         <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4">
             <div class="text-center">
-                <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ sesiones|length }}</p>
+                <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ total_evaluaciones }}</p>
                 <p class="text-xs text-gray-500 dark:text-gray-400">{% trans "Total" %}</p>
             </div>
         </div>
 
         <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4">
             <div class="text-center">
-                <p class="text-2xl font-bold text-green-600 dark:text-green-400">
-                    {% for sesion in sesiones %}
-                        {% if sesion.estado == 'completada' %}
-                            {{ forloop.counter0|add:1 }}
-                        {% endif %}
-                    {% empty %}0{% endfor %}
-                </p>
+                <p class="text-2xl font-bold text-green-600 dark:text-green-400">{{ evaluaciones_completadas }}</p>
                 <p class="text-xs text-gray-500 dark:text-gray-400">{% trans "Completadas" %}</p>
             </div>
         </div>
 
         <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4">
             <div class="text-center">
-                <p class="text-2xl font-bold text-yellow-600 dark:text-yellow-400">
-                    {% for sesion in sesiones %}
-                        {% if sesion.estado == 'en_proceso' %}
-                            {{ forloop.counter0|add:1 }}
-                        {% endif %}
-                    {% empty %}0{% endfor %}
-                </p>
+                <p class="text-2xl font-bold text-yellow-600 dark:text-yellow-400">{{ evaluaciones_en_proceso }}</p>
                 <p class="text-xs text-gray-500 dark:text-gray-400">{% trans "En Proceso" %}</p>
             </div>
         </div>
 
         <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4">
             <div class="text-center">
-                <p class="text-2xl font-bold text-red-600 dark:text-red-400">
-                    {% for sesion in sesiones %}
-                        {% if sesion.estado == 'interrumpida' %}
-                            {{ forloop.counter0|add:1 }}
-                        {% endif %}
-                    {% empty %}0{% endfor %}
-                </p>
+                <p class="text-2xl font-bold text-red-600 dark:text-red-400">{{ evaluaciones_interrumpidas }}</p>
                 <p class="text-xs text-gray-500 dark:text-gray-400">{% trans "Interrumpidas" %}</p>
             </div>
         </div>
@@ -249,44 +231,43 @@
         </div>
     </div>
 
-    <!-- Sessions Table -->
-    <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 overflow-hidden">
-        {% if sesiones %}
+    <!-- Tabla de Evaluaciones -->
+    <div class="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 overflow-hidden">
         <div class="overflow-x-auto">
-            <table class="w-full">
-                <thead class="table-header">
+            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                <thead class="bg-gradient-to-r from-purple-50 to-indigo-50 dark:from-purple-900/20 dark:to-indigo-900/20">
                     <tr>
-                        <th class="px-6 py-4 text-left text-sm font-semibold text-gray-900 dark:text-white">
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
                             <div class="flex items-center gap-2">
                                 <i class="fas fa-user text-purple-600 dark:text-purple-400"></i>
                                 {% trans "Paciente" %}
                             </div>
                         </th>
-                        <th class="px-6 py-4 text-left text-sm font-semibold text-gray-900 dark:text-white">
-                            <div class="flex items-center gap-2">
-                                <i class="fas fa-gamepad text-purple-600 dark:text-purple-400"></i>
-                                {% trans "Juego" %}
-                            </div>
-                        </th>
-                        <th class="px-6 py-4 text-left text-sm font-semibold text-gray-900 dark:text-white">
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
                             <div class="flex items-center gap-2">
                                 <i class="fas fa-calendar text-purple-600 dark:text-purple-400"></i>
-                                {% trans "Fecha" %}
+                                {% trans "Fecha Inicio" %}
                             </div>
                         </th>
-                        <th class="px-6 py-4 text-left text-sm font-semibold text-gray-900 dark:text-white">
-                            <div class="flex items-center gap-2">
-                                <i class="fas fa-info-circle text-purple-600 dark:text-purple-400"></i>
-                                {% trans "Estado" %}
-                            </div>
-                        </th>
-                        <th class="px-6 py-4 text-left text-sm font-semibold text-gray-900 dark:text-white">
-                            <div class="flex items-center gap-2">
+                        <th class="px-6 py-4 text-center text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
+                            <div class="flex items-center justify-center gap-2">
                                 <i class="fas fa-chart-bar text-purple-600 dark:text-purple-400"></i>
                                 {% trans "Progreso" %}
                             </div>
                         </th>
-                        <th class="px-6 py-4 text-center text-sm font-semibold text-gray-900 dark:text-white">
+                        <th class="px-6 py-4 text-center text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
+                            <div class="flex items-center justify-center gap-2">
+                                <i class="fas fa-bullseye text-purple-600 dark:text-purple-400"></i>
+                                {% trans "Accuracy" %}
+                            </div>
+                        </th>
+                        <th class="px-6 py-4 text-center text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
+                            <div class="flex items-center justify-center gap-2">
+                                <i class="fas fa-info-circle text-purple-600 dark:text-purple-400"></i>
+                                {% trans "Estado" %}
+                            </div>
+                        </th>
+                        <th class="px-6 py-4 text-center text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
                             <div class="flex items-center justify-center gap-2">
                                 <i class="fas fa-cogs text-purple-600 dark:text-purple-400"></i>
                                 {% trans "Acciones" %}
@@ -294,114 +275,114 @@
                         </th>
                     </tr>
                 </thead>
-                <tbody id="sessionTableBody">
-                    {% for sesion in sesiones %}
-                    <tr class="session-row border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors" data-estado="{{ sesion.estado }}" data-paciente="{{ sesion.evaluacion.nino.nombre_completo|lower }}" data-juego="{{ sesion.juego.nombre|lower }}">
+                <tbody id="sessionTableBody" class="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
+                    {% for item in evaluaciones %}
+                    <tr class="session-row hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors duration-200" 
+                        data-estado="{{ item.evaluacion.estado }}" 
+                        data-paciente="{{ item.evaluacion.nino.nombre_completo|lower }}">
+                        
                         <!-- Paciente -->
-                        <td class="px-6 py-4">
-                            <div class="flex items-center gap-3">
-                                <div>
-                                    <p class="font-semibold text-gray-900 dark:text-white">{{ sesion.evaluacion.nino.nombre_completo }}</p>
-                                    <ul class="text-sm text-gray-500 dark:text-gray-400 space-y-0.5">
-                                        <li>• {{ sesion.evaluacion.nino.edad }} {% trans "años" %}</li>
-                                        <li>• {{ sesion.evaluacion.nino.get_genero_display }}</li>
-                                    </ul>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div>
+                                <div class="font-semibold text-gray-900 dark:text-white">
+                                    {{ item.evaluacion.nino.nombre_completo }}
+                                </div>
+                                <div class="text-xs text-gray-500 dark:text-gray-400">
+                                    {{ item.evaluacion.nino.edad }} años • {{ item.evaluacion.nino.get_genero_display }}
                                 </div>
                             </div>
                         </td>
 
-                        <!-- Juego -->
-                        <td class="px-6 py-4">
-                            <div>
-                                <p class="font-medium text-gray-900 dark:text-white">{{ sesion.juego.nombre }}</p>
-                                <!-- <p class="text-sm text-gray-500 dark:text-gray-400">{% trans "Nivel" %} {{ sesion.nivel_seleccionado }}</p> -->
+                        <!-- Fecha Inicio -->
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">
+                            <div class="flex flex-col">
+                                <span class="font-medium">{{ item.evaluacion.fecha_hora_inicio|date:"d/m/Y" }}</span>
+                                <span class="text-xs text-gray-500 dark:text-gray-400">{{ item.evaluacion.fecha_hora_inicio|time:"H:i" }}</span>
                             </div>
                         </td>
 
-                        <!-- Fecha -->
-                        <td class="px-6 py-4">
-                            <div class="text-sm">
-                                <p class="font-medium text-gray-900 dark:text-white">{{ sesion.fecha_inicio|date:"d/m/Y" }}</p>
-                                <p class="text-gray-500 dark:text-gray-400">{{ sesion.fecha_inicio|time:"H:i" }}</p>
-                                {% if sesion.duracion_sesion %}
-                                <p class="text-xs text-purple-600 dark:text-purple-400 mt-1">
-                                    <i class="fas fa-clock mr-1"></i>{{ sesion.duracion_sesion|floatformat:0 }}min
-                                </p>
-                                {% endif %}
+                        <!-- Progreso -->
+                        <td class="px-6 py-4 whitespace-nowrap text-center">
+                            <div class="flex flex-col items-center gap-2">
+                                <span class="text-sm font-bold text-purple-600 dark:text-purple-400">
+                                    {{ item.sesiones_completadas }}/{{ item.total_sesiones }}
+                                </span>
+                                <div class="w-24 bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                                    <div class="bg-gradient-to-r from-purple-500 to-indigo-600 h-2 rounded-full transition-all duration-300" 
+                                        style="width: {{ item.progreso_porcentaje }}%"></div>
+                                </div>
+                                <span class="text-xs text-gray-500 dark:text-gray-400">{{ item.progreso_porcentaje }}%</span>
                             </div>
+                        </td>
+
+                        <!-- Accuracy -->
+                        <td class="px-6 py-4 whitespace-nowrap text-center">
+                            {% if item.sesiones_completadas > 0 %}
+                                <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-semibold
+                                    {% if item.accuracy_promedio >= 70 %}
+                                        bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400
+                                    {% elif item.accuracy_promedio >= 50 %}
+                                        bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400
+                                    {% else %}
+                                        bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400
+                                    {% endif %}">
+                                    <i class="fas fa-chart-line text-xs"></i>
+                                    {{ item.accuracy_promedio }}%
+                                </span>
+                            {% else %}
+                                <span class="text-gray-400 dark:text-gray-600 text-sm">—</span>
+                            {% endif %}
                         </td>
 
                         <!-- Estado -->
-                        <td class="px-6 py-4">
-                            {% if sesion.estado == 'completada' %}
-                                <span class="status-badge status-completada px-3 py-1.5 rounded-full text-xs flex items-center gap-2 w-fit">
+                        <td class="px-6 py-4 whitespace-nowrap text-center">
+                            {% if item.evaluacion.estado == 'completada' %}
+                                <span class="inline-flex items-center gap-2 px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded-full text-xs font-semibold">
                                     <i class="fas fa-check-circle"></i>
                                     {% trans "Completada" %}
                                 </span>
-                            {% elif sesion.estado == 'en_proceso' %}
-                                <span class="status-badge status-en_proceso px-3 py-1.5 rounded-full text-xs flex items-center gap-2 w-fit">
-                                    <i class="fas fa-clock animate-pulse"></i>
-                                    {% trans "En Proceso" %}
-                                </span>
-                            {% elif sesion.estado == 'interrumpida' %}
-                                <span class="status-badge status-interrumpida px-3 py-1.5 rounded-full text-xs flex items-center gap-2 w-fit">
-                                    <i class="fas fa-pause-circle"></i>
-                                    {% trans "Interrumpida" %}
+                            {% else %}
+                                <span class="inline-flex items-center gap-2 px-3 py-1 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400 rounded-full text-xs font-semibold">
+                                    <i class="fas fa-clock"></i>
+                                    {% trans "En Progreso" %}
                                 </span>
                             {% endif %}
                         </td>
 
-                        <!-- Progreso -->
-                        <td class="px-6 py-4">
-                            <div class="space-y-2">
-                                <div class="flex justify-between text-sm">
-                                    <span class="text-gray-600 dark:text-gray-400">{% trans "Puntos:" %}</span>
-                                    <span class="font-semibold text-gray-900 dark:text-white">{{ sesion.puntaje_total }}</span>
-                                </div>
-                                <div class="flex justify-between text-sm">
-                                    <span class="text-gray-600 dark:text-gray-400">{% trans "Preguntas:" %}</span>
-                                    <span class="font-semibold text-gray-900 dark:text-white">{{ sesion.preguntas_respondidas }}</span>
-                                </div>
-                                {% if sesion.estado == 'completada' %}
-                                <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                                    <div class="progress-bar h-2 rounded-full" style="width: 100%"></div>
-                                </div>
-                                {% endif %}
+                        <!-- Acciones -->
+                        <td class="px-6 py-4 whitespace-nowrap text-center">
+                            <div class="flex items-center justify-center gap-2">
+                                <!-- Ver Resultados -->
+                                <a href="{% url 'games:sequential_results' evaluacion_id=item.evaluacion.id %}" 
+                                class="tooltip w-10 h-10 bg-purple-100 dark:bg-purple-900/30 hover:bg-purple-200 dark:hover:bg-purple-900/50 text-purple-600 dark:text-purple-400 rounded-lg flex items-center justify-center transition-all" 
+                                data-tooltip="{% trans 'Ver Resultados' %}">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+
+                                <!-- Eliminar -->
+                                <button onclick="confirmarEliminar({{ item.evaluacion.id }}, '{{ item.evaluacion.nino.nombre_completo|escapejs }}', '{% url 'games:delete_evaluacion' evaluacion_id=item.evaluacion.id %}')"
+                                        class="tooltip w-10 h-10 bg-red-100 dark:bg-red-900/30 hover:bg-red-200 dark:hover:bg-red-900/50 text-red-600 dark:text-red-400 rounded-lg flex items-center justify-center transition-all" 
+                                        data-tooltip="{% trans 'Eliminar Evaluación' %}">
+                                    <i class="fas fa-trash"></i>
+                                </button>
                             </div>
                         </td>
-
-                        <!-- Acciones -->
-                        <td class="px-6 py-4">
-                            <div class="flex items-center justify-center gap-2">
-                                {% if sesion.estado == 'completada' %}
-                                    <!-- Descargar PDF -->
-                                    <button class="action-btn tooltip w-10 h-10 bg-green-100 dark:bg-green-900/30 hover:bg-green-200 dark:hover:bg-green-900/50 text-green-600 dark:text-green-400 rounded-lg flex items-center justify-center transition-all" data-tooltip="{% trans 'Descargar PDF' %}">
-                                        <i class="fas fa-file-pdf"></i>
-                                    </button>
-
-                                    <!-- Editar -->
-                                    <button class="action-btn tooltip w-10 h-10 bg-blue-100 dark:bg-blue-900/30 hover:bg-blue-200 dark:hover:bg-blue-900/50 text-blue-600 dark:text-blue-400 rounded-lg flex items-center justify-center transition-all" data-tooltip="{% trans 'Editar' %}">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-
-                                    <!-- Visualizar -->
-                                    <button class="action-btn tooltip w-10 h-10 bg-purple-100 dark:bg-purple-900/30 hover:bg-purple-200 dark:hover:bg-purple-900/50 text-purple-600 dark:text-purple-400 rounded-lg flex items-center justify-center transition-all" data-tooltip="{% trans 'Visualizar' %}">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-
-                                {% elif sesion.estado == 'en_proceso' %}
-                                    <!-- Continuar Sesión -->
-                                    <a href="{% url 'games:play_game' url_sesion=sesion.url_sesion %}" class="action-btn tooltip w-10 h-10 bg-green-100 dark:bg-green-900/30 hover:bg-green-200 dark:hover:bg-green-900/50 text-green-600 dark:text-green-400 rounded-lg flex items-center justify-center transition-all" data-tooltip="{% trans 'Continuar Sesión' %}">
-                                        <i class="fas fa-play"></i>
-                                    </a>
-
-                                    <!-- Cancelar Sesión -->
-                                    <button class="action-btn tooltip w-10 h-10 bg-red-100 dark:bg-red-900/30 hover:bg-red-200 dark:hover:bg-red-900/50 text-red-600 dark:text-red-400 rounded-lg flex items-center justify-center transition-all" data-tooltip="{% trans 'Cancelar Sesión' %}">
-                                        <i class="fas fa-times"></i>
-                                    </button>
-                                {% else %}
-                                    <span class="text-sm text-gray-400 dark:text-gray-500">{% trans "Sin acciones" %}</span>
-                                {% endif %}
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="px-6 py-12 text-center">
+                            <div class="flex flex-col items-center gap-4">
+                                <div class="w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-inbox text-3xl text-gray-400 dark:text-gray-600"></i>
+                                </div>
+                                <div>
+                                    <p class="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                                        {% trans "No hay evaluaciones registradas" %}
+                                    </p>
+                                    <p class="text-sm text-gray-500 dark:text-gray-400">
+                                        {% trans "Inicia una nueva evaluación para comenzar" %}
+                                    </p>
+                                </div>
                             </div>
                         </td>
                     </tr>
@@ -409,23 +390,46 @@
                 </tbody>
             </table>
         </div>
-        {% else %}
-        <!-- Empty State -->
-        <div class="flex flex-col items-center justify-center py-20">
-            <div class="w-24 h-24 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mb-6">
-                <i class="fas fa-gamepad text-4xl text-gray-400 dark:text-gray-600"></i>
+        <!-- Paginación -->
+        {% if evaluaciones.has_other_pages %}
+        <div class="flex items-center justify-between px-6 py-4 border-t border-gray-200 dark:border-gray-700">
+            <div class="text-sm text-gray-700 dark:text-gray-300">
+                Mostrando 
+                <span class="font-semibold">{{ evaluaciones.start_index }}</span>
+                a 
+                <span class="font-semibold">{{ evaluaciones.end_index }}</span>
+                de 
+                <span class="font-semibold">{{ evaluaciones.paginator.count }}</span>
+                evaluaciones
             </div>
-            <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">{% trans "No hay sesiones de juego" %}</h3>
-            <p class="text-gray-500 dark:text-gray-400 mb-6 text-center max-w-md">
-                {% trans "Aún no se han iniciado sesiones de juego. Los pacientes pueden comenzar a jugar desde el catálogo de juegos." %}
-            </p>
-            <a href="{% url 'games:game_list' %}" class="px-6 py-3 bg-gradient-to-r from-purple-600 to-purple-800 hover:from-purple-500 hover:to-purple-700 text-white rounded-xl font-semibold flex items-center gap-2 transition-all shadow-lg hover:shadow-xl">
-                <i class="fas fa-plus"></i>
-                {% trans "Iniciar Primera Sesión" %}
-            </a>
+            
+            <div class="flex gap-2">
+                {% if evaluaciones.has_previous %}
+                    <a href="?page=1" class="px-3 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                        <i class="fas fa-angle-double-left"></i>
+                    </a>
+                    <a href="?page={{ evaluaciones.previous_page_number }}" class="px-3 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                        <i class="fas fa-angle-left"></i>
+                    </a>
+                {% endif %}
+                
+                <span class="px-4 py-2 bg-purple-600 text-white rounded-lg font-semibold">
+                    {{ evaluaciones.number }}
+                </span>
+                
+                {% if evaluaciones.has_next %}
+                    <a href="?page={{ evaluaciones.next_page_number }}" class="px-3 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                        <i class="fas fa-angle-right"></i>
+                    </a>
+                    <a href="?page={{ evaluaciones.paginator.num_pages }}" class="px-3 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                        <i class="fas fa-angle-double-right"></i>
+                    </a>
+                {% endif %}
+            </div>
         </div>
         {% endif %}
     </div>
+
 
     <!-- Results Counter -->
     {% if sesiones %}
@@ -516,7 +520,9 @@
 
 {% block extra_scripts %}
 <script>
-
+    // ============================================
+    // MODAL DE EVALUACIÓN IA
+    // ============================================
     // Variables globales para evaluación IA
     let ninoSeleccionadoIA = null;
 
@@ -597,15 +603,67 @@
             cerrarModalEvaluacionIA();
         }
     });
-    // Variables globales
+    // ============================================
+    // ELIMINAR EVALUACIÓN
+    // ============================================
+    function confirmarEliminar(evaluacionId, nombreNino, deleteUrl) {
+        if (!confirm(`¿Estás seguro de eliminar la evaluación de ${nombreNino}?\n\nEsta acción eliminará:\n- Todas las sesiones de juego\n- Todas las pruebas cognitivas\n- El reporte de IA (si existe)\n\nEsta acción NO se puede deshacer.`)) {
+            return;
+        }
+        
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value 
+                       || document.cookie.split('; ').find(row => row.startsWith('csrftoken='))?.split('=')[1];
+        
+        if (!csrfToken) {
+            alert('❌ Error: Token CSRF no encontrado');
+            console.error('No se pudo obtener el token CSRF');
+            return;
+        }
+        
+        console.log('🗑️ Eliminando evaluación ID:', evaluacionId);
+        
+        fetch(deleteUrl, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': csrfToken,
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            credentials: 'same-origin'
+        })
+        .then(response => {
+            console.log('📥 Response status:', response.status);
+            
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
+            }
+            
+            return response.json();
+        })
+        .then(data => {
+            console.log('✅ Respuesta:', data);
+            
+            if (data.success) {
+                alert('✅ ' + data.message);
+                window.location.reload();
+            } else {
+                alert('❌ ' + (data.error || 'Error desconocido'));
+            }
+        })
+        .catch(error => {
+            console.error('❌ Error:', error);
+            alert('❌ Error al eliminar: ' + error.message);
+        });
+    }
+
+    // ============================================
+    // FILTROS Y BÚSQUEDA
+    // ============================================
     let currentFilter = 'todos';
     let searchTerm = '';
 
-    // Función para filtrar por estado
     function filtrarPorEstado(estado) {
         currentFilter = estado;
         
-        // Actualizar botones activos
         document.querySelectorAll('.filter-btn').forEach(btn => {
             btn.classList.remove('active');
             btn.classList.add('text-gray-600', 'dark:text-gray-400', 'hover:bg-gray-100', 'dark:hover:bg-gray-700');
@@ -620,7 +678,6 @@
         aplicarFiltros();
     }
 
-    // Función para aplicar filtros
     function aplicarFiltros() {
         const rows = document.querySelectorAll('.session-row');
         let visibleCount = 0;
@@ -628,12 +685,9 @@
         rows.forEach(row => {
             const estado = row.dataset.estado;
             const paciente = row.dataset.paciente;
-            const juego = row.dataset.juego;
             
             const matchesFilter = currentFilter === 'todos' || estado === currentFilter;
-            const matchesSearch = searchTerm === '' || 
-                                paciente.includes(searchTerm.toLowerCase()) || 
-                                juego.includes(searchTerm.toLowerCase());
+            const matchesSearch = searchTerm === '' || paciente.includes(searchTerm.toLowerCase());
             
             if (matchesFilter && matchesSearch) {
                 row.style.display = 'table-row';
@@ -642,24 +696,59 @@
                 row.style.display = 'none';
             }
         });
-
-        // Actualizar contador
-        document.getElementById('resultCount').textContent = visibleCount;
     }
 
-    // Búsqueda en tiempo real
-    document.getElementById('searchInput').addEventListener('input', function(e) {
-        searchTerm = e.target.value.toLowerCase();
-        aplicarFiltros();
-    });
-
-
-
-    // Inicialización cuando se carga la página
+    // ============================================
+    // INICIALIZACIÓN
+    // ============================================
     document.addEventListener('DOMContentLoaded', function() {
         console.log('{% trans "Vista de sesiones cargada correctamente" %}');
         
-        // Aplicar animaciones de entrada
+        // Selector de niño para evaluación IA
+        const selectNino = document.getElementById('ninoSelectIA');
+        if (selectNino) {
+            selectNino.addEventListener('change', function() {
+                const selectedOption = this.options[this.selectedIndex];
+                const ninoId = this.value;
+                
+                if (ninoId) {
+                    ninoSeleccionadoIA = {
+                        id: ninoId,
+                        nombre: selectedOption.dataset.nombre,
+                        apellidos: selectedOption.dataset.apellidos,
+                        edad: selectedOption.dataset.edad
+                    };
+                    
+                    document.getElementById('nombrePreviewIA').textContent = 
+                        `${ninoSeleccionadoIA.nombre} ${ninoSeleccionadoIA.apellidos}`;
+                    document.getElementById('edadPreviewIA').textContent = 
+                        `${ninoSeleccionadoIA.edad} {% trans "años" %}`;
+                    document.getElementById('vistaPreviewNinoIA').classList.remove('hidden');
+                } else {
+                    ninoSeleccionadoIA = null;
+                    document.getElementById('vistaPreviewNinoIA').classList.add('hidden');
+                }
+            });
+        }
+
+        // Búsqueda en tiempo real
+        const searchInput = document.getElementById('searchInput');
+        if (searchInput) {
+            searchInput.addEventListener('input', function(e) {
+                searchTerm = e.target.value.toLowerCase();
+                aplicarFiltros();
+            });
+        }
+
+        // Cerrar modal al hacer clic fuera
+        document.addEventListener('click', function(event) {
+            const modal = document.getElementById('modalSeleccionNinoIA');
+            if (modal && event.target === modal) {
+                cerrarModalEvaluacionIA();
+            }
+        });
+        
+        // Animaciones de entrada
         const cards = document.querySelectorAll('.animate-fade-in');
         cards.forEach((card, index) => {
             setTimeout(() => {

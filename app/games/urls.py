@@ -24,4 +24,6 @@ urlpatterns = [
     path('asignar-nino/', views.asignar_nino, name='asignar_nino'),
     # Resultados de evaluación secuencial
     path('results/<int:evaluacion_id>/', views.SequentialResultsView.as_view(), name='sequential_results'),
+    # Eliminar evaluación
+    path('evaluacion/delete/<int:evaluacion_id>/', views.delete_evaluacion, name='delete_evaluacion'),
 ]
