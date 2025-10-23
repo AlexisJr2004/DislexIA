@@ -755,7 +755,6 @@ class OrdenarPalabrasGame {
                 },
                 body: JSON.stringify(data)
             });
-            
             if (!response.ok) {
                 const errorText = await response.text();
                 console.error('❌ Error del servidor:', errorText);
@@ -764,23 +763,31 @@ class OrdenarPalabrasGame {
                     error: `Error del servidor (${response.status}): ${response.statusText}` 
                 };
             }
-            
             const result = await response.json();
-            console.log('📥 [Ordenar Palabras] Respuesta del servidor:', result);
-            
             if (result.success) {
-                // === MANEJAR RESPUESTA DEL BACKEND ===
                 if (result.evaluacion_completada) {
                     alert(`🎉 ¡Evaluación completa! ${result.final_stats.sesiones_completadas}/${result.final_stats.sesiones_totales} sesiones`);
                     window.location.href = result.redirect_url;
                     return { success: true };
                 } else if (result.siguiente_url) {
                     const progreso = result.progreso;
-                    alert(`✅ Juego completado!\n\nProgreso: ${progreso.completadas}/${progreso.totales} (${progreso.porcentaje}%)\n\n🎮 Avanzando al siguiente juego...`);
-                    
-                    setTimeout(() => {
-                        window.location.href = result.siguiente_url;
-                    }, 2000);
+                    if (window.showNextGameAlert) {
+                        window.showNextGameAlert({ progreso, siguienteUrl: result.siguiente_url });
+                    } else {
+                        const script = document.createElement('script');
+                        script.src = '/static/js/game-alerts.js';
+                        script.onload = () => {
+                            if (window.showNextGameAlert) {
+                                window.showNextGameAlert({ progreso, siguienteUrl: result.siguiente_url });
+                            } else {
+                                alert(`✅ Juego completado!\n\nProgreso: ${progreso.completadas}/${progreso.totales} (${progreso.porcentaje}%)\n\n🎮 Avanzando al siguiente juego...`);
+                                setTimeout(() => {
+                                    window.location.href = result.siguiente_url;
+                                }, 2000);
+                            }
+                        };
+                        document.body.appendChild(script);
+                    }
                     return { success: true };
                 } else {
                     window.location.href = result.redirect_url || `/games/results/${this.sessionData.evaluacion_id}/`;
@@ -789,7 +796,6 @@ class OrdenarPalabrasGame {
             } else {
                 return { success: false, error: result.error };
             }
-            
         } catch (error) {
             console.error('❌ Error al finalizar juego:', error);
             return { success: false, error: 'Error de conexión al finalizar el juego' };

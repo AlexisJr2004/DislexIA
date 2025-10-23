@@ -5,69 +5,7 @@
 {% block title %}{{ page_title }}{% endblock %}
 
 {% block extra_head %}
-<style>
-    .game-card {
-        transition: all 0.3s ease;
-    }
-
-    .game-card:hover {
-        transform: translateY(-8px);
-    }
-
-    .game-image {
-        position: relative;
-        overflow: hidden;
-    }
-
-    .game-image::after {
-        content: '';
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        height: 50%;
-        background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
-    }
-
-    .difficulty-badge {
-        backdrop-filter: blur(10px);
-    }
-
-    .filter-btn.active {
-        background-color: #8b5cf6;
-        color: white;
-    }
-
-    /* Colores dinámicos para las dificultades */
-    .difficulty-facil { background-color: rgba(34, 197, 94, 0.9); }
-    .difficulty-medio { background-color: rgba(234, 179, 8, 0.9); }
-    .difficulty-dificil { background-color: rgba(239, 68, 68, 0.9); }
-
-    /* Estilos para el modal de selección de niño */
-    @keyframes fadeIn {
-        from { opacity: 0; }
-        to { opacity: 1; }
-    }
-
-    @keyframes slideUp {
-        from {
-            opacity: 0;
-            transform: translateY(20px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    .animate-fade-in {
-        animation: fadeIn 0.2s ease-out;
-    }
-
-    .animate-slide-up {
-        animation: slideUp 0.3s ease-out;
-    }
-</style>
+<link rel="stylesheet" href="{% static 'css/games.css' %}">
 {% endblock %}
 
 {% block content %}

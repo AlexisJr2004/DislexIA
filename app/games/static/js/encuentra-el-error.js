@@ -786,11 +786,25 @@ class EncuentraElErrorGame {
                     return { success: true };
                 } else if (result.siguiente_url) {
                     const progreso = result.progreso;
-                    alert(`✅ Juego completado!\n\nProgreso: ${progreso.completadas}/${progreso.totales} (${progreso.porcentaje}%)\n\n🎮 Avanzando al siguiente juego...`);
-                    
-                    setTimeout(() => {
-                        window.location.href = result.siguiente_url;
-                    }, 2000);
+                    // Modular: usar showNextGameAlert
+                    if (window.showNextGameAlert) {
+                        window.showNextGameAlert({ progreso, siguienteUrl: result.siguiente_url });
+                    } else {
+                        // Cargar dinámicamente el script si no está presente
+                        const script = document.createElement('script');
+                        script.src = '/static/js/game-alerts.js';
+                        script.onload = () => {
+                            if (window.showNextGameAlert) {
+                                window.showNextGameAlert({ progreso, siguienteUrl: result.siguiente_url });
+                            } else {
+                                alert(`✅ Juego completado!\n\nProgreso: ${progreso.completadas}/${progreso.totales} (${progreso.porcentaje}%)\n\n🎮 Avanzando al siguiente juego...`);
+                                setTimeout(() => {
+                                    window.location.href = result.siguiente_url;
+                                }, 2000);
+                            }
+                        };
+                        document.body.appendChild(script);
+                    }
                     return { success: true };
                 } else {
                     window.location.href = result.redirect_url || `/games/results/${this.sessionData.evaluacion_id}/`;

@@ -57,6 +57,10 @@ class SeleccionaPalabraCorrectaGame {
                             <div class="text-xs font-medium text-gray-500 dark:text-gray-400">Puntos</div>
                         </div>
                     </div>
+                    <!-- Barra de progreso -->
+                    <div class="w-full bg-gray-100 dark:bg-gray-800 rounded-full h-3 mt-6 mb-2 overflow-hidden">
+                        <div id="progress-bar" class="h-3 bg-gradient-to-r from-green-400 to-blue-500 transition-all duration-300" style="width:0%"></div>
+                    </div>
                 </div>
 
                 <!-- Contenedor de dos columnas -->
@@ -513,7 +517,10 @@ class SeleccionaPalabraCorrectaGame {
     updateProgress() {
         const questions = this.getCurrentLevelQuestions();
         const progress = ((this.currentQuestionIndex + 1) / questions.length) * 100;
-        document.getElementById('progress-bar').style.width = `${progress}%`;
+        const progressBar = document.getElementById('progress-bar');
+        if (progressBar) {
+            progressBar.style.width = `${progress}%`;
+        }
     }
     
     startQuestionTimer() {
@@ -664,7 +671,6 @@ class SeleccionaPalabraCorrectaGame {
                 },
                 body: JSON.stringify(data)
             });
-            
             if (!response.ok) {
                 const errorText = await response.text();
                 console.error('❌ Error del servidor:', errorText);
@@ -673,45 +679,42 @@ class SeleccionaPalabraCorrectaGame {
                     error: `Error del servidor (${response.status}): ${response.statusText}` 
                 };
             }
-            
             const result = await response.json();
-            console.log('📥 Respuesta del servidor:', result);
-            
             if (result.success) {
-                // === MANEJAR RESPUESTA DEL BACKEND ===
                 if (result.evaluacion_completada) {
-                    // Todas las 32 sesiones completadas
                     alert(`🎉 ¡Evaluación completa! ${result.final_stats.sesiones_completadas}/${result.final_stats.sesiones_totales} sesiones`);
                     window.location.href = result.redirect_url;
                     return { success: true };
                 } else if (result.siguiente_url) {
-                    // Hay más juegos por completar
                     const progreso = result.progreso;
-                    alert(`✅ Juego completado!\n\nProgreso: ${progreso.completadas}/${progreso.totales} (${progreso.porcentaje}%)\n\n🎮 Avanzando al siguiente juego...`);
-                    
-                    setTimeout(() => {
-                        window.location.href = result.siguiente_url;
-                    }, 2000);
+                    if (window.showNextGameAlert) {
+                        window.showNextGameAlert({ progreso, siguienteUrl: result.siguiente_url });
+                    } else {
+                        const script = document.createElement('script');
+                        script.src = '/static/js/game-alerts.js';
+                        script.onload = () => {
+                            if (window.showNextGameAlert) {
+                                window.showNextGameAlert({ progreso, siguienteUrl: result.siguiente_url });
+                                console.log('✅ game-alerts.js cargado y función ejecutada');
+                            } else {
+                                console.error('❌ La función showNextGameAlert no está definida incluso después de cargar el script');
+                                alert('🎉 ¡Juego completado! Redirigiendo al siguiente juego...');
+                            }
+                        };
+                        document.body.appendCh
+                        ild(script);
+                    }
                     return { success: true };
                 } else {
-                    // Fallback - ir a resultados
                     window.location.href = result.redirect_url || `/games/results/${this.sessionData.evaluacion_id}/`;
                     return { success: true };
                 }
             } else {
                 return { success: false, error: result.error };
             }
-            
         } catch (error) {
             console.error('❌ Error al finalizar juego:', error);
-            if (error instanceof SyntaxError) {
-                return { 
-                    success: false, 
-                    error: 'El servidor devolvió una respuesta inválida. Revisa la consola para más detalles.' 
-                };
-            } else {
-                return { success: false, error: 'Error de conexión al finalizar el juego' };
-            }
+            return { success: false, error: 'Error de conexión al finalizar el juego' };
         }
     }
     

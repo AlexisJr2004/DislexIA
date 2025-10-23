@@ -4,20 +4,7 @@
 {% block title %}Inicializando {{ juego.nombre }} - DislexIA{% endblock %}
 
 {% block extra_head %}
-<style>
-    .loading-container {
-        min-height: 60vh;
-    }
-    
-    .loading-spinner {
-        animation: spin 1s linear infinite;
-    }
-    
-    @keyframes spin {
-        from { transform: rotate(0deg); }
-        to { transform: rotate(360deg); }
-    }
-</style>
+<link rel="stylesheet" href="{% static 'css/games.css' %}">
 {% endblock %}
 
 {% block content %}

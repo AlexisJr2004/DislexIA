@@ -713,7 +713,6 @@ class CompletaLaPalabraGame {
     async sendGameResults(totalTimeSeconds) {
         // === CALCULAR MÉTRICAS AGREGADAS DEL MINIJUEGO ===
         const totalClicks = this.correctAnswers + this.incorrectAnswers;
-        
         const data = {
             session_url: this.sessionData.url_sesion,
             total_score: this.score,
@@ -721,17 +720,13 @@ class CompletaLaPalabraGame {
             total_incorrect: this.incorrectAnswers,
             total_time_seconds: totalTimeSeconds,
             levels_completed: this.currentLevel,
-            
             // === NUEVAS MÉTRICAS PARA EL MODELO IA ===
             total_clicks: totalClicks,
             total_hits: this.correctAnswers,
             total_misses: this.incorrectAnswers
         };
-        
         console.log('📤 [Completa Palabra] Enviando resultados finales:', data);
-        
         const finishUrl = this.sessionData.api_urls.finish_game;
-        
         try {
             const response = await fetch(finishUrl, {
                 method: 'POST',
@@ -741,7 +736,6 @@ class CompletaLaPalabraGame {
                 },
                 body: JSON.stringify(data)
             });
-            
             if (!response.ok) {
                 const errorText = await response.text();
                 console.error('❌ Error del servidor:', errorText);
@@ -750,10 +744,8 @@ class CompletaLaPalabraGame {
                     error: `Error del servidor (${response.status}): ${response.statusText}` 
                 };
             }
-            
             const result = await response.json();
             console.log('📥 [Completa Palabra] Respuesta del servidor:', result);
-            
             if (result.success) {
                 // === MANEJAR RESPUESTA DEL BACKEND ===
                 if (result.evaluacion_completada) {
@@ -764,11 +756,25 @@ class CompletaLaPalabraGame {
                 } else if (result.siguiente_url) {
                     // Hay más juegos por completar
                     const progreso = result.progreso;
-                    alert(`✅ Juego completado!\n\nProgreso: ${progreso.completadas}/${progreso.totales} (${progreso.porcentaje}%)\n\n🎮 Avanzando al siguiente juego...`);
-                    
-                    setTimeout(() => {
-                        window.location.href = result.siguiente_url;
-                    }, 2000);
+                    // Modular: usar showNextGameAlert
+                    if (window.showNextGameAlert) {
+                        window.showNextGameAlert({ progreso, siguienteUrl: result.siguiente_url });
+                    } else {
+                        // Cargar dinámicamente el script si no está presente
+                        const script = document.createElement('script');
+                        script.src = '/static/js/game-alerts.js';
+                        script.onload = () => {
+                            if (window.showNextGameAlert) {
+                                window.showNextGameAlert({ progreso, siguienteUrl: result.siguiente_url });
+                            } else {
+                                alert(`✅ Juego completado!\n\nProgreso: ${progreso.completadas}/${progreso.totales} (${progreso.porcentaje}%)\n\n🎮 Avanzando al siguiente juego...`);
+                                setTimeout(() => {
+                                    window.location.href = result.siguiente_url;
+                                }, 2000);
+                            }
+                        };
+                        document.body.appendChild(script);
+                    }
                     return { success: true };
                 } else {
                     // Fallback - ir a resultados
@@ -778,7 +784,6 @@ class CompletaLaPalabraGame {
             } else {
                 return { success: false, error: result.error };
             }
-            
         } catch (error) {
             console.error('❌ Error al finalizar juego:', error);
             return { success: false, error: 'Error de conexión al finalizar el juego' };
