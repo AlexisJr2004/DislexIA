@@ -1,5 +1,6 @@
 """
 Predictor de Dislexia usando el modelo entrenado v2.2
+CAMBIO: Umbrales de riesgo ajustados según el threshold del modelo (0.635)
 """
 
 import json
@@ -67,7 +68,6 @@ class DyslexiaPredictor:
             if not model_path.exists():
                 raise FileNotFoundError(f"No se encontró el modelo en {model_path}")
             
-            # ⭐ CARGAR CON CUSTOM OBJECTS
             self.model = tf.keras.models.load_model(
                 str(model_path),
                 custom_objects={'focal_loss_fixed': focal_loss_fixed()}
@@ -78,7 +78,7 @@ class DyslexiaPredictor:
             raise Exception(f"Error al cargar modelo: {e}")
         
         try:
-            # Cargar scaler con joblib (más robusto que pickle)
+            # Cargar scaler
             scaler_path = self.model_dir / 'scaler.pkl'
             
             if not scaler_path.exists():
@@ -99,7 +99,6 @@ class DyslexiaPredictor:
             
             with open(features_path, 'r', encoding='utf-8') as f:
                 data = json.load(f)
-                # Si es un objeto con propiedad "features", extraerla
                 self.features_list = data.get('features', data) if isinstance(data, dict) else data
             print(f"   ✓ Features cargadas: {len(self.features_list)} features")
             
@@ -129,27 +128,9 @@ class DyslexiaPredictor:
         
         Args:
             features_dict (dict): Diccionario con las 196 features
-                Ejemplo: {
-                    'Age': 8,
-                    'Gender_Male': 1,
-                    'Nativelang_Yes': 1,
-                    'Otherlang_Yes': 0,
-                    'Clicks1': 10, 'Hits1': 8, 'Misses1': 2, ...
-                    'Clicks32': 5, 'Hits32': 4, 'Misses32': 1, ...
-                }
         
         Returns:
-            dict: Resultado de la predicción con estructura:
-                {
-                    'tiene_dislexia': bool,
-                    'probabilidad': float (0-1),
-                    'probabilidad_porcentaje': float (0-100),
-                    'confianza': float (0-1),
-                    'nivel_riesgo': str ('BAJO', 'MEDIO', 'ALTO'),
-                    'clasificacion': str ('Sin Dislexia', 'Dislexia Detectada'),
-                    'recomendacion': str,
-                    'disclaimer': str
-                }
+            dict: Resultado de la predicción
         """
         
         # Validar que tengamos el modelo cargado
@@ -163,25 +144,8 @@ class DyslexiaPredictor:
             for feature_name in self.features_list:
                 value = features_dict.get(feature_name, 0)
                 feature_values.append(value)
-            # ⭐ AGREGAR ESTAS LÍNEAS TEMPORALES PARA DEBUG:
-            print("\n" + "="*80)
-            print("🔍 DEBUG: FEATURES ENVIADAS AL MODELO")
-            print("="*80)
-            print(f"Age: {features_dict.get('Age')}")
-            print(f"Gender_Male: {features_dict.get('Gender_Male')}")
-            print(f"Nativelang_Yes: {features_dict.get('Nativelang_Yes')}")
-            print(f"Otherlang_Yes: {features_dict.get('Otherlang_Yes')}")
-            print("\nPrimeros 5 ejercicios:")
-            for i in range(1, 6):
-                print(f"Ejercicio {i}:")
-                print(f"  Clicks: {features_dict.get(f'Clicks{i}')}")
-                print(f"  Hits: {features_dict.get(f'Hits{i}')}")
-                print(f"  Misses: {features_dict.get(f'Misses{i}')}")
-                print(f"  Score: {features_dict.get(f'Score{i}')}")
-                print(f"  Accuracy: {features_dict.get(f'Accuracy{i}')}")
-                print(f"  Missrate: {features_dict.get(f'Missrate{i}')}")
-            print("="*80 + "\n")
-            print(f"📊 Features preparadas: {len(feature_values)} valores")
+            
+            print(f"\n📊 Features preparadas: {len(feature_values)} valores")
             
             # === PASO 2: Convertir a numpy array ===
             X = np.array([feature_values])
@@ -195,12 +159,12 @@ class DyslexiaPredictor:
             probabilidad = float(probabilidad_raw)
             
             print(f"   ✓ Predicción realizada: {probabilidad:.4f}")
+            print(f"   ✓ Umbral del modelo: {self.threshold:.4f}")
             
             # === PASO 5: Aplicar umbral ===
             tiene_dislexia = probabilidad >= self.threshold
             
             # === PASO 6: Calcular confianza mejorada ===
-            # Confianza basada en qué tan cerca está de los extremos (0 o 1)
             if probabilidad >= self.threshold:
                 # Predice dislexia: confianza aumenta al acercarse a 1
                 confianza = (probabilidad - self.threshold) / (1.0 - self.threshold)
@@ -211,13 +175,22 @@ class DyslexiaPredictor:
             # Normalizar a 0-1
             confianza = min(max(confianza, 0.0), 1.0)
             
-            # === PASO 7: Determinar nivel de riesgo ===
-            if probabilidad < 0.3:
+            # === PASO 7: Determinar nivel de riesgo (AJUSTADO) ===
+            # Ajustado para threshold = 0.635
+            # 
+            # RIESGO BAJO:   probabilidad < 0.35  (muy por debajo del threshold)
+            # RIESGO MEDIO:  0.35 ≤ probabilidad < 0.75  (cerca del threshold o ligeramente arriba)
+            # RIESGO ALTO:   probabilidad ≥ 0.75  (significativamente arriba del threshold)
+            
+            if probabilidad < 0.35:
                 nivel_riesgo = 'BAJO'
-            elif probabilidad < 0.7:
+            elif probabilidad < 0.75:
                 nivel_riesgo = 'MEDIO'
             else:
                 nivel_riesgo = 'ALTO'
+            
+            print(f"   ✓ Nivel de riesgo determinado: {nivel_riesgo}")
+            print(f"      (probabilidad: {probabilidad:.4f}, rangos: <0.35=BAJO, 0.35-0.75=MEDIO, ≥0.75=ALTO)")
             
             # === PASO 8: Generar recomendación ===
             recomendacion = self._generar_recomendacion(
@@ -253,7 +226,6 @@ class DyslexiaPredictor:
             import traceback
             traceback.print_exc()
             
-            # Retornar predicción de error
             return {
                 'error': True,
                 'mensaje': f'Error al realizar la predicción: {str(e)}',
@@ -317,7 +289,6 @@ class DyslexiaPredictor:
     def _generate_mock_prediction(self, features_dict):
         """
         Genera una predicción simulada cuando el modelo no está disponible
-        (útil para desarrollo/testing)
         """
         # Calcular un "score" simple basado en accuracy promedio
         total_accuracy = 0
@@ -331,14 +302,14 @@ class DyslexiaPredictor:
         
         accuracy_promedio = total_accuracy / count if count > 0 else 80.0
         
-        # Simular probabilidad inversa a la accuracy (menos accuracy = más probabilidad de dislexia)
+        # Simular probabilidad inversa a la accuracy
         probabilidad = max(0.0, min(1.0, (100 - accuracy_promedio) / 100))
         
         tiene_dislexia = probabilidad >= 0.5
         
-        if probabilidad < 0.3:
+        if probabilidad < 0.35:
             nivel_riesgo = 'BAJO'
-        elif probabilidad < 0.7:
+        elif probabilidad < 0.75:
             nivel_riesgo = 'MEDIO'
         else:
             nivel_riesgo = 'ALTO'
@@ -347,7 +318,7 @@ class DyslexiaPredictor:
             'tiene_dislexia': tiene_dislexia,
             'probabilidad': probabilidad,
             'probabilidad_porcentaje': round(probabilidad * 100, 2),
-            'confianza': 0.6,  # Confianza baja en modo simulación
+            'confianza': 0.6,
             'confianza_porcentaje': 60.0,
             'nivel_riesgo': nivel_riesgo,
             'clasificacion': 'Dislexia Detectada' if tiene_dislexia else 'Sin Dislexia',
