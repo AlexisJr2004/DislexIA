@@ -934,19 +934,25 @@ class SequentialResultsView(TemplateView):
             juegos_agrupados[juego_id]['errores_total'] += sesion_errores
             juegos_agrupados[juego_id]['juego_obj'] = sesion.juego
         
-        # Convertir a lista y calcular precisión
+        juegos_unicos = set(pruebas.values_list('juego', flat=True))
+
         juegos_resumen = []
-        for juego_id, datos in juegos_agrupados.items():
-            total_respuestas = datos['clics_total']
-            precision = (datos['aciertos_total'] / total_respuestas * 100) if total_respuestas > 0 else 0
-            
+        for juego_id in juegos_unicos:
+            juego_obj = Juego.objects.get(id=juego_id)
+            pruebas_juego = pruebas.filter(juego=juego_obj)
+            clics_total = sum(p.clics for p in pruebas_juego)
+            aciertos_total = sum(p.aciertos for p in pruebas_juego)
+            errores_total = sum(p.errores for p in pruebas_juego)
+            puntaje_total = sum(p.puntaje for p in pruebas_juego)
+            precision = (aciertos_total / clics_total * 100) if clics_total > 0 else 0
+
             juegos_resumen.append({
-                'juego': datos['juego_obj'],
-                'veces_jugado': datos['veces_jugado'],
-                'puntaje': datos['puntaje_total'],
-                'clics': datos['clics_total'],
-                'aciertos': datos['aciertos_total'],
-                'errores': datos['errores_total'],
+                'juego': juego_obj,
+                'veces_jugado': sesiones.filter(juego=juego_obj).count(),
+                'puntaje': puntaje_total,
+                'clics': clics_total,
+                'aciertos': aciertos_total,
+                'errores': errores_total,
                 'precision': round(precision, 1)
             })
         

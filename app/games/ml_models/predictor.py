@@ -2,12 +2,9 @@
 Predictor de Dislexia usando el modelo entrenado v2.2
 """
 
-import os
 import json
-import pickle
 import numpy as np
 from pathlib import Path
-from django.conf import settings
 import joblib
 
 class DyslexiaPredictor:

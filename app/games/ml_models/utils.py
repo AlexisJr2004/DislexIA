@@ -3,7 +3,6 @@ Utilidades para preparar datos de evaluaciones para el modelo de predicción de 
 """
 
 from app.games.models import SesionJuego, Evaluacion
-from app.core.models import Nino
 
 
 def preparar_features_desde_evaluacion(evaluacion_id):
