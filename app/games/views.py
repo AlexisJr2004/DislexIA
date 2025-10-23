@@ -14,7 +14,6 @@ import json
 import os
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.conf import settings
-import traceback
 from .models import Juego, SesionJuego, Evaluacion
 from app.core.models import Nino, Profesional
 from app.core.forms import NinoForm
@@ -53,12 +52,31 @@ class GameSessionListView(TemplateView):
         
         profesional = self.request.user
         
+        # ⭐ Solo obtener filtro de estado (sin búsqueda)
+        filtro_estado = self.request.GET.get('estado', 'todos')
+        
         from .models import Evaluacion
-        evaluaciones = Evaluacion.objects.filter(
+        
+        # Query base sin filtros (para estadísticas globales)
+        evaluaciones_todas = Evaluacion.objects.filter(
             nino__profesional=profesional
-        ).select_related('nino').order_by('-fecha_hora_inicio')
+        ).select_related('nino')
+        
+        # Calcular estadísticas globales
+        total_evaluaciones_global = evaluaciones_todas.count()
+        completadas_global = evaluaciones_todas.filter(estado='completada').count()
+        en_proceso_global = evaluaciones_todas.filter(estado='en_proceso').count()
+        interrumpidas_global = total_evaluaciones_global - completadas_global - en_proceso_global
+        
+        # Aplicar solo filtro por estado
+        evaluaciones = evaluaciones_todas
+        
+        if filtro_estado != 'todos':
+            evaluaciones = evaluaciones.filter(estado=filtro_estado)
+        
+        evaluaciones = evaluaciones.order_by('-fecha_hora_inicio')
 
-        # Preparar lista de evaluaciones con métricas
+        # Preparar lista con métricas
         evaluaciones_con_metricas = []
         for evaluacion in evaluaciones:
             sesiones = SesionJuego.objects.filter(evaluacion=evaluacion)
@@ -81,8 +99,8 @@ class GameSessionListView(TemplateView):
                 'progreso_porcentaje': round((sesiones_completadas / total_sesiones * 100), 1) if total_sesiones > 0 else 0
             })
 
-        # ⭐ AGREGAR PAGINACIÓN
-        paginator = Paginator(evaluaciones_con_metricas, 10)  # 10 por página
+        # Paginación
+        paginator = Paginator(evaluaciones_con_metricas, 10)
         page = self.request.GET.get('page', 1)
         
         try:
@@ -92,23 +110,18 @@ class GameSessionListView(TemplateView):
         except EmptyPage:
             evaluaciones_paginadas = paginator.page(paginator.num_pages)
 
-        # Calcular estadísticas
-        total_evaluaciones = len(evaluaciones_con_metricas)
-        completadas = sum(1 for item in evaluaciones_con_metricas if item['evaluacion'].estado == 'completada')
-        en_proceso = sum(1 for item in evaluaciones_con_metricas if item['evaluacion'].estado == 'en_proceso')
-        interrumpidas = total_evaluaciones - completadas - en_proceso
-
         ninos = Nino.objects.filter(profesional=profesional)
 
         context.update({
             'page_title': 'Evaluaciones - DislexIA',
             'active_section': 'games',
-            'evaluaciones': evaluaciones_paginadas,  # ⭐ CAMBIAR A PAGINADAS
+            'evaluaciones': evaluaciones_paginadas,
             'ninos': ninos,
-            'total_evaluaciones': total_evaluaciones,
-            'evaluaciones_completadas': completadas,
-            'evaluaciones_en_proceso': en_proceso,
-            'evaluaciones_interrumpidas': interrumpidas,
+            'total_evaluaciones': total_evaluaciones_global,
+            'evaluaciones_completadas': completadas_global,
+            'evaluaciones_en_proceso': en_proceso_global,
+            'evaluaciones_interrumpidas': interrumpidas_global,
+            'filtro_actual': filtro_estado,
         })
         
         return context

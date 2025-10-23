@@ -265,7 +265,6 @@ class Command(BaseCommand):
             self.stdout.write(self.style.WARNING("🧠 RESULTADO DE PREDICCIÓN IA"))
             self.stdout.write(f"{'='*70}")
             self.stdout.write(f"Clasificación:   {pred.get('clasificacion', 'N/A')}")
-            self.stdout.write(f"Riesgo:          {pred.get('nivel_riesgo', 'N/A')}")
             self.stdout.write(f"Probabilidad:    {pred.get('probabilidad_porcentaje', 0):.1f}%")
             self.stdout.write(f"Confianza:       {pred.get('confianza_porcentaje', 0):.1f}%")
             self.stdout.write(f"{'='*70}\n")
@@ -275,7 +274,7 @@ class Command(BaseCommand):
                 ReporteIA.objects.create(
                     evaluacion=evaluacion,
                     indice_riesgo=pred.get('probabilidad', 0),
-                    clasificacion_riesgo=pred.get('nivel_riesgo', 'bajo').lower(),
+                    clasificacion_riesgo=pred.get('clasificacion_riesgo', 'bajo').lower(),
                     confianza_prediccion=int(pred.get('confianza_porcentaje', pred.get('confianza', 0) * 100)),
                     caracteristicas_json=resultado.get('features', {}),
                     recomendaciones=pred.get('recomendacion', ''),

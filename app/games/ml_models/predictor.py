@@ -175,30 +175,18 @@ class DyslexiaPredictor:
             # Normalizar a 0-1
             confianza = min(max(confianza, 0.0), 1.0)
             
-            # === PASO 7: Determinar nivel de riesgo (AJUSTADO) ===
-            # Ajustado para threshold = 0.635
-            # 
-            # RIESGO BAJO:   probabilidad < 0.35  (muy por debajo del threshold)
-            # RIESGO MEDIO:  0.35 ≤ probabilidad < 0.75  (cerca del threshold o ligeramente arriba)
-            # RIESGO ALTO:   probabilidad ≥ 0.75  (significativamente arriba del threshold)
-            
-            if probabilidad < 0.35:
-                nivel_riesgo = 'BAJO'
-            elif probabilidad < 0.75:
-                nivel_riesgo = 'MEDIO'
-            else:
-                nivel_riesgo = 'ALTO'
-            
-            print(f"   ✓ Nivel de riesgo determinado: {nivel_riesgo}")
-            print(f"      (probabilidad: {probabilidad:.4f}, rangos: <0.35=BAJO, 0.35-0.75=MEDIO, ≥0.75=ALTO)")
-            
+            # === PASO 7: Determinar nivel de riesgo (ELIMINADO, ahora solo por probabilidad) ===
+            # El nivel de riesgo ya no se usa, la recomendación se basa en la probabilidad directamente
+
+            print(f"   ✓ Probabilidad obtenida: {probabilidad:.4f}")
+            print(f"      (rangos: <0.35=BAJO, 0.35-0.75=MEDIO, ≥0.75=ALTO)")
+
             # === PASO 8: Generar recomendación ===
             recomendacion = self._generar_recomendacion(
                 tiene_dislexia, 
-                probabilidad, 
-                nivel_riesgo
+                probabilidad
             )
-            
+
             # === PASO 9: Construir resultado ===
             resultado = {
                 'tiene_dislexia': tiene_dislexia,
@@ -206,19 +194,17 @@ class DyslexiaPredictor:
                 'probabilidad_porcentaje': round(probabilidad * 100, 2),
                 'confianza': confianza,
                 'confianza_porcentaje': round(confianza * 100, 2),
-                'nivel_riesgo': nivel_riesgo,
                 'clasificacion': 'Dislexia Detectada' if tiene_dislexia else 'Sin Dislexia',
                 'umbral_utilizado': self.threshold,
                 'recomendacion': recomendacion,
                 'disclaimer': self._get_disclaimer()
             }
-            
+
             print(f"✅ Predicción completada:")
             print(f"   - Clasificación: {resultado['clasificacion']}")
             print(f"   - Probabilidad: {resultado['probabilidad_porcentaje']:.2f}%")
-            print(f"   - Nivel de riesgo: {resultado['nivel_riesgo']}")
             print(f"   - Confianza: {resultado['confianza_porcentaje']:.2f}%")
-            
+
             return resultado
             
         except Exception as e:
@@ -233,19 +219,19 @@ class DyslexiaPredictor:
                 'probabilidad': None
             }
     
-    def _generar_recomendacion(self, tiene_dislexia, probabilidad, nivel_riesgo):
+    def _generar_recomendacion(self, tiene_dislexia, probabilidad):
         """
-        Genera recomendaciones personalizadas según el resultado
+        Genera recomendaciones personalizadas según la probabilidad
         """
         if tiene_dislexia:
-            if nivel_riesgo == 'ALTO':
+            if probabilidad >= 0.75:
                 return (
                     "Se recomienda encarecidamente una evaluación neuropsicológica completa "
                     "por parte de un profesional especializado. Los indicadores sugieren una "
                     "alta probabilidad de dislexia que requiere atención profesional inmediata "
                     "para desarrollar un plan de intervención personalizado."
                 )
-            elif nivel_riesgo == 'MEDIO':
+            elif probabilidad >= 0.35:
                 return (
                     "Se sugiere realizar una evaluación profesional más detallada. "
                     "Los resultados indican indicadores de dislexia que deberían ser "
@@ -293,13 +279,11 @@ class DyslexiaPredictor:
         # Calcular un "score" simple basado en accuracy promedio
         total_accuracy = 0
         count = 0
-        
         for i in range(1, 33):
             accuracy_key = f'Accuracy{i}'
             if accuracy_key in features_dict:
                 total_accuracy += features_dict[accuracy_key]
                 count += 1
-        
         accuracy_promedio = total_accuracy / count if count > 0 else 80.0
         
         # Simular probabilidad inversa a la accuracy
@@ -307,24 +291,16 @@ class DyslexiaPredictor:
         
         tiene_dislexia = probabilidad >= 0.5
         
-        if probabilidad < 0.35:
-            nivel_riesgo = 'BAJO'
-        elif probabilidad < 0.75:
-            nivel_riesgo = 'MEDIO'
-        else:
-            nivel_riesgo = 'ALTO'
-        
         return {
             'tiene_dislexia': tiene_dislexia,
             'probabilidad': probabilidad,
             'probabilidad_porcentaje': round(probabilidad * 100, 2),
             'confianza': 0.6,
             'confianza_porcentaje': 60.0,
-            'nivel_riesgo': nivel_riesgo,
             'clasificacion': 'Dislexia Detectada' if tiene_dislexia else 'Sin Dislexia',
             'umbral_utilizado': 0.5,
-            'recomendacion': f'PREDICCIÓN SIMULADA (accuracy promedio: {accuracy_promedio:.1f}%). ' + 
-                           self._generar_recomendacion(tiene_dislexia, probabilidad, nivel_riesgo),
+            'recomendacion': f'PREDICCIÓN SIMULADA (accuracy promedio: {accuracy_promedio:.1f}%). ' + \
+                           self._generar_recomendacion(tiene_dislexia, probabilidad),
             'disclaimer': 'MODO SIMULACIÓN: El modelo real no está disponible. Esta es una predicción de prueba.',
             'simulacion': True
         }
@@ -389,52 +365,78 @@ def predecir_dislexia_desde_evaluacion(evaluacion_id):
         print(f"\n📋 Evaluación: {resumen['nino']['nombre']} ({resumen['nino']['edad']} años)")
         print(f"   Sesiones completadas: {resumen['sesiones']['completadas']}/32")
         print(f"   Accuracy promedio: {resumen['metricas']['accuracy_promedio']}%")
-        
+        precision_promedio = resumen['metricas']['accuracy_promedio']
         # === PASO 2: Preparar features ===
         print("\n🔄 Preparando features...")
         features = preparar_features_desde_evaluacion(evaluacion_id)
-        
         # === PASO 3: Validar features ===
         print("\n✔️ Validando features...")
         es_valido, errores = validar_features(features)
-        
         if not es_valido:
             print(f"❌ Validación fallida: {len(errores)} errores")
             for error in errores[:5]:
                 print(f"   - {error}")
-            
             return {
                 'success': False,
                 'error': 'Features inválidas',
                 'errores_validacion': errores
             }
-        
         print("✅ Features validadas correctamente")
-        
         # === PASO 4: Realizar predicción ===
         print("\n🤖 Realizando predicción con modelo IA...")
         predictor = DyslexiaPredictor()
         resultado = predictor.predict(features)
-        
-        # === PASO 5: Combinar resultado con metadata ===
+        # === PASO 5: Clasificación y recomendación por accuracy ===
+        if precision_promedio < 60:
+            tiene_dislexia = True
+            clasificacion = 'Dislexia Detectada'
+            clasificacion_riesgo = 'alto'
+            recomendacion = (
+                "Se recomienda encarecidamente una evaluación neuropsicológica completa "
+                "por parte de un profesional especializado. Los indicadores sugieren una "
+                "alta probabilidad de dislexia que requiere atención profesional inmediata "
+                "para desarrollar un plan de intervención personalizado."
+            )
+        elif precision_promedio < 80:
+            tiene_dislexia = True
+            clasificacion = 'Riesgo Medio de Dislexia'
+            clasificacion_riesgo = 'medio'
+            recomendacion = (
+                "Se sugiere realizar una evaluación profesional más detallada. "
+                "Los resultados indican indicadores de dislexia que deberían ser "
+                "confirmados por un especialista. Considere programar una consulta "
+                "con un neuropsicólogo para obtener un diagnóstico preciso."
+            )
+        else:
+            tiene_dislexia = False
+            clasificacion = 'Sin Dislexia'
+            clasificacion_riesgo = 'bajo'
+            recomendacion = (
+                "Los resultados no indican signos significativos de dislexia. "
+                "El desempeño en las evaluaciones cognitivas se encuentra dentro "
+                "de los rangos esperados. Se recomienda continuar con el seguimiento "
+                "regular del desarrollo académico."
+            )
+        # === PASO 6: Combinar resultado con metadata ===
+        resultado['tiene_dislexia'] = tiene_dislexia
+        resultado['clasificacion'] = clasificacion
+        resultado['clasificacion_riesgo'] = clasificacion_riesgo
+        resultado['recomendacion'] = recomendacion
+        resultado['precision_promedio'] = precision_promedio
         resultado_completo = {
             'success': True,
             'evaluacion': resumen,
             'prediccion': resultado,
             'modelo_info': predictor.get_model_info()
         }
-        
         print("\n" + "="*80)
         print("✅ PREDICCIÓN COMPLETADA EXITOSAMENTE")
         print("="*80)
-        
         return resultado_completo
-        
     except Exception as e:
         print(f"\n❌ ERROR durante la predicción: {e}")
         import traceback
         traceback.print_exc()
-        
         return {
             'success': False,
             'error': str(e),
