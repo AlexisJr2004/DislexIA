@@ -1001,7 +1001,7 @@ def delete_evaluacion(request, evaluacion_id):
         
         nino_nombre = evaluacion.nino.nombre_completo
         print(f"✅ Evaluación encontrada: {nino_nombre}")
-        
+        messages.success(request, f'✅ Evaluación de {nino_nombre} eliminada correctamente')
         evaluacion.delete()
         print(f"✅ Evaluación eliminada")
         

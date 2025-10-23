@@ -410,24 +410,6 @@
     </div>
 </div>
 
-<!-- MODAL ÉXITO ELIMINACIÓN -->
-<div id="modalExitoEliminar" class="hidden fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50 backdrop-blur-sm">
-    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-md w-full mx-4 transform transition-all">
-        <div class="bg-gradient-to-r from-green-600 to-emerald-600 text-white p-6 rounded-t-2xl">
-            <h3 class="text-2xl font-bold flex items-center gap-3">
-                <i class="fas fa-check-circle"></i>
-                Eliminada correctamente
-            </h3>
-        </div>
-        <div class="p-6 text-center">
-            <p class="text-gray-800 dark:text-gray-200 mb-6" id="modalExitoTexto"></p>
-            <button type="button" onclick="cerrarModalExitoEliminar()" class="px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl font-semibold hover:from-green-700 hover:to-emerald-700 transition-all shadow-lg hover:shadow-xl">
-                Aceptar
-            </button>
-        </div>
-    </div>
-</div>
-
 {% endblock %}
 
 {% block extra_scripts %}
@@ -565,7 +547,8 @@
             })
             .then(data => {
                 if (data.success) {
-                    mostrarModalExitoEliminar(`✅ Evaluación de ${eliminarNombreNino} eliminada correctamente`);
+                    // Recargar la página para mostrar el mensaje Django
+                    window.location.reload();
                 } else {
                     cerrarModalEliminar();
                     alert('❌ ' + (data.error || 'Error desconocido'));
@@ -583,14 +566,6 @@
         }
     }
 
-    function mostrarModalExitoEliminar(mensaje) {
-        document.getElementById('modalExitoTexto').textContent = mensaje;
-        document.getElementById('modalExitoEliminar').classList.remove('hidden');
-    }
-    function cerrarModalExitoEliminar() {
-        document.getElementById('modalExitoEliminar').classList.add('hidden');
-        window.location.reload();
-    }
     // ============================================
     // FILTROS Y BÚSQUEDA
     // ============================================
