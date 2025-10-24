@@ -171,11 +171,12 @@ class ValidacionProfesional(models.Model):
         related_name='validaciones',
         verbose_name="Profesional"
     )
-    evaluacion = models.OneToOneField(
-        'games.Evaluacion',
+
+    ReporteIA = models.OneToOneField(
+        ReporteIA,
         on_delete=models.CASCADE,
         related_name='validacion_profesional',
-        verbose_name="Evaluación"
+        verbose_name="Reporte IA"
     )
     
     riesgo_confirmado = models.BooleanField(verbose_name="Riesgo Confirmado")

@@ -1,4 +1,4 @@
-from django.urls import include, path
+from django.urls import path
 from . import views
 from .views import get_citas_dia, crear_cita, eliminar_cita, marcar_cita_completada, agregar_nino_ajax
 
@@ -43,7 +43,14 @@ urlpatterns = [
     path('api/citas/crear/', views.crear_cita, name='crear_cita'),
     path('api/citas/<int:cita_id>/eliminar/', views.eliminar_cita, name='eliminar_cita'),
     path('api/citas/<int:cita_id>/completar/', views.marcar_cita_completada, name='marcar_cita_completada'),
-    
+
+    # Reporte IA
+    path('reporte-ia/<int:pk>/', views.ReporteIADetailView.as_view(), name='reporte_ia_detail'),
+
+    # Validación Profesional
+    path('validacion_profesional_create/<int:reporteia_id>/', views.ValidacionProfesionalCreateView.as_view(), name='validacion_profesional_create'),
+    path('validacion_profesional_edit/<int:reporteia_id>/', views.ValidacionProfesionalUpdateView.as_view(), name='validacion_profesional_edit'),
+
     # API endpoint para notificaciones
     path('api/notificaciones/', views.get_notificaciones, name='get_notificaciones'),
 ]

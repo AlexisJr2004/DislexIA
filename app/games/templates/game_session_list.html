@@ -235,10 +235,10 @@
                                     <i class="fas fa-eye"></i>
                                 </a>
 
-                                <!-- Validación Profesional: Confirmar riesgo de dislexia -->
-                                <a href="/"
+                                <!-- Reporte IA con validacion profesional -->
+                                <a href="{% url 'core:reporte_ia_detail' pk=item.evaluacion.id %}"
                                 class="tooltip w-10 h-10 bg-blue-100 dark:bg-blue-900/30 hover:bg-blue-200 dark:hover:bg-blue-900/50 text-blue-600 dark:text-blue-400 rounded-lg flex items-center justify-center transition-all"
-                                data-tooltip="{% trans 'Validación Profesional' %}">
+                                data-tooltip="{% trans 'Reporte IA' %}">
                                     <i class="fas fa-user-check"></i>
                                 </a>
 

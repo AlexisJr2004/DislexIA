@@ -1,0 +1,249 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/games.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto p-8">
+    <div class="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
+        <h1 class="text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-3 mb-0">
+            <span class="w-10 h-10 bg-gradient-to-br from-purple-500 to-blue-600 rounded-xl flex items-center justify-center">
+                <i class="fas fa-robot text-white text-2xl"></i>
+            </span>
+            {% trans "Detalle del Reporte IA" %}
+        </h1>
+        {% if not reporte.validacion_profesional %}
+        <a href="{% url 'core:validacion_profesional_create' reporte.id %}" class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-green-500 to-green-700 hover:from-green-600 hover:to-green-800 text-white rounded-xl font-semibold shadow-lg transition-all">
+            <i class="fas fa-user-md"></i>
+            {% trans "Crear Validación Profesional" %}
+        </a>
+        {% else %}
+        <a href="{% url 'core:validacion_profesional_edit' reporte.id %}" class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800 text-white rounded-xl font-semibold shadow-lg transition-all">
+            <i class="fas fa-edit"></i>
+            {% trans "Editar Validación Profesional" %}
+        </a>
+        {% endif %}
+    </div>
+
+    {% if reporte %}
+    <!-- Etiquetas de Clasificación de Riesgo -->
+    <div class="mb-4 flex flex-wrap gap-2">
+        {% if reporte.get_clasificacion_riesgo_display == 'alto' %}
+            <span class="inline-flex items-center px-4 py-2 rounded-full bg-red-100 text-red-700 font-semibold text-sm">
+                <i class="fas fa-exclamation-triangle mr-2"></i>
+                {% trans "Riesgo Alto: Se recomienda intervención profesional inmediata." %}
+            </span>
+        {% elif reporte.get_clasificacion_riesgo_display == 'medio' %}
+            <span class="inline-flex items-center px-4 py-2 rounded-full bg-yellow-100 text-yellow-800 font-semibold text-sm">
+                <i class="fas fa-exclamation-circle mr-2"></i>
+                {% trans "Riesgo Medio: Se recomienda seguimiento y evaluación adicional." %}
+            </span>
+        {% elif reporte.get_clasificacion_riesgo_display == 'bajo' %}
+            <span class="inline-flex items-center px-4 py-2 rounded-full bg-green-100 text-green-700 font-semibold text-sm">
+                <i class="fas fa-check-circle mr-2"></i>
+                {% trans "Riesgo Bajo: No se detectan señales significativas." %}
+            </span>
+        {% endif %}
+    </div>
+    <!-- Resultados del Reporte IA compacto -->
+    <div class="mb-6">
+        <div class="flex flex-col md:flex-row gap-2 md:gap-4 items-center justify-between">
+            <div class="flex-1 grid grid-cols-1 md:grid-cols-3 gap-2 md:gap-4">
+                <div class="bg-purple-50 dark:bg-purple-900/20 rounded-lg p-2 border border-purple-200 dark:border-purple-800 text-center">
+                    <p class="text-xs text-gray-500 dark:text-gray-400">{% trans "Índice de Riesgo" %}</p>
+                    <p class="text-lg font-bold text-purple-700 dark:text-purple-300">{{ reporte.indice_riesgo }}%</p>
+                </div>
+                <div 
+                    class="rounded-lg p-2 border text-center
+                    {% if reporte.get_clasificacion_riesgo_display == 'alto' %}
+                        bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800 text-red-700 dark:text-red-300
+                    {% elif reporte.get_clasificacion_riesgo_display == 'medio' %}
+                        bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-800 text-yellow-800 dark:text-yellow-300
+                    {% elif reporte.get_clasificacion_riesgo_display == 'bajo' %}
+                        bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800 text-green-700 dark:text-green-300
+                    {% else %}
+                        bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800 text-blue-700 dark:text-blue-300
+                    {% endif %}">
+                    <p class="text-xs text-gray-500 dark:text-gray-400">{% trans "Clasificación de Riesgo" %}</p>
+                    <p class="text-lg font-bold uppercase">{{ reporte.get_clasificacion_riesgo_display }}</p>
+                </div>
+                <div class="bg-green-50 dark:bg-green-900/20 rounded-lg p-2 border border-green-200 dark:border-green-800 text-center">
+                    <p class="text-xs text-gray-500 dark:text-gray-400">{% trans "Confianza de Predicción" %}</p>
+                    <p class="text-lg font-bold text-green-700 dark:text-green-300">{{ reporte.confianza_prediccion }}%</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div class="md:col-span-2 flex flex-col gap-4">
+            <!-- Datos del Niño -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-purple-400 to-blue-400 rounded-t-2xl"></div>
+                <div class="flex items-center gap-4 mb-4">
+                    <div class="flex-shrink-0 flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-purple-400 to-purple-600 text-white text-2xl font-bold shadow-md border-4 border-white dark:border-gray-800">
+                        {% if reporte.evaluacion.nino.imagen %}
+                            <img src="{{ reporte.evaluacion.nino.imagen.url }}" alt="Foto niño" class="w-full h-full object-cover rounded-full">
+                        {% else %}
+                            {{ reporte.evaluacion.nino.nombres|slice:":1"|upper }}{{ reporte.evaluacion.nino.apellidos|slice:":1"|upper }}
+                        {% endif %}
+                    </div>
+                    <div>
+                        <div class="text-xl font-bold text-gray-900 dark:text-white">{{ reporte.evaluacion.nino.nombre_completo }}</div>
+                        <div class="flex items-center gap-2 mt-1">
+                            <span class="inline-flex items-center px-2 py-0.5 rounded bg-purple-100 text-purple-700 text-xs font-semibold">
+                                <i class="fas fa-birthday-cake mr-1"></i> {{ reporte.evaluacion.nino.edad }} {% trans "años" %}
+                            </span>
+                            <span class="inline-flex items-center px-2 py-0.5 rounded bg-blue-100 text-blue-700 text-xs font-semibold">
+                                <i class="fas fa-venus-mars mr-1"></i> {{ reporte.evaluacion.nino.get_genero_display }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 gap-2 text-sm mt-2">
+                    <div class="flex items-center gap-2 bg-purple-50 dark:bg-purple-900/20 rounded-lg px-3 py-2">
+                        <i class="fas fa-language text-purple-500"></i>
+                        <span class="text-gray-600 dark:text-gray-300 font-medium">{% trans "Idioma nativo" %}:</span>
+                        <span class="text-gray-900 dark:text-white">{{ reporte.evaluacion.nino.idioma_nativo }}</span>
+                    </div>
+                    <div class="flex items-center gap-2 bg-blue-50 dark:bg-blue-900/20 rounded-lg px-3 py-2">
+                        <i class="fas fa-user-tie text-blue-500"></i>
+                        <span class="text-gray-600 dark:text-gray-300 font-medium">{% trans "Profesional a cargo" %}:</span>
+                        <span class="text-gray-900 dark:text-white">{{ reporte.evaluacion.nino.profesional.nombre_completo }}</span>
+                    </div>
+                </div>
+            </div>
+            <!-- Datos de la Evaluación -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-400 to-purple-400 rounded-t-2xl"></div>
+                <div class="flex items-center gap-2 mb-4">
+                    <i class="fas fa-gamepad text-blue-600 text-xl"></i>
+                    <h2 class="text-lg font-semibold text-blue-700 dark:text-blue-300">{% trans "Datos de la Evaluación" %}</h2>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-2">
+                    <div class="flex items-center gap-2 bg-blue-50 dark:bg-blue-900/20 rounded-lg px-3 py-2">
+                        <i class="fas fa-calendar-alt text-blue-500"></i>
+                        <span class="text-gray-600 dark:text-gray-300 font-medium">{% trans "Fecha" %}:</span>
+                        <span class="text-gray-900 dark:text-white">{{ reporte.evaluacion.fecha_hora_inicio|date:'d/m/Y H:i' }}</span>
+                    </div>
+                    <div class="flex items-center gap-2 bg-purple-50 dark:bg-purple-900/20 rounded-lg px-3 py-2">
+                        <i class="fas fa-info-circle text-purple-500"></i>
+                        <span class="text-gray-600 dark:text-gray-300 font-medium">{% trans "Estado" %}:</span>
+                        <span class="text-gray-900 dark:text-white">{{ reporte.evaluacion.get_estado_display }}</span>
+                    </div>
+                    <div class="flex items-center gap-2 bg-green-50 dark:bg-green-900/20 rounded-lg px-3 py-2">
+                        <i class="fas fa-clock text-green-600"></i>
+                        <span class="text-gray-600 dark:text-gray-300 font-medium">{% trans "Duración" %}:</span>
+                        <span class="text-gray-900 dark:text-white">{{ reporte.evaluacion.duracion_total_minutos }} min</span>
+                    </div>
+                    <div class="flex items-center gap-2 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg px-3 py-2">
+                        <i class="fas fa-mouse-pointer text-yellow-600"></i>
+                        <span class="text-gray-600 dark:text-gray-300 font-medium">{% trans "Clics" %}:</span>
+                        <span class="text-gray-900 dark:text-white">{{ reporte.evaluacion.total_clics }}</span>
+                    </div>
+                    <div class="flex items-center gap-2 bg-green-100 dark:bg-green-900/30 rounded-lg px-3 py-2">
+                        <i class="fas fa-check-circle text-green-700"></i>
+                        <span class="text-gray-600 dark:text-gray-300 font-medium">{% trans "Aciertos" %}:</span>
+                        <span class="text-gray-900 dark:text-white">{{ reporte.evaluacion.total_aciertos }}</span>
+                    </div>
+                    <div class="flex items-center gap-2 bg-red-100 dark:bg-red-900/30 rounded-lg px-3 py-2">
+                        <i class="fas fa-times-circle text-red-600"></i>
+                        <span class="text-gray-600 dark:text-gray-300 font-medium">{% trans "Errores" %}:</span>
+                        <span class="text-gray-900 dark:text-white">{{ reporte.evaluacion.total_errores }}</span>
+                    </div>
+                    <div class="flex items-center gap-2 bg-indigo-50 dark:bg-indigo-900/20 rounded-lg px-3 py-2">
+                        <i class="fas fa-percentage text-indigo-600"></i>
+                        <span class="text-gray-600 dark:text-gray-300 font-medium">{% trans "Precisión" %}:</span>
+                        <span class="text-gray-900 dark:text-white">{{ reporte.evaluacion.precision_promedio }}%</span>
+                    </div>
+                    <div class="flex items-center gap-2 bg-gray-100 dark:bg-gray-900/20 rounded-lg px-3 py-2">
+                        <i class="fas fa-tablet-alt text-gray-500"></i>
+                        <span class="text-gray-600 dark:text-gray-300 font-medium">{% trans "Dispositivo" %}:</span>
+                        <span class="text-gray-900 dark:text-white">{{ reporte.evaluacion.dispositivo }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Validación Profesional o mensaje -->
+        <div class="flex flex-col h-full">
+            {% if reporte.validacion_profesional %}
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 relative overflow-hidden mb-0 flex-1 flex flex-col">
+                <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-green-400 to-blue-400 rounded-t-2xl"></div>
+                <div class="flex items-center gap-4 mb-4">
+                    <div class="flex-shrink-0 flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-green-400 to-green-600 text-white text-2xl font-bold shadow-md border-4 border-white dark:border-gray-800">
+                        <i class="fas fa-user-md"></i>
+                    </div>
+                    <div>
+                        <div class="text-xl font-bold text-green-700 dark:text-green-300">{% trans "Validación Profesional" %}</div>
+                        <div class="flex items-center gap-2 mt-1">
+                            <span class="inline-flex items-center px-2 py-0.5 rounded bg-green-100 text-green-700 text-xs font-semibold">
+                                <i class="fas fa-user-tie mr-1"></i> {{ reporte.validacion_profesional.profesional.nombre_completo }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 gap-2 text-sm mt-2">
+                    <div class="flex items-center gap-2 bg-green-50 dark:bg-green-900/20 rounded-lg px-3 py-2">
+                        <i class="fas fa-check-double text-green-600"></i>
+                        <span class="text-gray-600 dark:text-gray-300 font-medium">{% trans "Riesgo Confirmado" %}:</span>
+                        <span class="text-gray-900 dark:text-white">{{ reporte.validacion_profesional.riesgo_confirmado|yesno:_('Sí,No') }}</span>
+                    </div>
+                    <div class="flex items-center gap-2 bg-blue-50 dark:bg-blue-900/20 rounded-lg px-3 py-2">
+                        <i class="fas fa-percentage text-blue-600"></i>
+                        <span class="text-gray-600 dark:text-gray-300 font-medium">{% trans "Índice Ajustado" %}:</span>
+                        <span class="text-gray-900 dark:text-white">{{ reporte.validacion_profesional.indice_ajustado }}</span>
+                    </div>
+                    <div class="flex items-center gap-2 bg-purple-50 dark:bg-purple-900/20 rounded-lg px-3 py-2">
+                        <i class="fas fa-stethoscope text-purple-600"></i>
+                        <span class="text-gray-600 dark:text-gray-300 font-medium">{% trans "Diagnóstico Final" %}:</span>
+                        <span class="text-gray-900 dark:text-white">{{ reporte.validacion_profesional.diagnostico_final }}</span>
+                    </div>
+                    <div class="flex items-center gap-2 bg-gray-100 dark:bg-gray-900/20 rounded-lg px-3 py-2">
+                        <i class="fas fa-notes-medical text-gray-500"></i>
+                        <span class="text-gray-600 dark:text-gray-300 font-medium">{% trans "Notas Clínicas" %}:</span>
+                        <span class="text-gray-900 dark:text-white">{{ reporte.validacion_profesional.notas_clinicas|default:_('Sin notas') }}</span>
+                    </div>
+                    <div class="flex items-center gap-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg px-3 py-2">
+                        <i class="fas fa-clipboard-list text-blue-700"></i>
+                        <span class="text-gray-600 dark:text-gray-300 font-medium">{% trans "Plan de Tratamiento" %}:</span>
+                        <span class="text-gray-900 dark:text-white">{{ reporte.validacion_profesional.plan_tratamiento|default:_('Sin plan') }}</span>
+                    </div>
+                    <div class="flex items-center gap-2 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg px-3 py-2">
+                        <i class="fas fa-sync-alt text-yellow-600"></i>
+                        <span class="text-gray-600 dark:text-gray-300 font-medium">{% trans "Requiere Seguimiento" %}:</span>
+                        <span class="text-gray-900 dark:text-white">{{ reporte.validacion_profesional.requiere_seguimiento|yesno:_('Sí,No') }}</span>
+                    </div>
+                    <div class="flex items-center gap-2 bg-gray-50 dark:bg-gray-900/10 rounded-lg px-3 py-2">
+                        <i class="fas fa-calendar-check text-gray-600"></i>
+                        <span class="text-gray-600 dark:text-gray-300 font-medium">{% trans "Fecha de Validación" %}:</span>
+                        <span class="text-gray-900 dark:text-white">{{ reporte.validacion_profesional.fecha_validacion|date:'d/m/Y H:i' }}</span>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="bg-gray-50 dark:bg-gray-900 rounded-2xl shadow-lg p-6 border border-gray-200 dark:border-gray-700 flex flex-col items-center justify-center h-full">
+                <i class="fas fa-user-md text-4xl text-gray-400 mb-2"></i>
+                <p class="text-gray-500 dark:text-gray-400 text-center">{% trans "No hay validación profesional registrada para esta evaluación." %}</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    <div class="flex justify-center items-center mt-6 w-full">
+        <a href="{% url 'games:session_list' %}" class="filter-btn px-4 py-2 bg-white dark:bg-gray-800 rounded-xl text-sm font-medium transition-all hover:bg-purple-50 dark:hover:bg-purple-900/30 text-gray-700 dark:text-gray-300 active">
+        <i class="fas fa-arrow-left"></i>
+        <span>{% trans "Regresar a sesiones" %}</span>
+        </a>
+    </div>
+    {% else %}
+        <div class="bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-300 rounded-xl p-6 text-center">
+            <i class="fas fa-exclamation-triangle text-3xl mb-2"></i>
+            <p>{% trans "No se encontró el reporte solicitado o no tienes permiso para verlo." %}</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
