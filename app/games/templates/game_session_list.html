@@ -1,0 +1,1057 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/games.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="p-8">
+    <!-- Header Section -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
+        <div>
+            <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2 flex items-center gap-3">
+                <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-blue-600 rounded-xl flex items-center justify-center">
+                    <i class="fas fa-list-ul text-white text-xl"></i>
+                </div>
+                {% trans "Gestión de Sesiones" %}
+            </h1>
+            <p class="text-gray-600 dark:text-gray-400">{% trans "Administra y supervisa todas las sesiones de juegos realizadas" %}</p>
+        </div>
+
+        <!-- Actions -->
+        <div class="flex items-center gap-3">
+            <!-- Botón para abrir el modal de simulación -->
+            <div class="relative p-1 rounded-xl animate-spin-slow bg-gradient-conic">
+                <button type="button" onclick="document.getElementById('modalPopulate').classList.remove('hidden')"
+                        class="relative px-8 py-3 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-lg font-semibold flex items-center gap-2 transition-all hover:shadow-lg cursor-pointer">
+                        <i class="fas fa-vial text-purple-600 text-xl"></i>
+                        <span class="hidden sm:inline">{% trans "Simular Prueba Cognitiva" %}</span>
+                </button>
+            </div>
+            <!-- Botón Iniciar Prueba Cognitiva con borde animado y GIF -->
+            <div class="relative p-1 rounded-xl animate-spin-slow bg-gradient-conic">
+                <button onclick="abrirModalEvaluacionIA()"
+                        class="relative px-8 py-3 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-lg font-semibold flex items-center gap-2 transition-all hover:shadow-lg cursor-pointer">
+                    <img src="{% static 'img/ia_carga.gif' %}" alt="IA Icon" class="w-6 h-6 flex-shrink-0">
+                    <span class="hidden sm:inline">{% trans "Iniciar Prueba Cognitiva" %}</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+        <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4">
+            <div class="text-center">
+                <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ total_evaluaciones }}</p>
+                <p class="text-xs text-gray-500 dark:text-gray-400">{% trans "Total" %}</p>
+            </div>
+        </div>
+
+        <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4">
+            <div class="text-center">
+                <p class="text-2xl font-bold text-green-600 dark:text-green-400">{{ evaluaciones_completadas }}</p>
+                <p class="text-xs text-gray-500 dark:text-gray-400">{% trans "Completadas" %}</p>
+            </div>
+        </div>
+
+        <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4">
+            <div class="text-center">
+                <p class="text-2xl font-bold text-yellow-600 dark:text-yellow-400">{{ evaluaciones_en_proceso }}</p>
+                <p class="text-xs text-gray-500 dark:text-gray-400">{% trans "En Proceso" %}</p>
+            </div>
+        </div>
+
+        <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4">
+            <div class="text-center">
+                <p class="text-2xl font-bold text-red-600 dark:text-red-400">{{ evaluaciones_interrumpidas }}</p>
+                <p class="text-xs text-gray-500 dark:text-gray-400">{% trans "Interrumpidas" %}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filters and Search -->
+    <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6 mb-8">
+        <div class="flex flex-col lg:flex-row gap-4 items-center justify-between">
+            <!-- Search -->
+            <div class="relative flex-1 max-w-md w-full">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <i class="fas fa-search text-gray-400"></i>
+                </div>
+                <input type="text" 
+                    id="searchInput"
+                    placeholder="{% trans 'Buscar por paciente...' %}"
+                    class="search-input w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-200 placeholder-gray-500 transition-all">
+            </div>
+
+            <!-- Filters -->
+            <div class="flex flex-wrap items-center gap-2">
+                <span class="text-sm font-medium text-gray-700 dark:text-gray-300 mr-2">{% trans "Filtrar:" %}</span>
+                
+                <a href="?estado=todos" 
+                class="filter-btn {% if filtro_actual == 'todos' %}active{% else %}text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700{% endif %} px-4 py-2 text-sm font-medium rounded-lg transition-all">
+                    {% trans "Todos" %}
+                </a>
+                
+                <a href="?estado=en_proceso" 
+                class="filter-btn {% if filtro_actual == 'en_proceso' %}active{% else %}text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700{% endif %} px-4 py-2 text-sm font-medium rounded-lg transition-all">
+                    {% trans "En Proceso" %}
+                </a>
+                
+                <a href="?estado=completada" 
+                class="filter-btn {% if filtro_actual == 'completada' %}active{% else %}text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700{% endif %} px-4 py-2 text-sm font-medium rounded-lg transition-all">
+                    {% trans "Completadas" %}
+                </a>
+                
+                <a href="?estado=interrumpida" 
+                class="filter-btn {% if filtro_actual == 'interrumpida' %}active{% else %}text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700{% endif %} px-4 py-2 text-sm font-medium rounded-lg transition-all">
+                    {% trans "Interrumpidas" %}
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabla de Evaluaciones -->
+    <div class="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                <thead class="border-b border-gray-200 dark:border-gray-700">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wider">
+                            {% trans "Paciente" %}
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wider">
+                            {% trans "Fecha Inicio" %}
+                        </th>
+                        <th class="px-6 py-3 text-center text-xs font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wider">
+                            {% trans "Progreso" %}
+                        </th>
+                        <th class="px-6 py-3 text-center text-xs font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wider">
+                            {% trans "Exactitud" %}
+                        </th>
+                        <th class="px-6 py-3 text-center text-xs font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wider">
+                            {% trans "Estado" %}
+                        </th>
+                        <th class="px-6 py-3 text-center text-xs font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wider">
+                            {% trans "Acciones" %}
+                        </th>
+                    </tr>
+                </thead>
+                <tbody id="sessionTableBody" class="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
+                    {% for item in evaluaciones %}
+                    <tr class="session-row hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors duration-200" 
+                        data-estado="{{ item.evaluacion.estado }}" 
+                        data-paciente="{{ item.evaluacion.nino.nombre_completo|lower }}">
+                        
+                        <!-- Paciente -->
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div>
+                                <div class="font-semibold text-gray-900 dark:text-white">
+                                    {{ item.evaluacion.nino.nombre_completo }}
+                                </div>
+                                <div class="text-xs text-gray-500 dark:text-gray-400">
+                                    {{ item.evaluacion.nino.edad }} años • {{ item.evaluacion.nino.get_genero_display }}
+                                </div>
+                            </div>
+                        </td>
+
+                        <!-- Fecha Inicio -->
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">
+                            <div class="flex flex-col">
+                                <span class="font-medium">{{ item.evaluacion.fecha_hora_inicio|date:"d/m/Y" }}</span>
+                                <span class="text-xs text-gray-500 dark:text-gray-400">{{ item.evaluacion.fecha_hora_inicio|time:"H:i" }}</span>
+                            </div>
+                        </td>
+
+                        <!-- Progreso -->
+                        <td class="px-6 py-4 whitespace-nowrap text-center">
+                            <div class="flex flex-col items-center gap-2">
+                                <span class="text-sm font-bold text-purple-600 dark:text-purple-400">
+                                    {{ item.sesiones_completadas }}/{{ item.total_sesiones }}
+                                </span>
+                                <div class="w-24 bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                                    <div class="bg-gradient-to-r from-purple-500 to-indigo-600 h-2 rounded-full transition-all duration-300" 
+                                        style="width: {{ item.progreso_porcentaje }}%"></div>
+                                </div>
+                                <span class="text-xs text-gray-500 dark:text-gray-400">{{ item.progreso_porcentaje }}%</span>
+                            </div>
+                        </td>
+
+                        <!-- Accuracy -->
+                        <td class="px-6 py-4 whitespace-nowrap text-center">
+                            {% if item.sesiones_completadas > 0 %}
+                                <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-semibold
+                                    {% if item.accuracy_promedio >= 70 %}
+                                        bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400
+                                    {% elif item.accuracy_promedio >= 50 %}
+                                        bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400
+                                    {% else %}
+                                        bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400
+                                    {% endif %}">
+                                    <i class="fas fa-chart-line text-xs"></i>
+                                    {{ item.accuracy_promedio }}%
+                                </span>
+                            {% else %}
+                                <span class="text-gray-400 dark:text-gray-600 text-sm">—</span>
+                            {% endif %}
+                        </td>
+
+                        <!-- Estado -->
+                        <td class="px-6 py-4 whitespace-nowrap text-center">
+                            {% if item.evaluacion.estado == 'completada' %}
+                                <span class="inline-flex items-center gap-2 px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded-full text-xs font-semibold">
+                                    <i class="fas fa-check-circle"></i>
+                                    {% trans "Completada" %}
+                                </span>
+                            {% else %}
+                                <span class="inline-flex items-center gap-2 px-3 py-1 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400 rounded-full text-xs font-semibold">
+                                    <i class="fas fa-clock"></i>
+                                    {% trans "En Progreso" %}
+                                </span>
+                            {% endif %}
+                        </td>
+
+                        <!-- Acciones -->
+                        <td class="px-6 py-4 whitespace-nowrap text-center">
+                            <div class="flex items-center justify-center gap-2">
+                                <!-- Ver Resultados -->
+                                <a href="{% url 'games:sequential_results' evaluacion_id=item.evaluacion.id %}" 
+                                class="tooltip w-10 h-10 bg-purple-100 dark:bg-purple-900/30 hover:bg-purple-200 dark:hover:bg-purple-900/50 text-purple-600 dark:text-purple-400 rounded-lg flex items-center justify-center transition-all" 
+                                data-tooltip="{% trans 'Ver Resultados' %}">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+
+                                <!-- Reporte IA con validacion profesional -->
+                                <a href="{% url 'core:reporte_ia_detail' pk=item.evaluacion.id %}"
+                                class="tooltip w-10 h-10 bg-blue-100 dark:bg-blue-900/30 hover:bg-blue-200 dark:hover:bg-blue-900/50 text-blue-600 dark:text-blue-400 rounded-lg flex items-center justify-center transition-all"
+                                data-tooltip="{% trans 'Reporte IA' %}">
+                                    <i class="fas fa-user-check"></i>
+                                </a>
+
+                                <!-- Eliminar -->
+                                <button onclick="confirmarEliminar({{ item.evaluacion.id }}, '{{ item.evaluacion.nino.nombre_completo|escapejs }}', '{% url 'games:delete_evaluacion' evaluacion_id=item.evaluacion.id %}')"
+                                        class="tooltip w-10 h-10 bg-red-100 dark:bg-red-900/30 hover:bg-red-200 dark:hover:bg-red-900/50 text-red-600 dark:text-red-400 rounded-lg flex items-center justify-center transition-all" 
+                                        data-tooltip="{% trans 'Eliminar Evaluación' %}">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="px-6 py-12 text-center">
+                            <div class="flex flex-col items-center gap-4">
+                                <div class="w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-inbox text-3xl text-gray-400 dark:text-gray-600"></i>
+                                </div>
+                                <div>
+                                    <p class="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                                        {% trans "No hay evaluaciones registradas" %}
+                                    </p>
+                                    <p class="text-sm text-gray-500 dark:text-gray-400">
+                                        {% trans "Inicia una nueva evaluación para comenzar" %}
+                                    </p>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <!-- Paginación -->
+        {% if evaluaciones.has_other_pages %}
+        <div class="flex items-center justify-between px-6 py-4 border-t border-gray-200 dark:border-gray-700">
+            <div class="text-sm text-gray-700 dark:text-gray-300">
+                Mostrando 
+                <span class="font-semibold">{{ evaluaciones.start_index }}</span>
+                a 
+                <span class="font-semibold">{{ evaluaciones.end_index }}</span>
+                de 
+                <span class="font-semibold">{{ evaluaciones.paginator.count }}</span>
+                evaluaciones
+            </div>
+            
+            <div class="flex gap-2">
+                {% if evaluaciones.has_previous %}
+                    <a href="?page=1&estado={{ filtro_actual }}" 
+                    class="px-3 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                        <i class="fas fa-angle-double-left"></i>
+                    </a>
+                    <a href="?page={{ evaluaciones.previous_page_number }}&estado={{ filtro_actual }}" 
+                    class="px-3 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                        <i class="fas fa-angle-left"></i>
+                    </a>
+                {% endif %}
+                
+                <span class="px-4 py-2 bg-purple-600 text-white rounded-lg font-semibold">
+                    {{ evaluaciones.number }}
+                </span>
+                
+                {% if evaluaciones.has_next %}
+                    <a href="?page={{ evaluaciones.next_page_number }}&estado={{ filtro_actual }}" 
+                    class="px-3 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                        <i class="fas fa-angle-right"></i>
+                    </a>
+                    <a href="?page={{ evaluaciones.paginator.num_pages }}&estado={{ filtro_actual }}" 
+                    class="px-3 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                        <i class="fas fa-angle-double-right"></i>
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+
+    <!-- Results Counter -->
+    {% if sesiones %}
+    <div class="mt-6 flex items-center justify-between">
+        <p class="text-sm text-gray-600 dark:text-gray-400">
+            {% trans "Mostrando" %} <span id="resultCount">{{ sesiones|length }}</span> {% trans "de" %} {{ sesiones|length }} {% trans "sesiones" %}
+        </p>
+        
+        <!-- Pagination could go here if needed -->
+        <div class="flex items-center gap-2">
+            <!-- Add pagination buttons if you implement it -->
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Modal Selección de Niño para Evaluación IA (diseño igual a game_list) -->
+<div id="modalSeleccionNinoIA" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center z-50 overflow-y-auto p-4" style="z-index:99999;">
+    <div class="bg-white dark:bg-gray-900 rounded-2xl w-full max-w-5xl max-h-[90vh] overflow-hidden shadow-2xl border border-gray-200 dark:border-gray-800 animate-slide-up">
+        <!-- Header del Modal -->
+        <div class="sticky top-0 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 p-6 z-10">
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center">
+                        <i class="fas fa-user-graduate text-purple-600 dark:text-purple-400 text-xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-gray-900 dark:text-white">
+                            {% trans "Selecciona un Niño" %}
+                        </h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">
+                            {% trans "Elige el niño para la evaluación con IA" %}
+                        </p>
+                    </div>
+                </div>
+
+                <button onclick="cerrarModalEvaluacionIA()" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors">
+                    <i class="fas fa-times text-2xl"></i>
+                </button>
+            </div>
+
+            <!-- Buscador -->
+            {% if ninos %}
+            <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <i class="fas fa-search text-gray-400 dark:text-gray-600"></i>
+                </div>
+                <input type="text" 
+                       id="searchNinoModalIA" 
+                       placeholder="{% trans 'Buscar por nombre, apellido o edad...' %}"
+                       class="w-full pl-11 pr-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200 placeholder-gray-500 dark:placeholder-gray-600 transition-all">
+            </div>
+
+            <!-- Contador de resultados -->
+            <div class="mt-3 text-sm text-gray-600 dark:text-gray-400">
+                <span id="resultsCounterModalIA">{% trans "Mostrando" %} <strong>{{ ninos|length }}</strong> {% trans "niño(s)" %}</span>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Contenido del Modal -->
+        <div class="p-6 overflow-y-auto" style="max-height: calc(90vh - 200px);">
+            {% if ninos %}
+                <!-- Grid de niños -->
+                <div id="ninosGridModalIA" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+                    {% for nino in ninos %}
+                    <div class="nino-card-select-ia bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-6 cursor-pointer hover:border-purple-500 dark:hover:border-purple-400 transition-all"
+                         data-nino-id="{{ nino.id }}"
+                         data-nombre="{{ nino.nombres|lower }}"
+                         data-apellido="{{ nino.apellidos|lower }}"
+                         data-edad="{{ nino.edad }}"
+                         onclick="seleccionarNinoIA('{{ nino.id }}', '{{ nino.nombres|escapejs }}', '{{ nino.apellidos|escapejs }}', '{{ nino.edad }}', {% if nino.imagen %}true{% else %}false{% endif %}, {% if nino.imagen %}'{{ nino.imagen.url }}'{% else %}''{% endif %}, '{{ nino.get_genero_display|escapejs }}')">
+                        
+                        <!-- Header with Avatar -->
+                        <div class="flex flex-col items-center mb-4">
+                            <div class="w-20 h-20 rounded-full overflow-hidden ring-4 ring-purple-200 dark:ring-purple-500/30 mb-3">
+                                {% if nino.imagen %}
+                                    <img src="{{ nino.imagen.url }}" alt="{{ nino.nombres }}" class="w-full h-full object-cover">
+                                {% else %}
+                                    <div class="w-full h-full bg-gradient-to-br from-purple-400 to-purple-600 flex items-center justify-center text-white text-2xl font-bold">
+                                        {{ nino.nombres.0 }}{{ nino.apellidos.0 }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <h4 class="text-lg font-bold text-gray-900 dark:text-white text-center">
+                                {{ nino.nombres }} {{ nino.apellidos }}
+                            </h4>
+                        </div>
+
+                        <hr class="border-gray-200 dark:border-gray-800 my-4">
+
+                        <!-- Details -->
+                        <div class="space-y-2">
+                            <div class="flex items-center gap-2 text-sm">
+                                <i class="fas fa-birthday-cake text-purple-600 dark:text-purple-400 w-5"></i>
+                                <span class="text-gray-700 dark:text-gray-300">
+                                    {{ nino.edad }} {% trans "años" %}
+                                </span>
+                            </div>
+                            <div class="flex items-center gap-2 text-sm">
+                                <i class="fas fa-calendar text-purple-600 dark:text-purple-400 w-5"></i>
+                                <span class="text-gray-700 dark:text-gray-300">
+                                    {{ nino.fecha_nacimiento|date:"d/m/Y" }}
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Botón de selección -->
+                        <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-800">
+                            <div class="flex items-center justify-center gap-2 text-purple-600 dark:text-purple-400 font-semibold text-sm">
+                                <i class="fas fa-play-circle"></i>
+                                <span>{% trans "Seleccionar" %}</span>
+                                <i class="fas fa-arrow-right"></i>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <!-- No results message -->
+                <div id="noResultsModalIA" class="hidden text-center py-12">
+                    <i class="fas fa-search text-6xl text-gray-300 dark:text-gray-700 mb-4"></i>
+                    <p class="text-gray-500 dark:text-gray-400 text-lg">
+                        {% trans "No se encontraron niños con ese criterio de búsqueda" %}
+                    </p>
+                </div>
+            {% else %}
+                <div class="text-center py-16">
+                    <div class="w-24 h-24 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <i class="fas fa-users text-5xl text-gray-400 dark:text-gray-600"></i>
+                    </div>
+                    <h4 class="text-xl font-bold text-gray-900 dark:text-white mb-3">
+                        {% trans "No hay niños registrados" %}
+                    </h4>
+                    <p class="text-gray-500 dark:text-gray-400 mb-8 max-w-md mx-auto">
+                        {% trans "Para poder evaluar, primero debes registrar al menos un niño en el sistema" %}
+                    </p>
+                    <a href="{% url 'core:lista_ninos' %}" 
+                       class="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-purple-600 to-purple-800 hover:from-purple-500 hover:to-purple-700 text-white rounded-xl font-bold text-lg transition-all shadow-lg hover:shadow-xl transform hover:scale-105">
+                        <i class="fas fa-plus"></i>
+                        {% trans "Registrar Primer Niño" %}
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Footer con botón para gestionar niños -->
+        {% if ninos %}
+        <div class="border-t border-gray-200 dark:border-gray-800 p-6 bg-gray-50 dark:bg-gray-800/50">
+            <a href="{% url 'core:lista_ninos' %}" 
+               class="flex items-center justify-center gap-2 w-full px-6 py-3 bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 rounded-xl font-semibold hover:bg-gray-100 dark:hover:bg-gray-700 hover:border-purple-500 dark:hover:border-purple-400 transition-all">
+                <i class="fas fa-cog"></i>
+                {% trans "Gestionar Niños Registrados" %}
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- MODAL CONFIRMACIÓN ELIMINAR EVALUACIÓN (diseño actualizado similar a modal de selección) -->
+<div id="modalConfirmarEliminar" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden flex items-center justify-center z-999 overflow-y-auto p-4" style="z-index:99999;">
+    <div class="bg-white dark:bg-gray-900 rounded-2xl w-full max-w-2xl overflow-hidden shadow-2xl border border-gray-200 dark:border-gray-800 animate-slide-up">
+        <!-- Header del Modal -->
+        <div class="sticky top-0 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 p-6 z-10">
+            <div class="flex items-center justify-between mb-0">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center">
+                        <i class="fas fa-exclamation-triangle text-red-600 dark:text-red-400 text-xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-gray-900 dark:text-white">
+                            {% trans "Eliminar Evaluación" %}
+                        </h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">
+                            {% trans "Confirmación de eliminación permanente" %}
+                        </p>
+                    </div>
+                </div>
+
+                <button onclick="cerrarModalEliminar()" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors">
+                    <i class="fas fa-times text-2xl"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Contenido del Modal -->
+        <div class="p-6">
+            <p id="modalEliminarTexto" class="text-gray-800 dark:text-gray-200 mb-4"></p>
+
+            <ul class="text-sm text-gray-600 dark:text-gray-400 mb-6 list-disc pl-6">
+                <li>{% trans "Todas las sesiones de juego" %}</li>
+                <li>{% trans "Todas las pruebas cognitivas" %}</li>
+                <li>{% trans "El reporte de IA (si existe)" %}</li>
+            </ul>
+
+            <p class="text-xs text-red-500 font-semibold mb-6">{% trans "Esta acción" %} <b>NO</b> {% trans "se puede deshacer." %}</p>
+
+            <div class="flex gap-3">
+                <button type="button" onclick="cerrarModalEliminar()" class="flex-1 px-6 py-3 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 rounded-xl font-semibold hover:bg-gray-50 dark:hover:bg-gray-800 transition-all">
+                    <i class="fas fa-times mr-2"></i> {% trans "Cancelar" %}
+                </button>
+                <button type="button" id="btnConfirmarEliminar" class="flex-1 px-6 py-3 bg-gradient-to-r from-red-600 to-pink-600 text-white rounded-xl font-semibold hover:from-red-700 hover:to-pink-700 transition-all shadow-lg hover:shadow-xl">
+                    <i class="fas fa-trash mr-2"></i> {% trans "Eliminar" %}
+                </button>
+            </div>
+        </div>
+
+        <div class="border-t border-gray-200 dark:border-gray-800 p-4 bg-gray-50 dark:bg-gray-800/50 text-sm text-gray-600 dark:text-gray-400">
+            {% trans "Si necesitas conservar información, descarga los datos antes de eliminar." %}
+        </div>
+    </div>
+</div>
+
+        <!-- Modal de Confirmación de Niño Seleccionado (fuera de otros modales, igual que en game_list.html) -->
+    <div id="modal-confirmacion-nino" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center z-[60] animate-fade-in" style="z-index:99999;">
+            <div class="bg-white dark:bg-gray-900 rounded-2xl w-11/12 md:w-[500px] p-6 shadow-2xl border border-gray-200 dark:border-gray-800 animate-scale-in">
+                <!-- Header -->
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-16 h-16 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-user-check text-purple-600 dark:text-purple-400 text-2xl"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-white">
+                            {% trans "Confirmar Selección" %}
+                        </h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">
+                            {% trans "Verifica antes de continuar" %}
+                        </p>
+                    </div>
+                </div>
+        
+                <!-- Información del niño seleccionado -->
+                <div class="bg-gradient-to-br from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 rounded-xl p-6 mb-6 border border-purple-200 dark:border-purple-800">
+                    <div class="flex items-center gap-4 mb-4">
+                        <!-- Avatar del niño -->
+                        <div id="confirmacion-avatar" class="w-20 h-20 rounded-full overflow-hidden ring-4 ring-purple-300 dark:ring-purple-600 flex-shrink-0">
+                            <!-- Se llenará dinámicamente -->
+                        </div>
+                
+                        <div class="flex-1">
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-1">
+                                {% trans "El niño seleccionado para jugar es:" %}
+                            </p>
+                            <h4 id="confirmacion-nombre" class="text-2xl font-bold text-gray-900 dark:text-white">
+                                <!-- Se llenará dinámicamente -->
+                            </h4>
+                        </div>
+                    </div>
+            
+                    <!-- Detalles adicionales -->
+                    <div class="grid grid-cols-2 gap-3 pt-4 border-t border-purple-200 dark:border-purple-800">
+                        <div class="flex items-center gap-2 text-sm">
+                            <i class="fas fa-birthday-cake text-purple-600 dark:text-purple-400"></i>
+                            <span id="confirmacion-edad" class="text-gray-700 dark:text-gray-300">
+                                <!-- Se llenará dinámicamente -->
+                            </span>
+                        </div>
+                        <div class="flex items-center gap-2 text-sm">
+                            <i class="fas fa-venus-mars text-purple-600 dark:text-purple-400"></i>
+                            <span id="confirmacion-genero" class="text-gray-700 dark:text-gray-300">
+                                <!-- Se llenará dinámicamente -->
+                            </span>
+                        </div>
+                    </div>
+                </div>
+        
+                <!-- Pregunta de confirmación -->
+                <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mb-6">
+                    <p class="text-center text-gray-800 dark:text-gray-200 font-semibold flex items-center justify-center gap-2">
+                        <i class="fas fa-question-circle text-blue-600 dark:text-blue-400"></i>
+                        {% trans "¿Estás seguro de continuar con este niño?" %}
+                    </p>
+                </div>
+        
+                <!-- Botones de acción -->
+                <div class="flex gap-3">
+                    <button onclick="cerrarModalConfirmacion()"
+                            class="flex-1 px-6 py-3.5 bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-xl text-base font-semibold hover:bg-gray-300 dark:hover:bg-gray-700 transition-all flex items-center justify-center gap-2">
+                        <i class="fas fa-times"></i>
+                        {% trans "No, Cambiar" %}
+                    </button>
+                    <button id="btn-confirmar-jugar"
+                            onclick="iniciarEvaluacionIA()"
+                            class="flex-1 px-6 py-3.5 bg-gradient-to-r from-purple-600 to-purple-800 hover:from-purple-500 hover:to-purple-700 text-white rounded-xl text-base font-bold transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2">
+                        <i class="fas fa-check-circle"></i>
+                        {% trans "Sí, Continuar" %}
+                    </button>
+                </div>
+            </div>
+        </div>
+
+<!-- Modal básico para simulaciones -->
+<div id="modalPopulate" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden flex items-center justify-center z-50 overflow-y-auto p-4" style="z-index:99999;">
+    <div class="bg-white dark:bg-gray-900 rounded-2xl w-full max-w-2xl overflow-hidden shadow-2xl border border-gray-200 dark:border-gray-800 animate-slide-up">
+        <!-- Header del Modal -->
+        <div class="sticky top-0 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 p-6 z-10">
+            <div class="flex items-center justify-between mb-0">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center">
+                        <i class="fas fa-vial text-purple-600 dark:text-purple-400 text-xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-gray-900 dark:text-white">
+                            {% trans "Generar Evaluación de Prueba" %}
+                        </h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">
+                            {% trans "Crear evaluación de prueba para testing" %}
+                        </p>
+                    </div>
+                </div>
+
+                <button onclick="document.getElementById('modalPopulate').classList.add('hidden')" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors">
+                    <i class="fas fa-times text-2xl"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Contenido del Modal -->
+        <div class="p-6 flex flex-col items-center justify-center min-h-[200px]">
+            <form method="post" action="{% url 'games:ejecutar_populate_sessions' %}" id="formPopulateSessions" class="w-full">
+                {% csrf_token %}
+                <div class="mb-6">
+                    <label for="id_riesgo" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                        <i class="fas fa-exclamation-triangle text-purple-600 mr-2"></i>
+                        {% trans "Nivel de riesgo" %}
+                    </label>
+                    {{ form_populate.riesgo }}
+                </div>
+            </form>
+        </div>
+
+        <!-- Footer con botones -->
+        <div class="border-t border-gray-200 dark:border-gray-800 p-6 bg-gray-50 dark:bg-gray-800/50">
+            <div class="flex gap-3">
+                <button type="button" onclick="document.getElementById('modalPopulate').classList.add('hidden')" class="flex-1 px-6 py-3 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 rounded-xl font-semibold hover:bg-gray-50 dark:hover:bg-gray-800 transition-all">
+                    <i class="fas fa-times mr-2"></i> {% trans "Cancelar" %}
+                </button>
+                <button type="submit" form="formPopulateSessions" class="flex-1 px-6 py-3 bg-gradient-to-r from-purple-600 to-purple-800 text-white rounded-xl font-semibold hover:from-purple-700 hover:to-purple-900 transition-all shadow-lg hover:shadow-xl">
+                    <i class="fas fa-check mr-2"></i> {% trans "Confirmar" %}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de carga para comando de población -->
+<div id="modalLoadingPopulate" class="hidden fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-[60] backdrop-blur-sm" style="z-index:99999;">
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-sm w-full mx-4 p-8 flex flex-col items-center gap-4">
+        <div class="loading-spinner mb-4"></div>
+        <h3 class="text-xl font-bold text-gray-900 dark:text-white text-center">Ejecutando comando de población de sesiones</h3>
+        <p class="text-gray-600 dark:text-gray-300 text-center">Esto puede tardar unos minutos...</p>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    // ============================================
+    // MODAL DE EVALUACIÓN IA
+    // ============================================
+    // Variables globales para evaluación IA
+    let ninoSeleccionadoIA = null;
+
+    // Abrir modal de evaluación IA (estilo game_list)
+    function abrirModalEvaluacionIA() {
+        const modal = document.getElementById('modalSeleccionNinoIA');
+        if (!modal) return;
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        // reset selection
+        ninoSeleccionadoIA = null;
+        const preview = document.getElementById('vistaPreviewNinoIA');
+        if (preview) preview.classList.add('hidden');
+        // remove any previous selected highlight
+        document.querySelectorAll('.nino-card-select-ia').forEach(card => card.classList.remove('ring-4', 'ring-purple-300', 'dark:ring-purple-600', 'border-purple-500'));
+        // prevent body scroll
+        document.body.style.overflow = 'hidden';
+        // reset search
+        const search = document.getElementById('searchNinoModalIA'); if (search) search.value = '';
+        // update counter
+        const counter = document.getElementById('resultsCounterModalIA'); if (counter) counter.innerHTML = `{% trans "Mostrando" %} <strong>{{ ninos|length }}</strong> {% trans "niño(s)" %}`;
+    }
+
+    // Cerrar modal de evaluación IA (estilo game_list)
+    function cerrarModalEvaluacionIA() {
+        const modal = document.getElementById('modalSeleccionNinoIA');
+        if (!modal) return;
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+        ninoSeleccionadoIA = null;
+        // restore body scroll
+        document.body.style.overflow = 'auto';
+    }
+
+    // Seleccionar un niño desde el grid (IA)
+    function seleccionarNinoIA(id, nombres, apellidos, edad, hasImage, imageUrl, genero) {
+        ninoSeleccionadoIA = {
+            id: id,
+            nombre: nombres,
+            apellidos: apellidos,
+            edad: edad
+        };
+
+        console.log('seleccionarNinoIA called:', id, nombres, apellidos, edad, hasImage, imageUrl);
+
+        // actualizar preview
+        const previewNombreEl = document.getElementById('nombrePreviewIA');
+        const previewEdadEl = document.getElementById('edadPreviewIA');
+        const preview = document.getElementById('vistaPreviewNinoIA');
+        if (previewNombreEl) previewNombreEl.textContent = `${nombres} ${apellidos}`;
+        if (previewEdadEl) previewEdadEl.textContent = `${edad} {% trans "años" %}`;
+        if (preview) preview.classList.remove('hidden');
+
+        // actualizar avatar del preview
+        const previewAvatar = document.getElementById('preview-avatar');
+        if (previewAvatar) {
+            if (hasImage && imageUrl) {
+                previewAvatar.innerHTML = `<img src="${imageUrl}" class="w-full h-full object-cover" alt="${nombres}">`;
+            } else {
+                previewAvatar.innerHTML = `<div class="w-full h-full bg-gradient-to-br from-purple-400 to-purple-600 flex items-center justify-center text-white text-2xl font-bold">${nombres.charAt(0)}${apellidos.charAt(0)}</div>`;
+            }
+        }
+
+        // highlight selected card
+        document.querySelectorAll('.nino-card-select-ia').forEach(card => card.classList.remove('ring-4', 'ring-purple-300', 'dark:ring-purple-600', 'border-purple-500'));
+        const el = document.querySelector(`.nino-card-select-ia[data-nino-id="${id}"]`);
+        if (el) el.classList.add('ring-4', 'ring-purple-300', 'dark:ring-purple-600', 'border-purple-500');
+
+        // Abrir modal de confirmación (reutiliza el modal-confirmacion-nino)
+        const modalConf = document.getElementById('modal-confirmacion-nino');
+        if (modalConf) {
+            // llenar avatar
+            const avatar = document.getElementById('confirmacion-avatar');
+            if (avatar) {
+                if (hasImage && imageUrl) {
+                    avatar.innerHTML = `<img src="${imageUrl}" class="w-full h-full object-cover" alt="${nombres}">`;
+                } else {
+                    avatar.innerHTML = `<div class="w-full h-full bg-gradient-to-br from-purple-400 to-purple-600 flex items-center justify-center text-white text-2xl font-bold">${nombres.charAt(0)}${apellidos.charAt(0)}</div>`;
+                }
+            }
+
+            // llenar texto (confirmación)
+            const nombreEl = document.getElementById('confirmacion-nombre');
+            const edadEl = document.getElementById('confirmacion-edad');
+            const generoEl = document.getElementById('confirmacion-genero');
+            if (nombreEl) nombreEl.textContent = `${nombres} ${apellidos}`;
+            if (edadEl) edadEl.textContent = `${edad} {% trans "años" %}`;
+            if (generoEl) generoEl.textContent = genero || '';
+
+            // Cerrar modal de selección y mostrar modal de confirmación
+            const modalSeleccion = document.getElementById('modalSeleccionNinoIA');
+            if (modalSeleccion) {
+                modalSeleccion.classList.add('hidden');
+                modalSeleccion.classList.remove('flex');
+            }
+            modalConf.classList.remove('hidden');
+            modalConf.classList.add('flex');
+            document.body.style.overflow = 'hidden';
+
+            // asignar acción al botón confirmar
+            const btn = document.getElementById('btn-confirmar-jugar');
+            if (btn) {
+                btn.onclick = function() {
+                    iniciarEvaluacionIA();
+                }
+            }
+        }
+    }
+
+    function cerrarModalConfirmacion() {
+        const modalConf = document.getElementById('modal-confirmacion-nino');
+        if (!modalConf) return;
+        modalConf.classList.add('hidden');
+        modalConf.classList.remove('flex');
+        // Limpiar selección actual
+        ninoSeleccionadoIA = null;
+        // Volver a abrir el modal de selección con un pequeño delay para animación
+        setTimeout(() => {
+            const modalSeleccion = document.getElementById('modalSeleccionNinoIA');
+            if (modalSeleccion) {
+                modalSeleccion.classList.remove('hidden');
+                modalSeleccion.classList.add('flex');
+                document.body.style.overflow = 'hidden';
+            }
+        }, 150);
+    }
+
+    function iniciarEvaluacionIA() {
+        if (!ninoSeleccionadoIA) {
+            alert('⚠️ {% trans "Por favor selecciona un niño para continuar" %}');
+            return;
+        }
+        const btn = document.getElementById('btn-confirmar-jugar');
+        if (btn) {
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> {% trans "Iniciando..." %}';
+        }
+        const urlInicio = `{% url 'games:init_sequential_evaluation' %}?nino_id=${ninoSeleccionadoIA.id}`;
+        setTimeout(() => { window.location.href = urlInicio; }, 400);
+    }
+
+    // Buscador dentro del modal IA: filtra las tarjetas y actualiza el contador
+    document.addEventListener('DOMContentLoaded', function() {
+        const inputIA = document.getElementById('searchNinoModalIA');
+        if (!inputIA) return;
+        const grid = document.getElementById('ninosGridModalIA');
+        const counter = document.getElementById('resultsCounterModalIA');
+        const noResults = document.getElementById('noResultsModalIA');
+
+        inputIA.addEventListener('input', function(e) {
+            const q = e.target.value.toLowerCase().trim();
+            let visibleCount = 0;
+            Array.from(grid.querySelectorAll('.nino-card-select-ia')).forEach(card => {
+                const nombre = (card.dataset.nombre || '').toLowerCase();
+                const apellido = (card.dataset.apellido || '').toLowerCase();
+                const edad = (card.dataset.edad || '').toLowerCase();
+                const ok = q === '' || nombre.includes(q) || apellido.includes(q) || edad.includes(q);
+                card.style.display = ok ? 'block' : 'none';
+                if (ok) visibleCount += 1;
+            });
+            if (counter) counter.innerHTML = `{% trans "Mostrando" %} <strong>${visibleCount}</strong> {% trans "niño(s)" %}`;
+            if (noResults) noResults.classList.toggle('hidden', visibleCount > 0);
+        });
+    });
+
+    // Manejar cambio en el selector de niño
+    document.addEventListener('DOMContentLoaded', function() {
+        const selectNino = document.getElementById('ninoSelectIA');
+        if (selectNino) {
+            selectNino.addEventListener('change', function() {
+                const selectedOption = this.options[this.selectedIndex];
+                const ninoId = this.value;
+                
+                if (ninoId) {
+                    // Guardar datos del niño seleccionado
+                    ninoSeleccionadoIA = {
+                        id: ninoId,
+                        nombre: selectedOption.dataset.nombre,
+                        apellidos: selectedOption.dataset.apellidos,
+                        edad: selectedOption.dataset.edad
+                    };
+                    
+                    // Mostrar preview
+                    document.getElementById('nombrePreviewIA').textContent = 
+                        `${ninoSeleccionadoIA.nombre} ${ninoSeleccionadoIA.apellidos}`;
+                    document.getElementById('edadPreviewIA').textContent = 
+                        `${ninoSeleccionadoIA.edad} {% trans "años" %}`;
+                    document.getElementById('vistaPreviewNinoIA').classList.remove('hidden');
+                } else {
+                    ninoSeleccionadoIA = null;
+                    document.getElementById('vistaPreviewNinoIA').classList.add('hidden');
+                }
+            });
+        }
+    });
+
+    // ============================================
+    // BÚSQUEDA EN TIEMPO REAL (solo página actual)
+    // ============================================
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('searchInput');
+        const rows = document.querySelectorAll('.session-row');
+        
+        if (searchInput && rows.length > 0) {
+            searchInput.addEventListener('input', function(e) {
+                const searchTerm = e.target.value.toLowerCase().trim();
+                
+                rows.forEach(row => {
+                    const paciente = (row.dataset.paciente || '').toLowerCase();
+                    const visible = searchTerm === '' || paciente.includes(searchTerm);
+                    row.style.display = visible ? 'table-row' : 'none';
+                });
+            });
+        }
+    });
+
+    // Confirmar y comenzar evaluación IA
+    function confirmarEvaluacionIA() {
+        if (!ninoSeleccionadoIA) {
+            alert('⚠️ {% trans "Por favor selecciona un niño para continuar" %}');
+            return;
+        }
+        
+        const btnConfirmar = document.getElementById('btnConfirmarIA');
+        const originalHTML = btnConfirmar.innerHTML;
+        
+        // Deshabilitar botón y mostrar loading
+        btnConfirmar.disabled = true;
+        btnConfirmar.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>{% trans "Iniciando..." %}';
+        
+        // Redirigir a la evaluación IA secuencial
+        const urlInicio = `{% url 'games:init_sequential_evaluation' %}?nino_id=${ninoSeleccionadoIA.id}`;
+        
+        console.log('🚀 Iniciando evaluación IA para:', ninoSeleccionadoIA);
+        console.log('📍 URL:', urlInicio);
+        
+        // Redirigir después de un pequeño delay
+        setTimeout(() => {
+            window.location.href = urlInicio;
+        }, 500);
+    }
+
+    // Cerrar modal al hacer clic fuera
+    document.addEventListener('click', function(event) {
+        const modal = document.getElementById('modalSeleccionNinoIA');
+        if (modal && event.target === modal) {
+            cerrarModalEvaluacionIA();
+        }
+    });
+    // ============================================
+    // ELIMINAR EVALUACIÓN
+    // ============================================
+    let eliminarEvaluacionId = null;
+    let eliminarDeleteUrl = null;
+    let eliminarNombreNino = null;
+
+    function confirmarEliminar(evaluacionId, nombreNino, deleteUrl) {
+        eliminarEvaluacionId = evaluacionId;
+        eliminarDeleteUrl = deleteUrl;
+        eliminarNombreNino = nombreNino;
+        // Set texto del modal
+        document.getElementById('modalEliminarTexto').textContent = `¿Estás seguro de eliminar la evaluación de ${nombreNino}?`;
+        document.getElementById('modalConfirmarEliminar').classList.remove('hidden');
+    }
+
+    function cerrarModalEliminar() {
+        document.getElementById('modalConfirmarEliminar').classList.add('hidden');
+        eliminarEvaluacionId = null;
+        eliminarDeleteUrl = null;
+        eliminarNombreNino = null;
+    }
+
+    // Confirmar eliminación desde el modal
+    if (document.getElementById('btnConfirmarEliminar')) {
+        document.getElementById('btnConfirmarEliminar').onclick = function() {
+            if (!eliminarEvaluacionId || !eliminarDeleteUrl) return;
+            const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value 
+                || document.cookie.split('; ').find(row => row.startsWith('csrftoken='))?.split('=')[1];
+            if (!csrfToken) {
+                alert('❌ Error: Token CSRF no encontrado');
+                return;
+            }
+            // Deshabilitar botón
+            this.disabled = true;
+            this.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Eliminando...';
+            fetch(eliminarDeleteUrl, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrfToken,
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                credentials: 'same-origin'
+            })
+            .then(function(response) {
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                return response.json();
+            })
+            .then(function(data) {
+                if (data.success) {
+                    // Recargar la página para mostrar el mensaje Django
+                    window.location.reload();
+                } else {
+                    cerrarModalEliminar();
+                    alert('❌ ' + (data.error || 'Error desconocido'));
+                }
+                cerrarModalEliminar();
+            })
+            .catch(function(error) {
+                cerrarModalEliminar();
+                alert('❌ Error al eliminar: ' + error.message);
+            })
+            .finally(function() {
+                this.disabled = false;
+                this.innerHTML = '<i class="fas fa-trash mr-2"></i> Eliminar';
+            }.bind(this));
+        }
+    }
+
+    // ============================================
+    // INICIALIZACIÓN
+    // ============================================
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('{% trans "Vista de sesiones cargada correctamente" %}');
+        
+        // Selector de niño para evaluación IA
+        const selectNino = document.getElementById('ninoSelectIA');
+        if (selectNino) {
+            selectNino.addEventListener('change', function() {
+                const selectedOption = this.options[this.selectedIndex];
+                const ninoId = this.value;
+                
+                if (ninoId) {
+                    ninoSeleccionadoIA = {
+                        id: ninoId,
+                        nombre: selectedOption.dataset.nombre,
+                        apellidos: selectedOption.dataset.apellidos,
+                        edad: selectedOption.dataset.edad
+                    };
+                    
+                    document.getElementById('nombrePreviewIA').textContent = 
+                        `${ninoSeleccionadoIA.nombre} ${ninoSeleccionadoIA.apellidos}`;
+                    document.getElementById('edadPreviewIA').textContent = 
+                        `${ninoSeleccionadoIA.edad} {% trans "años" %}`;
+                    document.getElementById('vistaPreviewNinoIA').classList.remove('hidden');
+                } else {
+                    ninoSeleccionadoIA = null;
+                    document.getElementById('vistaPreviewNinoIA').classList.add('hidden');
+                }
+            });
+        }
+
+        // Búsqueda en tiempo real
+        const searchInput = document.getElementById('searchInput');
+        if (searchInput) {
+            searchInput.addEventListener('input', function(e) {
+                searchTerm = e.target.value.toLowerCase();
+                aplicarFiltros();
+            });
+        }
+
+        // Cerrar modal al hacer clic fuera
+        document.addEventListener('click', function(event) {
+            const modal = document.getElementById('modalSeleccionNinoIA');
+            if (modal && event.target === modal) {
+                cerrarModalEvaluacionIA();
+            }
+        });
+        
+        // Animaciones de entrada
+        const cards = document.querySelectorAll('.animate-fade-in');
+        cards.forEach((card, index) => {
+            setTimeout(() => {
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, index * 100);
+        });
+    });
+
+    // Mostrar modal de carga al enviar el formulario de población
+    const formPopulate = document.getElementById('formPopulateSessions');
+    if (formPopulate) {
+        formPopulate.addEventListener('submit', function(e) {
+            document.getElementById('modalLoadingPopulate').classList.remove('hidden');
+        });
+    }
+</script>
+{% endblock %}

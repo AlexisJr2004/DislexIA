@@ -57,6 +57,10 @@ class SeleccionaPalabraCorrectaGame {
                             <div class="text-xs font-medium text-gray-500 dark:text-gray-400">Puntos</div>
                         </div>
                     </div>
+                    <!-- Barra de progreso -->
+                    <div class="w-full bg-gray-100 dark:bg-gray-800 rounded-full h-3 mt-6 mb-2 overflow-hidden">
+                        <div id="progress-bar" class="h-3 bg-gradient-to-r from-green-400 to-blue-500 transition-all duration-300" style="width:0%"></div>
+                    </div>
                 </div>
 
                 <!-- Contenedor de dos columnas -->
@@ -351,10 +355,16 @@ class SeleccionaPalabraCorrectaGame {
     
     finishLevel() {
         this.isGameActive = false;
-        // Acumular totales antes de mostrar resultados
         this.totalCorrectAnswers += this.correctAnswers;
         this.totalIncorrectAnswers += this.incorrectAnswers;
-        this.showLevelResults();
+        
+        // ⭐ NUEVO: Si es evaluación IA, finalizar directamente
+        if (this.sessionData.es_evaluacion_ia) {
+            this.finishGame();
+        } else {
+            // Si es juego individual, mostrar resultados de nivel
+            this.showLevelResults();
+        }
     }
     
     showLevelResults() {
@@ -435,39 +445,49 @@ class SeleccionaPalabraCorrectaGame {
         this.currentLevel++;
         this.currentQuestionIndex = 0;
         
-        // Verificar si existe el siguiente nivel
         const nextLevel = this.gameConfig.levels.find(l => l.level === this.currentLevel);
         if (!nextLevel) {
-            // Mostrar mensaje de finalización completa del juego con totales generales
             setTimeout(() => {
-                alert('🎉 ¡Felicidades! Has completado todos los niveles disponibles.\n\n' +
-                      `✨ Puntuación final: ${this.score} puntos\n` +
-                      `🎯 Niveles completados: ${this.currentLevel - 1}\n` +
-                      `✅ Total de aciertos: ${this.totalCorrectAnswers}\n` +
-                      `❌ Total de errores: ${this.totalIncorrectAnswers}`);
-                this.finishGame();
+                alert('🎉 ¡Felicidades! Has completado todos los niveles.\n\n' +
+                    `✨ Puntuación final: ${this.score} puntos\n` +
+                    `🎯 Niveles completados: ${this.currentLevel - 1}\n` +
+                    `✅ Aciertos: ${this.correctAnswers}\n` +
+                    `❌ Errores: ${this.incorrectAnswers}`);
+                
+                // ⭐ NUEVO: Solo llamar finishGame si es evaluación IA
+                if (this.sessionData.es_evaluacion_ia) {
+                    this.finishGame();
+                } else {
+                    // Si es juego individual, redirigir a lista de juegos
+                    window.location.href = this.sessionData.api_urls.game_list;
+                }
             }, 500);
             return;
         }
         
-        // Reiniciar contadores de respuestas para el nuevo nivel
         this.correctAnswers = 0;
         this.incorrectAnswers = 0;
-        
-        // Limpiar las preguntas seleccionadas para forzar nueva selección aleatoria
         this.selectedQuestions = null;
         
-        // Reiniciar interfaz para el nuevo nivel
         this.createGameInterface();
         this.bindEvents();
         this.startGame();
     }
     
-    finishGame() {
+    async finishGame() {
         const totalTime = Math.floor((Date.now() - this.startTime) / 1000);
         
         // Enviar datos finales al backend
-        this.sendGameResults(totalTime);
+        const result = await this.sendGameResults(totalTime);
+        
+        if (result && result.success) {
+            // El backend ya maneja la redirección automática
+            // No necesitamos hacer nada más aquí
+            console.log('✅ Juego finalizado correctamente');
+        } else {
+            // Mostrar error si falló
+            alert('Error al finalizar el juego: ' + (result ? result.error : 'Error desconocido'));
+        }
     }
     
     updateScore() {
@@ -497,7 +517,10 @@ class SeleccionaPalabraCorrectaGame {
     updateProgress() {
         const questions = this.getCurrentLevelQuestions();
         const progress = ((this.currentQuestionIndex + 1) / questions.length) * 100;
-        document.getElementById('progress-bar').style.width = `${progress}%`;
+        const progressBar = document.getElementById('progress-bar');
+        if (progressBar) {
+            progressBar.style.width = `${progress}%`;
+        }
     }
     
     startQuestionTimer() {
@@ -618,14 +641,24 @@ class SeleccionaPalabraCorrectaGame {
     }
     
     async sendGameResults(totalTimeSeconds) {
+        // === CALCULAR MÉTRICAS AGREGADAS DEL MINIJUEGO ===
+        const totalClicks = this.totalCorrectAnswers + this.totalIncorrectAnswers;
+        
         const data = {
             session_url: this.sessionData.url_sesion,
             total_score: this.score,
             total_correct: this.totalCorrectAnswers,
             total_incorrect: this.totalIncorrectAnswers,
             total_time_seconds: totalTimeSeconds,
-            levels_completed: this.currentLevel
+            levels_completed: this.currentLevel,
+            
+            // === NUEVAS MÉTRICAS PARA EL MODELO IA ===
+            total_clicks: totalClicks,
+            total_hits: this.totalCorrectAnswers,
+            total_misses: this.totalIncorrectAnswers
         };
+        
+        console.log('📤 Enviando resultados finales:', data);
         
         const finishUrl = this.sessionData.api_urls.finish_game;
         
@@ -638,29 +671,50 @@ class SeleccionaPalabraCorrectaGame {
                 },
                 body: JSON.stringify(data)
             });
-            
             if (!response.ok) {
                 const errorText = await response.text();
                 console.error('❌ Error del servidor:', errorText);
-                alert(`Error del servidor (${response.status}): ${response.statusText}`);
-                return;
+                return { 
+                    success: false, 
+                    error: `Error del servidor (${response.status}): ${response.statusText}` 
+                };
             }
-            
             const result = await response.json();
-            
             if (result.success) {
-                alert('¡Juego finalizado exitosamente!');
-                window.location.href = this.sessionData.api_urls.game_list;
+                if (result.evaluacion_completada) {
+                    alert(`🎉 ¡Evaluación completa! ${result.final_stats.sesiones_completadas}/${result.final_stats.sesiones_totales} sesiones`);
+                    window.location.href = result.redirect_url;
+                    return { success: true };
+                } else if (result.siguiente_url) {
+                    const progreso = result.progreso;
+                    if (window.showNextGameAlert) {
+                        window.showNextGameAlert({ progreso, siguienteUrl: result.siguiente_url });
+                    } else {
+                        const script = document.createElement('script');
+                        script.src = '/static/js/game-alerts.js';
+                        script.onload = () => {
+                            if (window.showNextGameAlert) {
+                                window.showNextGameAlert({ progreso, siguienteUrl: result.siguiente_url });
+                                console.log('✅ game-alerts.js cargado y función ejecutada');
+                            } else {
+                                console.error('❌ La función showNextGameAlert no está definida incluso después de cargar el script');
+                                alert('🎉 ¡Juego completado! Redirigiendo al siguiente juego...');
+                            }
+                        };
+                        document.body.appendCh
+                        ild(script);
+                    }
+                    return { success: true };
+                } else {
+                    window.location.href = result.redirect_url || `/games/results/${this.sessionData.evaluacion_id}/`;
+                    return { success: true };
+                }
             } else {
-                alert('Error al finalizar el juego: ' + result.error);
+                return { success: false, error: result.error };
             }
         } catch (error) {
             console.error('❌ Error al finalizar juego:', error);
-            if (error instanceof SyntaxError) {
-                alert('Error: El servidor devolvió una respuesta inválida. Revisa la consola para más detalles.');
-            } else {
-                alert('Error de conexión al finalizar el juego');
-            }
+            return { success: false, error: 'Error de conexión al finalizar el juego' };
         }
     }
     

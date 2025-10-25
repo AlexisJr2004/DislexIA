@@ -1,0 +1,369 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/games.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="p-8">
+    <!-- Header Section -->
+    <div class="mb-8">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+            <div>
+                <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2 flex items-center gap-3">
+                    <div class="w-12 h-12 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-trophy text-white text-xl"></i>
+                    </div>
+                    {% trans "Resultados de Evaluación" %}
+                </h1>
+                <p class="text-gray-600 dark:text-gray-400">{% trans "Excelente trabajo" %}, <span class="font-bold text-purple-600 dark:text-purple-400">{{ evaluacion.nino.nombre_completo }}</span></p>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Main Content: Full Width -->
+    <div class="max-w-7xl mx-auto space-y-6">
+        <!-- Métricas Principales -->
+        <div class="space-y-6">
+            <!-- Métricas Principales en una fila -->
+            <div class="grid grid-cols-2 md:grid-cols-6 gap-4">
+                <!-- Clicks Totales -->
+                <div class="text-center p-5 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-200 dark:border-blue-800 result-card">
+                    <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <i class="fas fa-mouse-pointer text-blue-600 dark:text-blue-400 text-lg"></i>
+                    </div>
+                    <p class="text-3xl font-bold text-blue-600 dark:text-blue-400">{{ total_clics }}</p>
+                    <p class="text-xs text-gray-600 dark:text-gray-400 font-semibold mt-1">{% trans "Clicks" %}</p>
+                </div>
+
+                <!-- Aciertos -->
+                <div class="text-center p-5 bg-green-50 dark:bg-green-900/20 rounded-xl border border-green-200 dark:border-green-800 result-card">
+                    <div class="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <i class="fas fa-check-circle text-green-600 dark:text-green-400 text-lg"></i>
+                    </div>
+                    <p class="text-3xl font-bold text-green-600 dark:text-green-400">{{ total_aciertos }}</p>
+                    <p class="text-xs text-gray-600 dark:text-gray-400 font-semibold mt-1">{% trans "Aciertos" %}</p>
+                </div>
+
+                <!-- Errores -->
+                <div class="text-center p-5 bg-red-50 dark:bg-red-900/20 rounded-xl border border-red-200 dark:border-red-800 result-card">
+                    <div class="w-12 h-12 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <i class="fas fa-times-circle text-red-600 dark:text-red-400 text-lg"></i>
+                    </div>
+                    <p class="text-3xl font-bold text-red-600 dark:text-red-400">{{ total_errores }}</p>
+                    <p class="text-xs text-gray-600 dark:text-gray-400 font-semibold mt-1">{% trans "Errores" %}</p>
+                </div>
+
+                <!-- Puntaje -->
+                <div class="text-center p-5 bg-purple-50 dark:bg-purple-900/20 rounded-xl border border-purple-200 dark:border-purple-800 result-card">
+                    <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <i class="fas fa-star text-purple-600 dark:text-purple-400 text-lg"></i>
+                    </div>
+                    <p class="text-3xl font-bold text-purple-600 dark:text-purple-400">{{ puntaje_total }}</p>
+                    <p class="text-xs text-gray-600 dark:text-gray-400 font-semibold mt-1">{% trans "Puntaje" %}</p>
+                </div>
+
+                <!-- Precisión -->
+                <div class="text-center p-5 bg-cyan-50 dark:bg-cyan-900/20 rounded-xl border border-cyan-200 dark:border-cyan-800 result-card">
+                    <div class="w-12 h-12 bg-cyan-100 dark:bg-cyan-900/30 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <i class="fas fa-bullseye text-cyan-600 dark:text-cyan-400 text-lg"></i>
+                    </div>
+                    <p class="text-3xl font-bold text-cyan-600 dark:text-cyan-400">{{ precision_promedio|floatformat:1 }}%</p>
+                    <p class="text-xs text-gray-600 dark:text-gray-400 font-semibold mt-1">{% trans "Precisión" %}</p>
+                </div>
+
+                <!-- Tasa de Error -->
+                <div class="text-center p-5 bg-orange-50 dark:bg-orange-900/20 rounded-xl border border-orange-200 dark:border-orange-800 result-card">
+                    <div class="w-12 h-12 bg-orange-100 dark:bg-orange-900/30 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <i class="fas fa-exclamation-triangle text-orange-600 dark:text-orange-400 text-lg"></i>
+                    </div>
+                    <p class="text-3xl font-bold text-orange-600 dark:text-orange-400">{{ tasa_error|floatformat:1 }}%</p>
+                    <p class="text-xs text-gray-600 dark:text-gray-400 font-semibold mt-1">{% trans "Tasa Error" %}</p>
+                </div>
+            </div>
+            
+            <hr class="bg-gray-400 dark:bg-gray-700 my-4">
+            <!-- Predicción de IA -->
+            {% if evaluacion.reporte_ia %}
+            <div class="bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-purple-900/20 dark:to-indigo-900/20 rounded-2xl border-2 border-purple-200 dark:border-purple-800 p-8 mb-8 animate-slide-up">
+                <div class="flex items-start gap-6">
+                    <!-- Icono IA -->
+                    <div class="w-20 h-20 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg">
+                        <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                        </svg>
+                    </div>
+                    
+                    <!-- Contenido del reporte -->
+                    <div class="flex-1">
+                        <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
+                            <span>Análisis con Inteligencia Artificial</span>
+                            <span class="px-3 py-1 bg-purple-100 dark:bg-purple-900/50 text-purple-700 dark:text-purple-300 text-xs font-semibold rounded-full">
+                                Modelo v2.2
+                            </span>
+                        </h2>
+                        
+                        <!-- Clasificación principal -->
+                        <div class="mb-6">
+                            {% if precision_promedio < 60 %}
+                                <div class="inline-flex items-center gap-3 bg-red-100 dark:bg-red-900/30 border-2 border-red-300 dark:border-red-700 text-red-800 dark:text-red-300 px-6 py-3 rounded-xl text-lg font-bold">
+                                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                                    </svg>
+                                    <span>Riesgo ALTO de Dislexia</span>
+                                </div>
+                            {% elif precision_promedio < 80 %}
+                                <div class="inline-flex items-center gap-3 bg-yellow-100 dark:bg-yellow-900/30 border-2 border-yellow-300 dark:border-yellow-700 text-yellow-800 dark:text-yellow-300 px-6 py-3 rounded-xl text-lg font-bold">
+                                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                                    </svg>
+                                    <span>Riesgo MEDIO de Dislexia</span>
+                                </div>
+                            {% else %}
+                                <div class="inline-flex items-center gap-3 bg-green-100 dark:bg-green-900/30 border-2 border-green-300 dark:border-green-700 text-green-800 dark:text-green-300 px-6 py-3 rounded-xl text-lg font-bold">
+                                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                                    </svg>
+                                    <span>Riesgo BAJO de Dislexia</span>
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Métricas de la predicción -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                            <!-- Índice de Riesgo -->
+                            <div class="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-200 dark:border-gray-700">
+                                <div class="text-sm text-gray-500 dark:text-gray-400 mb-1">Índice de Riesgo</div>
+                                <div class="text-3xl font-bold text-purple-600 dark:text-purple-400">
+                                    {{ evaluacion.reporte_ia.indice_riesgo|floatformat:1 }}%
+                                </div>
+                                <div class="mt-2 w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                                    <div class="bg-gradient-to-r from-purple-500 to-indigo-600 h-2 rounded-full" style="width: {{ evaluacion.reporte_ia.indice_riesgo }}%"></div>
+                                </div>
+                            </div>
+                            
+                            <!-- Confianza -->
+                            <div class="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-200 dark:border-gray-700">
+                                <div class="text-sm text-gray-500 dark:text-gray-400 mb-1">Confianza del Modelo</div>
+                                <div class="text-3xl font-bold text-blue-600 dark:text-blue-400">
+                                    {{ evaluacion.reporte_ia.confianza_prediccion }}%
+                                </div>
+                                <div class="mt-2 w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                                    <div class="bg-gradient-to-r from-blue-500 to-blue-600 h-2 rounded-full" style="width: {{ evaluacion.reporte_ia.confianza_prediccion }}%"></div>
+                                </div>
+                            </div>
+                            
+                            <!-- Precisión de la Evaluación -->
+                            <div class="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-200 dark:border-gray-700">
+                                <div class="text-sm text-gray-500 dark:text-gray-400 mb-1">Precisión General</div>
+                                <div class="text-3xl font-bold text-green-600 dark:text-green-400">
+                                    {{ precision_promedio|floatformat:1 }}%
+                                </div>
+                                <div class="mt-2 w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                                    <div class="bg-gradient-to-r from-green-500 to-green-600 h-2 rounded-full" style="width: {{ precision_promedio }}%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Recomendaciones -->
+                        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700">
+                            <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
+                                <svg class="w-5 h-5 text-purple-600 dark:text-purple-400" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                                </svg>
+                                Recomendaciones Profesionales
+                            </h3>
+                            <p class="text-gray-700 dark:text-gray-300 leading-relaxed">
+                                {{ evaluacion.reporte_ia.recomendaciones }}
+                            </p>
+                        </div>
+                        
+                        <!-- Disclaimer -->
+                        <div class="mt-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg p-4">
+                            <div class="flex gap-3">
+                                <svg class="w-5 h-5 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                                </svg>
+                                <div>
+                                    <p class="text-sm font-semibold text-amber-800 dark:text-amber-300 mb-1">Aviso Importante</p>
+                                    <p class="text-xs text-amber-700 dark:text-amber-400 leading-relaxed">
+                                        Este análisis es una herramienta de apoyo basada en inteligencia artificial y NO constituye un diagnóstico médico oficial. 
+                                        Los resultados deben ser interpretados por un profesional de la salud calificado. 
+                                        Precisión del modelo: ~86% según validaciones con datasets de referencia.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <!-- Si no hay reporte IA -->
+            <div class="bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-6 mb-8 text-center">
+                <svg class="w-16 h-16 text-gray-400 dark:text-gray-600 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                </svg>
+                <h3 class="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-2">Análisis de IA no disponible</h3>
+                <p class="text-sm text-gray-500 dark:text-gray-400">
+                    El análisis con inteligencia artificial se generará cuando se complete la evaluación completa.
+                </p>
+            </div>
+            {% endif %}
+            <!-- Rendimiento por Juego - NUEVO DISEÑO -->
+            <div class="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-8 transition-colors duration-200">
+                <div class="flex items-center justify-between mb-6">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-gamepad text-white text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-900 dark:text-white">{% trans "Rendimiento por Juego" %}</h3>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">{% trans "Métricas acumuladas de todos los ejercicios" %}</p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-3xl font-bold text-purple-600 dark:text-purple-400">{{ juegos_resumen|length }}</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 font-medium">{% trans "Juegos" %}</p>
+                    </div>
+                </div>
+
+                <!-- Grid de Juegos - Responsive -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {% for item in juegos_resumen %}
+                    <div class="group relative bg-gradient-to-br from-gray-50 to-white dark:from-gray-800 dark:to-gray-700 rounded-2xl border-2 border-gray-200 dark:border-gray-600 hover:border-purple-400 dark:hover:border-purple-500 transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 overflow-hidden">
+                        
+                        <!-- Badge de veces jugado -->
+                        <div class="absolute top-4 right-4 z-10">
+                            <span class="inline-flex items-center gap-1 px-3 py-1 bg-purple-100 dark:bg-purple-900/50 text-purple-700 dark:text-purple-300 rounded-full text-xs font-bold">
+                                <i class="fas fa-redo text-xs"></i>
+                                {{ item.veces_jugado }}x
+                            </span>
+                        </div>
+                        
+                        <!-- Header del juego con gradiente -->
+                        <div class="p-6 bg-gradient-to-r from-{{ item.juego.color_gradiente_inicio }} to-{{ item.juego.color_gradiente_fin }} text-white">
+                            <div class="flex items-center gap-4">
+                                <div class="w-14 h-14 bg-white/20 backdrop-blur rounded-xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
+                                    <i class="fas fa-puzzle-piece text-2xl"></i>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <h4 class="font-bold text-lg truncate">{{ item.juego.nombre }}</h4>
+                                    <p class="text-xs opacity-90">{{ item.juego.get_dificultad_display }}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Métricas principales -->
+                        <div class="p-6 space-y-4">
+                            <!-- Puntaje destacado -->
+                            <div class="text-center pb-4 border-b border-gray-200 dark:border-gray-600">
+                                <div class="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-indigo-600 dark:from-purple-400 dark:to-indigo-400">
+                                    {{ item.puntaje }}
+                                </div>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 font-semibold mt-1">{% trans "Puntos Totales" %}</p>
+                            </div>
+
+                            <!-- Grid de métricas 2x2 -->
+                            <div class="grid grid-cols-2 gap-3">
+                                <!-- Aciertos -->
+                                <div class="p-3 bg-green-50 dark:bg-green-900/20 rounded-xl text-center border border-green-200 dark:border-green-800">
+                                    <div class="flex items-center justify-center gap-2 mb-1">
+                                        <i class="fas fa-check-circle text-green-600 dark:text-green-400 text-xs"></i>
+                                        <p class="text-2xl font-bold text-green-600 dark:text-green-400">{{ item.aciertos }}</p>
+                                    </div>
+                                    <p class="text-xs text-gray-600 dark:text-gray-400 font-medium">{% trans "Aciertos" %}</p>
+                                </div>
+
+                                <!-- Errores -->
+                                <div class="p-3 bg-red-50 dark:bg-red-900/20 rounded-xl text-center border border-red-200 dark:border-red-800">
+                                    <div class="flex items-center justify-center gap-2 mb-1">
+                                        <i class="fas fa-times-circle text-red-600 dark:text-red-400 text-xs"></i>
+                                        <p class="text-2xl font-bold text-red-600 dark:text-red-400">{{ item.errores }}</p>
+                                    </div>
+                                    <p class="text-xs text-gray-600 dark:text-gray-400 font-medium">{% trans "Errores" %}</p>
+                                </div>
+
+                                <!-- Clics -->
+                                <div class="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-xl text-center border border-blue-200 dark:border-blue-800">
+                                    <div class="flex items-center justify-center gap-2 mb-1">
+                                        <i class="fas fa-mouse-pointer text-blue-600 dark:text-blue-400 text-xs"></i>
+                                        <p class="text-2xl font-bold text-blue-600 dark:text-blue-400">{{ item.clics }}</p>
+                                    </div>
+                                    <p class="text-xs text-gray-600 dark:text-gray-400 font-medium">{% trans "Clics" %}</p>
+                                </div>
+
+                                <!-- Precisión -->
+                                <div class="p-3 bg-purple-50 dark:bg-purple-900/20 rounded-xl text-center border border-purple-200 dark:border-purple-800">
+                                    <div class="flex items-center justify-center gap-2 mb-1">
+                                        <i class="fas fa-bullseye text-purple-600 dark:text-purple-400 text-xs"></i>
+                                        <p class="text-2xl font-bold text-purple-600 dark:text-purple-400">{{ item.precision }}%</p>
+                                    </div>
+                                    <p class="text-xs text-gray-600 dark:text-gray-400 font-medium">{% trans "Precisión" %}</p>
+                                </div>
+                            </div>
+
+                            <!-- Barra de progreso de precisión -->
+                            <div class="pt-3">
+                                <div class="flex justify-between text-xs text-gray-500 dark:text-gray-400 mb-1">
+                                    <span>{% trans "Rendimiento" %}</span>
+                                    <span class="font-bold">{{ item.precision }}%</span>
+                                </div>
+                                <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 overflow-hidden">
+                                    <div class="bg-gradient-to-r from-purple-500 to-indigo-600 h-2 rounded-full transition-all duration-1000 ease-out" style="width: {{ item.precision }}%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        <!-- Botones de Acción - Footer -->
+        <div class="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-6">
+            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                <a href="{% url 'games:session_list' %}" class="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-purple-600 to-purple-800 hover:from-purple-500 hover:to-purple-700 text-white rounded-xl font-semibold transition-all shadow-lg hover:shadow-xl transform hover:scale-105 flex items-center justify-center gap-3">
+                    <i class="fas fa-list text-xl"></i>
+                    <span>{% trans "Ver Historial de Sesiones" %}</span>
+                </a>
+
+                <a href="{% url 'games:session_list' %}" class="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-purple-600 to-purple-800 hover:from-purple-500 hover:to-purple-700 text-white rounded-xl font-semibold transition-all shadow-lg hover:shadow-xl transform hover:scale-105 flex items-center justify-center gap-3">
+                    <i class="fas fa-redo text-xl"></i>
+                    <span>{% trans "Nueva Evaluación" %}</span>
+                </a>
+
+                <a href="{% url 'dashboard' %}" class="w-full sm:w-auto px-8 py-4 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 rounded-xl font-semibold transition-all shadow-lg hover:shadow-xl transform hover:scale-105 flex items-center justify-center gap-3">
+                    <i class="fas fa-home text-xl"></i>
+                    <span>{% trans "Volver al Dashboard" %}</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const chartBars = document.querySelectorAll('.chart-bar');
+        chartBars.forEach((bar, index) => {
+            setTimeout(() => {
+                bar.style.animationDelay = `${index * 0.1}s`;
+            }, 100);
+        });
+
+        console.log('🎉 ¡Evaluación completada exitosamente!');
+        console.log('===== Métricas Completas para Análisis del Modelo =====');
+        console.log('Clicks:', {{ total_clics }});
+        console.log('Aciertos (Hits):', {{ total_aciertos }});
+        console.log('Errores (Misses):', {{ total_errores }});
+        console.log('Puntaje (Score):', {{ puntaje_total }});
+        console.log('Precisión (Accuracy):', {{ precision_promedio|floatformat:2 }},'%');
+        console.log('Tasa de Error (Missrate):', {{ tasa_error|floatformat:2 }},'%');
+        console.log('=========================================================');
+    });
+</script>
+{% endblock %}

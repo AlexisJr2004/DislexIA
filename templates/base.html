@@ -212,7 +212,8 @@
             border-radius: 0 0 0.5rem 0.5rem;
         }
 
-        /* Estilos para sidebar derecho */
+
+        /* Estilos para sidebar derecho (animación de entrada/salida) */
         .right-sidebar {
             width: 280px; /* Mismo ancho que el sidebar izquierdo */
             position: fixed;
@@ -222,7 +223,22 @@
             overflow-y: auto;
             background: white;
             border-left: 1px solid #e5e7eb;
-            z-index: 20;
+            z-index: 99; /* Por encima de todo */
+            display: flex;
+            flex-direction: column;
+            /* Estado cerrado: fuera de la pantalla a la derecha */
+            transform: translateX(100%);
+            opacity: 0;
+            transition: transform 300ms ease, opacity 300ms ease;
+            will-change: transform, opacity;
+            pointer-events: none; /* evitar interacción cuando está cerrado */
+        }
+
+        /* Estado abierto */
+        .right-sidebar.open {
+            transform: translateX(0);
+            opacity: 1;
+            pointer-events: auto;
         }
 
         .dark .right-sidebar {
@@ -286,8 +302,36 @@
 
         /* Ajustar main content para el nuevo sidebar */
         .main-content-with-sidebars {
-            margin-left: 280px; /* Mismo ancho que el sidebar izquierdo */
-            margin-right: 280px; /* Mismo ancho que el sidebar derecho */
+            margin-left: 280px;
+            padding-top: 0;
+            transition: margin 300ms ease;
+        }
+
+        /* Cuando el sidebar derecho esté abierto, ajustar el main para dejar espacio */
+        .main-content-with-sidebars.shift-right {
+            margin-right: 280px;
+        }
+
+        /* Ajuste para el topbar cuando el sidebar derecho está abierto */
+        #topBar {
+            transition: margin 300ms ease, max-width 300ms ease;
+        }
+        #topBar.shift-right {
+            margin-right: 280px;
+            max-width: calc(100vw - 560px);
+        }
+
+        @media (max-width: 1024px) {
+            .main-content-with-sidebars {
+                margin-left: 0;
+            }
+            /* En pantallas pequeñas no forzamos desplazamiento a la derecha */
+            .main-content-with-sidebars.shift-right {
+                margin-right: 0;
+            }
+        }
+        #content-area {
+            padding-top: 32px; /* Si quieres más separación debajo de la top bar */
         }
     </style>
     
@@ -301,8 +345,8 @@
     </div>
 
     <!-- Sidebar Izquierdo -->
-    <div class="fixed top-0 left-0 h-screen border-r border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 transition-colors duration-200 shadow-sm dark:shadow-2xl" style="width: 280px;">
-        <div class="flex flex-col h-full">
+    <div class="fixed top-0 left-0 h-screen border-r border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 transition-colors duration-200 shadow-sm dark:shadow-2xl" style="width: 280px; z-index:40;">
+        <div class="flex flex-col h-full"> <!-- Quita el pt-[96px] -->
             <!-- Logo -->
             <div class="p-6">
                 <div class="flex items-center gap-2">
@@ -315,43 +359,66 @@
                     </div>
                 </div>
             </div>
-            <hr class="bg-gray-200 dark:bg-gray-800 mx-3"><br>
 
             <!-- Navigation -->
             <nav class="flex-1 px-3">
                 <a href="{% url 'dashboard' %}"
-                    class="nav-link flex items-center gap-3 px-3 py-2 mb-1 {% if request.resolver_match.url_name == 'dashboard' %}text-purple-600 dark:text-purple-400 bg-purple-100 dark:bg-purple-500/20{% else %}text-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800{% endif %} rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 hover:shadow-sm">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
-                    </svg>
+                    class="nav-link flex items-center gap-3 px-3 py-2 mb-1 
+                    {% if request.resolver_match.url_name == 'dashboard' %}
+                        text-purple-600 dark:text-purple-400 bg-purple-100 dark:bg-purple-500/20
+                    {% else %}
+                        text-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800
+                    {% endif %}
+                    rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 hover:shadow-sm group">
+
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-layout-panel-left-icon lucide-layout-panel-left"><rect width="7" height="18" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/></svg>
+
                     {% trans "Panel Administrativo" %}
                 </a>
 
+                <a href="{% url 'games:session_list' %}"
+                    class="nav-link flex items-center gap-3 px-3 py-2 mb-1 
+                    {% if request.resolver_match.url_name == 'session_list' %}text-purple-600 dark:text-purple-400 bg-purple-100 dark:bg-purple-500/20{% else %}text-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800{% endif %} 
+                    rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 hover:shadow-sm">
+                        
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chart-no-axes-combined-icon lucide-chart-no-axes-combined"><path d="M12 16v5"/><path d="M16 14v7"/><path d="M20 10v11"/><path d="m22 3-8.646 8.646a.5.5 0 0 1-.708 0L9.354 8.354a.5.5 0 0 0-.707 0L2 15"/><path d="M4 18v3"/><path d="M8 14v7"/></svg>
+                        
+                    {% trans "Gestión de Sesiones" %}
+                </a>
+
                 <a href="{% url 'games:game_list' %}"
-                    class="nav-link flex items-center gap-3 px-3 py-2 mb-1 {% if request.resolver_match.url_name == 'game_list' %}text-purple-600 dark:text-purple-400 bg-purple-100 dark:bg-purple-500/20{% else %}text-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800{% endif %} rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 hover:shadow-sm">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path
-                            d="M6 12h2m-1-1v2m8-1h2m-1-1v2m-9 5a4 4 0 01-4-4V9a4 4 0 014-4h10a4 4 0 014 4v4a4 4 0 01-4 4h-3l-2 2-2-2H8z" />
-                    </svg>
+                    class="nav-link flex items-center gap-3 px-3 py-2 mb-1 
+                    {% if request.resolver_match.url_name == 'game_list' %}
+                        text-purple-600 dark:text-purple-400 bg-purple-100 dark:bg-purple-500/20
+                    {% else %}
+                        text-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800
+                    {% endif %}
+                    rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 hover:shadow-sm group">
+
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-gamepad2-icon lucide-gamepad-2"><line x1="6" x2="10" y1="11" y2="11"/><line x1="8" x2="8" y1="9" y2="13"/><line x1="15" x2="15.01" y1="12" y2="12"/><line x1="18" x2="18.01" y1="10" y2="10"/><path d="M17.32 5H6.68a4 4 0 0 0-3.978 3.59c-.006.052-.01.101-.017.152C2.604 9.416 2 14.456 2 16a3 3 0 0 0 3 3c1 0 1.5-.5 2-1l1.414-1.414A2 2 0 0 1 9.828 16h4.344a2 2 0 0 1 1.414.586L17 18c.5.5 1 1 2 1a3 3 0 0 0 3-3c0-1.545-.604-6.584-.685-7.258-.007-.05-.011-.1-.017-.151A4 4 0 0 0 17.32 5z"/></svg>
+
                     {% trans "Juegos" %}
                 </a>
 
                 <a href="{% url 'core:calendar' %}"
-                    class="nav-link flex items-center gap-3 px-3 py-2 mb-1 {% if request.resolver_match.url_name == 'calendar' %}text-purple-600 dark:text-purple-400 bg-purple-100 dark:bg-purple-500/20{% else %}text-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800{% endif %} rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 hover:shadow-sm">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 01-2 2z" />
-                    </svg>
+                class="group nav-link flex items-center gap-3 px-3 py-2 mb-1 {% if request.resolver_match.url_name == 'calendar' %}text-purple-600 dark:text-purple-400 bg-purple-100 dark:bg-purple-500/20{% else %}text-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800{% endif %} rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 hover:shadow-sm">
+
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar-icon lucide-calendar"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg>
+
                     {% trans "Calendario" %}
                 </a>
 
                 <a href="{% url 'core:documents' %}"
-                    class="nav-link flex items-center gap-3 px-3 py-2 mb-1 {% if request.resolver_match.url_name == 'documents' %}text-purple-600 dark:text-purple-400 bg-purple-100 dark:bg-purple-500/20{% else %}text-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800{% endif %} rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 hover:shadow-sm">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
+                    class="nav-link flex items-center gap-3 px-3 py-2 mb-1 
+                    {% if request.resolver_match.url_name == 'documents' %}
+                        text-purple-600 dark:text-purple-400 bg-purple-100 dark:bg-purple-500/20
+                    {% else %}
+                        text-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800
+                    {% endif %}
+                    rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 hover:shadow-sm group">
+
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-text-icon lucide-file-text"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>
+
                     {% trans "Recursos Digitales" %}
                 </a>
 <<<<<<< HEAD
@@ -365,11 +432,16 @@
 =======
 
                 <a href="{% url 'core:lista_ninos' %}"
-                    class="nav-link flex items-center gap-3 px-3 py-2 mb-1 {% if request.resolver_match.url_name == 'lista_ninos' %}text-purple-600 dark:text-purple-400 bg-purple-100 dark:bg-purple-500/20{% else %}text-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800{% endif %} rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 hover:shadow-sm">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-                    </svg>
+                    class="nav-link flex items-center gap-3 px-3 py-2 mb-1 
+                    {% if request.resolver_match.url_name == 'lista_ninos' %}
+                        text-purple-600 dark:text-purple-400 bg-purple-100 dark:bg-purple-500/20
+                    {% else %}
+                        text-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800
+                    {% endif %}
+                    rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 hover:shadow-sm group">
+
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-id-card-icon lucide-id-card"><path d="M16 10h2"/><path d="M16 14h2"/><path d="M6.17 15a3 3 0 0 1 5.66 0"/><circle cx="9" cy="11" r="2"/><rect x="2" y="5" width="20" height="14" rx="2"/></svg>
+
                     {% trans "Datos de Pacientes" %}
 >>>>>>> origin/develop
                 </a>
@@ -378,22 +450,30 @@
             <!-- Bottom Section -->
             <div class="p-3">
                 <a href="{% url 'core:settings' %}"
-                    class="nav-link flex items-center gap-3 px-3 py-2 mb-1 {% if request.resolver_match.url_name == 'settings' %}text-purple-600 dark:text-purple-400 bg-purple-100 dark:bg-purple-500/20{% else %}text-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800{% endif %} rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M12 15.5A3.5 3.5 0 1 0 12 8.5a3.5 3.5 0 0 0 0 7z" />
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09c.7 0 1.31-.4 1.51-1a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06c.51.51 1.27.67 1.82.33.5-.29 1-.81 1-1.51V3a2 2 0 1 1 4 0v.09c0 .7.4 1.31 1 1.51.55.34 1.31.18 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06c-.51.51-.67 1.27-.33 1.82.29.5.81 1 1.51 1H21a2 2 0 1 1 0 4h-.09c-.7 0-1.31.4-1.51 1z" />
-                    </svg>
+                    class="nav-link flex items-center gap-3 px-3 py-2 mb-1 
+                    {% if request.resolver_match.url_name == 'settings' %}
+                        text-purple-600 dark:text-purple-400 bg-purple-100 dark:bg-purple-500/20
+                    {% else %}
+                        text-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800
+                    {% endif %}
+                    rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 hover:shadow-sm group">
+
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-settings-icon lucide-settings"><path d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915"/><circle cx="12" cy="12" r="3"/></svg>
+
                     {% trans "Configuraciones" %}
                 </a>
 
                 <a href="{% url 'core:support' %}"
-                    class="nav-link flex items-center gap-3 px-3 py-2 mb-3 {% if request.resolver_match.url_name == 'support' %}text-purple-600 dark:text-purple-400 bg-purple-100 dark:bg-purple-500/20{% else %}text-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800{% endif %} rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8-1.09 0-2.13-.18-3.08-.5L3 20l1.5-2.5A8.962 8.962 0 013 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                    </svg>
+                    class="nav-link flex items-center gap-3 px-3 py-2 mb-3 
+                    {% if request.resolver_match.url_name == 'support' %}
+                        text-purple-600 dark:text-purple-400 bg-purple-100 dark:bg-purple-500/20
+                    {% else %}
+                        text-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800
+                    {% endif %}
+                    rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 hover:shadow-sm group">
+
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-headset-icon lucide-headset"><path d="M3 11h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-5Zm0 0a9 9 0 1 1 18 0m0 0v5a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3Z"/><path d="M21 16v2a4 4 0 0 1-4 4h-5"/></svg>
+
                     {% trans "Soporte" %}
                 </a>
 
@@ -434,7 +514,7 @@
     </div>
 
     <!-- Right Sidebar - Citas del Día -->
-    <div class="right-sidebar">
+    <div class="right-sidebar" id="rightSidebar" style="position:fixed; top:0; right:0; height:100vh; z-index: 99;" aria-hidden="true">
         <div class="p-6">
             <!-- Título -->
             <h2 class="text-lg font-bold text-gray-900 dark:text-white mb-4">
@@ -484,7 +564,8 @@
     <!-- Main Content -->
     <div class="main-content-with-sidebars">
         <!-- Top Bar -->
-        <div class="bg-white/50 dark:bg-gray-900/50 backdrop-blur-md px-8 py-4 flex items-center justify-between sticky top-0 z-[50] dark:border-gray-800 transition-colors duration-200 ">
+        <div id="topBar" class="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 px-8 py-4 flex items-center justify-between w-full"
+            style="position:fixed; top:0; left:0; right:0; z-index:50; width:100vw; margin-left:280px; max-width:calc(100vw - 280px);">
             <div class="flex items-center gap-3">
                 <!-- Imagen de perfil -->
                 <div class="w-10 h-10 rounded-full overflow-hidden bg-purple-100 dark:bg-purple-900/50">
@@ -501,7 +582,6 @@
             </div>
 
             <div class="flex items-center gap-2">
-                
                 <!-- Language Selector -->
                 <div class="relative">
                     <button type="button" id="languageDropdownBtn"
@@ -636,19 +716,16 @@
                 <!-- Schedule Button -->
                 <a href="{% url 'core:calendar' %}"
                     class="px-5 py-2.5 border border-gray-300 dark:border-gray-700 hover:border-gray-400 dark:hover:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-2.5 transition-all hover:shadow-sm">
-                    <i class="far fa-calendar text-base"></i>
+                    <i class="far fa-calendar-plus text-base"></i>
                     {% trans "Agenda" %}
                 </a>
 
-                <!-- Create Request Button -->
-                <button
-                    class="px-5 py-2.5 bg-gradient-to-r from-purple-600 to-purple-800 hover:from-purple-500 hover:to-purple-700 text-white rounded-xl text-sm font-semibold flex items-center gap-2.5 transition-all shadow-md hover:shadow-lg hover:scale-105">
-                    <i class="fas fa-plus text-base"></i>
-                    {% trans "Crear solicitud" %}
+                <!-- Botón para mostrar/ocultar sidebar derecho -->
+                <button id="toggleRightSidebarBtn" title="{% trans 'Mostrar/Ocultar Citas del Día' %}" class="px-5 py-2.5 border border-gray-300 dark:border-gray-700 hover:border-gray-400 dark:hover:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-2.5 transition-all hover:shadow-sm">
+                    <i class="far fa-calendar text-base"></i>
                 </button>
             </div>
         </div>
-        <hr class="bg-gray-200 dark:bg-gray-800 mx-12 mt-2">
 
         <!-- Toast de Notificación -->
         <div id="toast-notification" class="fixed top-4 right-4 z-[9999] hidden">
@@ -664,7 +741,7 @@
         </div>
 
         <!-- Dynamic Content Area -->
-        <div id="content-area" class="p-8 bg-gray-50 dark:bg-gray-950 min-h-screen transition-colors duration-200">
+        <div id="content-area" class="p-8 min-h-screen transition-colors duration-200" style="padding-top:96px;">
             {% block content %}
             <!-- El contenido específico de cada página se cargará aquí -->
             {% endblock %}
@@ -678,6 +755,64 @@
 
     <!-- Scripts Base -->
     <script src="{% static 'main.js' %}"></script>
+    <script>
+        // Toggle animado y persistente para el sidebar derecho.
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggleBtn = document.getElementById('toggleRightSidebarBtn');
+            const rightSidebar = document.getElementById('rightSidebar');
+            const mainContent = document.querySelector('.main-content-with-sidebars');
+            const topBar = document.getElementById('topBar');
+
+            function applySidebarState(open, save = true) {
+                if (!rightSidebar || !mainContent || !topBar) return;
+
+                if (open) {
+                    rightSidebar.classList.add('open');
+                    rightSidebar.setAttribute('aria-hidden', 'false');
+                    mainContent.classList.add('shift-right');
+                    // Ajustar el topBar mediante estilos inline para sobreescribir el max-width inline existente
+                    if (topBar) {
+                        topBar.classList.add('shift-right');
+                        topBar.style.marginRight = '280px';
+                        topBar.style.maxWidth = 'calc(100vw - 560px)';
+                    }
+                    // Cargar citas del día si la función existe
+                    if (typeof window.loadCitasDelDia === 'function') {
+                        window.loadCitasDelDia();
+                    }
+                } else {
+                    rightSidebar.classList.remove('open');
+                    rightSidebar.setAttribute('aria-hidden', 'true');
+                    mainContent.classList.remove('shift-right');
+                    if (topBar) {
+                        topBar.classList.remove('shift-right');
+                        // Restaurar el estilo cerrado (valor original)
+                        topBar.style.marginRight = '';
+                        topBar.style.maxWidth = 'calc(100vw - 280px)';
+                    }
+                }
+
+                if (save) localStorage.setItem('rightSidebarOpen', open ? 'true' : 'false');
+            }
+
+            // Inicializar desde localStorage (si existe preferencia)
+            try {
+                const persisted = localStorage.getItem('rightSidebarOpen');
+                // Si estaba abierto, mostrarlo animado desde el inicio
+                applySidebarState(persisted === 'true', false);
+            } catch (e) {
+                // Si localStorage no está disponible, no hacemos nada
+            }
+
+            if (toggleBtn) {
+                toggleBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const isOpen = rightSidebar.classList.contains('open');
+                    applySidebarState(!isOpen);
+                });
+            }
+        });
+    </script>
     
     <!-- Inicializar mensajes de Django -->
     <script>
@@ -797,9 +932,10 @@
     <!-- Script para gestión de citas en sidebar -->
     <script>
         (function initCitasSidebar() {
-            let miniCurrentMonth = new Date().getMonth();
-            let miniCurrentYear = new Date().getFullYear();
-            let selectedDate = new Date();
+            const now = new Date();
+            let miniCurrentMonth = now.getMonth();
+            let miniCurrentYear = now.getFullYear();
+            let selectedDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
             let citasConFecha = new Set();
 
             const miniCalendarDays = document.getElementById('mini-calendar-days');
@@ -820,7 +956,7 @@
                         const fecha = d.toISOString().split('T')[0];
                         const response = await fetch("{% url 'core:get_citas_dia' %}?fecha=" + fecha);
                         const data = await response.json();
-                        if (data.citas.length > 0) {
+                        if (data.citas && data.citas.length > 0) {
                             citasConFecha.add(fecha);
                         }
                     }
@@ -883,6 +1019,13 @@
             }
 
             async function loadCitasDelDia() {
+                // Si hay selección manual, usarla; si no, usar la fecha actual solo la primera vez
+                if (typeof window.selectedDateSidebar !== 'undefined' && window.selectedDateSidebar) {
+                    selectedDate = new Date(window.selectedDateSidebar.getFullYear(), window.selectedDateSidebar.getMonth(), window.selectedDateSidebar.getDate());
+                } else if (!selectedDate || isNaN(selectedDate.getTime())) {
+                    const now = new Date();
+                    selectedDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                }
                 const fecha = selectedDate.toISOString().split('T')[0];
                 
                 try {

@@ -1,5 +1,7 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.db.models import Sum
+from django.utils import timezone
 
 # Importar constantes globales y específicas
 from config.constants import DIFICULTAD_CHOICES, ESTADO_CHOICES, COLOR_CHOICES, COLOR_GRADIENTE_MAP
@@ -365,7 +367,7 @@ class PruebaCognitiva(models.Model):
         verbose_name = "Prueba Cognitiva"
         verbose_name_plural = "Pruebas Cognitivas"
         ordering = ['evaluacion', 'numero_prueba']
-        unique_together = ['evaluacion', 'numero_prueba']
+        unique_together = ['evaluacion', 'juego', 'numero_prueba']
         
     def __str__(self):
         juego_nombre = self.juego.nombre if self.juego else "Sin Juego Asignado"
@@ -436,7 +438,56 @@ class SesionJuego(models.Model):
         default=0,
         verbose_name="Tiempo Total (segundos)"
     )
-    
+        # === NUEVOS CAMPOS PARA EL MODELO IA (métricas agregadas del minijuego) ===
+    clicks_total = models.PositiveIntegerField(
+        default=0,
+        verbose_name="Clicks Totales",
+        help_text="Total de clics realizados en todo el minijuego"
+    )
+
+    hits_total = models.PositiveIntegerField(
+        default=0,
+        verbose_name="Hits Totales",
+        help_text="Total de aciertos en todo el minijuego"
+    )
+
+    misses_total = models.PositiveIntegerField(
+        default=0,
+        verbose_name="Misses Totales",
+        help_text="Total de fallos en todo el minijuego"
+    )
+
+    score_total = models.IntegerField(
+        default=0,
+        verbose_name="Score Total",
+        help_text="Puntuación total obtenida en el minijuego"
+    )
+
+    accuracy_percent = models.DecimalField(
+        max_digits=5,
+        decimal_places=2,
+        default=0.00,
+        validators=[MinValueValidator(0.00), MaxValueValidator(100.00)],
+        verbose_name="Accuracy (%)",
+        help_text="Porcentaje de precisión: (hits / clicks) * 100"
+    )
+
+    missrate_percent = models.DecimalField(
+        max_digits=5,
+        decimal_places=2,
+        default=0.00,
+        validators=[MinValueValidator(0.00), MaxValueValidator(100.00)],
+        verbose_name="Missrate (%)",
+        help_text="Porcentaje de tasa de error: (misses / clicks) * 100"
+    )
+        # Número de ejercicio global (1-32) para mapeo al modelo
+    ejercicio_numero = models.PositiveIntegerField(
+        null=True,
+        blank=True,
+        verbose_name="Número de Ejercicio",
+        help_text="Posición del minijuego en la secuencia (1-32) para el modelo IA"
+    )
+
     class Meta:
         verbose_name = "Sesión de Juego"
         verbose_name_plural = "Sesiones de Juego"
@@ -463,23 +514,85 @@ class SesionJuego(models.Model):
         """Retorna la URL del archivo JSON que debe cargar el frontend"""
         return self.juego.url_archivo_configuracion
     
-    def finalizar_sesion(self, puntaje_final, preguntas_contestadas, tiempo_total):
+    def finalizar_sesion(self, puntaje_final, preguntas_contestadas, tiempo_total, 
+                        clicks=0, hits=0, misses=0):
         """
         Finaliza la sesión con los resultados obtenidos
-        Este método será llamado desde la vista cuando el frontend envíe los resultados
-        """
-        from django.utils import timezone
-        
+        Ahora incluye métricas agregadas para el modelo IA
+        """        
         self.estado = 'completada'
         self.fecha_fin = timezone.now()
         self.puntaje_total = puntaje_final
         self.preguntas_respondidas = preguntas_contestadas
         self.tiempo_total_segundos = tiempo_total
+        
+        # === NUEVAS MÉTRICAS PARA EL MODELO IA ===
+        self.clicks_total = clicks
+        self.hits_total = hits
+        self.misses_total = misses
+        self.score_total = puntaje_final  # Usar el mismo que puntaje_total
+        
+        # Calcular accuracy y missrate
+        if clicks > 0:
+            self.accuracy_percent = (hits / clicks) * 100
+            self.missrate_percent = (misses / clicks) * 100
+        else:
+            self.accuracy_percent = 0.00
+            self.missrate_percent = 0.00
+        
         self.save(update_fields=[
             'estado', 'fecha_fin', 'puntaje_total', 
-            'preguntas_respondidas', 'tiempo_total_segundos'
+            'preguntas_respondidas', 'tiempo_total_segundos',
+            'clicks_total', 'hits_total', 'misses_total', 
+            'score_total', 'accuracy_percent', 'missrate_percent'
         ])
-    
+
+    def calcular_metricas_desde_pruebas(self):
+        """
+        Calcula y actualiza las métricas agregadas desde todas las PruebaCognitivas
+        asociadas a esta sesión
+        """
+
+        # Obtener todas las pruebas cognitivas de esta sesión
+        pruebas = PruebaCognitiva.objects.filter(
+            evaluacion=self.evaluacion,
+            juego=self.juego
+        )
+        
+        # Sumar métricas
+        agregados = pruebas.aggregate(
+            total_clics=Sum('clics'),
+            total_aciertos=Sum('aciertos'),
+            total_errores=Sum('errores'),
+            total_puntaje=Sum('puntaje')
+        )
+        
+        self.clicks_total = agregados['total_clics'] or 0
+        self.hits_total = agregados['total_aciertos'] or 0
+        self.misses_total = agregados['total_errores'] or 0
+        self.score_total = agregados['total_puntaje'] or 0
+        
+        # Calcular porcentajes
+        if self.clicks_total > 0:
+            self.accuracy_percent = (self.hits_total / self.clicks_total) * 100
+            self.missrate_percent = (self.misses_total / self.clicks_total) * 100
+        else:
+            self.accuracy_percent = 0.00
+            self.missrate_percent = 0.00
+        
+        self.save(update_fields=[
+            'clicks_total', 'hits_total', 'misses_total', 
+            'score_total', 'accuracy_percent', 'missrate_percent'
+        ])
+        
+        return {
+            'clicks': self.clicks_total,
+            'hits': self.hits_total,
+            'misses': self.misses_total,
+            'score': self.score_total,
+            'accuracy': float(self.accuracy_percent),
+            'missrate': float(self.missrate_percent)
+        }
     @property
     def duracion_sesion(self):
         """Calcula la duración de la sesión en minutos"""

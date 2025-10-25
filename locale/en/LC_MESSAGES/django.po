@@ -45,6 +45,9 @@ msgstr "Calendar"
 msgid "Recursos Digitales"
 msgstr "Digital Resources"
 
+msgid "Gestión de Sesiones"
+msgstr "Session Management"
+
 msgid "Datos de Pacientes"
 msgstr "Patient Data"
 
@@ -1406,3 +1409,75 @@ msgstr "To proceed with deletion, confirm your decision by pressing the button b
 msgid "Eliminar Definitivamente"
 msgstr "Delete Permanently"
 
+# ========================================
+# GAME_SESSION_LIST
+# ========================================
+
+msgid "Administra y supervisa todas las sesiones de juegos realizadas"
+msgstr "Administer and supervise all game sessions performed"
+
+msgid "Simular Prueba Cognitiva"
+msgstr "Simulate Cognitive Test"
+
+msgid "Iniciar Prueba Cognitiva"
+msgstr "Start Cognitive Test"
+
+msgid "Total"
+msgstr "Total"
+
+msgid "En Proceso"
+msgstr "In Progress"
+
+msgid "Interrumpidas"
+msgstr "Interrupted"
+
+msgid "Buscar por paciente..."
+msgstr "Search by patient..."
+
+msgid "Filtrar:"
+msgstr "Filter:"
+
+msgid "Paciente"
+msgstr "Patient"
+
+msgid "Fecha Inicio"
+msgstr "Start Date"
+
+msgid "Exactitud"
+msgstr "Accuracy"
+
+msgid "Estado"
+msgstr "Status"
+
+msgid "Acciones"
+msgstr "Actions"
+
+msgid "Seleccionar Niño"
+msgstr "Select Child"
+
+msgid "Si necesitas conservar información, descarga los datos antes de eliminar."
+msgstr "If you need to keep information, download the data before deleting."
+
+msgid "Por favor selecciona un niño para continuar"
+msgstr "Please select a child to continue"
+
+msgid "Iniciando..."
+msgstr "Starting..."
+
+msgid "Vista de sesiones cargada correctamente"
+msgstr "Session view loaded successfully"
+
+msgid "de"
+msgstr "of"
+
+msgid "sesiones"
+msgstr "sessions"
+
+msgid "Generar Evaluación de Prueba"
+msgstr "Generate Test Evaluation"
+
+msgid "Crear evaluación de prueba para testing"
+msgstr "Create test evaluation for testing"
+
+msgid "Nivel de riesgo"
+msgstr "Risk level"

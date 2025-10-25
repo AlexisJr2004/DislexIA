@@ -5,73 +5,11 @@
 {% block title %}{{ page_title }}{% endblock %}
 
 {% block extra_head %}
-<style>
-    .game-card {
-        transition: all 0.3s ease;
-    }
-
-    .game-card:hover {
-        transform: translateY(-8px);
-    }
-
-    .game-image {
-        position: relative;
-        overflow: hidden;
-    }
-
-    .game-image::after {
-        content: '';
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        height: 50%;
-        background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
-    }
-
-    .difficulty-badge {
-        backdrop-filter: blur(10px);
-    }
-
-    .filter-btn.active {
-        background-color: #8b5cf6;
-        color: white;
-    }
-
-    /* Colores dinámicos para las dificultades */
-    .difficulty-facil { background-color: rgba(34, 197, 94, 0.9); }
-    .difficulty-medio { background-color: rgba(234, 179, 8, 0.9); }
-    .difficulty-dificil { background-color: rgba(239, 68, 68, 0.9); }
-
-    /* Estilos para el modal de selección de niño */
-    @keyframes fadeIn {
-        from { opacity: 0; }
-        to { opacity: 1; }
-    }
-
-    @keyframes slideUp {
-        from {
-            opacity: 0;
-            transform: translateY(20px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    .animate-fade-in {
-        animation: fadeIn 0.2s ease-out;
-    }
-
-    .animate-slide-up {
-        animation: slideUp 0.3s ease-out;
-    }
-</style>
+<link rel="stylesheet" href="{% static 'css/games.css' %}">
 {% endblock %}
 
 {% block content %}
-<div class="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
     <!-- Título -->
     <div>
         <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">{% trans "Juegos de Entrenamiento" %}</h1>
@@ -112,6 +50,47 @@
         </div>
     </div>
 </div>
+
+<!-- Stats Section -->
+{% if juegos %}
+<div class="p-8 grid grid-cols-1 md:grid-cols-4 gap-4">
+    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 text-center">
+        <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center mx-auto mb-3">
+            <i class="fas fa-clock text-purple-600 dark:text-purple-400 text-xl"></i>
+        </div>
+        <p class="text-2xl font-bold text-gray-900 dark:text-white mb-1">
+            15-25 {% trans "min" %}
+        </p>
+        <p class="text-sm text-gray-500 dark:text-gray-400">{% trans "Tiempo estimado total" %}</p>
+    </div>
+
+    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 text-center">
+        <div class="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-3">
+            <i class="fas fa-gamepad text-green-600 dark:text-green-400 text-xl"></i>
+        </div>
+        <p class="text-2xl font-bold text-gray-900 dark:text-white mb-1">{{ juegos|length }}</p>
+        <p class="text-sm text-gray-500 dark:text-gray-400">{% trans "Juegos disponibles" %}</p>
+    </div>
+
+    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 text-center">
+        <div class="w-12 h-12 bg-yellow-100 dark:bg-yellow-900/30 rounded-full flex items-center justify-center mx-auto mb-3">
+            <i class="fas fa-star text-yellow-600 dark:text-yellow-400 text-xl"></i>
+        </div>
+        <p class="text-2xl font-bold text-gray-900 dark:text-white mb-1">4.7</p>
+        <p class="text-sm text-gray-500 dark:text-gray-400">{% trans "Puntuación promedio" %}</p>
+    </div>
+
+    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 text-center">
+        <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mx-auto mb-3">
+            <i class="fas fa-users text-blue-600 dark:text-blue-400 text-xl"></i>
+        </div>
+        <p class="text-2xl font-bold text-gray-900 dark:text-white mb-1">
+            {% regroup juegos by total_jugadas as jugadas_list %}{{ jugadas_list|length|default:0 }}
+        </p>
+        <p class="text-sm text-gray-500 dark:text-gray-400">{% trans "Total jugadas" %}</p>
+    </div>
+</div>
+{% endif %}
 
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6" id="games-container">
     {% for juego in juegos %}
@@ -195,49 +174,8 @@
     {% endfor %}
 </div>
 
-<!-- Stats Section -->
-{% if juegos %}
-<div class="mt-8 grid grid-cols-1 md:grid-cols-4 gap-4">
-    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 text-center">
-        <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center mx-auto mb-3">
-            <i class="fas fa-clock text-purple-600 dark:text-purple-400 text-xl"></i>
-        </div>
-        <p class="text-2xl font-bold text-gray-900 dark:text-white mb-1">
-            15-25 {% trans "min" %}
-        </p>
-        <p class="text-sm text-gray-500 dark:text-gray-400">{% trans "Tiempo estimado total" %}</p>
-    </div>
-
-    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 text-center">
-        <div class="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-3">
-            <i class="fas fa-gamepad text-green-600 dark:text-green-400 text-xl"></i>
-        </div>
-        <p class="text-2xl font-bold text-gray-900 dark:text-white mb-1">{{ juegos|length }}</p>
-        <p class="text-sm text-gray-500 dark:text-gray-400">{% trans "Juegos disponibles" %}</p>
-    </div>
-
-    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 text-center">
-        <div class="w-12 h-12 bg-yellow-100 dark:bg-yellow-900/30 rounded-full flex items-center justify-center mx-auto mb-3">
-            <i class="fas fa-star text-yellow-600 dark:text-yellow-400 text-xl"></i>
-        </div>
-        <p class="text-2xl font-bold text-gray-900 dark:text-white mb-1">4.7</p>
-        <p class="text-sm text-gray-500 dark:text-gray-400">{% trans "Puntuación promedio" %}</p>
-    </div>
-
-    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 text-center">
-        <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mx-auto mb-3">
-            <i class="fas fa-users text-blue-600 dark:text-blue-400 text-xl"></i>
-        </div>
-        <p class="text-2xl font-bold text-gray-900 dark:text-white mb-1">
-            {% regroup juegos by total_jugadas as jugadas_list %}{{ jugadas_list|length|default:0 }}
-        </p>
-        <p class="text-sm text-gray-500 dark:text-gray-400">{% trans "Total jugadas" %}</p>
-    </div>
-</div>
-{% endif %}
-
 <!-- Modal de Selección de Niño -->
-<div id="modal-seleccion-nino" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center z-50 overflow-y-auto p-4">
+<div id="modal-seleccion-nino" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center z-50 overflow-y-auto p-4" style="z-index:99999;">
     <div class="bg-white dark:bg-gray-900 rounded-2xl w-full max-w-5xl max-h-[90vh] overflow-hidden shadow-2xl border border-gray-200 dark:border-gray-800 animate-slide-up">
         <!-- Header del Modal -->
         <div class="sticky top-0 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 p-6 z-10">
@@ -387,7 +325,7 @@
 </div>
 
 <!-- Modal de Confirmación de Niño Seleccionado -->
-<div id="modal-confirmacion-nino" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center z-[60] animate-fade-in">
+<div id="modal-confirmacion-nino" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center z-[60] animate-fade-in" style="z-index:99999;">
     <div class="bg-white dark:bg-gray-900 rounded-2xl w-11/12 md:w-[500px] p-6 shadow-2xl border border-gray-200 dark:border-gray-800 animate-scale-in">
         <!-- Header -->
         <div class="flex items-center gap-3 mb-6">
@@ -468,6 +406,17 @@
 
 {% block extra_scripts %}
 <script>
+    // Lista de juegos disponibles
+    const juegos = [
+        {% for juego in juegos %}
+        {
+            slug: '{{ juego.slug }}',
+            nombre: '{{ juego.nombre }}',
+            init_url: '{% url "games:init_game" juego_slug=juego.slug %}'
+        }{% if not forloop.last %},{% endif %}
+        {% endfor %}
+    ];
+
     let juegoSeleccionado = {
         slug: '',
         url: ''
@@ -512,8 +461,9 @@
     function seleccionarNino(ninoId) {
         console.log('=== Seleccionando niño:', ninoId);
         
-        if (!juegoSeleccionado.url) {
-            console.error('No hay juego seleccionado');
+        // Permitir selección si hay juego seleccionado o si es para iniciar automáticamente
+        if (!juegoSeleccionado.url && juegos.length === 0) {
+            console.error('No hay juego seleccionado y no hay juegos disponibles');
             return;
         }
 
@@ -569,6 +519,8 @@
             const modalConfirmacion = document.getElementById('modal-confirmacion-nino');
             modalConfirmacion.classList.remove('hidden');
             modalConfirmacion.classList.add('flex');
+            // Asegurar que no se pueda hacer scroll del body mientras el modal de confirmación esté abierto
+            document.body.style.overflow = 'hidden';
         }, 150);
     }
 
@@ -594,10 +546,20 @@
         console.log('ninoSeleccionadoData:', ninoSeleccionadoData);
         console.log('juegoSeleccionado:', juegoSeleccionado);
         
-        if (!ninoSeleccionadoData || !juegoSeleccionado.url) {
-            console.error('Datos incompletos para iniciar el juego');
-            console.error('ninoSeleccionadoData:', ninoSeleccionadoData);
-            console.error('juegoSeleccionado:', juegoSeleccionado);
+        if (!ninoSeleccionadoData) {
+            console.error('No hay niño seleccionado');
+            return;
+        }
+
+        // Si no hay juego seleccionado, usar el primer juego para iniciar automáticamente
+        let juegoUrl = juegoSeleccionado.url;
+        if (!juegoUrl && juegos.length > 0) {
+            juegoUrl = juegos[0].init_url;
+            console.log('Usando primer juego:', juegos[0]);
+        }
+
+        if (!juegoUrl) {
+            console.error('No hay URL de juego disponible');
             return;
         }
 
@@ -609,7 +571,7 @@
         btnConfirmar.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Iniciando...';
 
         // Construir URL con el ID del niño
-        const urlConNino = `${juegoSeleccionado.url}?nino_id=${ninoSeleccionadoData.id}`;
+        const urlConNino = `${juegoUrl}?nino_id=${ninoSeleccionadoData.id}`;
         
         console.log('URL final:', urlConNino);
         
@@ -679,6 +641,12 @@
                     filterNinosModal();
                 }
             });
+        }
+
+        // Verificar si se debe abrir el modal automáticamente
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('abrir_modal') === '1') {
+            abrirModalSeleccionNino('', ''); // Abrir modal sin juego seleccionado
         }
     });
 

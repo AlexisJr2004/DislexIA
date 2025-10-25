@@ -65,19 +65,6 @@
           "points": 10
         },
         {
-          "id": 5,
-          "correct_word": "LUNA",
-          "incomplete_word": "LUMA",
-          "error_type": "sustitucion_letras",
-          "error_position": 2,
-          "error_letter": "M",
-          "correct_letter": "N",
-          "hint": "Brilla en el cielo nocturno",
-          "image_path": "/static/img/luna.jpg",
-          "time_limit": 40,
-          "points": 10
-        },
-        {
           "id": 6,
           "correct_word": "MESA",
           "incorrect_word": "MEZA",
@@ -132,7 +119,7 @@
         {
           "id": 10,
           "correct_word": "SILLA",
-          "incorrect_word": "SILLA",
+          "incorrect_word": "SIRLA",
           "error_type": "sustitucion_letras",
           "error_position": 2,
           "error_letter": "R",
@@ -142,8 +129,8 @@
           "time_limit": 45,
           "points": 10
         }
-      ]
-    },
+            ]
+          },
     {
       "level": 2,
       "difficulty": "medio",

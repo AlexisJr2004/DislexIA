@@ -174,7 +174,7 @@
         </div>
 
     <!-- Modal para agendar cita - Diseño mejorado -->
-    <div id="cita-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center z-50 overflow-y-auto p-4">
+    <div id="cita-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center z-50 overflow-y-auto p-4" style="z-index:99999;">
         <div class="bg-white dark:bg-gray-900 rounded-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto shadow-2xl border border-gray-200 dark:border-gray-800 animate-scale-in">
             <!-- Header del Modal -->
             <div class="sticky top-0 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 p-6 flex items-center justify-between z-10">
@@ -355,10 +355,11 @@
             console.log('{% trans "Inicializando calendario de citas..." %}');
             
             // Estado del calendario
-            let currentDate = new Date();
-            let selectedDate = new Date();
-            let currentMonth = currentDate.getMonth();
-            let currentYear = currentDate.getFullYear();
+            const now = new Date();
+            let currentDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            let selectedDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            let currentMonth = now.getMonth();
+            let currentYear = now.getFullYear();
             let citasConFecha = new Set();
 
             // Elementos DOM
@@ -581,15 +582,17 @@
             }
 
             function goToToday() {
-                currentDate = new Date();
-                currentMonth = currentDate.getMonth();
-                currentYear = currentDate.getFullYear();
-                selectedDate = new Date();
+                const now = new Date();
+                currentDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                currentMonth = now.getMonth();
+                currentYear = now.getFullYear();
+                selectedDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
                 loadCitasDelMes();
                 updateSelectedDateInfo();
             }
 
             // Inicializar
+            // Al cargar, mostrar citas de la fecha actual de la PC
             loadCitasDelMes();
             updateSelectedDateInfo();
             
@@ -628,10 +631,16 @@
                 citaModal.classList.remove('hidden');
                 citaModal.classList.add('flex');
                 document.body.style.overflow = 'hidden';
-                
-                const selectedDate = window.calendarUtils ? window.calendarUtils.getSelectedDate() : new Date();
-                const formatDate = window.calendarUtils ? window.calendarUtils.formatDate : (date) => date.toISOString().split('T')[0];
-                document.getElementById('cita-fecha').value = formatDate(selectedDate);
+                // Captura la fecha y hora actual de la PC
+                const now = new Date();
+                document.getElementById('cita-fecha').value = now.toISOString().split('T')[0];
+                const pad = (n) => String(n).padStart(2, '0');
+                document.getElementById('cita-hora').value = pad(now.getHours()) + ':' + pad(now.getMinutes());
+                // Sincroniza el día actual en el calendario principal
+                selectedDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                if (window.calendarUtils && typeof window.calendarUtils.getSelectedDate === 'function') {
+                    window.calendarUtils.getSelectedDate = () => selectedDate;
+                }
             }
 
             function closeCitaModal() {
@@ -763,20 +772,24 @@
                     
                     if (response.ok && data.success) {
                         closeCitaModal();
-                        
-                        // Recargar calendario
-                        if (window.calendarUtils && window.calendarUtils.refreshCalendar) {
+                        // Sincronizar selectedDate en calendario principal
+                        if (typeof selectedDate !== 'undefined') {
+                            selectedDate = new Date();
+                        }
+                        if (window.calendarUtils && typeof window.calendarUtils.getSelectedDate === 'function') {
+                            window.calendarUtils.getSelectedDate = () => selectedDate;
                             window.calendarUtils.refreshCalendar();
                         }
-                        
                         // Recargar sidebar de base.html
+                        if (typeof window.selectedDateSidebar !== 'undefined') {
+                            window.selectedDateSidebar = new Date();
+                        }
                         if (typeof window.loadCitasDelDia === 'function') {
                             await window.loadCitasDelDia();
                         }
                         if (typeof window.load_citas_del_mes === 'function') {
                             await window.load_citas_del_mes();
                         }
-                        
                         mostrarToast('success', '{% trans "Cita agendada exitosamente" %}');
                     } else {
                         if (data.errors) {

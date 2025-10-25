@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block extra_head %}
+<style>
+    .form-card {
+        animation: fadeInUp 0.3s ease-out;
+    }
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+</style>
+<link rel="stylesheet" href="{% static 'css/games.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="p-8">
+    <!-- Header Section -->
+    <div class="flex items-center justify-between mb-8">
+        <div>
+            <div class="flex items-center gap-3 mb-2">
+                <h1 class="text-3xl font-bold text-gray-900 dark:text-white">
+                    <i class="fas fa-user-md text-green-500 dark:text-green-400 mr-2"></i>
+                    {% if form.instance.pk %}
+                        {% trans "Editar Validación Profesional" %}
+                    {% else %}
+                        {% trans "Nueva Validación Profesional" %}
+                    {% endif %}
+                </h1>
+            </div>
+            <p class="text-gray-600 dark:text-gray-400">
+                {% trans "Complete o edite la validación profesional del reporte IA" %}
+            </p>
+        </div>
+        <a href="{% url 'core:reporte_ia_detail' reporteia_id %}"
+           class="px-6 py-3 bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-xl font-semibold flex items-center gap-2 transition-all hover:bg-gray-300 dark:hover:bg-gray-700">
+            <i class="fas fa-arrow-left"></i>
+            {% trans "Volver al reporte" %}
+        </a>
+    </div>
+
+    <form method="post" class="max-w-3xl">
+        {% csrf_token %}
+        <div class="form-card bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-8 transition-colors duration-200">
+            {% if form.non_field_errors %}
+                <div class="bg-red-100 text-red-700 rounded p-3 mb-4">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Riesgo confirmado -->
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{{ form.riesgo_confirmado.label_tag }}</label>
+                    <div class="flex items-center gap-2">{{ form.riesgo_confirmado }} <span class="text-sm text-gray-500">¿Confirma el riesgo detectado por IA?</span></div>
+                    {% if form.riesgo_confirmado.errors %}
+                        <p class="mt-1 text-xs text-red-600 dark:text-red-400">{{ form.riesgo_confirmado.errors.0 }}</p>
+                    {% endif %}
+                </div>
+                <!-- Indice ajustado -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{{ form.indice_ajustado.label_tag }}</label>
+                    {{ form.indice_ajustado }}
+                    {% if form.indice_ajustado.errors %}
+                        <p class="mt-1 text-xs text-red-600 dark:text-red-400">{{ form.indice_ajustado.errors.0 }}</p>
+                    {% endif %}
+                </div>
+                <!-- Diagnóstico final -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{{ form.diagnostico_final.label_tag }}</label>
+                    {{ form.diagnostico_final }}
+                    {% if form.diagnostico_final.errors %}
+                        <p class="mt-1 text-xs text-red-600 dark:text-red-400">{{ form.diagnostico_final.errors.0 }}</p>
+                    {% endif %}
+                </div>
+                <!-- Notas clínicas -->
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{{ form.notas_clinicas.label_tag }}</label>
+                    {{ form.notas_clinicas }}
+                    {% if form.notas_clinicas.errors %}
+                        <p class="mt-1 text-xs text-red-600 dark:text-red-400">{{ form.notas_clinicas.errors.0 }}</p>
+                    {% endif %}
+                </div>
+                <!-- Plan tratamiento -->
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{{ form.plan_tratamiento.label_tag }}</label>
+                    {{ form.plan_tratamiento }}
+                    {% if form.plan_tratamiento.errors %}
+                        <p class="mt-1 text-xs text-red-600 dark:text-red-400">{{ form.plan_tratamiento.errors.0 }}</p>
+                    {% endif %}
+                </div>
+                <!-- Requiere seguimiento -->
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{{ form.requiere_seguimiento.label_tag }}</label>
+                    <div class="flex items-center gap-2">{{ form.requiere_seguimiento }} <span class="text-sm text-gray-500">¿El paciente requiere seguimiento?</span></div>
+                    {% if form.requiere_seguimiento.errors %}
+                        <p class="mt-1 text-xs text-red-600 dark:text-red-400">{{ form.requiere_seguimiento.errors.0 }}</p>
+                    {% endif %}
+                </div>
+            </div>
+            <!-- Botones de acción -->
+            <div class="flex flex-col sm:flex-row gap-3 mt-8 pt-6 border-t border-gray-200 dark:border-gray-800">
+                <button type="submit"
+                        class="flex-1 px-6 py-3 bg-gradient-to-r from-green-500 to-purple-600 hover:from-green-600 hover:to-purple-700 text-white rounded-xl text-sm font-semibold flex items-center justify-center gap-2 transition-all shadow-md hover:shadow-lg hover:scale-105">
+                    <i class="fas fa-save"></i>
+                    {% trans "Guardar Validación" %}
+                </button>
+                <a href="{% url 'core:reporte_ia_detail' reporteia_id %}"
+                   class="flex-1 px-6 py-3 bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 hover:bg-gray-300 dark:hover:bg-gray-700 transition-all text-center">
+                    <i class="fas fa-times"></i>
+                    {% trans "Cancelar" %}
+                </a>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}
