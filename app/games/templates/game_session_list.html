@@ -599,38 +599,61 @@
         </div>
 
 <!-- Modal básico para simulaciones -->
-<div id="modalPopulate" class="hidden fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50 backdrop-blur-sm">
-    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-md w-full mx-4 transform transition-all">
-        <!-- Header -->
-        <div class="bg-gradient-to-r from-purple-600 to-blue-600 text-white p-6 rounded-t-2xl flex items-center gap-3">
-            <i class="fas fa-vial text-2xl"></i>
-            <h3 class="text-xl font-bold">Generar Evaluación de Prueba</h3>
+<div id="modalPopulate" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden flex items-center justify-center z-50 overflow-y-auto p-4" style="z-index:99999;">
+    <div class="bg-white dark:bg-gray-900 rounded-2xl w-full max-w-2xl overflow-hidden shadow-2xl border border-gray-200 dark:border-gray-800 animate-slide-up">
+        <!-- Header del Modal -->
+        <div class="sticky top-0 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 p-6 z-10">
+            <div class="flex items-center justify-between mb-0">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center">
+                        <i class="fas fa-vial text-purple-600 dark:text-purple-400 text-xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-gray-900 dark:text-white">
+                            {% trans "Generar Evaluación de Prueba" %}
+                        </h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">
+                            {% trans "Crear evaluación de prueba para testing" %}
+                        </p>
+                    </div>
+                </div>
+
+                <button onclick="document.getElementById('modalPopulate').classList.add('hidden')" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors">
+                    <i class="fas fa-times text-2xl"></i>
+                </button>
+            </div>
         </div>
-        <!-- Formulario -->
-        <form method="post" action="{% url 'games:ejecutar_populate_sessions' %}" class="p-6" id="formPopulateSessions">
-            {% csrf_token %}
-            <div class="mb-6">
-                <label for="id_riesgo" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                    <i class="fas fa-exclamation-triangle text-purple-600 mr-2"></i>
-                    Nivel de riesgo
-                </label>
-                {{ form_populate.riesgo }}
-            </div>
-            <div class="flex gap-3 mt-4">
-                <button type="submit" class="flex-1 px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-xl font-semibold hover:from-purple-700 hover:to-blue-700 transition-all shadow-lg hover:shadow-xl">
-                    <i class="fas fa-check mr-2"></i> Confirmar
+
+        <!-- Contenido del Modal -->
+        <div class="p-6 flex flex-col items-center justify-center min-h-[200px]">
+            <form method="post" action="{% url 'games:ejecutar_populate_sessions' %}" id="formPopulateSessions" class="w-full">
+                {% csrf_token %}
+                <div class="mb-6">
+                    <label for="id_riesgo" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                        <i class="fas fa-exclamation-triangle text-purple-600 mr-2"></i>
+                        {% trans "Nivel de riesgo" %}
+                    </label>
+                    {{ form_populate.riesgo }}
+                </div>
+            </form>
+        </div>
+
+        <!-- Footer con botones -->
+        <div class="border-t border-gray-200 dark:border-gray-800 p-6 bg-gray-50 dark:bg-gray-800/50">
+            <div class="flex gap-3">
+                <button type="button" onclick="document.getElementById('modalPopulate').classList.add('hidden')" class="flex-1 px-6 py-3 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 rounded-xl font-semibold hover:bg-gray-50 dark:hover:bg-gray-800 transition-all">
+                    <i class="fas fa-times mr-2"></i> {% trans "Cancelar" %}
                 </button>
-                <button type="button" onclick="document.getElementById('modalPopulate').classList.add('hidden')"
-                        class="flex-1 px-6 py-3 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-xl font-semibold hover:bg-gray-300 dark:hover:bg-gray-600 transition-all">
-                    <i class="fas fa-times mr-2"></i> Cancelar
+                <button type="submit" form="formPopulateSessions" class="flex-1 px-6 py-3 bg-gradient-to-r from-purple-600 to-purple-800 text-white rounded-xl font-semibold hover:from-purple-700 hover:to-purple-900 transition-all shadow-lg hover:shadow-xl">
+                    <i class="fas fa-check mr-2"></i> {% trans "Confirmar" %}
                 </button>
             </div>
-        </form>
+        </div>
     </div>
 </div>
 
 <!-- Modal de carga para comando de población -->
-<div id="modalLoadingPopulate" class="hidden fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50 backdrop-blur-sm">
+<div id="modalLoadingPopulate" class="hidden fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-[60] backdrop-blur-sm" style="z-index:99999;">
     <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-sm w-full mx-4 p-8 flex flex-col items-center gap-4">
         <div class="loading-spinner mb-4"></div>
         <h3 class="text-xl font-bold text-gray-900 dark:text-white text-center">Ejecutando comando de población de sesiones</h3>
