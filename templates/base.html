@@ -212,19 +212,33 @@
             border-radius: 0 0 0.5rem 0.5rem;
         }
 
-        /* Estilos para sidebar derecho */
+
+        /* Estilos para sidebar derecho (animación de entrada/salida) */
         .right-sidebar {
             width: 280px; /* Mismo ancho que el sidebar izquierdo */
             position: fixed;
-            top: 96px;
+            top: 0;
             right: 0;
-            height: calc(100vh - 96px);
+            height: 100vh;
             overflow-y: auto;
             background: white;
             border-left: 1px solid #e5e7eb;
-            z-index: 30;
+            z-index: 99; /* Por encima de todo */
             display: flex;
             flex-direction: column;
+            /* Estado cerrado: fuera de la pantalla a la derecha */
+            transform: translateX(100%);
+            opacity: 0;
+            transition: transform 300ms ease, opacity 300ms ease;
+            will-change: transform, opacity;
+            pointer-events: none; /* evitar interacción cuando está cerrado */
+        }
+
+        /* Estado abierto */
+        .right-sidebar.open {
+            transform: translateX(0);
+            opacity: 1;
+            pointer-events: auto;
         }
 
         .dark .right-sidebar {
@@ -290,10 +304,30 @@
         .main-content-with-sidebars {
             margin-left: 280px;
             padding-top: 0;
+            transition: margin 300ms ease;
         }
+
+        /* Cuando el sidebar derecho esté abierto, ajustar el main para dejar espacio */
+        .main-content-with-sidebars.shift-right {
+            margin-right: 280px;
+        }
+
+        /* Ajuste para el topbar cuando el sidebar derecho está abierto */
+        #topBar {
+            transition: margin 300ms ease, max-width 300ms ease;
+        }
+        #topBar.shift-right {
+            margin-right: 280px;
+            max-width: calc(100vw - 560px);
+        }
+
         @media (max-width: 1024px) {
             .main-content-with-sidebars {
                 margin-left: 0;
+            }
+            /* En pantallas pequeñas no forzamos desplazamiento a la derecha */
+            .main-content-with-sidebars.shift-right {
+                margin-right: 0;
             }
         }
         #content-area {
@@ -306,9 +340,9 @@
 
 <body class="bg-gray-100 dark:bg-gray-950 transition-colors duration-200 h-full">
     <!-- Pantalla de Carga -->
-    <!-- <div id="preloader" class="preloader" aria-hidden="true">
+    <div id="preloader" class="preloader" aria-hidden="true">
         <img src="{% static 'img/carga.gif' %}" alt="{% trans 'Cargando...' %}" />
-    </div> -->
+    </div>
 
     <!-- Sidebar Izquierdo -->
     <div class="fixed top-0 left-0 h-screen border-r border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 transition-colors duration-200 shadow-sm dark:shadow-2xl" style="width: 280px; z-index:40;">
@@ -495,7 +529,7 @@
     </div>
 
     <!-- Right Sidebar - Citas del Día -->
-    <div class="right-sidebar hidden" id="rightSidebar" style="position:fixed; top:80px; right:0; height:calc(100vh - 80px); z-index:30;">
+    <div class="right-sidebar" id="rightSidebar" style="position:fixed; top:0; right:0; height:100vh; z-index: 99;" aria-hidden="true">
         <div class="p-6">
             <!-- Título -->
             <h2 class="text-lg font-bold text-gray-900 dark:text-white mb-4">
@@ -545,7 +579,7 @@
     <!-- Main Content -->
     <div class="main-content-with-sidebars">
         <!-- Top Bar -->
-        <div class="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 px-8 py-4 flex items-center justify-between w-full"
+        <div id="topBar" class="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 px-8 py-4 flex items-center justify-between w-full"
             style="position:fixed; top:0; left:0; right:0; z-index:50; width:100vw; margin-left:280px; max-width:calc(100vw - 280px);">
             <div class="flex items-center gap-3">
                 <!-- Imagen de perfil -->
@@ -737,12 +771,59 @@
     <!-- Scripts Base -->
     <script src="{% static 'main.js' %}"></script>
     <script>
+        // Toggle animado y persistente para el sidebar derecho.
         document.addEventListener('DOMContentLoaded', function() {
             const toggleBtn = document.getElementById('toggleRightSidebarBtn');
             const rightSidebar = document.getElementById('rightSidebar');
-            if (toggleBtn && rightSidebar) {
-                toggleBtn.addEventListener('click', function() {
-                    rightSidebar.classList.toggle('hidden');
+            const mainContent = document.querySelector('.main-content-with-sidebars');
+            const topBar = document.getElementById('topBar');
+
+            function applySidebarState(open, save = true) {
+                if (!rightSidebar || !mainContent || !topBar) return;
+
+                if (open) {
+                    rightSidebar.classList.add('open');
+                    rightSidebar.setAttribute('aria-hidden', 'false');
+                    mainContent.classList.add('shift-right');
+                    // Ajustar el topBar mediante estilos inline para sobreescribir el max-width inline existente
+                    if (topBar) {
+                        topBar.classList.add('shift-right');
+                        topBar.style.marginRight = '280px';
+                        topBar.style.maxWidth = 'calc(100vw - 560px)';
+                    }
+                    // Cargar citas del día si la función existe
+                    if (typeof window.loadCitasDelDia === 'function') {
+                        window.loadCitasDelDia();
+                    }
+                } else {
+                    rightSidebar.classList.remove('open');
+                    rightSidebar.setAttribute('aria-hidden', 'true');
+                    mainContent.classList.remove('shift-right');
+                    if (topBar) {
+                        topBar.classList.remove('shift-right');
+                        // Restaurar el estilo cerrado (valor original)
+                        topBar.style.marginRight = '';
+                        topBar.style.maxWidth = 'calc(100vw - 280px)';
+                    }
+                }
+
+                if (save) localStorage.setItem('rightSidebarOpen', open ? 'true' : 'false');
+            }
+
+            // Inicializar desde localStorage (si existe preferencia)
+            try {
+                const persisted = localStorage.getItem('rightSidebarOpen');
+                // Si estaba abierto, mostrarlo animado desde el inicio
+                applySidebarState(persisted === 'true', false);
+            } catch (e) {
+                // Si localStorage no está disponible, no hacemos nada
+            }
+
+            if (toggleBtn) {
+                toggleBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const isOpen = rightSidebar.classList.contains('open');
+                    applySidebarState(!isOpen);
                 });
             }
         });
