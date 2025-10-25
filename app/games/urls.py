@@ -35,4 +35,6 @@ urlpatterns = [
     # Finalizar juegos
     path('individual/finish/<str:url_sesion>/', session_views.finish_individual_game, name='finish_individual_game'),
     path('evaluation/finish/<str:url_sesion>/', session_views.finish_evaluation_game, name='finish_evaluation_game'),
+    # Ejecutar comando populate_sessions
+    path('ejecutar-populate-sessions/', session_views.ejecutar_populate_sessions, name='ejecutar_populate_sessions'),
 ]

@@ -13,6 +13,8 @@ import json
 from app.core.models import Nino, ReporteIA
 from app.games.models import Juego, SesionJuego, Evaluacion
 from app.games.ml_models.predictor import predecir_dislexia_desde_evaluacion
+from django.core.management import call_command
+from app.games.forms.forms_populate import PopulateSessionsForm
 
 @method_decorator(login_required, name='dispatch')
 class GameSessionListView(TemplateView):
@@ -81,7 +83,8 @@ class GameSessionListView(TemplateView):
             evaluaciones_paginadas = paginator.page(paginator.num_pages)
 
         ninos = Nino.objects.filter(profesional=profesional)
-
+        # Agregar el formulario de populate al contexto
+        from app.games.forms.forms_populate import PopulateSessionsForm
         context.update({
             'page_title': 'Evaluaciones - DislexIA',
             'active_section': 'games',
@@ -92,6 +95,7 @@ class GameSessionListView(TemplateView):
             'evaluaciones_en_proceso': en_proceso_global,
             'evaluaciones_interrumpidas': interrumpidas_global,
             'filtro_actual': filtro_estado,
+            'form_populate': PopulateSessionsForm(),
         })
         
         return context
@@ -382,7 +386,6 @@ def finish_game_session(request, url_sesion):
             
             if siguiente_sesion:
                 print(f"➡️ Siguiente juego: {siguiente_sesion.juego.nombre} (Ejercicio #{siguiente_sesion.ejercicio_numero})")
-                
                 return JsonResponse({
                     'success': True,
                     'message': f'Juego completado. Avanzando al siguiente...',
@@ -533,3 +536,17 @@ def delete_evaluacion(request, evaluacion_id):
             'success': False,
             'error': str(e)
         }, status=500)
+    
+@login_required
+def ejecutar_populate_sessions(request):
+    form = PopulateSessionsForm(request.POST)
+    if form.is_valid():
+        riesgo = form.cleaned_data['riesgo']
+        try:
+            call_command('populate_sessions', riesgo=riesgo)
+            messages.success(request, 'Comando ejecutado correctamente.')
+        except Exception as e:
+            messages.error(request, f'Error: {str(e)}')
+    else:
+        messages.error(request, f'Formulario inválido. {form.errors}')
+    return redirect('games:session_list')  # Redirige a la lista de sesiones
