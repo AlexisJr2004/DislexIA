@@ -175,7 +175,7 @@
 </div>
 
 <!-- Modal de Selección de Niño -->
-<div id="modal-seleccion-nino" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center z-50 overflow-y-auto p-4">
+<div id="modal-seleccion-nino" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center z-50 overflow-y-auto p-4" style="z-index:99999;">
     <div class="bg-white dark:bg-gray-900 rounded-2xl w-full max-w-5xl max-h-[90vh] overflow-hidden shadow-2xl border border-gray-200 dark:border-gray-800 animate-slide-up">
         <!-- Header del Modal -->
         <div class="sticky top-0 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 p-6 z-10">
@@ -325,7 +325,7 @@
 </div>
 
 <!-- Modal de Confirmación de Niño Seleccionado -->
-<div id="modal-confirmacion-nino" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center z-[60] animate-fade-in">
+<div id="modal-confirmacion-nino" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center z-[60] animate-fade-in" style="z-index:99999;">
     <div class="bg-white dark:bg-gray-900 rounded-2xl w-11/12 md:w-[500px] p-6 shadow-2xl border border-gray-200 dark:border-gray-800 animate-scale-in">
         <!-- Header -->
         <div class="flex items-center gap-3 mb-6">
@@ -519,6 +519,8 @@
             const modalConfirmacion = document.getElementById('modal-confirmacion-nino');
             modalConfirmacion.classList.remove('hidden');
             modalConfirmacion.classList.add('flex');
+            // Asegurar que no se pueda hacer scroll del body mientras el modal de confirmación esté abierto
+            document.body.style.overflow = 'hidden';
         }, 150);
     }
 
