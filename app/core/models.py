@@ -175,6 +175,7 @@ class ValidacionProfesional(models.Model):
 
     ReporteIA = models.OneToOneField(
         ReporteIA,
+        default=1,
         on_delete=models.CASCADE,
         related_name='validacion_profesional',
         verbose_name="Reporte IA"
