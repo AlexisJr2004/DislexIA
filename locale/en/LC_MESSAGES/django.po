@@ -369,6 +369,84 @@ msgstr "Connection error"
 # DASHBOARD TEMPLATE
 # ========================================
 
+msgid "Análisis de Sesiones de Juegos"
+msgstr "Game Sessions Analysis"
+
+msgid "niños participaron"
+msgstr "children participated"
+
+msgid "Progreso en Intervención de Dislexia"
+msgstr "Progress in Dyslexia Intervention"
+
+msgid "Programa de Intervención Temprana"
+msgstr "Early Intervention Program"
+
+msgid "Diseñado para identificar y apoyar a niños con dificultades de lectura desde temprana edad."
+msgstr "Designed to identify and support children with reading difficulties from an early age."
+
+msgid "Buscar paciente..."
+msgstr "Search patient..."
+
+msgid "Bajo riesgo - Seguimiento regular"
+msgstr "Low risk - Regular follow-up"
+
+msgid "Riesgo medio - Requiere atención"
+msgstr "Medium risk - Requires attention"
+
+msgid "Alto riesgo - Intervención urgente"
+msgstr "High risk - Urgent intervention"
+
+msgid "Tiempo Total Este Mes"
+msgstr "Total Time This Month"
+
+msgid "Ver Estadísticas Detalladas"
+msgstr "View Detailed Statistics"
+
+msgid "Estadísticas de Pacientes"
+msgstr "Patient Statistics"
+
+msgid "Total de Pacientes Registrados"
+msgstr "Total Registered Patients"
+
+msgid "Pacientes Activos Este Mes"
+msgstr "Active Patients This Month"
+
+msgid "Con sesiones completadas"
+msgstr "With completed sessions"
+
+msgid "Tasa de Participación Mensual"
+msgstr "Monthly Participation Rate"
+
+msgid "Rendimiento del Equipo"
+msgstr "Team Performance"
+
+msgid "Carga de trabajo"
+msgstr "Workload"
+
+msgid "No hay profesionales registrados"
+msgstr "No professionals registered"
+
+msgid "Próximas Citas"
+msgstr "Upcoming Appointments"
+
+msgid "Ver calendario"
+msgstr "View calendar"
+
+msgid "Completada"
+msgstr "Completed"
+
+msgid "No hay citas programadas"
+msgstr "No scheduled appointments"
+
+msgid "Las próximas citas aparecerán aquí"
+msgstr "Upcoming appointments will appear here"
+
+msgid "Crear nueva cita"
+msgstr "Create new appointment"
+
+msgid "Reportes"
+msgstr "Reports"
+
 msgid "Resumen de actividades y rendimiento"
 msgstr "Summary of activities and performance"
 
