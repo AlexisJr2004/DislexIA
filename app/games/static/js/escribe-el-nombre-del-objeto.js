@@ -96,7 +96,7 @@ class EscribeElNombreGame extends BaseGame {
                             <div class="space-y-3">
                                 <div class="flex items-start gap-3 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
                                     <svg class="w-5 h-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m-1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                     </svg>
                                     <div>
                                         <p class="text-xs font-medium text-blue-700 dark:text-blue-300">Observa bien</p>
@@ -233,7 +233,7 @@ class EscribeElNombreGame extends BaseGame {
         const userAnswer = input.value.trim().toUpperCase();
         
         if (userAnswer.length === 0) {
-            this.showMessage('Por favor escribe una palabra', 'warning');
+            GameUtils.showToast('Por favor escribe una palabra', 'warning');
             return;
         }
         
@@ -254,9 +254,7 @@ class EscribeElNombreGame extends BaseGame {
                     this.proceedToNext();
                 }, 3500);
             } else {
-                this.showErrorAnimationInput();
-                this.showMessage(`Intento ${this.attempts}/3 - Intenta de nuevo`, 'error');
-                
+                GameUtils.showToast(`Intento ${this.attempts}/3 - Intenta de nuevo`, 'error');
                 setTimeout(() => {
                     this.clearInput();
                     document.getElementById('word-input')?.focus();
@@ -264,7 +262,7 @@ class EscribeElNombreGame extends BaseGame {
             }
         }
     }
-    
+
     handleCorrectAnswerWithBonus(responseTime, userAnswer) {
         this.correctAnswers++;
         this.stopQuestionTimer();
@@ -286,21 +284,35 @@ class EscribeElNombreGame extends BaseGame {
         
         this.score += Math.max(0, points);
         
-        // Animación de éxito
-        this.showSuccessAnimation();
-        
         // Enviar respuesta
         this.sendQuestionResponse(true, responseTime, userAnswer);
         
         // Actualizar UI
         this.updateScore();
         
+        // Mostrar toast de éxito
+        GameUtils.showToast('¡Correcto! ✨', 'success');
+        
         // Continuar al siguiente
         setTimeout(() => {
             this.proceedToNext();
         }, 2500);
     }
-    
+
+    showCorrectAnswer() {
+        const input = document.getElementById('word-input');
+        input.value = this.currentQuestion.correct_word;
+        input.classList.add('bg-blue-50', 'dark:bg-blue-900/30', 'border-blue-500', 'dark:border-blue-600');
+        this.updateLetterBoxes(this.currentQuestion.correct_word);
+        
+        const boxes = document.querySelectorAll('.letter-box');
+        boxes.forEach(box => {
+            box.classList.add('bg-blue-100', 'dark:bg-blue-900/30', 'border-blue-500', 'dark:border-blue-600', 'text-blue-700', 'dark:text-blue-300');
+        });
+        
+        GameUtils.showToast(`La respuesta correcta era: ${this.currentQuestion.correct_word}`, 'info');
+    }
+
     showHint() {
         if (this.hintUsed) return;
         
@@ -317,7 +329,7 @@ class EscribeElNombreGame extends BaseGame {
         input.classList.add('bg-yellow-50', 'dark:bg-yellow-900/30', 'border-yellow-400', 'dark:border-yellow-600');
         this.updateLetterBoxes(this.currentQuestion.correct_word);
         
-        this.showMessage('Respuesta mostrada (-3 puntos)', 'warning');
+        GameUtils.showToast('Respuesta mostrada (-3 puntos)', 'warning');
         
         setTimeout(() => {
             input.value = originalValue;
@@ -326,75 +338,10 @@ class EscribeElNombreGame extends BaseGame {
             input.focus();
         }, 3000);
     }
-    
-    showSuccessAnimation() {
-        const boxes = document.querySelectorAll('.letter-box');
-        boxes.forEach((box, index) => {
-            setTimeout(() => {
-                box.classList.add('animate-bounce');
-                box.classList.add('bg-green-500', 'dark:bg-green-600', 'text-white', 'border-green-600', 'dark:border-green-700');
-            }, index * 100);
-        });
-        
-        this.showMessage('¡Correcto! ✨', 'success');
-    }
-    
-    showErrorAnimationInput() {
-        const input = document.getElementById('word-input');
-        input.style.animation = 'shake 0.5s';
-        input.classList.add('border-red-500', 'dark:border-red-600');
-        
-        setTimeout(() => {
-            input.style.animation = '';
-            input.classList.remove('border-red-500', 'dark:border-red-600');
-        }, 500);
-    }
-    
-    showCorrectAnswer() {
-        const input = document.getElementById('word-input');
-        input.value = this.currentQuestion.correct_word;
-        input.classList.add('bg-blue-50', 'dark:bg-blue-900/30', 'border-blue-500', 'dark:border-blue-600');
-        this.updateLetterBoxes(this.currentQuestion.correct_word);
-        
-        const boxes = document.querySelectorAll('.letter-box');
-        boxes.forEach(box => {
-            box.classList.add('bg-blue-100', 'dark:bg-blue-900/30', 'border-blue-500', 'dark:border-blue-600', 'text-blue-700', 'dark:text-blue-300');
-        });
-        
-        this.showMessage(`La respuesta correcta era: ${this.currentQuestion.correct_word}`, 'info');
-    }
-    
-    showMessage(text, type = 'info') {
-        let messageEl = document.getElementById('game-message');
-        
-        if (!messageEl) {
-            messageEl = document.createElement('div');
-            messageEl.id = 'game-message';
-            document.body.appendChild(messageEl);
-        }
-        
-        const styles = {
-            success: 'bg-green-500 text-white',
-            error: 'bg-red-500 text-white',
-            warning: 'bg-yellow-500 text-white',
-            info: 'bg-blue-500 text-white'
-        };
-        
-        messageEl.className = `fixed top-20 left-1/2 transform -translate-x-1/2 z-50 px-6 py-3 rounded-lg shadow-lg font-medium text-sm ${styles[type]}`;
-        messageEl.textContent = text;
-        messageEl.style.animation = 'slideUp 0.3s ease-out';
-        
-        setTimeout(() => {
-            messageEl.style.animation = 'fadeOut 0.3s ease-out';
-            setTimeout(() => {
-                messageEl.remove();
-            }, 300);
-        }, 2500);
-    }
-    
+
     onTimeUp() {
         this.showCorrectAnswer();
-        this.showMessage('Se acabó el tiempo ⏰', 'warning');
+        GameUtils.showToast('Se acabó el tiempo ⏰', 'warning');
     }
     
     // Métodos de personalización de UI

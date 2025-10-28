@@ -143,12 +143,18 @@ class EncuentraElErrorGame extends BaseGame {
         if (isCorrect) {
             this.handleCorrectAnswer(responseTime, selectedIndex);
             this.showResult(true, selectedIndex);
+
+            // Mostrar toast de éxito
+            GameUtils.showToast('¡Correcto!', 'success');
             
             setTimeout(() => {
                 this.proceedToNext();
             }, 3000);
         } else {
             const noMoreAttempts = this.handleIncorrectAnswer(selectedIndex, responseTime);
+
+            // Mostrar toast de error
+            GameUtils.showToast('Letra incorrecta', 'error');
             
             if (noMoreAttempts) {
                 this.showResult(false, selectedIndex);

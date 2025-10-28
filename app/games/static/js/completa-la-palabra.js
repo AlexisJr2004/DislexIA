@@ -159,12 +159,18 @@ class CompletaLaPalabraGame extends BaseGame {
         if (isCorrect) {
             this.handleCorrectAnswer(responseTime, selectedLetter);
             this.showCompleteWord(true);
+
+            // Mostrar toast de éxito
+            GameUtils.showToast('¡Correcto!', 'success');
             
             setTimeout(() => {
                 this.proceedToNext();
             }, 2500);
         } else {
             const noMoreAttempts = this.handleIncorrectAnswer(selectedLetter, responseTime);
+
+            // Mostrar toast de error
+            GameUtils.showToast('Letra incorrecta', 'error');
             
             if (noMoreAttempts) {
                 this.showCompleteWord(false);

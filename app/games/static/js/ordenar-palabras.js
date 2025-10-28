@@ -230,6 +230,9 @@ class OrdenarPalabrasGame extends BaseGame {
         if (isCorrect) {
             this.handleCorrectAnswer(responseTime, formedWord);
             this.showSuccessAnimation();
+
+            // Mostrar toast de éxito
+            GameUtils.showToast('¡Correcto!', 'success');
             
             setTimeout(() => {
                 this.proceedToNext();
@@ -239,11 +242,18 @@ class OrdenarPalabrasGame extends BaseGame {
             
             if (noMoreAttempts) {
                 this.showCorrectWord();
+
+                // Mostrar toast de información
+                GameUtils.showToast(`La palabra correcta era: ${this.currentQuestion.correct_word}`, 'info');
+                
                 setTimeout(() => {
                     this.proceedToNext();
                 }, 3000);
             } else {
                 this.showErrorAnimation();
+
+                // Mostrar toast de error
+                GameUtils.showToast(`Intento ${this.attempts}/3 - Intenta de nuevo`, 'error');
                 
                 // Reordenar letras si está configurado
                 if (this.gameConfig.game_mechanics?.shuffle_on_wrong) {
