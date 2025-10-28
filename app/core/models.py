@@ -1,6 +1,7 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.contrib.auth.models import AbstractUser
+from django.db.models import Count
 from django.conf import settings
 from django.db.models import Count
 
@@ -174,6 +175,7 @@ class ValidacionProfesional(models.Model):
 
     ReporteIA = models.OneToOneField(
         ReporteIA,
+        default=1,
         on_delete=models.CASCADE,
         related_name='validacion_profesional',
         verbose_name="Reporte IA"

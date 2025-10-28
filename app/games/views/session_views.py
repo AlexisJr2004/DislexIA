@@ -294,7 +294,13 @@ def finish_game_session(request, url_sesion):
                     print(f"✅ Predicción exitosa:")
                     print(f"   - Clasificación: {pred['clasificacion']}")
                     print(f"   - Probabilidad: {pred['probabilidad_porcentaje']}%")
-                    print(f"   - Nivel de riesgo: {pred['nivel_riesgo']}")
+                    
+                    # Verificar si 'nivel_riesgo' está presente en 'pred'
+                    # if 'clasificacion_riesgo' not in pred:
+                    #     print("⚠️ 'nivel_riesgo' no está presente en pred. Asignando valor predeterminado.")
+                    #     pred['clasificacion_riesgo'] = 'BAJO'  # Valor predeterminado
+
+                    print(f"   - Nivel de riesgo: {pred['clasificacion_riesgo']}")
                     
                     # === GUARDAR RESULTADO EN ReporteIA ===
                     try:
@@ -316,14 +322,14 @@ def finish_game_session(request, url_sesion):
                             'probabilidad_porcentaje': pred['probabilidad_porcentaje'],
                             'confianza': pred.get('confianza', 0),
                             'confianza_porcentaje': pred.get('confianza_porcentaje', 0),
-                            'nivel_riesgo': pred['nivel_riesgo'],
+                            'nivel_riesgo': pred['clasificacion_riesgo'],
                             'simulacion': pred.get('simulacion', False)
                         }
                         
                         # Mapear nivel de riesgo a clasificación
-                        if pred['nivel_riesgo'] == 'ALTO':
+                        if pred['clasificacion_riesgo'] == 'ALTO':
                             clasificacion_riesgo = 'alto'
-                        elif pred['nivel_riesgo'] == 'MEDIO':
+                        elif pred['clasificacion_riesgo'] == 'MEDIO':
                             clasificacion_riesgo = 'medio'
                         else:
                             clasificacion_riesgo = 'bajo'
@@ -333,7 +339,7 @@ def finish_game_session(request, url_sesion):
                             evaluacion=evaluacion,
                             defaults={
                                 'indice_riesgo': pred['probabilidad'] * 100,  # Convertir a escala 0-100
-                                'clasificacion_riesgo': clasificacion_riesgo,
+                                'clasificacion_riesgo': pred['clasificacion_riesgo'],
                                 'confianza_prediccion': int(pred.get('confianza_porcentaje', 60)),
                                 'caracteristicas_json': caracteristicas_json,
                                 'recomendaciones': pred['recomendacion'],

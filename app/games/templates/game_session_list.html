@@ -122,6 +122,9 @@
                 <thead class="border-b border-gray-200 dark:border-gray-700">
                     <tr>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wider">
+                            {% trans "N° Eval." %}
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wider">
                             {% trans "Paciente" %}
                         </th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wider">
@@ -147,6 +150,9 @@
                         data-estado="{{ item.evaluacion.estado }}" 
                         data-paciente="{{ item.evaluacion.nino.nombre_completo|lower }}">
                         
+                        <!-- ID Evaluación -->
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">
+                            {{ item.evaluacion.id }}            
                         <!-- Paciente -->
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div>
@@ -230,6 +236,13 @@
                                 class="tooltip w-10 h-10 bg-blue-100 dark:bg-blue-900/30 hover:bg-blue-200 dark:hover:bg-blue-900/50 text-blue-600 dark:text-blue-400 rounded-lg flex items-center justify-center transition-all"
                                 data-tooltip="{% trans 'Reporte IA' %}">
                                     <i class="fas fa-user-check"></i>
+                                </a>
+
+                                <a href="{% url 'core:generar_reporte_pdf' pk=item.evaluacion.id %}"
+                                    target="_blank"
+                                    class="tooltip w-10 h-10 bg-green-100 dark:bg-green-900/30 hover:bg-green-200 dark:hover:bg-green-900/50 text-green-600 dark:text-green-400 rounded-lg flex items-center justify-center transition-all"
+                                    data-tooltip="{% trans 'Descargar PDF' %}">
+                                        <i class="fas fa-file-pdf"></i>
                                 </a>
 
                                 <!-- Eliminar -->
