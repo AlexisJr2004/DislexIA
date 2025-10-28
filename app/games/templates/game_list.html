@@ -95,14 +95,14 @@
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6" id="games-container">
     {% for juego in juegos %}
     <div class="game-card bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden"
-         data-difficulty="{{ juego.dificultad }}"
-         data-name="{{ juego.nombre|lower }}"
-         data-description="{{ juego.descripcion|lower }}">
+        data-difficulty="{{ juego.dificultad }}"
+        data-name="{{ juego.nombre|lower }}"
+        data-description="{{ juego.descripcion|lower }}">
         
         <div class="game-image relative h-48">
             <img class="w-full h-full object-cover" 
-                 src="{% if juego.imagen %}{{ juego.imagen.url }}{% else %}{% static 'img/default-game.png' %}{% endif %}" 
-                 alt="{{ juego.nombre }}" />
+                src="{% if juego.imagen %}{{ juego.imagen.url }}{% else %}{% static 'img/default-game.png' %}{% endif %}" 
+                alt="{{ juego.nombre }}" />
             
             <!-- Badge de dificultad -->
             <div class="absolute top-4 right-4">
@@ -150,14 +150,14 @@
                 </div>
                 <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
                     <div class="bg-gradient-to-r from-{{ juego.color_gradiente_inicio }} to-{{ juego.color_gradiente_fin }} h-2 rounded-full"
-                         style="width: {{ juego.porcentaje_completado }}%"></div>
+                        style="width: {{ juego.porcentaje_completado }}%"></div>
                 </div>
             </div>
 
             <!-- Botón para jugar -->
             <button
-               onclick="abrirModalSeleccionNino('{{ juego.slug }}', '{% url 'games:init_game' juego_slug=juego.slug %}')"
-               class="w-full bg-gradient-to-r from-{{ juego.color_gradiente_inicio }} to-{{ juego.color_gradiente_fin }} hover:from-{{ juego.color_tema }}-600 hover:to-{{ juego.color_tema }}-700 text-white font-semibold py-3 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 shadow-md hover:shadow-lg">
+                onclick="abrirModalSeleccionNino('{{ juego.slug }}', '{% url 'games:init_game' juego_slug=juego.slug %}')"
+                class="w-full bg-gradient-to-r from-{{ juego.color_gradiente_inicio }} to-{{ juego.color_gradiente_fin }} hover:from-{{ juego.color_tema }}-600 hover:to-{{ juego.color_tema }}-700 text-white font-semibold py-3 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 shadow-md hover:shadow-lg">
                 <i class="fas fa-play"></i>
                 {% trans "Jugar Ahora" %}
             </button>
@@ -205,9 +205,9 @@
                     <i class="fas fa-search text-gray-400 dark:text-gray-600"></i>
                 </div>
                 <input type="text" 
-                       id="searchNinoModal" 
-                       placeholder="{% trans 'Buscar por nombre, apellido o edad...' %}"
-                       class="w-full pl-11 pr-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200 placeholder-gray-500 dark:placeholder-gray-600 transition-all">
+                    id="searchNinoModal" 
+                    placeholder="{% trans 'Buscar por nombre, apellido o edad...' %}"
+                    class="w-full pl-11 pr-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200 placeholder-gray-500 dark:placeholder-gray-600 transition-all">
             </div>
             
             <!-- Contador de resultados -->
@@ -224,11 +224,11 @@
                 <div id="ninosGridModal" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
                     {% for nino in ninos %}
                     <div class="nino-card-select bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-6 cursor-pointer hover:border-purple-500 dark:hover:border-purple-400 transition-all"
-                         data-nino-id="{{ nino.id }}"
-                         data-nombre="{{ nino.nombres|lower }}"
-                         data-apellido="{{ nino.apellidos|lower }}"
-                         data-edad="{{ nino.edad }}"
-                         onclick="seleccionarNino('{{ nino.id }}')">
+                        data-nino-id="{{ nino.id }}"
+                        data-nombre="{{ nino.nombres|lower }}"
+                        data-apellido="{{ nino.apellidos|lower }}"
+                        data-edad="{{ nino.edad }}"
+                        onclick="seleccionarNino('{{ nino.id }}')">
                         
                         <!-- Header with Avatar -->
                         <div class="flex flex-col items-center mb-4">
@@ -315,7 +315,7 @@
         {% if ninos %}
         <div class="border-t border-gray-200 dark:border-gray-800 p-6 bg-gray-50 dark:bg-gray-800/50">
             <a href="{% url 'core:lista_ninos' %}" 
-               class="flex items-center justify-center gap-2 w-full px-6 py-3 bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 rounded-xl font-semibold hover:bg-gray-100 dark:hover:bg-gray-700 hover:border-purple-500 dark:hover:border-purple-400 transition-all">
+            class="flex items-center justify-center gap-2 w-full px-6 py-3 bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 rounded-xl font-semibold hover:bg-gray-100 dark:hover:bg-gray-700 hover:border-purple-500 dark:hover:border-purple-400 transition-all">
                 <i class="fas fa-cog"></i>
                 {% trans "Gestionar Niños Registrados" %}
             </a>

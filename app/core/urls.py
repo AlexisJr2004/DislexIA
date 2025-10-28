@@ -31,6 +31,11 @@ urlpatterns = [
     path('profile/update/', views_profile.ProfileUpdateView.as_view(), name='profile_update'),
     path('account/delete/', views_profile.DeleteAccountView.as_view(), name='delete_account'),
 
+    # Gestión de niños
+    # path('nino/<int:pk>/editar/', views.EditarNinoView.as_view(), name='editar_nino'),
+    # path('nino/<int:pk>/datos/', views.ObtenerDatosNinoView.as_view(), name='obtener_datos_nino'),
+    # path('lista-ninos/', views.ListaNinosView.as_view(), name='lista_ninos'),
+    # path('eliminar-nino/<int:pk>/', views.EliminarNinoView.as_view(), name='eliminar_nino'),
     # Citas
     path('citas/dia/', views_calendar.get_citas_dia, name='get_citas_dia'),
     path('citas/crear/', views_calendar.crear_cita, name='crear_cita'),
@@ -52,6 +57,9 @@ urlpatterns = [
 
     # Reporte IA
     path('reporte-ia/<int:pk>/', views_report.ReporteIADetailView.as_view(), name='reporte_ia_detail'),
+
+    # Reporte PDF
+    path('reporte/ia/<int:pk>/pdf/', views_report.generar_reporte_pdf, name='generar_reporte_pdf'),
 
     # Validación Profesional
     path('validacion_profesional_create/<int:reporteia_id>/', views_report.ValidacionProfesionalCreateView.as_view(), name='validacion_profesional_create'),
