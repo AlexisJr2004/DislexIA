@@ -73,6 +73,10 @@ def render_to_pdf(request, template_src, context_dict={}):
         template_path = os.path.join(settings.BASE_DIR, 'app', 'core', 'templates', template_src)
         logo_path_relative = os.path.join('img', 'favicon.ico')
         logo_data_uri = get_image_data_uri(logo_path_relative)
+        
+        # Cargar firma electrónica
+        firma_path_relative = os.path.join('img', 'firma.png')
+        firma_data_uri = get_image_data_uri(firma_path_relative)
 
         with open(template_path, 'r', encoding='utf-8') as f:
             raw_html = f.read()
@@ -80,6 +84,7 @@ def render_to_pdf(request, template_src, context_dict={}):
         template = Template(raw_html)
         context_dict['request'] = request
         context_dict['logo_data_uri'] = logo_data_uri
+        context_dict['firma_data_uri'] = firma_data_uri
         context = Context(context_dict)
         html_string = template.render(context)
 
