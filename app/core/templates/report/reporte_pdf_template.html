@@ -6,1026 +6,638 @@
 <head>
     <meta charset="UTF-8">
     <title>Reporte de Evaluación de Dislexia</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 
     <style>
-        /* --- REGLAS @page PARA HEADER/FOOTER --- */
+        /* === ESTILOS IDÉNTICOS AL PDF DE LIAN === */
+        
         @page {
             size: a4 portrait;
-            margin: 2.5cm 1.5cm 1.5cm 1.5cm;
-
-            @frame header_frame {
-                -pdf-frame-content: header_content;
-                left: 1.5cm;
-                width: 18cm;
-                top: 1cm;
-                height: 1.5cm;
-            }
-
-            @frame content_frame {
-                left: 1.5cm;
-                width: 18cm;
-                top: 2.5cm;
-                height: 25.2cm;
-            }
-
-            @frame footer_frame {
-                -pdf-frame-content: footer_content;
-                left: 1.5cm;
-                width: 18cm;
-                bottom: 0cm;
-                height: 1cm;
-            }
+            margin: 2.2cm 1.5cm 2cm 1.5cm;
         }
 
-        /* === ESTILOS MEJORADOS === */
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            font-size: 9.5pt;
-            color: #1a1a1a;
-            background-color: #ffffff !important;
-            line-height: 1.6;
+            font-family: Helvetica, Arial, sans-serif;
+            font-size: 9pt;
+            color: #000000;
+            background-color: #ffffff;
+            line-height: 1.5;
             padding: 0;
             margin: 0;
         }
 
-        .max-w-6xl {
-            max-width: 1152px;
-            margin: 0 auto;
-            padding: 0 1rem;
-        }
-
-        h1, h2, h3, h4, p, div, span, strong, td, th {
-            margin: 0;
-            padding: 0;
-        }
-
-        /* Título Principal */
-        h1.main-title {
-            font-size: 2rem;
-            font-weight: 300;
-            letter-spacing: -0.02em;
+        /* Header */
+        .page-header {
             text-align: center;
-            color: #1a1a1a;
-            margin: 2rem 0 2.5rem 0;
-            position: relative;
+            padding-bottom: 0;
+            margin-bottom: 15px;
         }
 
-        h1.main-title::after {
-            content: '';
-            display: block;
-            width: 60px;
-            height: 2px;
-            background: linear-gradient(90deg, #7c3aed, #a78bfa);
-            margin: 1rem auto 0;
+        .page-header .header-text {
+            color: #000000;
+            font-size: 11pt;
+            font-weight: bold;
         }
 
-        /* Secciones */
-        h2 {
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: #1a1a1a;
-            margin-top: 2.5rem;
-            margin-bottom: 1.5rem;
-            padding-left: 1rem;
-            border-left: 3px solid #7c3aed;
-            page-break-after: avoid;
-        }
-
-        h3 {
-            font-size: 1rem;
-            font-weight: 600;
-            color: #374151;
-            margin-bottom: 0.75rem;
-        }
-
-        p {
-            margin-bottom: 0.5rem;
-            color: #4b5563;
-        }
-
-        strong {
-            font-weight: 600;
-            color: #1a1a1a;
-        }
-
-        .card-no-break {
-            page-break-inside: avoid;
-        }
-
-        /* Cards Modernos */
-        .modern-card {
-            background: #ffffff;
-            border: 1px solid #e5e7eb;
-            border-radius: 8px;
-            padding: 1.5rem;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
-            transition: all 0.2s ease;
-        }
-
-        .modern-card-header {
-            font-size: 0.75rem;
-            font-weight: 600;
+        /* Títulos */
+        h1 {
+            font-size: 14px;
+            font-weight: bold;
+            color: #000000;
+            margin: 0 0 2px 0;
+            padding: 0;
             text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: #6b7280;
-            margin-bottom: 1rem;
-            padding-bottom: 0.75rem;
-            border-bottom: 1px solid #f3f4f6;
         }
 
-        .info-row {
-            display: flex;
-            padding: 0.625rem 0;
-            border-bottom: 1px solid #f9fafb;
+        h2 {
+            font-size: 9.5px;
+            font-weight: bold;
+            color: #000000;
+            margin: 22px 0 12px 0;
+            padding: 0;
+            text-transform: uppercase;
         }
 
-        .info-row:last-child {
-            border-bottom: none;
+        /* Tablas */
+        table {
+            width: 100%;
+            border-collapse: collapse;
         }
 
-        .info-label {
-            font-size: 0.85rem;
-            color: #6b7280;
-            width: 45%;
-            font-weight: 500;
+        table td, table th {
+            padding: 0;
+            vertical-align: top;
         }
 
-        .info-value {
-            font-size: 0.85rem;
-            color: #1a1a1a;
-            width: 55%;
-            font-weight: 400;
+        /* Info rows */
+        .info-table td {
+            padding: 6px 0 6px 0;
+            font-size: 9pt;
+            line-height: 1.4;
         }
 
-        /* Badge de Riesgo Minimalista */
-        .risk-badge {
+        .info-table td:first-child {
+            width: 43%;
+            font-weight: normal;
+            color: #000000;
+        }
+
+        .info-table td:last-child {
+            font-weight: normal;
+            color: #000000;
+        }
+
+        /* Badges */
+        .badge {
+            display: inline-block;
+            padding: 3px 9px;
+            font-size: 8pt;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .badge-alto {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .badge-medio {
+            background: #f39c12;
+            color: white;
+        }
+
+        .badge-bajo {
+            background: #27ae60;
+            color: white;
+        }
+
+        .badge-success {
+            background: #27ae60;
+            color: white;
+        }
+
+        .badge-no {
+            background: #e74c3c;
+            color: white;
+        }
+
+        /* Cajas de contenido */
+        .content-box {
+            background-color: #f7f7f7;
+            padding: 11px 13px;
+            margin: 12px 0 15px 0;
+        }
+
+        .content-box-title {
+            font-size: 7.5pt;
+            font-weight: bold;
+            color: #666666;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .content-box-text {
+            font-size: 9pt;
+            color: #000000;
+            line-height: 1.5;
+        }
+
+        /* Métricas */
+        .metrics-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 20px 0;
+            margin: 18px 0 18px 0;
+        }
+
+        .metrics-table td {
+            background: #ffffff;
+            padding: 0;
             text-align: center;
-            padding: 1.25rem;
-            border-radius: 8px;
-            margin-bottom: 2rem;
-            border: 1px solid;
-        }
-
-        .risk-badge-content {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.75rem;
-        }
-
-        .risk-badge-icon {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1rem;
-        }
-
-        .risk-badge-text {
-            font-size: 1.125rem;
-            font-weight: 600;
-            letter-spacing: -0.01em;
-        }
-
-        .risk-alto {
-            background-color: #fef2f2;
-            border-color: #fecaca;
-            color: #991b1b;
-        }
-
-        .risk-alto .risk-badge-icon {
-            background-color: #fee2e2;
-            color: #dc2626;
-        }
-
-        .risk-medio {
-            background-color: #fffbeb;
-            border-color: #fde047;
-            color: #854d0e;
-        }
-
-        .risk-medio .risk-badge-icon {
-            background-color: #fef3c7;
-            color: #f59e0b;
-        }
-
-        .risk-bajo {
-            background-color: #f0fdf4;
-            border-color: #bbf7d0;
-            color: #166534;
-        }
-
-        .risk-bajo .risk-badge-icon {
-            background-color: #dcfce7;
-            color: #16a34a;
-        }
-
-        /* Métricas IA Rediseñadas */
-        .metrics-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 0.6rem; /* más compacto */
-            margin-bottom: 1rem;
-        }
-
-        .metric-card {
-            background: #fafafa;
-            border: 1px solid #f0f0f0;
-            border-radius: 6px;
-            padding: 0.9rem; /* reducido */
-            text-align: center;
+            width: 33.33%;
         }
 
         .metric-label {
-            font-size: 0.68rem; /* ligeramente más pequeño */
-            font-weight: 500;
+            font-size: 7pt;
+            font-weight: bold;
             text-transform: uppercase;
-            letter-spacing: 0.04em;
-            color: #9ca3af;
-            margin-bottom: 0.5rem;
+            color: #999999;
+            margin-bottom: 10px;
+            display: block;
         }
 
         .metric-value {
-            font-size: 1.5rem; /* reducido para compactar */
-            font-weight: 700;
+            font-size: 26px;
+            font-weight: bold;
+            margin-bottom: 0;
+            display: block;
             line-height: 1;
-            margin-bottom: 0.5rem;
         }
 
-        .metric-bar {
-            width: 100%;
-            height: 3px; /* barra más fina */
-            background-color: #e5e7eb;
-            border-radius: 2px;
-            overflow: hidden;
-        }
+        .metric-value-purple { color: #7c3aed; }
+        .metric-value-blue { color: #2563eb; }
+        .metric-value-green { color: #16a34a; }
 
-        .metric-bar-fill {
-            height: 100%;
-            border-radius: 2px;
-            transition: width 0.25s ease;
-        }
-
-        .metric-purple .metric-value { color: #7c3aed; }
-        .metric-purple .metric-bar-fill { background-color: #7c3aed; }
-        
-        .metric-blue .metric-value { color: #2563eb; }
-        .metric-blue .metric-bar-fill { background-color: #2563eb; }
-        
-        .metric-green .metric-value { color: #16a34a; }
-        .metric-green .metric-bar-fill { background-color: #16a34a; }
-
-        /* Cajas de Información */
+        /* Cajas informativas */
         .info-box {
-            background-color: #fafafa;
-            border: 1px solid #e5e7eb;
-            border-radius: 8px;
-            padding: 1.25rem;
-            margin-bottom: 1.5rem;
+            background-color: #f7f7f7;
+            padding: 11px 13px;
+            margin: 12px 0;
+            font-size: 9pt;
+            line-height: 1.5;
         }
 
         .info-box-title {
-            font-size: 0.875rem;
-            font-weight: 600;
-            color: #1a1a1a;
-            margin-bottom: 0.75rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
+            font-weight: normal;
+            margin-bottom: 6px;
+            color: #000000;
+            font-size: 9pt;
         }
 
-        .info-box-content {
-            font-size: 0.875rem;
-            line-height: 1.6;
-            color: #4b5563;
+        .warning-box {
+            background-color: #fffdf5;
         }
 
-        .disclaimer-box {
-            background-color: #fffbeb;
-            border: 1px solid #fde047;
-            border-left: 3px solid #f59e0b;
+        .pending-box {
+            background-color: #fff8e1;
+            padding: 10px 13px;
+            font-size: 9pt;
+            color: #856404;
+            text-align: center;
         }
 
-        .disclaimer-box .info-box-title {
-            color: #92400e;
+        .validation-box {
+            background-color: #f7f7f7;
+            padding: 13px;
+            margin-bottom: 15px;
         }
 
-        .disclaimer-box .info-box-content {
-            color: #78350f;
+        /* Tabla de juegos */
+        .games-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 8pt;
+            margin-top: 10px;
         }
 
-        /* Validación Profesional */
-        .validation-card {
+        .games-table thead tr {
             background: #ffffff;
-            border: 1px solid #e5e7eb;
-            border-radius: 8px;
-            padding: 1.5rem;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+            border-bottom: 1px solid #000000;
         }
 
-        .validation-status {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.5rem 1rem;
-            background-color: #f0fdf4;
-            border: 1px solid #bbf7d0;
-            border-radius: 6px;
-            font-size: 0.875rem;
-            font-weight: 500;
-            color: #166534;
-            margin-bottom: 1.5rem;
+        .games-table th {
+            padding: 8px 5px 8px 5px;
+            text-align: left;
+            font-weight: bold;
+            color: #000000;
+            text-transform: uppercase;
+            font-size: 7pt;
         }
 
-        .validation-field {
-            margin-bottom: 1.25rem;
-            padding-bottom: 1.25rem;
-            border-bottom: 1px solid #f3f4f6;
+        .games-table tbody td {
+            padding: 10px 5px 10px 5px;
+            font-size: 8.5pt;
         }
 
-        .validation-field:last-child {
-            margin-bottom: 0;
-            padding-bottom: 0;
+        .games-table tbody tr {
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .games-table tbody tr:last-child {
             border-bottom: none;
         }
 
-        .validation-field-label {
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: #6b7280;
-            margin-bottom: 0.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
+        .game-name {
+            font-weight: bold;
+            color: #000000;
+            display: block;
+            margin-bottom: 3px;
+            font-size: 8.5pt;
         }
 
-        .validation-field-value {
-            font-size: 0.875rem;
-            color: #1a1a1a;
-            line-height: 1.6;
+        .game-meta {
+            font-size: 7.5pt;
+            color: #666666;
         }
 
-        .not-validated {
-            background-color: #fffbeb;
-            border: 1px dashed #fde047;
-            border-radius: 8px;
-            padding: 1.5rem;
+        /* Colores de texto */
+        .text-success { color: #16a34a; font-weight: bold; }
+        .text-error { color: #dc2626; font-weight: bold; }
+        .text-neutral { color: #666666; font-weight: bold; }
+
+        /* Sección de firma */
+        .signature-section {
             text-align: center;
-            color: #92400e;
-            font-size: 0.875rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.75rem;
+            margin: 30px 0 20px 0;
         }
 
-        /* Tarjetas de Juegos */
-        .games-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1rem;
+        .signature-line {
+            border-top: 2px solid #000000;
+            width: 280px;
+            margin: 0 auto 12px auto;
         }
 
-        .game-card {
-            background: #ffffff;
-            border: 1px solid #e5e7eb;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
-        }
-
-        .game-header {
-            padding: 1rem;
-            color: #ffffff;
-            position: relative;
-        }
-
-        .game-title {
-            font-size: 1rem;
-            font-weight: 600;
-            margin-bottom: 0.25rem;
-        }
-
-        .game-subtitle {
-            font-size: 0.75rem;
-            opacity: 0.9;
-        }
-
-        .game-body {
-            padding: 1.25rem;
-        }
-
-        .game-score {
-            text-align: center;
-            padding-bottom: 1rem;
-            margin-bottom: 1rem;
-            border-bottom: 1px solid #f3f4f6;
-        }
-
-        .game-score-value {
-            font-size: 2rem;
-            font-weight: 700;
-            color: #1a1a1a;
-            line-height: 1;
-        }
-
-        .game-score-label {
-            font-size: 0.75rem;
-            color: #9ca3af;
+        .signature-name {
+            font-size: 10.5pt;
+            font-weight: bold;
+            color: #000000;
             text-transform: uppercase;
-            letter-spacing: 0.05em;
-            margin-top: 0.25rem;
+            margin-bottom: 4px;
         }
 
-        .game-metrics {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 0.75rem;
-            margin-bottom: 1rem;
+        .signature-id {
+            font-size: 9pt;
+            color: #666666;
+            margin-bottom: 3px;
         }
 
-        .game-metric {
-            background-color: #fafafa;
-            border: 1px solid #f0f0f0;
-            border-radius: 6px;
-            padding: 0.75rem;
-            text-align: center;
-        }
-
-        .game-metric-value {
-            font-size: 1.25rem;
-            font-weight: 700;
-            line-height: 1;
-            margin-bottom: 0.25rem;
-        }
-
-        .game-metric-label {
-            font-size: 0.7rem;
-            color: #6b7280;
+        .signature-title {
+            font-size: 9pt;
+            font-weight: bold;
+            color: #000000;
             text-transform: uppercase;
-            letter-spacing: 0.05em;
+            margin-bottom: 4px;
         }
 
-        .game-metric-success { color: #16a34a; }
-        .game-metric-error { color: #dc2626; }
-        .game-metric-neutral { color: #2563eb; }
-
-        .game-progress {
-            width: 100%;
-            height: 4px;
-            background-color: #e5e7eb;
-            border-radius: 2px;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .game-progress-fill {
-            height: 100%;
-            border-radius: 2px;
-        }
-
-        .game-progress-label {
-            position: absolute;
-            top: -1.25rem;
-            right: 0;
-            font-size: 0.75rem;
-            font-weight: 600;
-            color: #374151;
-        }
-
-        /* Colores de fondo para juegos */
-        .bg-purple { background-color: #7c3aed; }
-        .bg-blue { background-color: #2563eb; }
-        .bg-green { background-color: #16a34a; }
-        .bg-orange { background-color: #ea580c; }
-        .bg-red { background-color: #dc2626; }
-        .bg-pink { background-color: #db2777; }
-        .bg-indigo { background-color: #4f46e5; }
-        .bg-teal { background-color: #0d9488; }
-        .bg-gray { background-color: #6b7280; }
-
-        /* Header y Footer */
-        #header_content {
-            width: 100%;
-        }
-
-        .header-container {
-            display: flex;
-            align-items: center;
-            padding-bottom: 0.5rem;
-            border-bottom: 1px solid #e5e7eb;
-        }
-
-        .header-container img {
-            height: 1cm;
-            margin-right: 0.5cm;
-        }
-
-        .header-text {
-            color: #7c3aed;
-            font-size: 14pt;
-            font-weight: 600;
-            letter-spacing: -0.01em;
-        }
-
-        #footer_content {
-            text-align: right;
-            font-size: 8pt;
-            color: #9ca3af;
-        }
-
-        /* Grid Layout para Tablas */
-        .two-column-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
-
-        /* Utilidades */
-        .text-center { text-align: center; }
-        .mb-4 { margin-bottom: 1rem; }
-        .mb-6 { margin-bottom: 1.5rem; }
-        .value-na {
-            color: #9ca3af;
+        .signature-org {
+            font-size: 8.5pt;
+            color: #666666;
             font-style: italic;
         }
-        .bool-yes {
-            color: #16a34a;
-            font-weight: 600;
-        }
-        .bool-no {
-            color: #dc2626;
-            font-weight: 600;
+
+        /* Disclaimer */
+        .disclaimer-final {
+            background-color: #f7f7f7;
+            padding: 11px 13px;
+            margin: 18px 0;
+            font-size: 7pt;
+            color: #444444;
+            line-height: 1.4;
+            text-align: justify;
         }
 
-        /* Forzar impresión de colores */
-        .bg-purple, .bg-blue, .bg-green, .bg-orange, .bg-red,
-        .bg-pink, .bg-indigo, .bg-teal, .bg-gray,
-        .risk-alto, .risk-medio, .risk-bajo,
-        .modern-card, .metric-card, .game-card,
-        .info-box, .disclaimer-box, .validation-card {
+        .disclaimer-final-title {
+            font-weight: bold;
+            color: #000000;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        /* Letterhead */
+        .letterhead {
+            border-bottom: 1px solid #000000;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+
+        .letterhead-table td {
+            vertical-align: top;
+            padding: 0;
+        }
+
+        .letterhead-subtitle {
+            font-size: 8pt;
+            color: #666666;
+            margin-top: 3px;
+        }
+
+        .letterhead-info {
+            font-size: 7.5pt;
+            color: #666666;
+            line-height: 1.5;
+        }
+
+        .letterhead-info div {
+            margin-bottom: 2px;
+        }
+
+        /* Footer */
+        .footer-section {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 7pt;
+            color: #666666;
+            border-top: 1px solid #d0d0d0;
+            padding-top: 10px;
+            margin-top: 28px;
+        }
+
+        .footer-section td {
+            padding: 2px 0;
+            vertical-align: top;
+        }
+
+        .footer-title {
+            font-weight: bold;
+            color: #000000;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+        }
+
+        /* Descripción */
+        .game-description {
+            font-size: 8pt;
+            color: #666666;
+            margin-top: 5px;
+            margin-bottom: 8px;
+        }
+
+        /* Forzar colores */
+        * {
             -webkit-print-color-adjust: exact;
             color-adjust: exact;
             print-color-adjust: exact;
+        }
+
+        /* Prevenir saltos */
+        .content-box, .info-box, .signature-section, .validation-box {
+            page-break-inside: avoid;
+        }
+
+        h2 {
+            page-break-after: avoid;
+        }
+
+        /* Ajuste de espaciado en validación */
+        .validation-box .info-table td {
+            padding: 7px 0;
         }
     </style>
 </head>
 
 <body>
-    <div id="header_content">
-        <div class="header-container">
-            {% if logo_data_uri %}
-            <img src="{{ logo_data_uri }}" alt="Logo Dislexia IA">
-            {% endif %}
-            <span class="header-text">Dislexia IA</span>
-        </div>
+    <!-- Header -->
+    <div class="page-header">
+        <span class="header-text">Dislexia IA</span>
     </div>
 
-    <div class="max-w-6xl"><br>
-
-        <!-- Letterhead Professional -->
-        <div style="border-bottom: 2px solid #bdc3c7; padding-bottom: 15px; margin-bottom: 20px;">
-            <table style="width: 100%; border-collapse: collapse;">
-                <tr>
-                    <td style="width: 70%; vertical-align: top;">
-                        <h1 style="margin: 0; font-size: 20px; font-weight: 600; color: #2c3e50; 
-                                font-family: Arial, sans-serif; letter-spacing: 1px;">DISLEXIA IA</h1>
-                        <div style="font-size: 10px; color: #7f8c8d; margin-top: 3px; font-style: italic;">
-                            Sistema Inteligente de Evaluación y Detección de Dislexia
-                        </div>
-                    </td>
-                    <td style="text-align: right; vertical-align: top;">
-                        <div style="font-size: 9px; color: #95a5a6; line-height: 1.2;">
-                            <div><strong>Reporte ID:</strong> DIA-{{ game_session.id|stringformat:"04d" }}-{{ nino.id|stringformat:"03d" }}</div>
-                            <div><strong>Fecha:</strong> {{ game_session.fecha_hora_inicio|date:"d/m/Y H:i" }}</div>
-                            <div><strong>Generado:</strong> {% now "d/m/Y H:i" %}</div>
-                        </div>
-                    </td>
-                </tr>
-            </table>
-        </div>
-
-        <!-- Executive Summary -->
-        <div style="margin-bottom: 25px;">
-            <h2 style="font-size: 14px; font-weight: 600; color: #2c3e50; margin: 0 0 12px 0; 
-                    border-left: 3px solid #7c3aed; padding-left: 10px; 
-                    text-transform: uppercase; letter-spacing: 0.5px;">
-                Resumen Ejecutivo
-            </h2>
-            <table style="width: 100%; border-collapse: collapse; margin-bottom: 15px;">
-                <tr>
-                    <td style="width: 35%; vertical-align: top; padding: 8px 0; font-weight: 600; 
-                            color: #34495e; font-size: 10px;">Paciente:</td>
-                    <td style="padding: 8px 0; font-size: 11px;">{{ nino.nombre_completo }}</td>
-                </tr>
-                <tr>
-                    <td style="vertical-align: top; padding: 6px 0; font-weight: 600; 
-                            color: #34495e; font-size: 10px;">Fecha de Nacimiento:</td>
-                    <td style="padding: 6px 0; font-size: 11px;">{{ nino.fecha_nacimiento|date:"d/m/Y" }}</td>
-                </tr>
-                <tr>
-                    <td style="vertical-align: top; padding: 6px 0; font-weight: 600; 
-                            color: #34495e; font-size: 10px;">Edad:</td>
-                    <td style="padding: 6px 0; font-size: 11px;">{{ nino.edad }} años</td>
-                </tr>
-                <tr>
-                    <td style="vertical-align: top; padding: 6px 0; font-weight: 600; 
-                            color: #34495e; font-size: 10px;">Profesional Responsable:</td>
-                    <td style="padding: 6px 0; font-size: 11px;">{{ game_session.nino.profesional.nombre_completo }}</td>
-                </tr>
-                <tr>
-                    <td style="vertical-align: top; padding: 8px 0; font-weight: 600; 
-                            color: #34495e; font-size: 10px;">Estado del Análisis:</td>
-                    <td style="padding: 8px 0;">
-                        {% with risk_display=reporte.get_clasificacion_riesgo_display %}
-                        {% if risk_display == "alto" %}
-                        <span style="background: #e74c3c; color: white; padding: 4px 10px; 
-                                    border-radius: 2px; font-size: 10px; font-weight: 600; 
-                                    letter-spacing: 0.3px;">RIESGO ALTO</span>
-                        {% elif risk_display == "medio" %}
-                        <span style="background: #f39c12; color: white; padding: 4px 10px; 
-                                    border-radius: 2px; font-size: 10px; font-weight: 600; 
-                                    letter-spacing: 0.3px;">RIESGO MEDIO</span>
-                        {% else %}
-                        <span style="background: #27ae60; color: white; padding: 4px 10px; 
-                                    border-radius: 2px; font-size: 10px; font-weight: 600; 
-                                    letter-spacing: 0.3px;">RIESGO BAJO</span>
-                        {% endif %}
-                        {% endwith %}
-                    </td>
-                </tr>
-                <tr>
-                    <td style="vertical-align: top; padding: 6px 0; font-weight: 600; 
-                            color: #34495e; font-size: 10px;">Índice de Riesgo:</td>
-                    <td style="padding: 6px 0; font-weight: 600; font-size: 12px; 
-                            color: {% if reporte.indice_riesgo >= 70 %}#e74c3c{% elif reporte.indice_riesgo >= 40 %}#f39c12{% else %}#27ae60{% endif %};">
-                        {{ reporte.indice_riesgo|floatformat:1 }}%
-                    </td>
-                </tr>
-                <tr>
-                    <td style="vertical-align: top; padding: 6px 0; font-weight: 600; 
-                            color: #34495e; font-size: 10px;">Confianza del Modelo:</td>
-                    <td style="padding: 6px 0; font-size: 11px;">{{ reporte.confianza_prediccion }}%</td>
-                </tr>
-            </table>
-            <div style="background: #f8f9fa; padding: 15px; border-left: 3px solid #7c3aed; 
-                    margin-top: 10px;">
-                <div style="font-size: 9px; font-weight: 600; color: #7f8c8d; 
-                        text-transform: uppercase; margin-bottom: 5px;">
-                    RECOMENDACIONES PROFESIONALES
-                </div>
-                <div style="font-size: 11px; color: #2c3e50; line-height: 1.4;">
-                    {{ reporte.recomendaciones|linebreaksbr }}
-                </div>
-            </div>
-        </div>
-
-        <!-- Análisis con IA -->
-        <div style="margin-bottom: 25px;">
-            <h2 style="font-size: 14px; font-weight: 600; color: #2c3e50; margin: 0 0 10px 0; 
-                    border-left: 3px solid #7c3aed; padding-left: 10px; 
-                    text-transform: uppercase; letter-spacing: 0.5px;">
-                1. Análisis con Inteligencia Artificial
-            </h2>
-            <div class="metrics-grid">
-                <div class="metric-card metric-purple">
-                    <div class="metric-label">Índice de Riesgo</div>
-                    <div class="metric-value">{{ reporte.indice_riesgo|floatformat:1 }}%</div>
-                    <div class="metric-bar">
-                        <div class="metric-bar-fill" style="width: {{ reporte.indice_riesgo }}%"></div>
+    <!-- Letterhead -->
+    <div class="letterhead">
+        <table class="letterhead-table">
+            <tr>
+                <td style="width: 65%;">
+                    <h1>DISLEXIA IA</h1>
+                    <div class="letterhead-subtitle">
+                        Sistema Inteligente de Evaluación y Detección de Dislexia
                     </div>
-                </div>
-
-                <div class="metric-card metric-blue">
-                    <div class="metric-label">Confianza del Modelo</div>
-                    <div class="metric-value">{{ reporte.confianza_prediccion }}%</div>
-                    <div class="metric-bar">
-                        <div class="metric-bar-fill" style="width: {{ reporte.confianza_prediccion }}%"></div>
+                </td>
+                <td style="text-align: right; width: 35%;">
+                    <div class="letterhead-info">
+                        <div><strong>Reporte ID:</strong> DIA-{{ game_session.id|stringformat:"04d" }}-{{ nino.id|stringformat:"03d" }}</div>
+                        <div><strong>Fecha:</strong> {{ game_session.fecha_hora_inicio|date:"d/m/Y H:i" }}</div>
+                        <div><strong>Generado:</strong> {% now "d/m/Y H:i" %}</div>
                     </div>
-                </div>
+                </td>
+            </tr>
+        </table>
+    </div>
 
-                <div class="metric-card metric-green">
-                    <div class="metric-label">Precisión General</div>
-                    <div class="metric-value">{{ game_session.precision_promedio|floatformat:1 }}%</div>
-                    <div class="metric-bar">
-                        <div class="metric-bar-fill" style="width: {{ game_session.precision_promedio }}%"></div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="info-box">
-                <div class="info-box-title" style="font-size: 11px;">
-                    <i class="fas fa-lightbulb"></i>
-                    Recomendaciones Profesionales
-                </div>
-                <div class="info-box-content" style="font-size: 10px;">
-                    {{ reporte.recomendaciones|linebreaksbr }}
-                </div>
-            </div>
-
-            <div class="info-box disclaimer-box">
-                <div class="info-box-title" style="font-size: 11px;">
-                    <i class="fas fa-exclamation-triangle"></i>
-                    Aviso Importante
-                </div>
-                <div class="info-box-content" style="font-size: 10px;">
-                    Este análisis es una herramienta de apoyo basada en inteligencia artificial y NO constituye un diagnóstico médico oficial. Los resultados deben ser interpretados por un profesional de la salud calificado.
-                </div>
-            </div>
-        </div>
-
-        <!-- Validación Profesional -->
-        <div style="margin-bottom: 25px;">
-            <h2 style="font-size: 14px; font-weight: 600; color: #2c3e50; margin: 0 0 10px 0; 
-                    border-left: 3px solid #7c3aed; padding-left: 10px; 
-                    text-transform: uppercase; letter-spacing: 0.5px;">
-                2. Validación del Profesional
-            </h2>
-            {% if reporte.validacion_profesional %}
-            <div style="background: #ffffff; border: 1px solid #e1e4e8; padding: 15px; margin-bottom: 10px;">
-                <div style="display: inline-block; background: #dcfce7; color: #166534; padding: 5px 12px; 
-                        border-radius: 3px; font-size: 10px; font-weight: 600; margin-bottom: 12px;">
-                    ✓ VALIDACIÓN REALIZADA
-                </div>
-                
-                <table style="width: 100%; border-collapse: collapse; font-size: 10px;">
-                    {% if reporte.validacion_profesional.indice_ajustado is not None %}
-                    <tr style="border-bottom: 1px solid #f3f4f6;">
-                        <td style="width: 35%; padding: 8px 0; font-weight: 600; color: #6b7280; vertical-align: top;">
-                            Índice de Riesgo Ajustado:
-                        </td>
-                        <td style="padding: 8px 0; color: #2c3e50; font-weight: 600; font-size: 11px;">
-                            {{ reporte.validacion_profesional.indice_ajustado }}%
-                        </td>
-                    </tr>
-                    {% endif %}
-                    
-                    <tr style="border-bottom: 1px solid #f3f4f6;">
-                        <td style="width: 35%; padding: 8px 0; font-weight: 600; color: #6b7280; vertical-align: top;">
-                            Diagnóstico Final:
-                        </td>
-                        <td style="padding: 8px 0; color: #2c3e50; line-height: 1.4;">
-                            {% if reporte.validacion_profesional.diagnostico_final %}
-                            {{ reporte.validacion_profesional.diagnostico_final|linebreaksbr }}
-                            {% else %}
-                            <span style="color: #9ca3af; font-style: italic;">No especificado</span>
-                            {% endif %}
-                        </td>
-                    </tr>
-                    
-                    <tr style="border-bottom: 1px solid #f3f4f6;">
-                        <td style="width: 35%; padding: 8px 0; font-weight: 600; color: #6b7280; vertical-align: top;">
-                            Notas Clínicas:
-                        </td>
-                        <td style="padding: 8px 0; color: #2c3e50; line-height: 1.4;">
-                            {% if reporte.validacion_profesional.notas_clinicas %}
-                            {{ reporte.validacion_profesional.notas_clinicas|linebreaksbr }}
-                            {% else %}
-                            <span style="color: #9ca3af; font-style: italic;">No especificado</span>
-                            {% endif %}
-                        </td>
-                    </tr>
-                    
-                    <tr style="border-bottom: 1px solid #f3f4f6;">
-                        <td style="width: 35%; padding: 8px 0; font-weight: 600; color: #6b7280; vertical-align: top;">
-                            Plan de Tratamiento:
-                        </td>
-                        <td style="padding: 8px 0; color: #2c3e50; line-height: 1.4;">
-                            {% if reporte.validacion_profesional.plan_tratamiento %}
-                            {{ reporte.validacion_profesional.plan_tratamiento|linebreaksbr }}
-                            {% else %}
-                            <span style="color: #9ca3af; font-style: italic;">No especificado</span>
-                            {% endif %}
-                        </td>
-                    </tr>
-                    
-                    <tr>
-                        <td style="width: 35%; padding: 8px 0; font-weight: 600; color: #6b7280; vertical-align: top;">
-                            Requiere Seguimiento:
-                        </td>
-                        <td style="padding: 8px 0;">
-                            {% if reporte.validacion_profesional.requiere_seguimiento %}
-                            <span style="background: #dcfce7; color: #166534; padding: 3px 8px; 
-                                    border-radius: 2px; font-size: 9px; font-weight: 600;">SÍ</span>
-                            {% else %}
-                            <span style="background: #fee2e2; color: #991b1b; padding: 3px 8px; 
-                                    border-radius: 2px; font-size: 9px; font-weight: 600;">NO</span>
-                            {% endif %}
-                        </td>
-                    </tr>
-                </table>
-            </div>
-            {% else %}
-            <div style="background: #fffbeb; border: 1px dashed #fde047; border-left: 3px solid #f59e0b; 
-                    padding: 12px 15px; text-align: left; color: #92400e; font-size: 10px;">
-                <span style="font-weight: 600;">⚠ PENDIENTE DE VALIDACIÓN</span> · 
-                Esta evaluación aún no ha sido validada por el profesional responsable.
-            </div>
-            {% endif %}
-        </div>
-
-        <!-- Rendimiento por Juego -->
-        <div style="margin-bottom: 25px;">
-            <h2 style="font-size: 14px; font-weight: 600; color: #2c3e50; margin: 0 0 10px 0; 
-                    border-left: 3px solid #7c3aed; padding-left: 10px; 
-                    text-transform: uppercase; letter-spacing: 0.5px;">
-                3. Rendimiento por Juego
-            </h2>
-            <p style="color: #6b7280; margin-bottom: 10px; font-size: 9px;">
-                Métricas acumuladas de {{ evaluations|length }} juegos realizados
-            </p>
-
-            <table style="width: 100%; border-collapse: collapse; font-size: 9px; background: #ffffff; border: 1px solid #e1e4e8;">
-                <thead>
-                    <tr style="background: #f8f9fa; border-bottom: 2px solid #e1e4e8;">
-                        <th style="padding: 8px; text-align: left; font-weight: 600; color: #6b7280; 
-                                text-transform: uppercase; letter-spacing: 0.5px; width: 30%;">Juego</th>
-                        <th style="padding: 8px; text-align: center; font-weight: 600; color: #6b7280; 
-                                text-transform: uppercase; letter-spacing: 0.5px; width: 12%;">Puntos</th>
-                        <th style="padding: 8px; text-align: center; font-weight: 600; color: #6b7280; 
-                                text-transform: uppercase; letter-spacing: 0.5px; width: 12%;">Aciertos</th>
-                        <th style="padding: 8px; text-align: center; font-weight: 600; color: #6b7280; 
-                                text-transform: uppercase; letter-spacing: 0.5px; width: 12%;">Errores</th>
-                        <th style="padding: 8px; text-align: center; font-weight: 600; color: #6b7280; 
-                                text-transform: uppercase; letter-spacing: 0.5px; width: 12%;">Clics</th>
-                        <th style="padding: 8px; text-align: center; font-weight: 600; color: #6b7280; 
-                                text-transform: uppercase; letter-spacing: 0.5px; width: 22%;">Precisión</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for eval in evaluations %}
-                    <tr style="border-bottom: 1px solid #f3f4f6;">
-                        <td style="padding: 10px 8px; vertical-align: middle;">
-                            <div style="display: flex; align-items: center; gap: 8px;">
-                                {% with color_class=eval.juego__color_tema|default:'purple' %}
-                                {% if color_class == 'purple' %}
-                                <div style="width: 3px; height: 24px; background: #7c3aed; border-radius: 2px;"></div>
-                                {% elif color_class == 'blue' %}
-                                <div style="width: 3px; height: 24px; background: #2563eb; border-radius: 2px;"></div>
-                                {% elif color_class == 'green' %}
-                                <div style="width: 3px; height: 24px; background: #16a34a; border-radius: 2px;"></div>
-                                {% elif color_class == 'orange' %}
-                                <div style="width: 3px; height: 24px; background: #ea580c; border-radius: 2px;"></div>
-                                {% elif color_class == 'red' %}
-                                <div style="width: 3px; height: 24px; background: #dc2626; border-radius: 2px;"></div>
-                                {% elif color_class == 'pink' %}
-                                <div style="width: 3px; height: 24px; background: #db2777; border-radius: 2px;"></div>
-                                {% elif color_class == 'indigo' %}
-                                <div style="width: 3px; height: 24px; background: #4f46e5; border-radius: 2px;"></div>
-                                {% elif color_class == 'teal' %}
-                                <div style="width: 3px; height: 24px; background: #0d9488; border-radius: 2px;"></div>
-                                {% else %}
-                                <div style="width: 3px; height: 24px; background: #6b7280; border-radius: 2px;"></div>
-                                {% endif %}
-                                {% endwith %}
-                                <div>
-                                    <div style="font-weight: 600; color: #2c3e50; font-size: 10px; margin-bottom: 2px;">
-                                        {{ eval.juego__nombre }}
-                                    </div>
-                                    <div style="font-size: 8px; color: #9ca3af;">
-                                        {{ eval.juego__dificultad|capfirst }} · {{ eval.veces_jugado }}x jugado
-                                    </div>
-                                </div>
-                            </div>
-                        </td>
-                        <td style="padding: 10px 8px; text-align: center; vertical-align: middle;">
-                            <div style="font-weight: 700; color: #2c3e50; font-size: 11px;">
-                                {{ eval.total_puntaje|floatformat:0 }}
-                            </div>
-                        </td>
-                        <td style="padding: 10px 8px; text-align: center; vertical-align: middle;">
-                            <div style="font-weight: 600; color: #16a34a; font-size: 11px;">
-                                {{ eval.total_aciertos|floatformat:0 }}
-                            </div>
-                        </td>
-                        <td style="padding: 10px 8px; text-align: center; vertical-align: middle;">
-                            <div style="font-weight: 600; color: #dc2626; font-size: 11px;">
-                                {{ eval.total_errores|floatformat:0 }}
-                            </div>
-                        </td>
-                        <td style="padding: 10px 8px; text-align: center; vertical-align: middle;">
-                            <div style="font-weight: 600; color: #6b7280; font-size: 11px;">
-                                {{ eval.total_clics|floatformat:0 }}
-                            </div>
-                        </td>
-                        <td style="padding: 10px 8px; vertical-align: middle;">
-                            <div style="display: flex; align-items: center; gap: 8px;">
-                                <div style="flex: 1; height: 6px; background: #e5e7eb; border-radius: 3px; overflow: hidden;">
-                                    {% with color_class=eval.juego__color_tema|default:'purple' %}
-                                    {% if color_class == 'purple' %}
-                                    <div style="height: 100%; background: #7c3aed; width: {{ eval.avg_precision|floatformat:0 }}%;"></div>
-                                    {% elif color_class == 'blue' %}
-                                    <div style="height: 100%; background: #2563eb; width: {{ eval.avg_precision|floatformat:0 }}%;"></div>
-                                    {% elif color_class == 'green' %}
-                                    <div style="height: 100%; background: #16a34a; width: {{ eval.avg_precision|floatformat:0 }}%;"></div>
-                                    {% elif color_class == 'orange' %}
-                                    <div style="height: 100%; background: #ea580c; width: {{ eval.avg_precision|floatformat:0 }}%;"></div>
-                                    {% elif color_class == 'red' %}
-                                    <div style="height: 100%; background: #dc2626; width: {{ eval.avg_precision|floatformat:0 }}%;"></div>
-                                    {% elif color_class == 'pink' %}
-                                    <div style="height: 100%; background: #db2777; width: {{ eval.avg_precision|floatformat:0 }}%;"></div>
-                                    {% elif color_class == 'indigo' %}
-                                    <div style="height: 100%; background: #4f46e5; width: {{ eval.avg_precision|floatformat:0 }}%;"></div>
-                                    {% elif color_class == 'teal' %}
-                                    <div style="height: 100%; background: #0d9488; width: {{ eval.avg_precision|floatformat:0 }}%;"></div>
-                                    {% else %}
-                                    <div style="height: 100%; background: #6b7280; width: {{ eval.avg_precision|floatformat:0 }}%;"></div>
-                                    {% endif %}
-                                    {% endwith %}
-                                </div>
-                                <div style="font-weight: 700; color: #2c3e50; font-size: 10px; min-width: 35px; text-align: right;">
-                                    {{ eval.avg_precision|floatformat:0 }}%
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-
-        <!-- Signature Section -->
-        <div style="margin-bottom: 30px; margin-top: 35px;">
-            <h2 style="font-size: 14px; font-weight: 600; color: #2c3e50; margin: 0 0 15px 0; 
-                    border-left: 3px solid #7c3aed; padding-left: 10px; 
-                    text-transform: uppercase; letter-spacing: 0.5px;">
-                4. Autorización y Responsabilidad
-            </h2>
-            <div style="text-align: center; padding: 25px 0; border: 1px solid #e1e4e8; 
-                    background: #fafbfc; margin-top: 20px;">
-                <!-- Firma electrónica -->
-                {% if firma_data_uri %}
-                <div style="margin: 0 auto 10px auto;">
-                    <img src="{{ firma_data_uri }}" alt="Firma Electrónica" 
-                         style="max-width: 70px; height: auto; display: block; margin: 0 auto;">
-                </div>
+    <!-- Resumen Ejecutivo -->
+    <h2>RESUMEN EJECUTIVO</h2>
+    <table class="info-table">
+        <tr>
+            <td>Paciente:</td>
+            <td><strong>{{ nino.nombre_completo }}</strong></td>
+        </tr>
+        <tr>
+            <td>Fecha de Nacimiento:</td>
+            <td>{{ nino.fecha_nacimiento|date:"d/m/Y" }}</td>
+        </tr>
+        <tr>
+            <td>Edad:</td>
+            <td>{{ nino.edad }} años</td>
+        </tr>
+        <tr>
+            <td>Profesional Responsable:</td>
+            <td>{{ game_session.nino.profesional.nombre_completo }}</td>
+        </tr>
+        <tr>
+            <td>Estado del Análisis:</td>
+            <td>
+                {% with risk_display=reporte.get_clasificacion_riesgo_display %}
+                {% if risk_display == "alto" %}
+                <span class="badge badge-alto">RIESGO ALTO</span>
+                {% elif risk_display == "medio" %}
+                <span class="badge badge-medio">RIESGO MEDIO</span>
+                {% else %}
+                <span class="badge badge-bajo">RIESGO BAJO</span>
                 {% endif %}
-                <div style="border-top: 1px solid #2c3e50; width: 250px; margin: 0 auto 15px auto;"></div>
-                <div style="font-size: 12px; font-weight: 600; color: #2c3e50; margin-bottom: 3px; 
-                        text-transform: uppercase; letter-spacing: 0.8px;">
-                    {{ game_session.nino.profesional.nombre_completo }}
-                </div>
-                <div style="font-size: 10px; color: #7f8c8d; margin-bottom: 3px;">
-                    {% if game_session.nino.profesional.numero_cedula %}
-                    C.I: {{ game_session.nino.profesional.numero_cedula }}
-                    {% else %}
-                    Profesional de la Salud
-                    {% endif %}
-                </div>
-                <div style="font-size: 11px; font-weight: 600; color: #34495e; 
-                        text-transform: uppercase; letter-spacing: 1px;">
-                    Especialista en Evaluación de Dislexia
-                </div>
-                <div style="font-size: 9px; color: #95a5a6; margin-top: 5px; 
-                        font-style: italic;">
-                    Dislexia IA - División de Evaluación Cognitiva
-                </div>
-            </div>
+                {% endwith %}
+            </td>
+        </tr>
+        <tr>
+            <td>Índice de Riesgo:</td>
+            <td><strong>{{ reporte.indice_riesgo|floatformat:1 }}%</strong></td>
+        </tr>
+        <tr>
+            <td>Confianza del Modelo:</td>
+            <td>{{ reporte.confianza_prediccion }}%</td>
+        </tr>
+    </table>
 
-            <br><br>
-            
-            <!-- Disclaimer profesional -->
-            <div style="margin-top: 15px; padding: 12px; background: #f8f9fa; 
-                    border-left: 3px solid #e74c3c; font-size: 8px; color: #34495e; 
-                    line-height: 1.4;">
-                <div style="font-weight: 600; margin-bottom: 5px; color: #e74c3c; 
-                        text-transform: uppercase; letter-spacing: 0.5px;">
-                    Aviso Legal y Limitaciones
-                </div>
-                Este reporte ha sido generado mediante inteligencia artificial y algoritmos de procesamiento de datos cognitivos. 
-                Los resultados representan un análisis probabilístico basado en patrones detectados durante las evaluaciones realizadas. 
-                Se recomienda corroborar los resultados a través de evaluaciones adicionales y ejercer criterio profesional independiente. 
-                Dislexia IA no reemplaza el diagnóstico de un profesional médico especializado en trastornos del aprendizaje. 
-                Este sistema es una herramienta de apoyo para profesionales de la salud y educación.
-            </div>
-        </div>
-
-        <!-- Footer -->
-        <div style="border-top: 1px solid #bdc3c7; padding-top: 15px; margin-top: 20px;">
-            <table style="width: 100%; border-collapse: collapse; font-size: 9px; color: #7f8c8d;">
-                <tr>
-                    <td style="width: 50%; vertical-align: top;">
-                        <div style="font-weight: 600; margin-bottom: 3px;">DISLEXIA IA</div>
-                        <div>Sistema Inteligente de Evaluación de Dislexia</div>
-                        <div>División de Evaluación Cognitiva</div>
-                    </td>
-                    <td style="text-align: right; vertical-align: top;">
-                        <div style="font-weight: 600; margin-bottom: 3px;">INFORMACIÓN DEL DOCUMENTO</div>
-                        <div>Generado: {% now "d/m/Y H:i" %}</div>
-                        <div>Evaluación N°: {{ game_session.id }}</div>
-                        <div>Confidencialidad: Uso Interno - Confidencial</div>
-                    </td>
-                </tr>
-            </table>
-        </div>
-
+    <div class="content-box">
+        <div class="content-box-title">RECOMENDACIONES PROFESIONALES</div>
+        <div class="content-box-text">{{ reporte.recomendaciones|linebreaksbr }}</div>
     </div>
-</body>
 
+    <!-- 1. Análisis con IA -->
+    <h2>1. ANÁLISIS CON INTELIGENCIA ARTIFICIAL</h2>
+    
+    <table class="metrics-table">
+        <tr>
+            <td>
+                <span class="metric-label">ÍNDICE DE RIESGO</span>
+                <span class="metric-value metric-value-purple">{{ reporte.indice_riesgo|floatformat:1 }}%</span>
+            </td>
+            <td>
+                <span class="metric-label">CONFIANZA DEL MODELO</span>
+                <span class="metric-value metric-value-blue">{{ reporte.confianza_prediccion }}%</span>
+            </td>
+            <td>
+                <span class="metric-label">PRECISIÓN GENERAL</span>
+                <span class="metric-value metric-value-green">{{ game_session.precision_promedio|floatformat:1 }}%</span>
+            </td>
+        </tr>
+    </table>
+
+    <div class="info-box">
+        <div class="info-box-title">💡 <strong>Recomendaciones Profesionales</strong></div>
+        <div>{{ reporte.recomendaciones|linebreaksbr }}</div>
+    </div>
+
+    <div class="info-box warning-box">
+        <div class="info-box-title">⚠ <strong>Aviso Importante</strong></div>
+        <div>Este análisis es una herramienta de apoyo basada en inteligencia artificial y NO constituye un diagnóstico médico oficial. Los resultados deben ser interpretados por un profesional de la salud calificado.</div>
+    </div>
+
+    <!-- 2. Validación Profesional -->
+    <h2>2. VALIDACIÓN DEL PROFESIONAL</h2>
+    {% if reporte.validacion_profesional %}
+    <div class="validation-box">
+        <div style="margin-bottom: 15px;">
+            <span class="badge badge-success">✓ VALIDACIÓN REALIZADA</span>
+        </div>
+        
+        <table class="info-table">
+            {% if reporte.validacion_profesional.indice_ajustado is not None %}
+            <tr>
+                <td>Índice de Riesgo Ajustado:</td>
+                <td><strong>{{ reporte.validacion_profesional.indice_ajustado|floatformat:2 }}%</strong></td>
+            </tr>
+            {% endif %}
+            <tr>
+                <td>Diagnóstico Final:</td>
+                <td>{{ reporte.validacion_profesional.diagnostico_final|default:"No especificado" }}</td>
+            </tr>
+            <tr>
+                <td>Notas Clínicas:</td>
+                <td>{{ reporte.validacion_profesional.notas_clinicas|default:"No especificado" }}</td>
+            </tr>
+            <tr>
+                <td>Plan de Tratamiento:</td>
+                <td>{{ reporte.validacion_profesional.plan_tratamiento|default:"No especificado" }}</td>
+            </tr>
+            <tr>
+                <td>Requiere Seguimiento:</td>
+                <td>
+                    {% if reporte.validacion_profesional.requiere_seguimiento %}
+                    <span class="badge badge-success">SÍ</span>
+                    {% else %}
+                    <span class="badge badge-no">NO</span>
+                    {% endif %}
+                </td>
+            </tr>
+        </table>
+    </div>
+    {% else %}
+    <div class="pending-box">
+        <strong>⚠ PENDIENTE DE VALIDACIÓN</strong> · Esta evaluación aún no ha sido validada por el profesional responsable.
+    </div>
+    {% endif %}
+
+    <!-- 3. Rendimiento por Juego -->
+    <h2>3. RENDIMIENTO POR JUEGO</h2>
+    <p class="game-description">
+        Métricas acumuladas de {{ evaluations|length }} juegos realizados
+    </p>
+
+    <table class="games-table">
+        <thead>
+            <tr>
+                <th style="width: 30%;">JUEGO</th>
+                <th style="text-align: center; width: 13%;">PUNTOS</th>
+                <th style="text-align: center; width: 13%;">ACIERTOS</th>
+                <th style="text-align: center; width: 13%;">ERRORES</th>
+                <th style="text-align: center; width: 13%;">CLICS</th>
+                <th style="text-align: right; width: 18%;">PRECISIÓN</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for eval in evaluations %}
+            <tr>
+                <td>
+                    <span class="game-name">{{ eval.juego__nombre }}</span>
+                    <span class="game-meta">{{ eval.juego__dificultad|capfirst }} · {{ eval.veces_jugado }}x jugado</span>
+                </td>
+                <td style="text-align: center; font-weight: bold;">
+                    {{ eval.total_puntaje|floatformat:0 }}
+                </td>
+                <td style="text-align: center;">
+                    <span class="text-success">{{ eval.total_aciertos|floatformat:0 }}</span>
+                </td>
+                <td style="text-align: center;">
+                    <span class="text-error">{{ eval.total_errores|floatformat:0 }}</span>
+                </td>
+                <td style="text-align: center;">
+                    <span class="text-neutral">{{ eval.total_clics|floatformat:0 }}</span>
+                </td>
+                <td style="text-align: right; font-weight: bold;">
+                    {{ eval.avg_precision|floatformat:0 }}%
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- 4. Autorización -->
+    <h2>4. AUTORIZACIÓN Y RESPONSABILIDAD</h2>
+    <div class="signature-section">
+        {% if firma_data_uri %}
+        <div style="margin-bottom: 12px;">
+            <img src="{{ firma_data_uri }}" alt="Firma" style="max-width: 70px; height: auto;">
+        </div>
+        {% endif %}
+        <div class="signature-line"></div>
+        <div class="signature-name">{{ game_session.nino.profesional.nombre_completo }}</div>
+        {% if game_session.nino.profesional.numero_cedula %}
+        <div class="signature-id">C.I: {{ game_session.nino.profesional.numero_cedula }}</div>
+        {% else %}
+        <div class="signature-id">Profesional de la Salud</div>
+        {% endif %}
+        <div class="signature-title">ESPECIALISTA EN EVALUACIÓN DE DISLEXIA</div>
+        <div class="signature-org">Dislexia IA - División de Evaluación Cognitiva</div>
+    </div>
+
+    <div class="disclaimer-final">
+        <div class="disclaimer-final-title">AVISO LEGAL Y LIMITACIONES</div>
+        Este reporte ha sido generado mediante inteligencia artificial y algoritmos de procesamiento de datos cognitivos. Los resultados representan un análisis probabilístico basado en patrones detectados durante las evaluaciones realizadas. Se recomienda corroborar los resultados a través de evaluaciones adicionales y ejercer criterio profesional independiente. Dislexia IA no reemplaza el diagnóstico de un profesional médico especializado en trastornos del aprendizaje. Este sistema es una herramienta de apoyo para profesionales de la salud y educación.
+    </div>
+
+    <!-- Footer -->
+    <table class="footer-section">
+        <tr>
+            <td style="width: 50%;">
+                <div class="footer-title">DISLEXIA IA</div>
+                <div>Sistema Inteligente de Evaluación de Dislexia</div>
+                <div>División de Evaluación Cognitiva</div>
+            </td>
+            <td style="text-align: right; width: 50%;">
+                <div class="footer-title">INFORMACIÓN DEL DOCUMENTO</div>
+                <div>Generado: {% now "d/m/Y H:i" %}</div>
+                <div>Evaluación N°: {{ game_session.id }}</div>
+                <div>Confidencialidad: Uso Interno - Confidencial</div>
+            </td>
+        </tr>
+    </table>
+
+</body>
 </html>
