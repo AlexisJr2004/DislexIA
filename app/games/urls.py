@@ -30,6 +30,8 @@ urlpatterns = [
     path('asignar-nino/', api_views.asignar_nino, name='asignar_nino'),
     # Resultados de evaluación secuencial
     path('results/<int:evaluacion_id>/', results_views.SequentialResultsView.as_view(), name='sequential_results'),
+    # Reanudar evaluación en proceso
+    path('resume/<int:evaluacion_id>/', session_views.ResumeEvaluationView.as_view(), name='resume_evaluation'),
     # Eliminar evaluación
     path('evaluacion/delete/<int:evaluacion_id>/', session_views.delete_evaluacion, name='delete_evaluacion'),
     # Finalizar juegos

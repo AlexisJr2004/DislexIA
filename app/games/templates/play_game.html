@@ -62,7 +62,7 @@
                 <!-- Panel lateral izquierdo - Estadísticas -->
                 <div class="space-y-5">
                     <!-- Timer Card -->
-                    <div class="stat-card game-card rounded-lg p-5 dark:bg-gray-900 bg-white border border-gray-200 dark:border-gray-800">
+                    <div class="game-card rounded-lg p-5 dark:bg-gray-900 bg-white border border-gray-200 dark:border-gray-800">
                         <div class="flex items-center justify-between mb-3">
                             <div class="flex items-center gap-2">
                                 <div class="icon-box" style="background: #dbeafe;" class="dark:bg-blue-900">
@@ -95,7 +95,7 @@
                     </div>
 
                     <!-- Progreso Card -->
-                    <div class="stat-card game-card rounded-lg p-5 dark:bg-gray-900 bg-white border border-gray-200 dark:border-gray-800">
+                    <div class="game-card rounded-lg p-5 dark:bg-gray-900 bg-white border border-gray-200 dark:border-gray-800">
                         <div class="flex items-center gap-2 mb-3">
                             <div class="icon-box" style="background: #f3e8ff;" class="dark:bg-purple-900">
                                 <svg class="w-5 h-5 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -137,7 +137,7 @@
                     </div>
 
                     <!-- Participante Card -->
-<div class="stat-card game-card rounded-lg p-5 dark:bg-gray-900 bg-white border border-gray-200 dark:border-gray-800">
+<div class="game-card rounded-lg p-5 dark:bg-gray-900 bg-white border border-gray-200 dark:border-gray-800">
     <div class="flex items-center gap-2 mb-3">
         <div class="icon-box" style="background: #f0fdf4;" class="dark:bg-green-900">
             <svg class="w-5 h-5 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -206,11 +206,10 @@
             </div>
         </div>
     </div>
-</div>
 
-<!-- Modal de Pausa -->
-<div id="pause-overlay" class="fixed inset-0 bg-black bg-opacity-30 dark:bg-black/70 hidden z-50 flex items-center justify-center p-4 modal-overlay">
-    <div class="modal-content max-w-sm w-full p-6 dark:bg-gray-900 bg-white rounded-xl border border-gray-200 dark:border-gray-800">
+    <!-- Modal de Pausa (con límites) - Dentro de fullscreen-container -->
+    <div id="pause-overlay" class="fixed inset-0 bg-black bg-opacity-30 dark:bg-black/70 hidden flex items-center justify-center p-4 modal-overlay" style="z-index: 9999 !important;">
+    <div class="modal-content max-w-md w-full p-6 dark:bg-gray-900 bg-white rounded-xl border border-gray-200 dark:border-gray-800 shadow-2xl">
         <div class="text-center mb-5">
             <div class="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-3" style="background: #fef3c7;" class="dark:bg-yellow-900/30">
                 <svg class="w-7 h-7 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -222,15 +221,36 @@
             <p class="text-xs text-gray-600 dark:text-gray-400">{% trans "Tómate un descanso. Continúa cuando estés listo." %}</p>
         </div>
 
+        <!-- Límites de pausa -->
+        <div class="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg p-3 mb-4">
+            <div class="flex items-center justify-between text-xs">
+                <div class="flex items-center gap-2">
+                    <svg class="w-4 h-4 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span class="text-amber-700 dark:text-amber-300 font-medium">Pausas restantes: <span id="pause-count-display" class="font-bold">2/2</span></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Temporizador de descanso -->
+        <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mb-5">
+            <div class="text-center">
+                <p class="text-xs text-blue-600 dark:text-blue-400 mb-2">{% trans "Tiempo de descanso" %}</p>
+                <div class="text-3xl font-bold text-blue-700 dark:text-blue-300 font-mono" id="pause-timer">03:00</div>
+                <p class="text-xs text-blue-500 dark:text-blue-400 mt-1">{% trans "máximo 3 minutos" %}</p>
+            </div>
+        </div>
+
         <!-- Stats en pausa -->
         <div class="grid grid-cols-2 gap-3 mb-5">
             <div class="p-3 rounded-lg bg-purple-50 dark:bg-purple-900 border border-purple-100 dark:border-purple-800">
                 <div class="text-lg font-bold text-purple-600 dark:text-purple-400" id="pause-score">0</div>
                 <div class="text-xs text-gray-600 dark:text-gray-400 font-medium">{% trans "Puntos" %}</div>
             </div>
-            <div class="p-3 rounded-lg bg-blue-50 dark:bg-blue-900 border border-blue-100 dark:border-blue-800">
-                <div class="text-lg font-bold text-blue-600 dark:text-blue-400" id="pause-time">00:00</div>
-                <div class="text-xs text-gray-600 dark:text-gray-400 font-medium">{% trans "Tiempo" %}</div>
+            <div class="p-3 rounded-lg bg-green-50 dark:bg-green-900 border border-green-100 dark:border-green-800">
+                <div class="text-lg font-bold text-green-600 dark:text-green-400" id="pause-time">00:00</div>
+                <div class="text-xs text-gray-600 dark:text-gray-400 font-medium">{% trans "Tiempo jugado" %}</div>
             </div>
         </div>
 
@@ -243,10 +263,10 @@
             {% trans "Continuar" %}
         </button>
     </div>
-</div>
+    </div>
 
-<!-- Modal de Confirmación para Finalizar (Mejorado) -->
-<div id="modal-finish" class="fixed inset-0 bg-black/50 dark:bg-black/80 backdrop-blur-sm hidden items-center justify-center z-[60]">
+    <!-- Modal de Confirmación para Finalizar (Mejorado) - Dentro de fullscreen-container -->
+    <div id="modal-finish" class="fixed inset-0 bg-black/50 dark:bg-black/80 backdrop-blur-sm hidden items-center justify-center" style="z-index: 9998 !important;">
     <div class="bg-white dark:bg-gray-900 rounded-2xl w-11/12 md:w-[500px] p-6 shadow-2xl border border-gray-200 dark:border-gray-800 transform transition-all duration-300 scale-95 opacity-0" id="modal-finish-content">
         <!-- Header -->
         <div class="flex items-center gap-3 mb-6">
@@ -312,10 +332,10 @@
             </button>
         </div>
     </div>
-</div>
+    </div>
 
-<!-- Modal de Éxito -->
-<div id="modal-success" class="fixed inset-0 bg-black/50 dark:bg-black/80 backdrop-blur-sm hidden items-center justify-center z-[70]">
+    <!-- Modal de Éxito - Dentro de fullscreen-container -->
+    <div id="modal-success" class="fixed inset-0 bg-black/50 dark:bg-black/80 backdrop-blur-sm hidden items-center justify-center" style="z-index: 9997 !important;">
     <div class="bg-white dark:bg-gray-900 rounded-2xl w-11/12 md:w-[400px] p-8 shadow-2xl text-center transform transition-all duration-300 scale-95 opacity-0" id="modal-success-content">
         <div class="w-20 h-20 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
             <i class="fas fa-check-circle text-green-600 dark:text-green-400 text-4xl"></i>
@@ -326,6 +346,7 @@
         <p id="modal-success-message" class="text-gray-600 dark:text-gray-400 whitespace-pre-line leading-relaxed">
             <!-- Mensaje dinámico -->
         </p>
+    </div>
     </div>
 </div>
 {% endblock %}
@@ -364,6 +385,13 @@
         let totalPausedTime = 0;
         let timerInterval = null;
         
+        // Control de pausas
+        let pauseCount = 0;
+        const MAX_PAUSES = 2;
+        const MAX_PAUSE_TIME = 180; // 3 minutos en segundos
+        let pauseTimer = null;
+        let pauseTimeRemaining = MAX_PAUSE_TIME;
+        
         const fullscreenContainer = document.getElementById('fullscreen-container');
         const btnFullscreen = document.getElementById('btn-fullscreen');
         const fullscreenIcon = document.getElementById('fullscreen-icon');
@@ -400,11 +428,46 @@
         const btnPause = document.getElementById('btn-pause-game');
         const btnResume = document.getElementById('btn-resume-game');
         
-        btnPause?.addEventListener('click', () => {
-            isPaused = true;
-            pauseStartTime = Date.now();
-            pauseOverlay.classList.remove('hidden');
+        function updatePauseTimer() {
+            if (pauseTimeRemaining <= 0) {
+                // Tiempo de pausa agotado, reanudar automáticamente
+                resumeGame();
+                return;
+            }
             
+            pauseTimeRemaining--;
+            const minutes = Math.floor(pauseTimeRemaining / 60);
+            const seconds = pauseTimeRemaining % 60;
+            
+            const pauseTimerEl = document.getElementById('pause-timer');
+            if (pauseTimerEl) {
+                pauseTimerEl.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+                
+                // Advertencia cuando quedan 30 segundos
+                if (pauseTimeRemaining <= 30) {
+                    pauseTimerEl.classList.add('text-red-600', 'dark:text-red-400');
+                    pauseTimerEl.classList.remove('text-blue-700', 'dark:text-blue-300');
+                }
+            }
+        }
+        
+        function pauseGame() {
+            // Verificar si se pueden hacer más pausas
+            if (pauseCount >= MAX_PAUSES) {
+                alert('{% trans "Has alcanzado el máximo de pausas permitidas (2)." %}');
+                return;
+            }
+            
+            isPaused = true;
+            pauseCount++;
+            pauseStartTime = Date.now();
+            pauseTimeRemaining = MAX_PAUSE_TIME;
+            
+            // Mostrar modal
+            pauseOverlay.classList.remove('hidden');
+            pauseOverlay.style.display = 'flex';
+            
+            // Actualizar stats en modal
             const timerMinutes = document.getElementById('timer-minutes');
             const timerSeconds = document.getElementById('timer-seconds');
             document.getElementById('pause-time').textContent = 
@@ -412,25 +475,68 @@
             document.getElementById('pause-score').textContent = 
                 document.getElementById('puntaje-actual').textContent;
             
+            // Actualizar contador de pausas
+            document.getElementById('pause-count-display').textContent = 
+                `${MAX_PAUSES - pauseCount}/${MAX_PAUSES}`;
+            
+            // Deshabilitar botón si no quedan pausas
+            if (pauseCount >= MAX_PAUSES) {
+                btnPause.disabled = true;
+                btnPause.classList.add('opacity-50', 'cursor-not-allowed');
+                btnPause.title = '{% trans "No quedan pausas disponibles" %}';
+            }
+            
+            // Iniciar timer de pausa
+            pauseTimer = setInterval(updatePauseTimer, 1000);
+            document.getElementById('pause-timer').textContent = '03:00';
+            document.getElementById('pause-timer').classList.remove('text-red-600', 'dark:text-red-400');
+            document.getElementById('pause-timer').classList.add('text-blue-700', 'dark:text-blue-300');
+            
+            // Pausar timer del juego (ya está en updateTimer con isPaused)
+            
+            // Pausar timer del juego activo (pregunta actual)
+            if (window.gameInstance && typeof window.gameInstance.pauseGame === 'function') {
+                window.gameInstance.pauseGame();
+            }
+            
+            // Actualizar UI
             document.getElementById('timer-indicator').classList.remove('animate-pulse');
             document.getElementById('timer-indicator').style.background = '#fbbf24';
             document.getElementById('timer-status').textContent = '{% trans "En pausa" %}';
             document.getElementById('timer-status').style.color = '#b45309';
             document.getElementById('timer-status-badge').textContent = '{% trans "Pausado" %}';
-        });
+        }
         
-        btnResume?.addEventListener('click', () => {
+        function resumeGame() {
             const pauseDuration = Math.floor((Date.now() - pauseStartTime) / 1000);
             totalPausedTime += pauseDuration;
             isPaused = false;
-            pauseOverlay.classList.add('hidden');
             
+            // Detener timer de pausa
+            if (pauseTimer) {
+                clearInterval(pauseTimer);
+                pauseTimer = null;
+            }
+            
+            // Ocultar modal
+            pauseOverlay.classList.add('hidden');
+            pauseOverlay.style.display = 'none';
+            
+            // Reanudar timer del juego activo
+            if (window.gameInstance && typeof window.gameInstance.resumeGame === 'function') {
+                window.gameInstance.resumeGame();
+            }
+            
+            // Actualizar UI
             document.getElementById('timer-indicator').classList.add('animate-pulse');
             document.getElementById('timer-indicator').style.background = '#22c55e';
             document.getElementById('timer-status').textContent = '{% trans "En juego" %}';
             document.getElementById('timer-status').style.color = '#16a34a';
             document.getElementById('timer-status-badge').textContent = '{% trans "Activo" %}';
-        });
+        }
+        
+        btnPause?.addEventListener('click', pauseGame);
+        btnResume?.addEventListener('click', resumeGame);
         
         window.updateScore = function(newScore) {
             // Actualizar puntaje en el panel lateral

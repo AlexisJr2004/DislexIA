@@ -26,6 +26,10 @@ class EncuentraElErrorGame extends BaseGame {
                     totalQuestions: this.getCurrentLevelQuestions().length,
                     score: this.score
                 })}
+                <!-- Barra de progreso -->
+                <div class="w-full bg-gray-100 dark:bg-gray-800 rounded-full h-3 mb-6 overflow-hidden">
+                    <div id="progress-bar" class="h-3 bg-gradient-to-r from-green-400 to-blue-500 transition-all duration-300" style="width:0%"></div>
+                </div>
                 <div class="grid grid-cols-2 gap-6">
                     <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-8 transition-colors duration-200">
                         ${GameUtils.createTimerAndAttempts(this.currentQuestion?.time_limit || 40, this.attempts)}

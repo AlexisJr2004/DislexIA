@@ -224,6 +224,15 @@
                         <!-- Acciones -->
                         <td class="px-6 py-4 whitespace-nowrap text-center">
                             <div class="flex items-center justify-center gap-2">
+                                <!-- Reanudar Sesión (solo si está en proceso) -->
+                                {% if item.evaluacion.estado == 'en_proceso' %}
+                                <a href="{% url 'games:resume_evaluation' evaluacion_id=item.evaluacion.id %}" 
+                                class="tooltip w-10 h-10 bg-yellow-100 dark:bg-yellow-900/30 hover:bg-yellow-200 dark:hover:bg-yellow-900/50 text-yellow-600 dark:text-yellow-400 rounded-lg flex items-center justify-center transition-all" 
+                                data-tooltip="{% trans 'Reanudar Sesión' %}">
+                                    <i class="fas fa-play-circle"></i>
+                                </a>
+                                {% endif %}
+
                                 <!-- Ver Resultados -->
                                 <a href="{% url 'games:sequential_results' evaluacion_id=item.evaluacion.id %}" 
                                 class="tooltip w-10 h-10 bg-purple-100 dark:bg-purple-900/30 hover:bg-purple-200 dark:hover:bg-purple-900/50 text-purple-600 dark:text-purple-400 rounded-lg flex items-center justify-center transition-all" 
@@ -232,18 +241,31 @@
                                 </a>
 
                                 <!-- Reporte IA con validacion profesional -->
-                                <a href="{% url 'core:reporte_ia_detail' pk=item.evaluacion.id %}"
+                                {% if item.evaluacion.reporte_ia %}
+                                <a href="{% url 'core:reporte_ia_detail' pk=item.evaluacion.reporte_ia.id %}"
                                 class="tooltip w-10 h-10 bg-blue-100 dark:bg-blue-900/30 hover:bg-blue-200 dark:hover:bg-blue-900/50 text-blue-600 dark:text-blue-400 rounded-lg flex items-center justify-center transition-all"
                                 data-tooltip="{% trans 'Reporte IA' %}">
                                     <i class="fas fa-user-check"></i>
                                 </a>
 
-                                <a href="{% url 'core:generar_reporte_pdf' pk=item.evaluacion.id %}"
+                                <a href="{% url 'core:generar_reporte_pdf' pk=item.evaluacion.reporte_ia.id %}"
                                     target="_blank"
                                     class="tooltip w-10 h-10 bg-green-100 dark:bg-green-900/30 hover:bg-green-200 dark:hover:bg-green-900/50 text-green-600 dark:text-green-400 rounded-lg flex items-center justify-center transition-all"
                                     data-tooltip="{% trans 'Descargar PDF' %}">
                                         <i class="fas fa-file-pdf"></i>
                                 </a>
+                                {% else %}
+                                <!-- Botones deshabilitados si no hay reporte -->
+                                <span class="tooltip w-10 h-10 bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-600 rounded-lg flex items-center justify-center opacity-50 cursor-not-allowed"
+                                data-tooltip="{% trans 'Reporte no generado' %}">
+                                    <i class="fas fa-user-check"></i>
+                                </span>
+
+                                <span class="tooltip w-10 h-10 bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-600 rounded-lg flex items-center justify-center opacity-50 cursor-not-allowed"
+                                data-tooltip="{% trans 'PDF no disponible' %}">
+                                    <i class="fas fa-file-pdf"></i>
+                                </span>
+                                {% endif %}
 
                                 <!-- Eliminar -->
                                 <button onclick="confirmarEliminar({{ item.evaluacion.id }}, '{{ item.evaluacion.nino.nombre_completo|escapejs }}', '{% url 'games:delete_evaluacion' evaluacion_id=item.evaluacion.id %}')"
@@ -256,7 +278,7 @@
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="6" class="px-6 py-12 text-center">
+                        <td colspan="7" class="px-6 py-12 text-center">
                             <div class="flex flex-col items-center gap-4">
                                 <div class="w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center">
                                     <i class="fas fa-inbox text-3xl text-gray-400 dark:text-gray-600"></i>

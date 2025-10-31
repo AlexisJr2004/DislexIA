@@ -23,6 +23,7 @@ class BaseGame {
         this.attempts = 0;
         this.hintUsed = false;
         this.questionTimer = null;
+        this.pausedTimeLeft = 0; // Para guardar tiempo restante al pausar
     }
     
     // ============================================
@@ -350,6 +351,50 @@ class BaseGame {
     updateAttemptsCounter() {
         const attemptsEl = document.getElementById('attempts-counter');
         if (attemptsEl) attemptsEl.textContent = `${this.attempts}/3`;
+    }
+    
+    // ============================================
+    // PAUSA Y REANUDACIÓN
+    // ============================================
+    
+    pauseGame() {
+        // Detener el timer de la pregunta actual
+        if (this.questionTimer) {
+            clearInterval(this.questionTimer);
+            this.questionTimer = null;
+        }
+        
+        // Guardar el tiempo restante de la pregunta actual
+        const timerEl = document.getElementById('question-timer');
+        if (timerEl) {
+            this.pausedTimeLeft = parseInt(timerEl.textContent) || 0;
+        }
+        
+        console.log('⏸️ Juego pausado. Tiempo restante:', this.pausedTimeLeft);
+    }
+    
+    resumeGame() {
+        // Reanudar el timer de la pregunta desde donde se quedó
+        const timerEl = document.getElementById('question-timer');
+        if (!timerEl || !this.currentQuestion) return;
+        
+        let timeLeft = this.pausedTimeLeft || this.currentQuestion.time_limit;
+        timerEl.textContent = timeLeft;
+        
+        console.log('▶️ Juego reanudado. Continuando desde:', timeLeft);
+        
+        this.questionTimer = setInterval(() => {
+            timeLeft--;
+            timerEl.textContent = timeLeft;
+            
+            if (timeLeft <= 10) {
+                this.applyTimerWarning(timerEl.parentElement);
+            }
+            
+            if (timeLeft <= 0) {
+                this.timeUp();
+            }
+        }, 1000);
     }
     
     // ============================================

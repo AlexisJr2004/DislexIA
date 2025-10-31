@@ -1,6 +1,8 @@
 // game-alerts.js
 // Módulo para mostrar alertas modales reutilizables en los juegos
 
+
+
 function showNextGameAlert({ progreso, siguienteUrl }) {
     // Crear overlay
     let overlay = document.createElement('div');
@@ -14,7 +16,10 @@ function showNextGameAlert({ progreso, siguienteUrl }) {
     overlay.style.display = 'flex';
     overlay.style.alignItems = 'center';
     overlay.style.justifyContent = 'center';
-    overlay.style.zIndex = 9999;
+    overlay.style.zIndex = 2147483647; 
+    overlay.style.boxSizing = 'border-box';
+    overlay.style.pointerEvents = 'auto';
+    overlay.style.visibility = 'visible';
 
     // Crear modal
     let modal = document.createElement('div');
@@ -42,7 +47,16 @@ function showNextGameAlert({ progreso, siguienteUrl }) {
     `;
 
     overlay.appendChild(modal);
-    document.body.appendChild(overlay);
+
+    // Insertar el modal en el contenedor correcto para fullscreen
+    const fullscreenContainer = document.getElementById('fullscreen-container');
+    if (fullscreenContainer) {
+        fullscreenContainer.appendChild(overlay);
+        console.log('[NextGameAlert] Overlay insertado en #fullscreen-container');
+    } else {
+        document.body.appendChild(overlay);
+        console.log('[NextGameAlert] Overlay insertado en body');
+    }
 
     // Animar barra de progreso
     setTimeout(() => {
@@ -51,7 +65,7 @@ function showNextGameAlert({ progreso, siguienteUrl }) {
 
     // Redirigir tras 2 segundos
     setTimeout(() => {
-        document.body.removeChild(overlay);
+        if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
         window.location.href = siguienteUrl;
     }, 2000);
 }

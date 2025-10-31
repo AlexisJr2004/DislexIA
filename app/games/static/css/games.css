@@ -51,8 +51,31 @@ body {
 /* =====================
    COMPONENTES PRINCIPALES
    ===================== */
+#fullscreen-container {
+    position: relative; /* Para que los modales fixed funcionen dentro */
+}
+
 #fullscreen-container:fullscreen {
     background: #f8f9fa;
+}
+
+/* Modales en pantalla completa */
+#fullscreen-container:fullscreen #pause-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+}
+
+#fullscreen-container:fullscreen #modal-finish {
+    position: fixed;
+    inset: 0;
+    z-index: 9998;
+}
+
+#fullscreen-container:fullscreen #modal-success {
+    position: fixed;
+    inset: 0;
+    z-index: 9997;
 }
 
 /* Cards */

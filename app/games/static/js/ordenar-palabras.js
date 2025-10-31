@@ -32,6 +32,11 @@ class OrdenarPalabrasGame extends BaseGame {
                     `
                 })}
 
+                <!-- Barra de progreso -->
+                <div class="w-full bg-gray-100 dark:bg-gray-800 rounded-full h-3 mb-6 overflow-hidden">
+                    <div id="progress-bar" class="h-3 bg-gradient-to-r from-green-400 to-blue-500 transition-all duration-300" style="width:0%"></div>
+                </div>
+
                 <!-- Contenedor de dos columnas -->
                 <div class="grid grid-cols-2 gap-6">
                     <!-- COLUMNA IZQUIERDA - Imagen y timer/intentos -->

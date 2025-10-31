@@ -222,6 +222,54 @@ class InitSequentialEvaluationView(View):
         return redirect('games:play_game', url_sesion=primera_sesion.url_sesion)
 
 
+@method_decorator(login_required, name='dispatch')
+class ResumeEvaluationView(View):
+    """Vista para reanudar una evaluación en proceso desde donde se quedó"""
+
+    def get(self, request, evaluacion_id, *args, **kwargs):
+        print("="*80)
+        print("🔄 ResumeEvaluationView LLAMADA")
+        print("="*80)
+        
+        try:
+            # Verificar que la evaluación pertenece al profesional actual
+            evaluacion = Evaluacion.objects.get(
+                id=evaluacion_id,
+                nino__profesional=request.user
+            )
+            print(f"✅ Evaluación encontrada: ID {evaluacion.id}, Estado: {evaluacion.estado}")
+        except Evaluacion.DoesNotExist:
+            messages.error(request, "Evaluación no encontrada o no autorizada.")
+            print(f"❌ ERROR: Evaluación con ID {evaluacion_id} no encontrada")
+            return redirect('games:session_list')
+
+        # Verificar que la evaluación está en proceso
+        if evaluacion.estado != 'en_proceso':
+            messages.warning(request, f"Esta evaluación ya está {evaluacion.get_estado_display()}.")
+            print(f"⚠️ ADVERTENCIA: Evaluación no está en proceso (estado: {evaluacion.estado})")
+            return redirect('games:session_list')
+
+        # Buscar la primera sesión pendiente (no completada)
+        sesion_pendiente = SesionJuego.objects.filter(
+            evaluacion=evaluacion
+        ).exclude(
+            estado='completada'
+        ).order_by('ejercicio_numero').first()
+
+        if not sesion_pendiente:
+            # No hay sesiones pendientes, la evaluación debería estar completada
+            messages.info(request, "No hay sesiones pendientes. Todas las sesiones están completadas.")
+            print("ℹ️ INFO: No hay sesiones pendientes")
+            return redirect('games:sequential_results', evaluacion_id=evaluacion.id)
+
+        print(f"🎮 Sesión pendiente encontrada: {sesion_pendiente.juego.nombre} (Ejercicio #{sesion_pendiente.ejercicio_numero})")
+        print(f"🔗 Redirigiendo a: {sesion_pendiente.url_sesion}")
+        print("="*80 + "\n")
+        
+        # Redirigir a la sesión pendiente
+        return redirect('games:play_game', url_sesion=sesion_pendiente.url_sesion)
+
+
 @csrf_exempt
 @require_http_methods(["POST"])
 def finish_game_session(request, url_sesion):
