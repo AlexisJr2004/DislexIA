@@ -102,171 +102,143 @@ class GameSessionListView(TemplateView):
 
 @method_decorator(login_required, name='dispatch')
 class InitSequentialEvaluationView(View):
-    """Vista para inicializar una evaluación secuencial completa con todos los juegos activos"""
 
     def get(self, request, *args, **kwargs):
-        print("="*80)
-        print("🚀 InitSequentialEvaluationView LLAMADA")
-        print("="*80)
-        
-        # Obtener nino_id del querystring
         nino_id = request.GET.get('nino_id')
-        print(f"📌 nino_id recibido: {nino_id}")
 
         if not nino_id:
             messages.error(request, "ID de niño no proporcionado.")
-            print("❌ ERROR: No se proporcionó nino_id")
-            return redirect('games:game_list')
+            return redirect('games:session_list')
 
         try:
             nino_id = int(nino_id)
-            print(f"✅ nino_id convertido a int: {nino_id}")
         except (ValueError, TypeError):
             messages.error(request, "ID de niño inválido.")
-            print(f"❌ ERROR: nino_id inválido: {nino_id}")
-            return redirect('games:game_list')
+            return redirect('games:session_list')
 
-        # Verificar que el niño pertenece al profesional actual
         try:
             nino = Nino.objects.get(id=nino_id, profesional=request.user)
-            print(f"✅ Niño encontrado: {nino.nombre_completo}")
         except Nino.DoesNotExist:
             messages.error(request, "Niño no encontrado o no autorizado.")
-            print(f"❌ ERROR: Niño con ID {nino_id} no encontrado")
-            return redirect('games:game_list')
+            return redirect('games:session_list')
 
-        # Crear nueva evaluación
-        print("\n📝 Creando nueva evaluación...")
+        sesion_activa = Evaluacion.objects.filter(
+            nino=nino,
+            estado='en_proceso'
+        ).first()
+        
+        if sesion_activa:
+            messages.warning(
+                request, 
+                f'El niño {nino.nombre_completo} ya tiene una sesión de evaluación activa iniciada el '
+                f'{sesion_activa.fecha_hora_inicio.strftime("%d/%m/%Y a las %H:%M")}. '
+                f'Puedes continuar con la sesión existente o cancelarla para crear una nueva.'
+            )
+            return redirect('games:session_list')
+
         evaluacion = Evaluacion.objects.create(
             nino=nino,
             fecha_hora_inicio=timezone.now(),
-            estado='en_proceso'
+            estado='en_proceso',
+            dispositivo=request.META.get('HTTP_USER_AGENT', '')[:50]
         )
-        print(f"✅ Evaluación creada con ID: {evaluacion.id}")
 
-        # Obtener todos los juegos activos ordenados por orden_visualizacion
-        print("\n🎮 Obteniendo juegos activos...")
         juegos = Juego.objects.filter(activo=True).order_by('orden_visualizacion')
-        print(f"📊 Juegos activos encontrados: {juegos.count()}")
 
         if not juegos.exists():
             messages.error(request, "No hay juegos activos disponibles.")
-            print("❌ ERROR: No hay juegos activos")
-            return redirect('games:game_list')
+            return redirect('games:session_list')
 
-        # Convertir a lista para acceso por índice
         juegos_list = list(juegos)
         num_juegos = len(juegos_list)
-        print(f"📋 Lista de juegos ({num_juegos}):")
-        for idx, juego in enumerate(juegos_list):
-            print(f"   {idx}: {juego.nombre}")
 
-        # SISTEMA DE BUCLE: Crear 32 sesiones rotando los juegos disponibles
         TOTAL_SESIONES = 32
         sesiones_creadas = []
-        
-        print(f"\n🔄 INICIANDO BUCLE DE CREACIÓN DE {TOTAL_SESIONES} SESIONES...")
-        print("="*80)
 
         for i in range(TOTAL_SESIONES):
-            print(f"\n🔄 Iteración {i+1}/{TOTAL_SESIONES} iniciada")
-            
             try:
-                # Rotar entre los juegos disponibles usando módulo
                 juego_index = i % num_juegos
                 juego = juegos_list[juego_index]
                 
-                print(f"   🎯 Juego seleccionado: {juego.nombre} (index {juego_index})")
-                
-                # Crear sesión
-                print(f"   ⏳ Llamando a SesionJuego.crear_nueva_sesion...")
                 sesion = SesionJuego.crear_nueva_sesion(
                     evaluacion=evaluacion,
                     juego=juego,
-                    nivel=1  # Nivel por defecto
+                    nivel=1
                 )
-                print(f"   ✅ Sesión creada con ID: {sesion.id}")
                 
-                # Asignar número de ejercicio global (1-32)
                 sesion.ejercicio_numero = i + 1
                 sesion.save(update_fields=['ejercicio_numero'])
-                print(f"   ✅ ejercicio_numero asignado: {sesion.ejercicio_numero}")
                 
                 sesiones_creadas.append(sesion)
                 
-                print(f"✅ Sesión {i+1}/32 creada: {juego.nombre} (ejercicio_numero={sesion.ejercicio_numero})")
-                print(f"📊 Sesiones acumuladas: {len(sesiones_creadas)}")
-                
             except Exception as e:
-                print(f"❌ ERROR creando sesión {i+1}: {e}")
-                print(f"🔍 Tipo de error: {type(e).__name__}")
                 import traceback
                 traceback.print_exc()
                 continue
 
-        print("\n" + "="*80)
-        print(f"🎯 BUCLE FINALIZADO")
-        print(f"📊 Total de sesiones creadas: {len(sesiones_creadas)}/{TOTAL_SESIONES}")
-        print("="*80)
-
         if not sesiones_creadas:
             messages.error(request, "Error al crear las sesiones de juegos.")
-            print("❌ FALLO CRÍTICO: No se crearon sesiones")
             return redirect('games:game_list')
 
-        # Redirigir al primer juego
         primera_sesion = sesiones_creadas[0]
-        print(f"\n🎮 Redirigiendo al primer juego: {primera_sesion.url_sesion}")
-        print("="*80 + "\n")
+        
+        messages.success(
+            request,
+            f'¡Evaluación iniciada para {nino.nombre_completo}! '
+            f'Se han creado {len(sesiones_creadas)} juegos. Comenzando con el primer juego.'
+        )
         
         return redirect('games:play_game', url_sesion=primera_sesion.url_sesion)
 
 
 @method_decorator(login_required, name='dispatch')
 class ResumeEvaluationView(View):
-    """Vista para reanudar una evaluación en proceso desde donde se quedó"""
-
     def get(self, request, evaluacion_id, *args, **kwargs):
-        print("="*80)
-        print("🔄 ResumeEvaluationView LLAMADA")
-        print("="*80)
-        
         try:
-            # Verificar que la evaluación pertenece al profesional actual
             evaluacion = Evaluacion.objects.get(
                 id=evaluacion_id,
                 nino__profesional=request.user
             )
-            print(f"✅ Evaluación encontrada: ID {evaluacion.id}, Estado: {evaluacion.estado}")
         except Evaluacion.DoesNotExist:
             messages.error(request, "Evaluación no encontrada o no autorizada.")
-            print(f"❌ ERROR: Evaluación con ID {evaluacion_id} no encontrada")
             return redirect('games:session_list')
 
-        # Verificar que la evaluación está en proceso
         if evaluacion.estado != 'en_proceso':
-            messages.warning(request, f"Esta evaluación ya está {evaluacion.get_estado_display()}.")
-            print(f"⚠️ ADVERTENCIA: Evaluación no está en proceso (estado: {evaluacion.estado})")
+            messages.warning(
+                request, 
+                f"Esta evaluación ya está {evaluacion.get_estado_display()}. "
+                f"No se puede continuar una evaluación que no está en proceso."
+            )
             return redirect('games:session_list')
 
-        # Buscar la primera sesión pendiente (no completada)
         sesion_pendiente = SesionJuego.objects.filter(
             evaluacion=evaluacion
         ).exclude(
             estado='completada'
         ).order_by('ejercicio_numero').first()
 
-        if not sesion_pendiente:
-            # No hay sesiones pendientes, la evaluación debería estar completada
-            messages.info(request, "No hay sesiones pendientes. Todas las sesiones están completadas.")
-            print("ℹ️ INFO: No hay sesiones pendientes")
-            return redirect('games:sequential_results', evaluacion_id=evaluacion.id)
+        total_sesiones = SesionJuego.objects.filter(evaluacion=evaluacion).count()
+        sesiones_completadas = SesionJuego.objects.filter(
+            evaluacion=evaluacion, 
+            estado='completada'
+        ).count()
 
-        print(f"🎮 Sesión pendiente encontrada: {sesion_pendiente.juego.nombre} (Ejercicio #{sesion_pendiente.ejercicio_numero})")
-        print(f"🔗 Redirigiendo a: {sesion_pendiente.url_sesion}")
-        print("="*80 + "\n")
+        if not sesion_pendiente:
+            if total_sesiones > 0 and sesiones_completadas == total_sesiones:
+                evaluacion.estado = 'completada'
+                evaluacion.fecha_hora_fin = timezone.now()
+                evaluacion.save()
+                messages.success(request, "¡Evaluación completada! Todas las sesiones han sido finalizadas.")
+            else:
+                messages.info(request, "No hay sesiones pendientes en esta evaluación.")
+            
+            return redirect('games:sequential_results', evaluacion_id=evaluacion.id)
         
-        # Redirigir a la sesión pendiente
+        messages.success(
+            request,
+            f'Continuando evaluación de {evaluacion.nino.nombre_completo}. '
+            f'Progreso actual: {sesion_pendiente.ejercicio_numero}/{total_sesiones}'
+        )
         return redirect('games:play_game', url_sesion=sesion_pendiente.url_sesion)
 
 
@@ -342,12 +314,6 @@ def finish_game_session(request, url_sesion):
                     print(f"✅ Predicción exitosa:")
                     print(f"   - Clasificación: {pred['clasificacion']}")
                     print(f"   - Probabilidad: {pred['probabilidad_porcentaje']}%")
-                    
-                    # Verificar si 'nivel_riesgo' está presente en 'pred'
-                    # if 'clasificacion_riesgo' not in pred:
-                    #     print("⚠️ 'nivel_riesgo' no está presente en pred. Asignando valor predeterminado.")
-                    #     pred['clasificacion_riesgo'] = 'BAJO'  # Valor predeterminado
-
                     print(f"   - Nivel de riesgo: {pred['clasificacion_riesgo']}")
                     
                     # === GUARDAR RESULTADO EN ReporteIA ===
@@ -548,14 +514,11 @@ def finish_individual_game(request, url_sesion):
         }, status=500)
 
 def delete_evaluacion(request, evaluacion_id):
-    """Vista para eliminar una evaluación completa"""
-    
-    # ⭐ AGREGAR LOGGING PARA DEBUG
-    print(f"🗑️ Vista delete_evaluacion llamada - ID: {evaluacion_id}")
-    print(f"👤 Usuario: {request.user}")
-    print(f"📍 Path: {request.path}")
-    print(f"🌐 Method: {request.method}")
-    
+    """
+    Eliminar o interrumpir una evaluación.
+    - Si está 'en_proceso': La marca como 'interrumpida'
+    - Si está 'completada' o 'interrumpida': La elimina físicamente
+    """
     try:
         evaluacion = Evaluacion.objects.get(
             id=evaluacion_id,
@@ -563,27 +526,43 @@ def delete_evaluacion(request, evaluacion_id):
         )
         
         nino_nombre = evaluacion.nino.nombre_completo
-        print(f"✅ Evaluación encontrada: {nino_nombre}")
-        messages.success(request, f'✅ Evaluación de {nino_nombre} eliminada correctamente')
-        evaluacion.delete()
-        print(f"✅ Evaluación eliminada")
+        estado_actual = evaluacion.estado
         
-        response = JsonResponse({
-            'success': True,
-            'message': f'Evaluación de {nino_nombre} eliminada correctamente'
-        })
-        print(f"📤 Retornando JsonResponse")
-        return response
+        if estado_actual == 'en_proceso':
+            evaluacion.estado = 'interrumpida'
+            evaluacion.fecha_hora_fin = timezone.now()
+            evaluacion.save()
+            
+            messages.warning(
+                request, 
+                f'Sesión de {nino_nombre} marcada como interrumpida.'
+            )
+            
+            return JsonResponse({
+                'success': True,
+                'message': f'Sesión de {nino_nombre} interrumpida correctamente',
+                'action': 'interrupted',
+                'evaluacion_id': evaluacion.id,
+                'estado_final': evaluacion.estado
+            })
+        else:
+            messages.success(request, f'Evaluación de {nino_nombre} eliminada correctamente')
+            evaluacion.delete()
+            
+            return JsonResponse({
+                'success': True,
+                'message': f'Evaluación de {nino_nombre} eliminada correctamente',
+                'action': 'deleted',
+                'evaluacion_id': evaluacion_id
+            })
     
     except Evaluacion.DoesNotExist:
-        print(f"❌ Evaluación no encontrada")
         return JsonResponse({
             'success': False,
             'error': 'Evaluación no encontrada'
         }, status=404)
     
     except Exception as e:
-        print(f"❌ Error: {str(e)}")
         import traceback
         traceback.print_exc()
         return JsonResponse({
@@ -603,4 +582,4 @@ def ejecutar_populate_sessions(request):
             messages.error(request, f'Error: {str(e)}')
     else:
         messages.error(request, f'Formulario inválido. {form.errors}')
-    return redirect('games:session_list')  # Redirige a la lista de sesiones
+    return redirect('games:session_list')

@@ -213,6 +213,11 @@
                                     <i class="fas fa-check-circle"></i>
                                     {% trans "Completada" %}
                                 </span>
+                            {% elif item.evaluacion.estado == 'interrumpida' %}
+                                <span class="inline-flex items-center gap-2 px-3 py-1 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 rounded-full text-xs font-semibold">
+                                    <i class="fas fa-times-circle"></i>
+                                    {% trans "Interrumpida" %}
+                                </span>
                             {% else %}
                                 <span class="inline-flex items-center gap-2 px-3 py-1 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400 rounded-full text-xs font-semibold">
                                     <i class="fas fa-clock"></i>
@@ -408,12 +413,38 @@
                 <!-- Grid de niños -->
                 <div id="ninosGridModalIA" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
                     {% for nino in ninos %}
+                    {% comment %}Verificar si el niño tiene sesión activa{% endcomment %}
+                    {% with tiene_sesion_activa=False %}
+                        {% for item in evaluaciones %}
+                            {% if item.evaluacion.nino.id == nino.id and item.evaluacion.estado == 'en_proceso' %}
+                                {% with tiene_sesion_activa=True %}
+                                {% endwith %}
+                            {% endif %}
+                        {% endfor %}
+                        
+                        {% if tiene_sesion_activa %}
+                    <div class="nino-card-select-ia bg-white dark:bg-gray-900 rounded-2xl border-2 border-yellow-300 dark:border-yellow-600 p-6 cursor-pointer hover:border-yellow-500 dark:hover:border-yellow-400 transition-all relative"
+                         data-nino-id="{{ nino.id }}"
+                         data-nombre="{{ nino.nombres|lower }}"
+                         data-apellido="{{ nino.apellidos|lower }}"
+                         data-edad="{{ nino.edad }}"
+                         data-tiene-sesion-activa="true"
+                         onclick="seleccionarNinoIA('{{ nino.id }}', '{{ nino.nombres|escapejs }}', '{{ nino.apellidos|escapejs }}', '{{ nino.edad }}', {% if nino.imagen %}true{% else %}false{% endif %}, {% if nino.imagen %}'{{ nino.imagen.url }}'{% else %}''{% endif %}, '{{ nino.get_genero_display|escapejs }}')">
+                        
+                        <!-- Badge de sesión activa -->
+                        <div class="absolute top-2 right-2 bg-yellow-100 dark:bg-yellow-900/50 text-yellow-700 dark:text-yellow-400 px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1">
+                            <i class="fas fa-exclamation-circle"></i>
+                            <span>{% trans "Sesión Activa" %}</span>
+                        </div>
+                        {% else %}
                     <div class="nino-card-select-ia bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-6 cursor-pointer hover:border-purple-500 dark:hover:border-purple-400 transition-all"
                          data-nino-id="{{ nino.id }}"
                          data-nombre="{{ nino.nombres|lower }}"
                          data-apellido="{{ nino.apellidos|lower }}"
                          data-edad="{{ nino.edad }}"
+                         data-tiene-sesion-activa="false"
                          onclick="seleccionarNinoIA('{{ nino.id }}', '{{ nino.nombres|escapejs }}', '{{ nino.apellidos|escapejs }}', '{{ nino.edad }}', {% if nino.imagen %}true{% else %}false{% endif %}, {% if nino.imagen %}'{{ nino.imagen.url }}'{% else %}''{% endif %}, '{{ nino.get_genero_display|escapejs }}')">
+                        {% endif %}
                         
                         <!-- Header with Avatar -->
                         <div class="flex flex-col items-center mb-4">
@@ -458,6 +489,7 @@
                             </div>
                         </div>
                     </div>
+                    {% endwith %}
                     {% endfor %}
                 </div>
 
@@ -701,9 +733,103 @@
 {% block extra_scripts %}
 <script>
     // ============================================
+    // FUNCIONES AUXILIARES - MODALES DE NOTIFICACIÓN
+    // ============================================
+    function mostrarModalNotificacion(tipo, titulo, mensaje) {
+        const iconos = {
+            success: '<i class="fas fa-check-circle text-green-500 text-4xl"></i>',
+            error: '<i class="fas fa-times-circle text-red-500 text-4xl"></i>',
+            warning: '<i class="fas fa-exclamation-triangle text-yellow-500 text-4xl"></i>',
+            info: '<i class="fas fa-info-circle text-blue-500 text-4xl"></i>'
+        };
+        
+        const colores = {
+            success: 'green',
+            error: 'red',
+            warning: 'yellow',
+            info: 'blue'
+        };
+        
+        const color = colores[tipo] || 'gray';
+        const icono = iconos[tipo] || iconos.info;
+        
+        const modalHTML = `
+            <div id="modal-notificacion-temp" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-[100] animate-fade-in" style="z-index:99999;">
+                <div class="bg-white dark:bg-gray-900 rounded-2xl w-11/12 md:w-[400px] p-6 shadow-2xl border border-gray-200 dark:border-gray-800 animate-scale-in">
+                    <div class="flex flex-col items-center text-center gap-4">
+                        ${icono}
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-white">${titulo}</h3>
+                        <p class="text-gray-600 dark:text-gray-400">${mensaje}</p>
+                        <button onclick="cerrarModalNotificacion()" 
+                                class="w-full px-6 py-3 bg-gradient-to-r from-${color}-600 to-${color}-700 hover:from-${color}-500 hover:to-${color}-600 text-white rounded-xl font-semibold transition-all shadow-md hover:shadow-lg">
+                            Aceptar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        document.body.insertAdjacentHTML('beforeend', modalHTML);
+        document.body.style.overflow = 'hidden';
+    }
+    
+    function cerrarModalNotificacion() {
+        const modal = document.getElementById('modal-notificacion-temp');
+        if (modal) {
+            modal.remove();
+            document.body.style.overflow = 'auto';
+        }
+    }
+    
+    function mostrarModalConfirmacion(titulo, mensaje, onConfirm, onCancel) {
+        const modalHTML = `
+            <div id="modal-confirmacion-temp" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-[100] animate-fade-in" style="z-index:99999;">
+                <div class="bg-white dark:bg-gray-900 rounded-2xl w-11/12 md:w-[450px] p-6 shadow-2xl border border-gray-200 dark:border-gray-800 animate-scale-in">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-12 h-12 bg-yellow-100 dark:bg-yellow-900/30 rounded-full flex items-center justify-center">
+                            <i class="fas fa-question-circle text-yellow-600 dark:text-yellow-400 text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-white">${titulo}</h3>
+                    </div>
+                    <p class="text-gray-600 dark:text-gray-400 mb-6">${mensaje}</p>
+                    <div class="flex gap-3">
+                        <button onclick="cancelarConfirmacion()" 
+                                class="flex-1 px-6 py-3 bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-xl font-semibold hover:bg-gray-300 dark:hover:bg-gray-700 transition-all">
+                            Cancelar
+                        </button>
+                        <button onclick="confirmarAccion()" 
+                                class="flex-1 px-6 py-3 bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-500 hover:to-pink-500 text-white rounded-xl font-semibold transition-all shadow-md hover:shadow-lg">
+                            Confirmar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        document.body.insertAdjacentHTML('beforeend', modalHTML);
+        document.body.style.overflow = 'hidden';
+        
+        window.tempConfirmCallback = onConfirm;
+        window.tempCancelCallback = onCancel;
+    }
+    
+    function confirmarAccion() {
+        const modal = document.getElementById('modal-confirmacion-temp');
+        if (modal) modal.remove();
+        document.body.style.overflow = 'auto';
+        if (window.tempConfirmCallback) window.tempConfirmCallback();
+    }
+    
+    function cancelarConfirmacion() {
+        const modal = document.getElementById('modal-confirmacion-temp');
+        if (modal) modal.remove();
+        document.body.style.overflow = 'auto';
+        if (window.tempCancelCallback) window.tempCancelCallback();
+    }
+
+    // ============================================
     // MODAL DE EVALUACIÓN IA
     // ============================================
-    // Variables globales para evaluación IA
     let ninoSeleccionadoIA = null;
 
     // Abrir modal de evaluación IA (estilo game_list)
@@ -745,8 +871,6 @@
             apellidos: apellidos,
             edad: edad
         };
-
-        console.log('seleccionarNinoIA called:', id, nombres, apellidos, edad, hasImage, imageUrl);
 
         // actualizar preview
         const previewNombreEl = document.getElementById('nombrePreviewIA');
@@ -832,9 +956,33 @@
 
     function iniciarEvaluacionIA() {
         if (!ninoSeleccionadoIA) {
-            alert('⚠️ {% trans "Por favor selecciona un niño para continuar" %}');
+            mostrarModalNotificacion('warning', 'Atención', 'Por favor selecciona un niño para continuar');
             return;
         }
+        
+        // Verificar si el niño ya tiene una sesión activa
+        const evaluacionesEnProceso = [
+            {% for item in evaluaciones %}
+                {% if item.evaluacion.estado == 'en_proceso' %}
+                {
+                    nino_id: {{ item.evaluacion.nino.id }},
+                    evaluacion_id: {{ item.evaluacion.id }},
+                    nombre: "{{ item.evaluacion.nino.nombre_completo|escapejs }}",
+                    fecha: "{{ item.evaluacion.fecha_hora_inicio|date:'d/m/Y' }}",
+                    hora: "{{ item.evaluacion.fecha_hora_inicio|time:'H:i' }}"
+                },
+                {% endif %}
+            {% endfor %}
+        ];
+        
+        const sesionActiva = evaluacionesEnProceso.find(e => e.nino_id == ninoSeleccionadoIA.id);
+        
+        if (sesionActiva) {
+            // Mostrar modal de confirmación con opciones
+            mostrarModalSesionActiva(sesionActiva);
+            return;
+        }
+        
         const btn = document.getElementById('btn-confirmar-jugar');
         if (btn) {
             btn.disabled = true;
@@ -842,6 +990,210 @@
         }
         const urlInicio = `{% url 'games:init_sequential_evaluation' %}?nino_id=${ninoSeleccionadoIA.id}`;
         setTimeout(() => { window.location.href = urlInicio; }, 400);
+    }
+    
+    function mostrarModalSesionActiva(sesion) {
+        // Cerrar modal de confirmación
+        cerrarModalConfirmacion();
+        
+        // Crear y mostrar modal de advertencia
+        const modalHTML = `
+            <div id="modal-sesion-activa" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-[70] animate-fade-in" style="z-index:99999;">
+                <div class="bg-white dark:bg-gray-900 rounded-2xl w-11/12 md:w-[600px] p-6 shadow-2xl border border-gray-200 dark:border-gray-800 animate-scale-in">
+                    <!-- Header -->
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-16 h-16 bg-yellow-100 dark:bg-yellow-900/30 rounded-full flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-exclamation-triangle text-yellow-600 dark:text-yellow-400 text-2xl"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-xl font-bold text-gray-900 dark:text-white">
+                                {% trans "Sesión Activa Detectada" %}
+                            </h3>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">
+                                {% trans "Este niño ya tiene una evaluación en curso" %}
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <!-- Información de la sesión activa -->
+                    <div class="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-xl p-4 mb-6">
+                        <div class="flex items-start gap-3">
+                            <i class="fas fa-info-circle text-yellow-600 dark:text-yellow-400 text-xl mt-1"></i>
+                            <div class="flex-1">
+                                <p class="text-gray-800 dark:text-gray-200 font-semibold mb-2">
+                                    ${sesion.nombre} {% trans "ya tiene una sesión de evaluación activa" %}
+                                </p>
+                                <div class="text-sm text-gray-700 dark:text-gray-300 space-y-1">
+                                    <p><strong>{% trans "Fecha de inicio:" %}</strong> ${sesion.fecha} {% trans "a las" %} ${sesion.hora}</p>
+                                    <p><strong>{% trans "ID de evaluación:" %}</strong> #${sesion.evaluacion_id}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Opciones -->
+                    <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mb-6">
+                        <p class="text-center text-gray-800 dark:text-gray-200 font-semibold flex items-center justify-center gap-2">
+                            <i class="fas fa-question-circle text-blue-600 dark:text-blue-400"></i>
+                            {% trans "¿Qué deseas hacer?" %}
+                        </p>
+                    </div>
+                    
+                    <!-- Botones de acción -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        <button onclick="continuarSesionActiva(${sesion.evaluacion_id})"
+                                class="px-6 py-3.5 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white rounded-xl text-base font-bold transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2">
+                            <i class="fas fa-play-circle"></i>
+                            {% trans "Continuar" %}
+                        </button>
+                        <button onclick="cancelarSesionActiva(${sesion.evaluacion_id})"
+                                class="px-6 py-3.5 bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-500 hover:to-pink-500 text-white rounded-xl text-base font-bold transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2">
+                            <i class="fas fa-times-circle"></i>
+                            {% trans "Cancelar" %}
+                        </button>
+                        <button onclick="cerrarModalSesionActiva()"
+                                class="px-6 py-3.5 bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-xl text-base font-semibold hover:bg-gray-300 dark:hover:bg-gray-700 transition-all flex items-center justify-center gap-2">
+                            <i class="fas fa-arrow-left"></i>
+                            {% trans "Volver" %}
+                        </button>
+                    </div>
+                    
+                    <!-- Nota informativa -->
+                    <div class="mt-6 pt-4 border-t border-gray-200 dark:border-gray-800 text-sm text-gray-600 dark:text-gray-400 text-center">
+                        <i class="fas fa-lightbulb text-yellow-500 mr-1"></i>
+                        {% trans "Continuar: Reanuda la evaluación desde donde se quedó" %}<br>
+                        {% trans "Cancelar: Marca la sesión como interrumpida (no se puede deshacer)" %}
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        document.body.insertAdjacentHTML('beforeend', modalHTML);
+        document.body.style.overflow = 'hidden';
+    }
+    
+    function continuarSesionActiva(evaluacionId) {
+        window.location.href = `{% url 'games:resume_evaluation' evaluacion_id=0 %}`.replace('0', evaluacionId);
+    }
+    
+    let cancelacionEnProceso = false;
+    
+    function cancelarSesionActiva(evaluacionId) {
+        console.log('═══════════════════════════════════════════════════════');
+        console.log('🔄 [DEBUG] ▶️  cancelarSesionActiva() INVOCADA');
+        console.log('═══════════════════════════════════════════════════════');
+        console.log('📍 [DEBUG] Parámetro evaluacionId:', evaluacionId);
+        console.log('� [DEBUG] Tipo de evaluacionId:', typeof evaluacionId);
+        console.log('📍 [DEBUG] cancelacionEnProceso:', cancelacionEnProceso);
+        console.log('📍 [DEBUG] Timestamp:', new Date().toISOString());
+        
+        // Verificar si ya hay una cancelación en proceso
+        if (cancelacionEnProceso) {
+            console.warn('⚠️ [WARNING] Cancelación ya en proceso. Ignorando llamada duplicada.');
+            console.log('═══════════════════════════════════════════════════════\n');
+            return;
+        }
+        
+        if (!evaluacionId || evaluacionId === 'undefined' || evaluacionId === 0) {
+            mostrarModalNotificacion('error', 'Error', 'ID de evaluación inválido. Por favor, recarga la página e intenta de nuevo.');
+            return;
+        }
+        
+        mostrarModalConfirmacion(
+            'Confirmar Cancelación',
+            '¿Estás seguro de cancelar esta sesión? Esta acción marcará la evaluación como interrumpida y no se podrá deshacer.',
+            () => ejecutarCancelacion(evaluacionId),
+            null
+        );
+    }
+    
+    function ejecutarCancelacion(evaluacionId) {
+        cancelacionEnProceso = true;
+        
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value 
+            || document.cookie.split('; ').find(row => row.startsWith('csrftoken='))?.split('=')[1];
+        
+        if (!csrfToken) {
+            mostrarModalNotificacion('error', 'Error', 'Token CSRF no encontrado');
+            cancelacionEnProceso = false;
+            return;
+        }
+        
+        const btnCancelar = document.querySelector(`button[onclick*="cancelarSesionActiva(${evaluacionId})"]`);
+        let originalHTML = '';
+        
+        if (btnCancelar) {
+            originalHTML = btnCancelar.innerHTML;
+            btnCancelar.disabled = true;
+            btnCancelar.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> {% trans "Cancelando..." %}';
+        }
+        
+        const deleteUrl = `{% url 'games:delete_evaluacion' evaluacion_id=0 %}`.replace('0', evaluacionId);
+        
+        if (deleteUrl.includes('/0/') || deleteUrl.includes('/undefined/')) {
+            mostrarModalNotificacion('error', 'Error', 'No se pudo construir la URL correctamente. Por favor, recarga la página.');
+            cancelacionEnProceso = false;
+            if (btnCancelar) {
+                btnCancelar.disabled = false;
+                btnCancelar.innerHTML = originalHTML;
+            }
+            return;
+        }
+        
+        fetch(deleteUrl, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': csrfToken,
+                'X-Requested-With': 'XMLHttpRequest',
+                'Content-Type': 'application/json'
+            },
+            credentials: 'same-origin'
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                if (data.action === 'interrupted') {
+                    cerrarModalSesionActiva();
+                    mostrarModalNotificacion('success', '¡Sesión Interrumpida!', 'La evaluación se ha marcado como interrumpida correctamente.');
+                    setTimeout(() => window.location.reload(), 1500);
+                } else if (data.action === 'deleted') {
+                    cerrarModalSesionActiva();
+                    setTimeout(() => window.location.reload(), 300);
+                }
+            } else {
+                cancelacionEnProceso = false;
+                if (btnCancelar) {
+                    btnCancelar.disabled = false;
+                    btnCancelar.innerHTML = originalHTML;
+                }
+                mostrarModalNotificacion('error', 'Error', data.error || 'Error desconocido');
+            }
+        })
+        .catch(error => {
+            cancelacionEnProceso = false;
+            if (btnCancelar) {
+                btnCancelar.disabled = false;
+                btnCancelar.innerHTML = originalHTML;
+            }
+            mostrarModalNotificacion('error', 'Error', 'Error al cancelar: ' + error.message);
+        })
+        .finally(() => {
+            setTimeout(() => {
+                if (cancelacionEnProceso) {
+                    cancelacionEnProceso = false;
+                }
+            }, 5000);
+        });
+    }
+    
+    function cerrarModalSesionActiva() {
+        const modal = document.getElementById('modal-sesion-activa');
+        if (modal) {
+            modal.remove();
+            document.body.style.overflow = 'auto';
+        }
+        // Volver a abrir el modal de selección
+        abrirModalEvaluacionIA();
     }
 
     // Buscador dentro del modal IA: filtra las tarjetas y actualiza el contador
@@ -922,7 +1274,7 @@
     // Confirmar y comenzar evaluación IA
     function confirmarEvaluacionIA() {
         if (!ninoSeleccionadoIA) {
-            alert('⚠️ {% trans "Por favor selecciona un niño para continuar" %}');
+            mostrarModalNotificacion('warning', 'Atención', 'Por favor selecciona un niño para continuar');
             return;
         }
         
@@ -935,9 +1287,6 @@
         
         // Redirigir a la evaluación IA secuencial
         const urlInicio = `{% url 'games:init_sequential_evaluation' %}?nino_id=${ninoSeleccionadoIA.id}`;
-        
-        console.log('🚀 Iniciando evaluación IA para:', ninoSeleccionadoIA);
-        console.log('📍 URL:', urlInicio);
         
         // Redirigir después de un pequeño delay
         setTimeout(() => {
@@ -982,7 +1331,7 @@
             const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value 
                 || document.cookie.split('; ').find(row => row.startsWith('csrftoken='))?.split('=')[1];
             if (!csrfToken) {
-                alert('❌ Error: Token CSRF no encontrado');
+                mostrarModalNotificacion('error', 'Error', 'Token CSRF no encontrado');
                 return;
             }
             // Deshabilitar botón
@@ -1006,13 +1355,13 @@
                     window.location.reload();
                 } else {
                     cerrarModalEliminar();
-                    alert('❌ ' + (data.error || 'Error desconocido'));
+                    mostrarModalNotificacion('error', 'Error', data.error || 'Error desconocido');
                 }
                 cerrarModalEliminar();
             })
             .catch(function(error) {
                 cerrarModalEliminar();
-                alert('❌ Error al eliminar: ' + error.message);
+                mostrarModalNotificacion('error', 'Error', 'Error al eliminar: ' + error.message);
             })
             .finally(function() {
                 this.disabled = false;
@@ -1025,7 +1374,6 @@
     // INICIALIZACIÓN
     // ============================================
     document.addEventListener('DOMContentLoaded', function() {
-        console.log('{% trans "Vista de sesiones cargada correctamente" %}');
         
         // Selector de niño para evaluación IA
         const selectNino = document.getElementById('ninoSelectIA');
