@@ -1,0 +1,246 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block content %}
+<div class="p-8">
+    <!-- Header Section -->
+    <div class="mb-8">
+        <div class="flex items-center gap-4 mb-4">
+            <div class="flex-1">
+                <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2 flex items-center gap-3">
+                    <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-blue-600 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-history text-white text-xl"></i>
+                    </div>
+                    {% trans "Historial de Evaluaciones" %}
+                </h1>
+                <p class="text-gray-600 dark:text-gray-400">
+                    {% trans "Paciente:" %} <strong>{{ nino.nombre_completo }}</strong> ({{ nino.edad }} {% trans "años" %})
+                </p>
+            </div>
+            
+            <!-- Botón Volver a la Lista -->
+            <a href="{% url 'core:lista_ninos' %}" 
+                class="px-6 py-3 bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-xl font-semibold flex items-center gap-2 transition-all hover:bg-gray-300 dark:hover:bg-gray-700">
+                <i class="fas fa-arrow-left"></i>
+                {% trans "Volver a la lista" %}
+            </a>
+        </div>
+
+        <!-- Información del Niño -->
+        <div class="bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 rounded-2xl border border-purple-200 dark:border-purple-800 p-6">
+            <div class="flex items-center gap-6">
+                <div class="w-20 h-20 rounded-full overflow-hidden ring-4 ring-white dark:ring-gray-900 flex-shrink-0">
+                    {% if nino.imagen %}
+                        <img src="{{ nino.imagen.url }}" alt="{{ nino.nombre_completo }}" class="w-full h-full object-cover">
+                    {% else %}
+                        <div class="w-full h-full bg-gradient-to-br from-purple-400 to-purple-600 flex items-center justify-center text-white text-3xl font-bold">
+                            {{ nino.nombres.0 }}{{ nino.apellidos.0 }}
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="flex-1 grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">{% trans "Género" %}</p>
+                        <p class="font-semibold text-gray-900 dark:text-white">{{ nino.genero }}</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">{% trans "Edad" %}</p>
+                        <p class="font-semibold text-gray-900 dark:text-white">{{ nino.edad }} {% trans "años" %}</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">{% trans "Idioma" %}</p>
+                        <p class="font-semibold text-gray-900 dark:text-white">{{ nino.idioma_nativo }}</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">{% trans "Fecha de Nacimiento" %}</p>
+                        <p class="font-semibold text-gray-900 dark:text-white">{{ nino.fecha_nacimiento|date:"d/m/Y" }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
+            <div class="flex items-center justify-between mb-2">
+                <div class="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-chart-line text-blue-600 dark:text-blue-400"></i>
+                </div>
+            </div>
+            <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ total_evaluaciones }}</p>
+            <p class="text-sm text-gray-500 dark:text-gray-400">{% trans "Total Evaluaciones" %}</p>
+        </div>
+
+        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
+            <div class="flex items-center justify-between mb-2">
+                <div class="w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-check-circle text-green-600 dark:text-green-400"></i>
+                </div>
+            </div>
+            <p class="text-2xl font-bold text-green-600 dark:text-green-400">{{ evaluaciones_completadas }}</p>
+            <p class="text-sm text-gray-500 dark:text-gray-400">{% trans "Completadas" %}</p>
+        </div>
+
+        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
+            <div class="flex items-center justify-between mb-2">
+                <div class="w-10 h-10 bg-yellow-100 dark:bg-yellow-900/30 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-clock text-yellow-600 dark:text-yellow-400"></i>
+                </div>
+            </div>
+            <p class="text-2xl font-bold text-yellow-600 dark:text-yellow-400">{{ evaluaciones_en_proceso }}</p>
+            <p class="text-sm text-gray-500 dark:text-gray-400">{% trans "En Proceso" %}</p>
+        </div>
+
+        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
+            <div class="flex items-center justify-between mb-2">
+                <div class="w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-percentage text-purple-600 dark:text-purple-400"></i>
+                </div>
+            </div>
+            <p class="text-2xl font-bold text-purple-600 dark:text-purple-400">{{ precision_promedio|floatformat:1 }}%</p>
+            <p class="text-sm text-gray-500 dark:text-gray-400">{% trans "Precisión Promedio" %}</p>
+        </div>
+    </div>
+
+    <!-- Evaluaciones List -->
+    <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <div class="p-6 border-b border-gray-200 dark:border-gray-700">
+            <h2 class="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                <i class="fas fa-list text-purple-600 dark:text-purple-400"></i>
+                {% trans "Lista de Evaluaciones" %}
+            </h2>
+        </div>
+
+        {% if evaluaciones %}
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead class="bg-gray-50 dark:bg-gray-900">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                            {% trans "ID" %}
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                            {% trans "Fecha" %}
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                            {% trans "Estado" %}
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                            {% trans "Sesiones" %}
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                            {% trans "Precisión" %}
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                            {% trans "Aciertos/Clics" %}
+                        </th>
+                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                            {% trans "Acciones" %}
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                    {% for evaluacion in evaluaciones %}
+                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-900/50 transition-colors">
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="text-sm font-medium text-gray-900 dark:text-white">#{{ evaluacion.id }}</span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm text-gray-900 dark:text-white">
+                                {{ evaluacion.fecha_hora_inicio|date:"d/m/Y" }}
+                            </div>
+                            <div class="text-xs text-gray-500 dark:text-gray-400">
+                                {{ evaluacion.fecha_hora_inicio|time:"H:i" }}
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            {% if evaluacion.estado == 'completada' %}
+                                <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400">
+                                    <i class="fas fa-check-circle mr-1"></i> {% trans "Completada" %}
+                                </span>
+                            {% elif evaluacion.estado == 'en_proceso' %}
+                                <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400">
+                                    <i class="fas fa-clock mr-1"></i> {% trans "En Proceso" %}
+                                </span>
+                            {% else %}
+                                <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400">
+                                    <i class="fas fa-times-circle mr-1"></i> {% trans "Interrumpida" %}
+                                </span>
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+                            {{ evaluacion.sesiones_juego.count }} {% trans "sesiones" %}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="flex items-center gap-2">
+                                <div class="flex-1 bg-gray-200 dark:bg-gray-700 rounded-full h-2 max-w-[80px]">
+                                    <div class="bg-gradient-to-r from-purple-500 to-blue-600 h-2 rounded-full" 
+                                         style="width: {{ evaluacion.precision_promedio }}%"></div>
+                                </div>
+                                <span class="text-sm font-semibold text-gray-900 dark:text-white">
+                                    {{ evaluacion.precision_promedio|floatformat:1 }}%
+                                </span>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+                            {{ evaluacion.total_aciertos }} / {{ evaluacion.total_clics }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                            <a href="{% url 'games:sequential_results' evaluacion.id %}" 
+                               class="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-all">
+                                <i class="fas fa-eye"></i>
+                                {% trans "Ver Detalles" %}
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        {% if is_paginated %}
+        <div class="px-6 py-4 border-t border-gray-200 dark:border-gray-700">
+            <div class="flex items-center justify-between">
+                <div class="text-sm text-gray-500 dark:text-gray-400">
+                    {% trans "Mostrando" %} {{ page_obj.start_index }} - {{ page_obj.end_index }} {% trans "de" %} {{ paginator.count }} {% trans "evaluaciones" %}
+                </div>
+                <div class="flex gap-2">
+                    {% if page_obj.has_previous %}
+                        <a href="?page={{ page_obj.previous_page_number }}" 
+                           class="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-all">
+                            {% trans "Anterior" %}
+                        </a>
+                    {% endif %}
+                    {% if page_obj.has_next %}
+                        <a href="?page={{ page_obj.next_page_number }}" 
+                           class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-all">
+                            {% trans "Siguiente" %}
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        {% else %}
+        <!-- Empty State -->
+        <div class="p-12 text-center">
+            <i class="fas fa-folder-open text-6xl text-gray-300 dark:text-gray-700 mb-4"></i>
+            <p class="text-gray-500 dark:text-gray-400 text-lg mb-4">
+                {% trans "No hay evaluaciones registradas para este niño" %}
+            </p>
+            <a href="{% url 'games:session_list' %}" 
+               class="inline-flex items-center gap-2 px-6 py-3 bg-purple-600 text-white rounded-xl font-semibold hover:bg-purple-700 transition-all">
+                <i class="fas fa-plus"></i>
+                {% trans "Crear primera evaluación" %}
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -36,6 +36,9 @@ msgstr "Your friendly neuropsychologist"
 msgid "Panel Administrativo"
 msgstr "Administrative Panel"
 
+msgid "Administración"
+msgstr "Administration"
+
 msgid "Juegos"
 msgstr "Games"
 
@@ -1527,9 +1530,6 @@ msgstr "Accuracy"
 msgid "Estado"
 msgstr "Status"
 
-msgid "Acciones"
-msgstr "Actions"
-
 msgid "Seleccionar Niño"
 msgstr "Select Child"
 
@@ -1559,3 +1559,125 @@ msgstr "Create test evaluation for testing"
 
 msgid "Nivel de riesgo"
 msgstr "Risk level"
+
+# ========================================
+# GESTION DE USUARIOS (ADMIN)
+# ========================================
+
+msgid "Gestión de Usuarios"
+msgstr "User Management"
+
+msgid "Panel de administración para gestionar todos los usuarios del sistema"
+msgstr "Administration panel to manage all system users"
+
+msgid "Total Usuarios"
+msgstr "Total Users"
+
+msgid "Administradores"
+msgstr "Administrators"
+
+msgid "Buscar en tiempo real"
+msgstr "Search in real-time"
+
+msgid "Buscar por nombre, email o username..."
+msgstr "Search by name, email or username..."
+
+msgid "usuario(s) encontrado(s)"
+msgstr "user(s) found"
+
+msgid "Filtros activos"
+msgstr "Active filters"
+
+msgid "Limpiar"
+msgstr "Clear"
+
+msgid "Lista de Usuarios"
+msgstr "User List"
+
+msgid "Usuario"
+msgstr "User"
+
+msgid "Niños"
+msgstr "Children"
+
+msgid "Fecha Registro"
+msgstr "Registration Date"
+
+msgid "Acciones"
+msgstr "Actions"
+
+msgid "Desactivar"
+msgstr "Deactivate"
+
+msgid "Activar"
+msgstr "Activate"
+
+msgid "usuarios"
+msgstr "users"
+
+msgid "No se encontraron usuarios"
+msgstr "No users found"
+
+msgid "¿Desactivar usuario?"
+msgstr "Deactivate user?"
+
+msgid "¿Activar usuario?"
+msgstr "Activate user?"
+
+msgid "El usuario no podrá acceder al sistema hasta que sea activado nuevamente."
+msgstr "The user will not be able to access the system until reactivated."
+
+msgid "El usuario podrá acceder al sistema nuevamente."
+msgstr "The user will be able to access the system again."
+
+msgid "No se encontraron usuarios con los filtros aplicados"
+msgstr "No users found with the applied filters"
+
+# ========================================
+# HISTORIAL DE EVALUACIONES
+# ========================================
+
+msgid "Historial de Evaluaciones"
+msgstr "Evaluation History"
+
+msgid "Paciente:"
+msgstr "Patient:"
+
+msgid "Volver"
+msgstr "Back"
+
+msgid "Idioma"
+msgstr "Language"
+
+msgid "Total Evaluaciones"
+msgstr "Total Evaluations"
+
+msgid "Precisión Promedio"
+msgstr "Average Accuracy"
+
+msgid "Lista de Evaluaciones"
+msgstr "Evaluation List"
+
+msgid "ID"
+msgstr "ID"
+
+msgid "Precisión"
+msgstr "Accuracy"
+
+msgid "Aciertos/Clics"
+msgstr "Hits/Clicks"
+
+msgid "Ver Detalles"
+msgstr "View Details"
+
+msgid "evaluaciones"
+msgstr "evaluations"
+
+msgid "No hay evaluaciones registradas para este niño"
+msgstr "No evaluations registered for this child"
+
+msgid "Crear primera evaluación"
+msgstr "Create first evaluation"
+
+msgid "Interrumpida"
+msgstr "Interrupted"

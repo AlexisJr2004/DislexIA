@@ -6,6 +6,7 @@ from app.core.views import (
     views_nino,
     views_report,
     views_misc,
+    views_admin,
 )
 
 app_name = 'core'
@@ -67,4 +68,18 @@ urlpatterns = [
 
     # API endpoint para notificaciones
     path('api/notificaciones/', views_misc.get_notificaciones, name='get_notificaciones'),
+    
+    # Historial de evaluaciones por niño
+    path('nino/<int:pk>/historico/', views_nino.HistorialNinoView.as_view(), name='historico_nino'),
+    
+    # Toggle estado de niño (profesional)
+    path('nino/<int:pk>/toggle-status/', views_nino.toggle_nino_status, name='toggle_nino_status'),
+    
+    # Gestión de usuarios (solo administradores)
+    path('administracion/usuarios/', views_admin.GestionUsuariosView.as_view(), name='gestion_usuarios'),
+    path('administracion/usuarios/<int:pk>/toggle-status/', views_admin.toggle_usuario_status, name='toggle_usuario_status'),
+    
+    # Gestión de niños admin (solo administradores)
+    path('administracion/ninos/', views_admin.GestionNinosAdminView.as_view(), name='gestion_ninos_admin'),
+    path('administracion/ninos/<int:pk>/toggle-status/', views_admin.toggle_nino_status_admin, name='toggle_nino_status_admin'),
 ]

@@ -1,14 +1,16 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.generic import UpdateView, ListView, DeleteView
 from django.views.decorators.http import require_http_methods
+from django.contrib.admin.views.decorators import staff_member_required
 from app.core.models import Nino
 from app.core.forms.forms_profile import NinoForm
+from app.games.models import Evaluacion
 import logging
 
 logger = logging.getLogger(__name__)
@@ -155,3 +157,70 @@ def agregar_nino_ajax(request):
             'success': False,
             'error': f'Error del servidor: {str(e)}'
         }, status=500)
+
+@login_required
+@require_http_methods(["POST"])
+def toggle_nino_status(request, pk):
+    """Activa o desactiva un niño (soft delete)"""
+    try:
+        nino = get_object_or_404(Nino, pk=pk, profesional=request.user)
+        nino.activo = not nino.activo
+        nino.save()
+        
+        estado = "activado" if nino.activo else "desactivado"
+        logger.info(f"Niño {nino.nombre_completo} (ID: {pk}) {estado} por {request.user.username}")
+        
+        return JsonResponse({
+            'success': True,
+            'message': f'El niño {nino.nombre_completo} ha sido {estado} exitosamente.',
+            'activo': nino.activo
+        })
+    except Exception as e:
+        logger.exception(f"Error al cambiar estado del niño {pk}: {str(e)}")
+        return JsonResponse({
+            'success': False,
+            'error': str(e)
+        }, status=500)
+
+@method_decorator(login_required, name='dispatch')
+class HistorialNinoView(ListView):
+    """Vista para mostrar el histórico de evaluaciones de un niño"""
+    model = Evaluacion
+    template_name = 'nino/historico_evaluaciones.html'
+    context_object_name = 'evaluaciones'
+    paginate_by = 10
+    
+    def get_queryset(self):
+        """Obtener evaluaciones del niño específico"""
+        self.nino = get_object_or_404(
+            Nino, 
+            pk=self.kwargs['pk'], 
+            profesional=self.request.user
+        )
+        return Evaluacion.objects.filter(
+            nino=self.nino
+        ).prefetch_related('sesiones_juego', 'sesiones_juego__juego').order_by('-fecha_hora_inicio')
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['nino'] = self.nino
+        context['page_title'] = f'Historial de {self.nino.nombre_completo} - DislexIA'
+        context['active_section'] = 'lista_ninos'
+        
+        # Estadísticas del niño
+        evaluaciones = self.get_queryset()
+        context['total_evaluaciones'] = evaluaciones.count()
+        context['evaluaciones_completadas'] = evaluaciones.filter(estado='completada').count()
+        context['evaluaciones_en_proceso'] = evaluaciones.filter(estado='en_proceso').count()
+        
+        # Calcular promedios
+        evaluaciones_completadas = evaluaciones.filter(estado='completada')
+        if evaluaciones_completadas.exists():
+            from django.db.models import Avg
+            context['precision_promedio'] = evaluaciones_completadas.aggregate(
+                avg=Avg('precision_promedio')
+            )['avg'] or 0
+        else:
+            context['precision_promedio'] = 0
+        
+        return context

@@ -435,6 +435,30 @@
 
                     {% trans "Datos de Pacientes" %}
                 </a>
+                
+                {% if user.is_staff %}
+                <!-- Sección de Administración (solo para staff) -->
+                <div class="my-2 px-3">
+                    <div class="h-px bg-gray-200 dark:bg-gray-800"></div>
+                    <p class="text-xs font-semibold text-gray-500 dark:text-gray-400 mt-2 mb-1 uppercase tracking-wider">
+                        {% trans "Administración" %}
+                    </p>
+                </div>
+                
+                <a href="{% url 'core:gestion_usuarios' %}"
+                    class="nav-link flex items-center gap-3 px-3 py-2 mb-1 
+                    {% if request.resolver_match.url_name == 'gestion_usuarios' %}
+                        text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-500/20
+                    {% else %}
+                        text-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800
+                    {% endif %}
+                    rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 hover:shadow-sm group">
+
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users-cog-icon lucide-shield-check"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/><path d="m9 12 2 2 4-4"/></svg>
+
+                    {% trans "Gestión de Usuarios" %}
+                </a>
+                {% endif %}
             </nav>
 
             <!-- Bottom Section -->

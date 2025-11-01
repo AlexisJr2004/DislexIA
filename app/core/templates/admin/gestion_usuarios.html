@@ -1,0 +1,556 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block content %}
+<div class="p-8">
+    <!-- Header Section -->
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2 flex items-center gap-3">
+            <div class="w-12 h-12 bg-gradient-to-br from-red-500 to-orange-600 rounded-xl flex items-center justify-center">
+                <i class="fas fa-users-cog text-white text-xl"></i>
+            </div>
+            {% trans "Gestión de Usuarios" %}
+        </h1>
+        <p class="text-gray-600 dark:text-gray-400">
+            {% trans "Panel de administración para gestionar todos los usuarios del sistema" %}
+        </p>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
+            <div class="flex items-center justify-between mb-2">
+                <div class="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-users text-blue-600 dark:text-blue-400"></i>
+                </div>
+            </div>
+            <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ total_usuarios }}</p>
+            <p class="text-sm text-gray-500 dark:text-gray-400">{% trans "Total Usuarios" %}</p>
+        </div>
+
+        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
+            <div class="flex items-center justify-between mb-2">
+                <div class="w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-check-circle text-green-600 dark:text-green-400"></i>
+                </div>
+            </div>
+            <p class="text-2xl font-bold text-green-600 dark:text-green-400">{{ usuarios_activos }}</p>
+            <p class="text-sm text-gray-500 dark:text-gray-400">{% trans "Activos" %}</p>
+        </div>
+
+        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
+            <div class="flex items-center justify-between mb-2">
+                <div class="w-10 h-10 bg-red-100 dark:bg-red-900/30 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-times-circle text-red-600 dark:text-red-400"></i>
+                </div>
+            </div>
+            <p class="text-2xl font-bold text-red-600 dark:text-red-400">{{ usuarios_inactivos }}</p>
+            <p class="text-sm text-gray-500 dark:text-gray-400">{% trans "Inactivos" %}</p>
+        </div>
+
+        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
+            <div class="flex items-center justify-between mb-2">
+                <div class="w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-shield-alt text-purple-600 dark:text-purple-400"></i>
+                </div>
+            </div>
+            <p class="text-2xl font-bold text-purple-600 dark:text-purple-400">{{ administradores }}</p>
+            <p class="text-sm text-gray-500 dark:text-gray-400">{% trans "Administradores" %}</p>
+        </div>
+    </div>
+
+    <!-- Filters and Search -->
+    <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6 mb-6">
+        <div class="flex flex-col lg:flex-row gap-4 items-end">
+            <!-- Search -->
+            <div class="flex-1">
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    {% trans "Buscar en tiempo real" %}
+                </label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <i class="fas fa-search text-gray-400"></i>
+                    </div>
+                    <input type="text" 
+                           id="searchInput"
+                           placeholder="{% trans 'Buscar por nombre, email o username...' %}"
+                           class="w-full pl-10 pr-10 py-3 border border-gray-300 dark:border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-200">
+                    <button id="clearSearch" class="hidden absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Estado Filter -->
+            <div class="w-full lg:w-48">
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    {% trans "Estado" %}
+                </label>
+                <select id="estadoFilter" 
+                        class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-200">
+                    <option value="todos">{% trans "Todos" %}</option>
+                    <option value="activos">{% trans "Activos" %}</option>
+                    <option value="inactivos">{% trans "Inactivos" %}</option>
+                </select>
+            </div>
+
+            <!-- Rol Filter -->
+            <div class="w-full lg:w-48">
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    {% trans "Rol" %}
+                </label>
+                <select id="rolFilter" 
+                        class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-200">
+                    <option value="todos">{% trans "Todos" %}</option>
+                    <option value="psicologo">{% trans "Psicólogo" %}</option>
+                    <option value="terapeuta">{% trans "Terapeuta" %}</option>
+                    <option value="docente">{% trans "Docente" %}</option>
+                </select>
+            </div>
+
+            <!-- Clear Filters Button -->
+            <button id="clearFilters" 
+                    class="px-6 py-3 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-xl font-semibold hover:bg-gray-300 dark:hover:bg-gray-600 transition-all flex items-center gap-2">
+                <i class="fas fa-times-circle"></i>
+                {% trans "Limpiar" %}
+            </button>
+        </div>
+        
+        <!-- Results Counter -->
+        <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+            <p class="text-sm text-gray-600 dark:text-gray-400">
+                <span id="resultCount">{{ usuarios|length }}</span> {% trans "usuario(s) encontrado(s)" %}
+                <span id="filterStatus" class="hidden ml-2 text-purple-600 dark:text-purple-400 font-semibold">
+                    <i class="fas fa-filter"></i> {% trans "Filtros activos" %}
+                </span>
+            </p>
+        </div>
+    </div>
+
+    <!-- Users Table -->
+    <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <div class="p-6 border-b border-gray-200 dark:border-gray-700">
+            <h2 class="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                <i class="fas fa-list text-purple-600 dark:text-purple-400"></i>
+                {% trans "Lista de Usuarios" %}
+            </h2>
+        </div>
+
+        {% if usuarios %}
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead class="bg-gray-50 dark:bg-gray-900">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                            {% trans "Usuario" %}
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                            {% trans "Email" %}
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                            {% trans "Rol" %}
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                            {% trans "Niños" %}
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                            {% trans "Fecha Registro" %}
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                            {% trans "Estado" %}
+                        </th>
+                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                            {% trans "Acciones" %}
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                    {% for usuario in usuarios %}
+                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-900/50 transition-colors" data-usuario-id="{{ usuario.id }}">
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-full overflow-hidden bg-gradient-to-br from-purple-400 to-purple-600 flex items-center justify-center text-white font-bold">
+                                    {% if usuario.imagen %}
+                                        <img src="{{ usuario.imagen.url }}" alt="{{ usuario.nombre_completo }}" class="w-full h-full object-cover">
+                                    {% else %}
+                                        {{ usuario.username.0|upper }}
+                                    {% endif %}
+                                </div>
+                                <div>
+                                    <div class="text-sm font-medium text-gray-900 dark:text-white">
+                                        {{ usuario.nombre_completo }}
+                                        {% if usuario.is_superuser %}
+                                            <i class="fas fa-crown text-yellow-500 ml-1" title="Superusuario"></i>
+                                        {% elif usuario.is_staff %}
+                                            <i class="fas fa-shield-alt text-blue-500 ml-1" title="Staff"></i>
+                                        {% endif %}
+                                    </div>
+                                    <div class="text-xs text-gray-500 dark:text-gray-400">@{{ usuario.username }}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+                            {{ usuario.email }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400">
+                                {{ usuario.get_rol_display }}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+                            {{ usuario.total_ninos }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                            {{ usuario.date_joined|date:"d/m/Y" }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="estado-badge px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full {% if usuario.is_active %}bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400{% else %}bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400{% endif %}">
+                                {% if usuario.is_active %}
+                                    <i class="fas fa-check-circle mr-1"></i> {% trans "Activo" %}
+                                {% else %}
+                                    <i class="fas fa-times-circle mr-1"></i> {% trans "Inactivo" %}
+                                {% endif %}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                            <button onclick="toggleUsuarioStatus({{ usuario.id }}, {{ usuario.is_active|yesno:'true,false' }})" 
+                                    class="toggle-btn inline-flex items-center gap-2 px-4 py-2 {% if usuario.is_active %}bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/50{% else %}bg-green-50 dark:bg-green-900/30 text-green-600 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-900/50{% endif %} rounded-lg transition-all">
+                                <i class="fas {% if usuario.is_active %}fa-ban{% else %}fa-check-circle{% endif %}"></i>
+                                {% if usuario.is_active %}
+                                    {% trans "Desactivar" %}
+                                {% else %}
+                                    {% trans "Activar" %}
+                                {% endif %}
+                            </button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        {% if is_paginated %}
+        <div class="px-6 py-4 border-t border-gray-200 dark:border-gray-700">
+            <div class="flex items-center justify-between">
+                <div class="text-sm text-gray-500 dark:text-gray-400">
+                    {% trans "Mostrando" %} {{ page_obj.start_index }} - {{ page_obj.end_index }} {% trans "de" %} {{ paginator.count }} {% trans "usuarios" %}
+                </div>
+                <div class="flex gap-2">
+                    {% if page_obj.has_previous %}
+                        <a href="?page={{ page_obj.previous_page_number }}&search={{ search_query }}&estado={{ filtro_estado }}&rol={{ filtro_rol }}" 
+                           class="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-all">
+                            {% trans "Anterior" %}
+                        </a>
+                    {% endif %}
+                    {% if page_obj.has_next %}
+                        <a href="?page={{ page_obj.next_page_number }}&search={{ search_query }}&estado={{ filtro_estado }}&rol={{ filtro_rol }}" 
+                           class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-all">
+                            {% trans "Siguiente" %}
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        {% else %}
+        <!-- Empty State -->
+        <div class="p-12 text-center">
+            <i class="fas fa-users text-6xl text-gray-300 dark:text-gray-700 mb-4"></i>
+            <p class="text-gray-500 dark:text-gray-400 text-lg">
+                {% trans "No se encontraron usuarios" %}
+            </p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Modal de Confirmación -->
+<div id="confirmModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-md w-full transform transition-all">
+        <div class="p-6">
+            <div class="flex items-center gap-4 mb-4">
+                <div id="modalIcon" class="w-12 h-12 rounded-full flex items-center justify-center">
+                    <i class="fas fa-exclamation-triangle text-2xl"></i>
+                </div>
+                <div class="flex-1">
+                    <h3 id="modalTitle" class="text-xl font-bold text-gray-900 dark:text-white"></h3>
+                    <p id="modalMessage" class="text-sm text-gray-600 dark:text-gray-400 mt-1"></p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="px-6 py-4 bg-gray-50 dark:bg-gray-900 rounded-b-2xl flex gap-3 justify-end">
+            <button onclick="cerrarModal()" 
+                    class="px-6 py-2.5 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-xl font-semibold hover:bg-gray-300 dark:hover:bg-gray-600 transition-all">
+                {% trans "Cancelar" %}
+            </button>
+            <button id="modalConfirmBtn" 
+                    class="px-6 py-2.5 rounded-xl font-semibold transition-all text-white">
+                {% trans "Confirmar" %}
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+{% get_current_language as LANGUAGE_CODE %}
+const LANGUAGE_PREFIX = '{{ LANGUAGE_CODE }}';
+let currentModalAction = null;
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+function mostrarModal(titulo, mensaje, tipo, onConfirm) {
+    const modal = document.getElementById('confirmModal');
+    const modalIcon = document.getElementById('modalIcon');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalMessage = document.getElementById('modalMessage');
+    const confirmBtn = document.getElementById('modalConfirmBtn');
+    
+    // Configurar icono y colores según el tipo
+    if (tipo === 'desactivar') {
+        modalIcon.className = 'w-12 h-12 rounded-full flex items-center justify-center bg-red-100 dark:bg-red-900/30';
+        modalIcon.querySelector('i').className = 'fas fa-ban text-2xl text-red-600 dark:text-red-400';
+        confirmBtn.className = 'px-6 py-2.5 rounded-xl font-semibold transition-all text-white bg-red-600 hover:bg-red-700';
+    } else {
+        modalIcon.className = 'w-12 h-12 rounded-full flex items-center justify-center bg-green-100 dark:bg-green-900/30';
+        modalIcon.querySelector('i').className = 'fas fa-check-circle text-2xl text-green-600 dark:text-green-400';
+        confirmBtn.className = 'px-6 py-2.5 rounded-xl font-semibold transition-all text-white bg-green-600 hover:bg-green-700';
+    }
+    
+    modalTitle.textContent = titulo;
+    modalMessage.textContent = mensaje;
+    
+    // Guardar la acción para ejecutarla al confirmar
+    currentModalAction = onConfirm;
+    
+    // Mostrar modal con animación
+    modal.classList.remove('hidden');
+    setTimeout(() => {
+        modal.querySelector('.bg-white').classList.add('scale-100');
+    }, 10);
+}
+
+function cerrarModal() {
+    const modal = document.getElementById('confirmModal');
+    modal.querySelector('.bg-white').classList.remove('scale-100');
+    setTimeout(() => {
+        modal.classList.add('hidden');
+        currentModalAction = null;
+    }, 200);
+}
+
+document.getElementById('modalConfirmBtn').addEventListener('click', () => {
+    if (currentModalAction) {
+        currentModalAction();
+        cerrarModal();
+    }
+});
+
+// Cerrar modal al hacer clic fuera
+document.getElementById('confirmModal').addEventListener('click', (e) => {
+    if (e.target.id === 'confirmModal') {
+        cerrarModal();
+    }
+});
+
+async function toggleUsuarioStatus(usuarioId, isActive) {
+    const action = isActive ? 'desactivar' : 'activar';
+    const actionTitle = isActive ? '¿Desactivar usuario?' : '¿Activar usuario?';
+    const actionMessage = isActive 
+        ? 'El usuario no podrá acceder al sistema hasta que sea activado nuevamente.'
+        : 'El usuario podrá acceder al sistema nuevamente.';
+    
+    mostrarModal(actionTitle, actionMessage, action, async () => {
+        try {
+            const response = await fetch(`/${LANGUAGE_PREFIX}/administracion/usuarios/${usuarioId}/toggle-status/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken'),
+                    'Content-Type': 'application/json'
+                }
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                // Actualizar UI
+                const row = document.querySelector(`tr[data-usuario-id="${usuarioId}"]`);
+                const estadoBadge = row.querySelector('.estado-badge');
+                const toggleBtn = row.querySelector('.toggle-btn');
+                
+                if (data.is_active) {
+                    estadoBadge.className = 'estado-badge px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400';
+                    estadoBadge.innerHTML = '<i class="fas fa-check-circle mr-1"></i> Activo';
+                    
+                    toggleBtn.className = 'toggle-btn inline-flex items-center gap-2 px-4 py-2 bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/50 rounded-lg transition-all';
+                    toggleBtn.innerHTML = '<i class="fas fa-ban"></i> Desactivar';
+                    toggleBtn.onclick = function() { toggleUsuarioStatus(usuarioId, true); };
+                } else {
+                    estadoBadge.className = 'estado-badge px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400';
+                    estadoBadge.innerHTML = '<i class="fas fa-times-circle mr-1"></i> Inactivo';
+                    
+                    toggleBtn.className = 'toggle-btn inline-flex items-center gap-2 px-4 py-2 bg-green-50 dark:bg-green-900/30 text-green-600 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-900/50 rounded-lg transition-all';
+                    toggleBtn.innerHTML = '<i class="fas fa-check-circle"></i> Activar';
+                    toggleBtn.onclick = function() { toggleUsuarioStatus(usuarioId, false); };
+                }
+                
+                // Usar el sistema de toasts centralizado
+                mostrarToast('success', data.message);
+            } else {
+                mostrarToast('error', data.error || 'Error al cambiar el estado del usuario');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            mostrarToast('error', 'Error de conexión al cambiar el estado');
+        }
+    });
+}
+
+// ========== FILTRADO EN TIEMPO REAL ==========
+const searchInput = document.getElementById('searchInput');
+const estadoFilter = document.getElementById('estadoFilter');
+const rolFilter = document.getElementById('rolFilter');
+const clearFiltersBtn = document.getElementById('clearFilters');
+const clearSearchBtn = document.getElementById('clearSearch');
+const resultCount = document.getElementById('resultCount');
+const filterStatus = document.getElementById('filterStatus');
+
+function normalizeText(text) {
+    return text.toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .trim();
+}
+
+function filterTable() {
+    const searchTerm = normalizeText(searchInput.value);
+    const estadoValue = estadoFilter.value;
+    const rolValue = rolFilter.value;
+    
+    const rows = document.querySelectorAll('tbody tr[data-usuario-id]');
+    let visibleCount = 0;
+    let hasActiveFilters = searchTerm !== '' || estadoValue !== 'todos' || rolValue !== 'todos';
+    
+    rows.forEach(row => {
+        // Obtener datos de la fila
+        const nombreCompleto = normalizeText(row.querySelector('td:nth-child(1) .text-sm').textContent);
+        const username = normalizeText(row.querySelector('td:nth-child(1) .text-xs').textContent);
+        const email = normalizeText(row.querySelector('td:nth-child(2)').textContent);
+        const rolText = normalizeText(row.querySelector('td:nth-child(3) span').textContent);
+        const estadoBadge = row.querySelector('.estado-badge');
+        const isActivo = estadoBadge.textContent.includes('Activo') && !estadoBadge.textContent.includes('Inactivo');
+        
+        // Aplicar filtros
+        let matchesSearch = true;
+        let matchesEstado = true;
+        let matchesRol = true;
+        
+        // Filtro de búsqueda
+        if (searchTerm) {
+            matchesSearch = nombreCompleto.includes(searchTerm) || 
+                          username.includes(searchTerm) || 
+                          email.includes(searchTerm);
+        }
+        
+        // Filtro de estado
+        if (estadoValue !== 'todos') {
+            matchesEstado = (estadoValue === 'activos' && isActivo) || 
+                          (estadoValue === 'inactivos' && !isActivo);
+        }
+        
+        // Filtro de rol
+        if (rolValue !== 'todos') {
+            matchesRol = rolText.includes(rolValue.toLowerCase());
+        }
+        
+        // Mostrar/ocultar fila
+        if (matchesSearch && matchesEstado && matchesRol) {
+            row.style.display = '';
+            visibleCount++;
+        } else {
+            row.style.display = 'none';
+        }
+    });
+    
+    // Actualizar contador
+    resultCount.textContent = visibleCount;
+    
+    // Mostrar indicador de filtros activos
+    if (hasActiveFilters) {
+        filterStatus.classList.remove('hidden');
+    } else {
+        filterStatus.classList.add('hidden');
+    }
+    
+    // Mostrar/ocultar botón de limpiar búsqueda
+    if (searchTerm) {
+        clearSearchBtn.classList.remove('hidden');
+    } else {
+        clearSearchBtn.classList.add('hidden');
+    }
+    
+    // Mostrar mensaje si no hay resultados
+    const tbody = document.querySelector('tbody');
+    const noResultsMsg = document.getElementById('noResultsMessage');
+    
+    if (visibleCount === 0) {
+        if (!noResultsMsg) {
+            const tr = document.createElement('tr');
+            tr.id = 'noResultsMessage';
+            tr.innerHTML = `
+                <td colspan="7" class="px-6 py-12 text-center">
+                    <i class="fas fa-search text-4xl text-gray-300 dark:text-gray-700 mb-2"></i>
+                    <p class="text-gray-500 dark:text-gray-400">No se encontraron usuarios con los filtros aplicados</p>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        }
+    } else {
+        if (noResultsMsg) {
+            noResultsMsg.remove();
+        }
+    }
+}
+
+// Event listeners
+searchInput.addEventListener('input', filterTable);
+estadoFilter.addEventListener('change', filterTable);
+rolFilter.addEventListener('change', filterTable);
+
+clearSearchBtn.addEventListener('click', () => {
+    searchInput.value = '';
+    filterTable();
+    searchInput.focus();
+});
+
+clearFiltersBtn.addEventListener('click', () => {
+    searchInput.value = '';
+    estadoFilter.value = 'todos';
+    rolFilter.value = 'todos';
+    filterTable();
+});
+
+// Animación suave para las filas
+document.querySelectorAll('tbody tr[data-usuario-id]').forEach(row => {
+    row.style.transition = 'opacity 0.2s ease-in-out';
+});
+</script>
+{% endblock %}
