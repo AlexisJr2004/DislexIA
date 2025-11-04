@@ -41,7 +41,7 @@ def enviar_correo_cita_doctor(doctor, cita):
                                 <!-- Logo con efecto elegante -->
                                 <div style="margin-bottom: 24px; position: relative; display: inline-block;">
                                     <div style="background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%); border-radius: 16px; padding: 16px; display: inline-block; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);">
-                                        <img src="https://i.ibb.co/gLZkzkVs/Copilot-20251009-015607-removebg-preview.png" alt="DislexIA" style="width: 56px; height: 56px; display: block;">
+                                        <img src="https://res.cloudinary.com/dokmxt0ja/image/upload/v1761367666/Copilot_20251009_015607-removebg-preview_sqylcc.png" alt="DislexIA" style="width: 56px; height: 56px; display: block;">
                                     </div>
                                 </div>
                                 
@@ -223,7 +223,7 @@ def enviar_correo_cita_padres(email_padres, cita, doctor):
                                 <!-- Logo con efecto elegante -->
                                 <div style="margin-bottom: 24px; position: relative; display: inline-block;">
                                     <div style="background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%); border-radius: 16px; padding: 16px; display: inline-block; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);">
-                                        <img src="https://i.ibb.co/gLZkzkVs/Copilot-20251009-015607-removebg-preview.png" alt="DislexIA" style="width: 56px; height: 56px; display: block;">
+                                        <img src="https://res.cloudinary.com/dokmxt0ja/image/upload/v1761367666/Copilot_20251009_015607-removebg-preview_sqylcc.png" alt="DislexIA" style="width: 56px; height: 56px; display: block;">
                                     </div>
                                 </div>
                                 
