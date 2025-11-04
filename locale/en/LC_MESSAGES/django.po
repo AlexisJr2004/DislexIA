@@ -758,6 +758,54 @@ msgstr "Support page initialized successfully"
 # SETTINGS TEMPLATE
 # ========================================
 
+msgid "Consentimientos GDPR"
+msgstr "GDPR Consents"
+
+msgid "Gestiona tus consentimientos de protección de datos y revisa tu historial de accesos"
+msgstr "Manage your data protection consents and review your access history"
+
+msgid "Gestionar Consentimientos"
+msgstr "Manage Consents"
+
+msgid "Descarga una copia completa de todos tus datos personales en formato JSON"
+msgstr "Download a complete copy of all your personal data in JSON format"
+
+msgid "Advertencia Final"
+msgstr "Final Warning"
+
+msgid "ÚLTIMA ADVERTENCIA"
+msgstr "FINAL WARNING"
+
+msgid "No hay vuelta atrás después de este paso"
+msgstr "There is no turning back after this step"
+
+msgid "Esta es tu ÚLTIMA oportunidad para cancelar"
+msgstr "This is your LAST chance to cancel"
+
+msgid "Al hacer clic en 'Eliminar Mi Cuenta Definitivamente', tu cuenta será eliminada de forma PERMANENTE e IRREVERSIBLE."
+msgstr "By clicking 'Delete My Account Permanently', your account will be deleted PERMANENTLY and IRREVERSIBLY."
+
+msgid "Recuerda:"
+msgstr "Remember:"
+
+msgid "No podrás recuperar tu cuenta"
+msgstr "You will not be able to recover your account"
+
+msgid "Todos tus datos serán eliminados"
+msgstr "All your data will be deleted"
+
+msgid "No podrás usar el mismo correo nuevamente"
+msgstr "You will not be able to use the same email again"
+
+msgid "Perderás todo tu progreso"
+msgstr "You will lose all your progress"
+
+msgid "¿Estás COMPLETAMENTE SEGURO de continuar?"
+msgstr "Are you ABSOLUTELY SURE you want to continue?"
+
+msgid "Eliminar Mi Cuenta Definitivamente"
+msgstr "Delete My Account Permanently"
+
 msgid "Configuración - DislexIA"
 msgstr "Settings - DislexIA"
 
@@ -1681,3 +1729,198 @@ msgstr "Create first evaluation"
 
 msgid "Interrumpida"
 msgstr "Interrupted"
+
+msgid "Psicólogo"
+msgstr "Psychologist"
+
+msgid "Terapeuta"
+msgstr "Therapist"
+
+msgid "Docente"
+msgstr "Teacher"
+
+msgid "Siguiente"
+msgstr "Next"
+
+msgid "Confirmar"
+msgstr "Confirm"
+
+# ========================================
+# GESTIÓN DE CONSENTIMIENTOS GDPR
+# ========================================
+
+msgid "Gestión de Consentimientos - DislexIA"
+msgstr "Consent Management - DislexIA"
+
+msgid "Gestión de Consentimientos GDPR"
+msgstr "GDPR Consent Management"
+
+msgid "Administra tus consentimientos y derechos de privacidad"
+msgstr "Manage your consents and privacy rights"
+
+msgid "Consentimiento Activo"
+msgstr "Active Consent"
+
+msgid "Activo desde"
+msgstr "Active since"
+
+msgid "Términos y Condiciones"
+msgstr "Terms and Conditions"
+
+msgid "Versión"
+msgstr "Version"
+
+msgid "Tratamiento de Datos"
+msgstr "Data Processing"
+
+msgid "Procesamiento GDPR autorizado"
+msgstr "GDPR processing authorized"
+
+msgid "Comunicaciones"
+msgstr "Communications"
+
+msgid "Acepto recibir comunicaciones"
+msgstr "I accept to receive communications"
+
+msgid "No acepto comunicaciones"
+msgstr "I don't accept communications"
+
+msgid "Información Técnica del Consentimiento"
+msgstr "Technical Consent Information"
+
+msgid "IP de registro"
+msgstr "Registration IP"
+
+msgid "Exportar Mis Datos"
+msgstr "Export My Data"
+
+msgid "Descarga todos tus datos en formato JSON"
+msgstr "Download all your data in JSON format"
+
+msgid "Historial de Accesos"
+msgstr "Access History"
+
+msgid "Revisa el historial de acceso a tus datos"
+msgstr "Review your data access history"
+
+msgid "Lee nuestra política de protección de datos"
+msgstr "Read our data protection policy"
+
+msgid "Revocar Consentimiento"
+msgstr "Revoke Consent"
+
+msgid "Esta acción desactivará tu cuenta"
+msgstr "This action will deactivate your account"
+
+msgid "Puedes retirar tu consentimiento en cualquier momento. Esto desactivará tu cuenta y eliminarás el acceso a la plataforma."
+msgstr "You can withdraw your consent at any time. This will deactivate your account and remove access to the platform."
+
+msgid "Consecuencias de revocar el consentimiento:"
+msgstr "Consequences of revoking consent:"
+
+msgid "Tu cuenta será desactivada inmediatamente"
+msgstr "Your account will be deactivated immediately"
+
+msgid "Perderás el acceso a la plataforma"
+msgstr "You will lose access to the platform"
+
+msgid "Se cerrará tu sesión automáticamente"
+msgstr "Your session will be closed automatically"
+
+msgid "Tus datos se mantendrán según las políticas de retención"
+msgstr "Your data will be retained according to retention policies"
+
+msgid "Revocar Mi Consentimiento"
+msgstr "Revoke My Consent"
+
+msgid "No hay consentimiento activo"
+msgstr "No active consent"
+
+msgid "No se encontró un consentimiento activo en tu cuenta."
+msgstr "No active consent was found in your account."
+
+msgid "Esta acción es irreversible"
+msgstr "This action is irreversible"
+
+msgid "¿Estás seguro de que deseas revocar tu consentimiento?"
+msgstr "Are you sure you want to revoke your consent?"
+
+msgid "Tu cuenta será desactivada inmediatamente y perderás el acceso a la plataforma."
+msgstr "Your account will be deactivated immediately and you will lose access to the platform."
+
+msgid "Sí, Revocar"
+msgstr "Yes, Revoke"
+
+# ========================================
+# HISTORIAL DE AUDITORÍA GDPR
+# ========================================
+
+msgid "Historial de Auditoría - DislexIA"
+msgstr "Audit History - DislexIA"
+
+msgid "Historial de Auditoría"
+msgstr "Audit History"
+
+msgid "Registro completo de accesos a tus datos personales"
+msgstr "Complete record of access to your personal data"
+
+msgid "Exportar Datos"
+msgstr "Export Data"
+
+msgid "Consentimientos"
+msgstr "Consents"
+
+msgid "Transparencia Total"
+msgstr "Total Transparency"
+
+msgid "Aquí puedes ver todos los accesos realizados a tus datos personales. Esto incluye visualizaciones, modificaciones, exportaciones y cualquier otra operación relacionada con tu información."
+msgstr "Here you can see all accesses made to your personal data. This includes views, modifications, exports and any other operation related to your information."
+
+msgid "Últimas 50 Operaciones"
+msgstr "Last 50 Operations"
+
+msgid "Fecha y Hora"
+msgstr "Date and Time"
+
+msgid "Acción"
+msgstr "Action"
+
+msgid "Tabla/Recurso"
+msgstr "Table/Resource"
+
+msgid "Dirección IP"
+msgstr "IP Address"
+
+msgid "Exitoso"
+msgstr "Successful"
+
+msgid "Fallido"
+msgstr "Failed"
+
+msgid "No hay registros de auditoría"
+msgstr "No audit records"
+
+msgid "Aún no se han registrado accesos a tus datos personales."
+msgstr "No access to your personal data has been recorded yet."
+
+msgid "Información sobre el Historial de Auditoría"
+msgstr "Information about Audit History"
+
+msgid "¿Qué registramos?"
+msgstr "What do we record?"
+
+msgid "Registramos cada vez que tus datos personales son accedidos, modificados, exportados o eliminados. Esto incluye visualizaciones de perfil, cambios en configuración, exportación de datos y acciones administrativas."
+msgstr "We record every time your personal data is accessed, modified, exported or deleted. This includes profile views, configuration changes, data exports and administrative actions."
+
+msgid "¿Por cuánto tiempo se guarda?"
+msgstr "How long is it kept?"
+
+msgid "Los registros de auditoría se mantienen durante 7 años según lo requerido por el GDPR y regulaciones de protección de datos."
+msgstr "Audit records are kept for 7 years as required by GDPR and data protection regulations."
+
+msgid "¿Por qué es importante?"
+msgstr "Why is it important?"
+
+msgid "La auditoría garantiza transparencia total sobre quién y cuándo accede a tus datos, cumpliendo con tu derecho a la transparencia bajo el GDPR."
+msgstr "Auditing ensures total transparency about who and when accesses your data, complying with your right to transparency under GDPR."
+
