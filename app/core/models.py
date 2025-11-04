@@ -46,7 +46,7 @@ class Nino(models.Model):
     idioma_nativo = models.CharField(max_length=50, verbose_name="Idioma Nativo")
     profesional = models.ForeignKey(
         'Profesional',
-        on_delete=models.SET_NULL,
+        on_delete=models.CASCADE,
         null=True,
         blank=True,
         related_name='ninos',

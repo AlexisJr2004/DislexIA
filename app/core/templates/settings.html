@@ -517,88 +517,84 @@
         <!-- Modal de Confirmación para Eliminar Cuenta -->
         <div id="deleteAccountModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center" style="z-index: 9999;">
             <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-lg w-full mx-4" style="z-index: 10000;">
-                <!-- Modal Header -->
-                <div class="bg-red-50 dark:bg-red-900/30 border-b border-red-100 dark:border-red-800 px-6 py-4 rounded-t-2xl">
-                    <div class="flex items-center gap-3">
-                        <div class="w-12 h-12 bg-red-100 dark:bg-red-900/50 rounded-full flex items-center justify-center">
-                            <i class="fas fa-exclamation-triangle text-red-600 dark:text-red-400 text-xl"></i>
+                <!-- Paso 1: Información inicial -->
+                <div id="deleteStep1">
+                    <!-- Modal Header -->
+                    <div class="bg-red-50 dark:bg-red-900/30 border-b border-red-100 dark:border-red-800 px-6 py-4 rounded-t-2xl">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 bg-red-100 dark:bg-red-900/50 rounded-full flex items-center justify-center">
+                                <i class="fas fa-exclamation-triangle text-red-600 dark:text-red-400 text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-red-900 dark:text-red-100">⚠️ {% trans "Eliminar Cuenta Permanentemente" %}</h3>
+                                <p class="text-sm text-red-700 dark:text-red-300">{% trans "Esta acción no se puede deshacer" %}</p>
+                            </div>
                         </div>
-                        <div>
-                            <h3 class="text-xl font-bold text-red-900 dark:text-red-100">⚠️ {% trans "Eliminar Cuenta Permanentemente" %}</h3>
-                            <p class="text-sm text-red-700 dark:text-red-300">{% trans "Esta acción no se puede deshacer" %}</p>
-                        </div>
-                    </div>
-                </div>
+                    </div>                    <!-- Modal Body -->
+                    <div class="p-6">
+                        <div class="mb-6">
+                            <p class="text-gray-700 dark:text-gray-300 mb-4">
+                                {% trans "Estás a punto de eliminar tu cuenta de forma permanente. Por favor, lee cuidadosamente las consecuencias:" %}
+                            </p>
+                            
+                            <div class="bg-gray-50 dark:bg-gray-700 rounded-xl p-4 mb-4">
+                                <h4 class="font-semibold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
+                                    <i class="fas fa-list text-red-600 dark:text-red-400"></i>
+                                    {% trans "Se eliminarán permanentemente:" %}
+                                </h4>
+                                <ul class="space-y-2 text-sm text-gray-700 dark:text-gray-300">
+                                    <li class="flex items-start gap-2">
+                                        <i class="fas fa-times-circle text-red-500 mt-0.5"></i>
+                                        <span>{% trans "Todos tus datos personales y profesionales" %}</span>
+                                    </li>
+                                    <li class="flex items-start gap-2">
+                                        <i class="fas fa-times-circle text-red-500 mt-0.5"></i>
+                                        <span>{% trans "Todas las evaluaciones y reportes realizados" %}</span>
+                                    </li>
+                                    <li class="flex items-start gap-2">
+                                        <i class="fas fa-times-circle text-red-500 mt-0.5"></i>
+                                        <span>{% trans "Tu progreso en los juegos y ejercicios" %}</span>
+                                    </li>
+                                    <li class="flex items-start gap-2">
+                                        <i class="fas fa-times-circle text-red-500 mt-0.5"></i>
+                                        <span>{% trans "Todas las configuraciones y preferencias" %}</span>
+                                    </li>
+                                    <li class="flex items-start gap-2">
+                                        <i class="fas fa-times-circle text-red-500 mt-0.5"></i>
+                                        <span>{% trans "Acceso permanente a la plataforma" %}</span>
+                                    </li>
+                                </ul>
+                            </div>
 
-                <!-- Modal Body -->
-                <div class="p-6">
-                    <div class="mb-6">
-                        <p class="text-gray-700 dark:text-gray-300 mb-4">
-                            {% trans "Estás a punto de eliminar tu cuenta de forma permanente. Por favor, lee cuidadosamente las consecuencias:" %}
-                        </p>
-                        
-                        <div class="bg-gray-50 dark:bg-gray-700 rounded-xl p-4 mb-4">
-                            <h4 class="font-semibold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
-                                <i class="fas fa-list text-red-600 dark:text-red-400"></i>
-                                {% trans "Se eliminarán permanentemente:" %}
-                            </h4>
-                            <ul class="space-y-2 text-sm text-gray-700 dark:text-gray-300">
-                                <li class="flex items-start gap-2">
-                                    <i class="fas fa-times-circle text-red-500 mt-0.5"></i>
-                                    <span>{% trans "Todos tus datos personales y profesionales" %}</span>
-                                </li>
-                                <li class="flex items-start gap-2">
-                                    <i class="fas fa-times-circle text-red-500 mt-0.5"></i>
-                                    <span>{% trans "Todas las evaluaciones y reportes realizados" %}</span>
-                                </li>
-                                <li class="flex items-start gap-2">
-                                    <i class="fas fa-times-circle text-red-500 mt-0.5"></i>
-                                    <span>{% trans "Tu progreso en los juegos y ejercicios" %}</span>
-                                </li>
-                                <li class="flex items-start gap-2">
-                                    <i class="fas fa-times-circle text-red-500 mt-0.5"></i>
-                                    <span>{% trans "Todas las configuraciones y preferencias" %}</span>
-                                </li>
-                                <li class="flex items-start gap-2">
-                                    <i class="fas fa-times-circle text-red-500 mt-0.5"></i>
-                                    <span>{% trans "Acceso permanente a la plataforma" %}</span>
-                                </li>
-                            </ul>
-                        </div>
-
-                        <div class="bg-yellow-50 dark:bg-yellow-900/30 border border-yellow-200 dark:border-yellow-700 rounded-xl p-4 mb-4">
-                            <div class="flex gap-3">
-                                <i class="fas fa-info-circle text-yellow-600 dark:text-yellow-400 text-lg mt-0.5"></i>
-                                <div>
-                                    <p class="text-sm text-yellow-800 dark:text-yellow-200 font-medium mb-1">{% trans "Advertencia Final" %}</p>
-                                    <p class="text-sm text-yellow-700 dark:text-yellow-300">
-                                        {% trans "Esta acción es irreversible. No podrás recuperar tu cuenta ni tus datos después de eliminarlos." %}
-                                    </p>
+                            <div class="bg-yellow-50 dark:bg-yellow-900/30 border border-yellow-200 dark:border-yellow-700 rounded-xl p-4 mb-4">
+                                <div class="flex gap-3">
+                                    <i class="fas fa-info-circle text-yellow-600 dark:text-yellow-400 text-lg mt-0.5"></i>
+                                    <div>
+                                        <p class="text-sm text-yellow-800 dark:text-yellow-200 font-medium mb-1">{% trans "Advertencia" %}</p>
+                                        <p class="text-sm text-yellow-700 dark:text-yellow-300">
+                                            {% trans "Esta acción es irreversible. No podrás recuperar tu cuenta ni tus datos después de eliminarlos." %}
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- Confirmation Input -->
-                    <div class="mb-6">
-                        <label for="confirmationInput" class="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
-                            {% trans "Para confirmar, escribe" %} <span class="text-red-600 dark:text-red-400 font-mono">ELIMINAR</span>
-                        </label>
-                        <input 
-                            type="text" 
-                            id="confirmationInput" 
-                            class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                            placeholder="{% trans 'Escribe ELIMINAR para confirmar' %}"
-                            autocomplete="off"
-                        >
-                        <p id="confirmationError" class="text-red-500 text-xs mt-1 hidden">
-                            {% trans "Debes escribir exactamente 'ELIMINAR' para continuar" %}
-                        </p>
-                    </div>
-
-                    <!-- Form -->
-                    <form method="post" action="{% url 'core:delete_account' %}" id="deleteAccountForm">
-                        {% csrf_token %}
+                        <!-- Confirmation Input -->
+                        <div class="mb-6">
+                            <label for="confirmationInput" class="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
+                                {% trans "Para confirmar, escribe" %} <span class="text-red-600 dark:text-red-400 font-mono">ELIMINAR</span>
+                            </label>
+                            <input 
+                                type="text" 
+                                id="confirmationInput" 
+                                class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                                placeholder="{% trans 'Escribe ELIMINAR para confirmar' %}"
+                                autocomplete="off"
+                            >
+                            <p id="confirmationError" class="text-red-500 text-xs mt-1 hidden">
+                                {% trans "Debes escribir exactamente 'ELIMINAR' para continuar" %}
+                            </p>
+                        </div>
                         
                         <!-- Actions -->
                         <div class="flex items-center justify-end gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
@@ -610,16 +606,95 @@
                                 {% trans "Cancelar" %}
                             </button>
                             <button 
-                                type="submit" 
-                                id="confirmDeleteBtn"
+                                type="button" 
+                                id="continueDeleteBtn"
                                 class="px-6 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-xl text-sm font-semibold shadow-md hover:shadow-lg transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                                 disabled
                             >
-                                <i class="fas fa-trash-alt"></i>
-                                {% trans "Eliminar Mi Cuenta" %}
+                                <i class="fas fa-arrow-right"></i>
+                                {% trans "Continuar" %}
                             </button>
                         </div>
-                    </form>
+                    </div>
+                </div>
+
+                <!-- Paso 2: Confirmación final -->
+                <div id="deleteStep2" class="hidden">
+                    <!-- Modal Header -->
+                    <div class="bg-red-600 dark:bg-red-700 border-b border-red-700 dark:border-red-800 px-6 py-4 rounded-t-2xl">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 bg-red-700 dark:bg-red-800 rounded-full flex items-center justify-center animate-pulse">
+                                <i class="fas fa-exclamation-circle text-white text-2xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-white">🛑 {% trans "ÚLTIMA ADVERTENCIA" %}</h3>
+                                <p class="text-sm text-red-100">{% trans "No hay vuelta atrás después de este paso" %}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Modal Body -->
+                    <div class="p-6">
+                        <div class="mb-6">
+                            <div class="bg-red-50 dark:bg-red-900/30 border-2 border-red-300 dark:border-red-700 rounded-xl p-5 mb-4">
+                                <div class="flex gap-3 mb-4">
+                                    <i class="fas fa-shield-alt text-red-600 dark:text-red-400 text-2xl mt-0.5"></i>
+                                    <div>
+                                        <p class="text-base font-bold text-red-900 dark:text-red-100 mb-2">
+                                            {% trans "Esta es tu ÚLTIMA oportunidad para cancelar" %}
+                                        </p>
+                                        <p class="text-sm text-red-800 dark:text-red-200">
+                                            {% trans "Al hacer clic en 'Eliminar Mi Cuenta Definitivamente', tu cuenta será eliminada de forma PERMANENTE e IRREVERSIBLE." %}
+                                        </p>
+                                    </div>
+                                </div>
+                                
+                                <div class="bg-white dark:bg-gray-800 rounded-lg p-4 border-l-4 border-red-600">
+                                    <p class="text-sm font-semibold text-gray-900 dark:text-white mb-2">
+                                        <i class="fas fa-info-circle text-red-600 mr-2"></i>{% trans "Recuerda:" %}
+                                    </p>
+                                    <ul class="space-y-1.5 text-sm text-gray-700 dark:text-gray-300">
+                                        <li>• {% trans "No podrás recuperar tu cuenta" %}</li>
+                                        <li>• {% trans "Todos tus datos serán eliminados" %}</li>
+                                        <li>• {% trans "No podrás usar el mismo correo nuevamente" %}</li>
+                                        <li>• {% trans "Perderás todo tu progreso" %}</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="bg-gradient-to-r from-red-50 to-orange-50 dark:from-red-900/20 dark:to-orange-900/20 border border-red-200 dark:border-red-800 rounded-xl p-4">
+                                <p class="text-center text-sm font-semibold text-red-900 dark:text-red-100">
+                                    <i class="fas fa-exclamation-triangle mr-2"></i>
+                                    {% trans "¿Estás COMPLETAMENTE SEGURO de continuar?" %}
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Form -->
+                        <form method="post" action="{% url 'core:delete_account' %}" id="deleteAccountForm">
+                            {% csrf_token %}
+                            
+                            <!-- Actions -->
+                            <div class="flex items-center justify-end gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
+                                <button 
+                                    type="button" 
+                                    id="backDeleteBtn" 
+                                    class="px-6 py-2.5 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-xl text-sm font-semibold hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors flex items-center gap-2"
+                                >
+                                    <i class="fas fa-arrow-left"></i>
+                                    {% trans "Volver" %}
+                                </button>
+                                <button 
+                                    type="submit" 
+                                    id="confirmDeleteBtn"
+                                    class="px-6 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-xl text-sm font-semibold shadow-md hover:shadow-lg transition-all flex items-center gap-2"
+                                >
+                                    <i class="fas fa-trash-alt"></i>
+                                    {% trans "Eliminar Mi Cuenta Definitivamente" %}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
@@ -891,19 +966,31 @@
             const deleteAccountBtn = document.getElementById('deleteAccountBtn');
             const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
             const confirmationInput = document.getElementById('confirmationInput');
+            const continueDeleteBtn = document.getElementById('continueDeleteBtn');
             const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+            const backDeleteBtn = document.getElementById('backDeleteBtn');
             const confirmationError = document.getElementById('confirmationError');
             const deleteAccountForm = document.getElementById('deleteAccountForm');
+            const deleteStep1 = document.getElementById('deleteStep1');
+            const deleteStep2 = document.getElementById('deleteStep2');
 
-            if (deleteAccountModal && deleteAccountBtn && cancelDeleteBtn && confirmationInput && confirmDeleteBtn && confirmationError && deleteAccountForm) {
-                // Abrir modal
+            if (deleteAccountModal && deleteAccountBtn && cancelDeleteBtn && confirmationInput && continueDeleteBtn && confirmDeleteBtn && backDeleteBtn && confirmationError && deleteAccountForm && deleteStep1 && deleteStep2) {
+                // Abrir modal (mostrar paso 1)
                 deleteAccountBtn.addEventListener('click', function() {
                     deleteAccountModal.classList.remove('hidden');
                     deleteAccountModal.style.display = 'flex';
                     document.body.style.overflow = 'hidden';
+                    
+                    // Mostrar paso 1, ocultar paso 2
+                    deleteStep1.classList.remove('hidden');
+                    deleteStep2.classList.add('hidden');
+                    
+                    // Reset form
                     confirmationInput.value = '';
-                    confirmDeleteBtn.disabled = true;
+                    continueDeleteBtn.disabled = true;
                     confirmationError.classList.add('hidden');
+                    confirmationInput.classList.remove('border-red-500', 'border-green-500');
+                    
                     confirmationInput.focus();
                 });
 
@@ -915,11 +1002,19 @@
                     deleteAccountModal.classList.add('hidden');
                     deleteAccountModal.style.display = 'none';
                     document.body.style.overflow = 'auto';
+                    
+                    // Reset form
                     confirmationInput.value = '';
-                    confirmDeleteBtn.disabled = true;
+                    continueDeleteBtn.disabled = true;
                     confirmationError.classList.add('hidden');
+                    confirmationInput.classList.remove('border-red-500', 'border-green-500');
+                    
+                    // Volver al paso 1
+                    deleteStep1.classList.remove('hidden');
+                    deleteStep2.classList.add('hidden');
                 }
 
+                // Botón cancelar (paso 1)
                 cancelDeleteBtn.addEventListener('click', closeDeleteModal);
 
                 // Cerrar con clic fuera del modal
@@ -940,12 +1035,12 @@
                 confirmationInput.addEventListener('input', function() {
                     const value = this.value.trim();
                     if (value === 'ELIMINAR') {
-                        confirmDeleteBtn.disabled = false;
+                        continueDeleteBtn.disabled = false;
                         confirmationError.classList.add('hidden');
                         this.classList.remove('border-red-500');
                         this.classList.add('border-green-500');
                     } else {
-                        confirmDeleteBtn.disabled = true;
+                        continueDeleteBtn.disabled = true;
                         this.classList.remove('border-green-500');
                         if (value.length > 0) {
                             this.classList.add('border-red-500');
@@ -955,36 +1050,37 @@
                     }
                 });
 
-                // Validar antes de enviar
-                deleteAccountForm.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    
+                // Botón continuar (paso 1 -> paso 2)
+                continueDeleteBtn.addEventListener('click', function() {
                     const value = confirmationInput.value.trim();
                     
                     if (value !== 'ELIMINAR') {
                         confirmationError.classList.remove('hidden');
                         confirmationInput.classList.add('border-red-500');
                         confirmationInput.focus();
-                        return false;
+                        return;
                     }
+                    
+                    // Mostrar paso 2 (advertencia final)
+                    deleteStep1.classList.add('hidden');
+                    deleteStep2.classList.remove('hidden');
+                });
 
-                    // Confirmación final
-                    const finalConfirm = confirm(
-                        "{% trans '⚠️ ÚLTIMA ADVERTENCIA' %}\n\n" +
-                        "{% trans 'Esta es tu última oportunidad para cancelar.' %}\n\n" +
-                        "{% trans '¿Estás COMPLETAMENTE SEGURO de que deseas eliminar tu cuenta?' %}\n\n" +
-                        "{% trans 'Esta acción es PERMANENTE e IRREVERSIBLE.' %}"
-                    );
+                // Botón volver (paso 2 -> paso 1)
+                backDeleteBtn.addEventListener('click', function() {
+                    deleteStep2.classList.add('hidden');
+                    deleteStep1.classList.remove('hidden');
+                });
 
-                    if (!finalConfirm) {
-                        return false;
-                    }
-
+                // Enviar formulario (paso 2)
+                deleteAccountForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
                     // Deshabilitar botón para evitar doble envío
                     confirmDeleteBtn.disabled = true;
-                    confirmDeleteBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>{% trans "Eliminando..." %}';
+                    confirmDeleteBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> {% trans "Eliminando..." %}';
                     
-                    // Aquí se enviaría el formulario al servidor
+                    // Enviar el formulario al servidor
                     this.submit();
                 });
 
