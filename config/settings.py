@@ -59,6 +59,11 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # Middleware GDPR de auditoría
+    'app.core.middleware.AuditMiddleware',
+    'app.core.middleware.LoginAuditMiddleware',
+    # Middleware de seguridad
+    'app.core.middleware.SessionTimeoutMiddleware',
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -194,3 +199,162 @@ EMAIL_USE_SSL = os.getenv('EMAIL_USE_SSL', 'False').lower() in ('true', '1', 'ye
 EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', '')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', '')
 DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', 'noreply@dislexia.com')
+
+# ============================================
+# CONFIGURACIONES DE SEGURIDAD GDPR
+# ============================================
+
+# Seguridad HTTPS (activar en producción)
+if not DEBUG:
+    # Forzar HTTPS en producción
+    SECURE_SSL_REDIRECT = True
+    
+    # Cookies seguras (solo HTTPS)
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    
+    # HTTP Strict Transport Security (HSTS)
+    SECURE_HSTS_SECONDS = 31536000  # 1 año
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
+    
+    # Prevenir sniffing de contenido
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    
+    # Protección XSS del navegador
+    SECURE_BROWSER_XSS_FILTER = True
+    
+    # Prevenir clickjacking
+    X_FRAME_OPTIONS = 'DENY'
+    
+    # Proxy SSL headers
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+else:
+    # En desarrollo, configuraciones más permisivas
+    SECURE_SSL_REDIRECT = False
+    SESSION_COOKIE_SECURE = False
+    CSRF_COOKIE_SECURE = False
+    X_FRAME_OPTIONS = 'SAMEORIGIN'
+
+# Configuración de sesiones
+SESSION_COOKIE_HTTPONLY = True  # No accesible desde JavaScript
+SESSION_COOKIE_SAMESITE = 'Lax'  # Protección CSRF
+SESSION_COOKIE_AGE = 1209600  # 2 semanas
+SESSION_SAVE_EVERY_REQUEST = False
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False
+
+# Configuración de CSRF
+CSRF_COOKIE_HTTPONLY = True
+CSRF_COOKIE_SAMESITE = 'Lax'
+CSRF_USE_SESSIONS = False
+
+# Logging de seguridad y auditoría
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '[{levelname}] {asctime} {module} {process:d} {thread:d} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '[{levelname}] {message}',
+            'style': '{',
+        },
+    },
+    'filters': {
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse',
+        },
+        'require_debug_true': {
+            '()': 'django.utils.log.RequireDebugTrue',
+        },
+    },
+    'handlers': {
+        'console': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple',
+        },
+        'file': {
+            'level': 'INFO',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(BASE_DIR, 'logs', 'django.log'),
+            'maxBytes': 1024 * 1024 * 10,  # 10 MB
+            'backupCount': 10,
+            'formatter': 'verbose',
+        },
+        'security_file': {
+            'level': 'WARNING',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(BASE_DIR, 'logs', 'security.log'),
+            'maxBytes': 1024 * 1024 * 10,  # 10 MB
+            'backupCount': 10,
+            'formatter': 'verbose',
+        },
+        'audit_file': {
+            'level': 'INFO',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(BASE_DIR, 'logs', 'audit.log'),
+            'maxBytes': 1024 * 1024 * 10,  # 10 MB
+            'backupCount': 20,
+            'formatter': 'verbose',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console', 'file'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+        'django.security': {
+            'handlers': ['security_file', 'console'],
+            'level': 'WARNING',
+            'propagate': False,
+        },
+        'audit': {
+            'handlers': ['audit_file', 'console'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+        'app.core': {
+            'handlers': ['console', 'file'],
+            'level': 'DEBUG' if DEBUG else 'INFO',
+            'propagate': False,
+        },
+    },
+}
+
+# Crear directorio de logs si no existe
+os.makedirs(os.path.join(BASE_DIR, 'logs'), exist_ok=True)
+
+# Configuración de privacidad y GDPR
+GDPR_ENABLED = True
+GDPR_CONSENT_VERSION = '1.0'
+GDPR_PRIVACY_POLICY_VERSION = '1.0'
+GDPR_TERMS_VERSION = '1.0'
+
+# Políticas de retención de datos (en días)
+DATA_RETENTION_POLICIES = {
+    'evaluacion': 1825,  # 5 años
+    'reporte_ia': 1825,  # 5 años
+    'sesion_juego': 1095,  # 3 años
+    'cita': 730,  # 2 años
+    'auditoria': 2555,  # 7 años (requisito legal)
+    'usuario_inactivo': 1095,  # 3 años sin actividad
+}
+
+# Anonimización automática
+AUTO_ANONYMIZE_INACTIVE_USERS = True
+INACTIVE_USER_THRESHOLD_DAYS = 1095  # 3 años
+
+# DPO (Data Protection Officer) - Contacto
+DPO_NAME = os.getenv('DPO_NAME', 'Dr. Alexis Durán')
+DPO_EMAIL = os.getenv('DPO_EMAIL', 'dpo@dislexia.com')
+DPO_PHONE = os.getenv('DPO_PHONE', '+593 99 999 9999')
+
+# Información del responsable del tratamiento
+DATA_CONTROLLER_NAME = 'DislexIA'
+DATA_CONTROLLER_ADDRESS = 'Guayaquil, Ecuador'
+DATA_CONTROLLER_EMAIL = 'info@dislexia.com'
+DATA_CONTROLLER_PHONE = '+593 99 999 9999'

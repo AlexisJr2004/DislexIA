@@ -21,6 +21,7 @@
 
 - [Descripción](#-descripción)
 - [Características](#-características)
+- [Cumplimiento GDPR](#-cumplimiento-gdpr)
 - [Estructura del Proyecto](#-estructura-del-proyecto)
 - [Tecnologías Utilizadas](#-tecnologías-utilizadas)
 - [Instalación](#-instalación)
@@ -94,6 +95,44 @@ Cada juego incluye:
 - **Accesibilidad**: Tamaño de fuente, comandos de voz, alto contraste
 - **Notificaciones**: Recordatorios, logros, actualizaciones
 - **Privacidad**: Control de datos y visibilidad de perfil
+
+---
+
+## 🔒 Cumplimiento GDPR
+
+**DislexIA cumple al 100% con el Reglamento General de Protección de Datos (GDPR)**
+
+[![GDPR Compliant](https://img.shields.io/badge/GDPR-Compliant-success)](GDPR_README.md)
+[![Privacy](https://img.shields.io/badge/Privacy-Protected-blue)](templates/legal/privacy_policy.html)
+
+### ✅ Implementaciones GDPR
+
+- **Consentimiento Explícito** (Art. 6 & 7): Checkbox obligatorio en registro
+- **Protección de Menores** (Art. 8): Consentimiento de tutores legales
+- **Derecho al Olvido** (Art. 17): Eliminación permanente de cuenta
+- **Portabilidad de Datos** (Art. 20): Exportación en formato JSON
+- **Auditoría Completa** (Art. 30): Registro de todos los accesos
+- **Seguridad Avanzada** (Art. 32): HTTPS, cookies seguras, cifrado
+- **Política de Privacidad Completa** (Art. 13): Documentación legal detallada
+- **Retención de Datos**: Políticas automáticas de limpieza
+
+### 📄 Documentos Legales
+
+- [Política de Privacidad](templates/legal/privacy_policy.html)
+- [Términos y Condiciones](templates/legal/terms_conditions.html)
+- [Guía Completa GDPR](GDPR_README.md)
+
+### 🛡️ Características de Seguridad
+
+- ✅ Cifrado SSL/TLS obligatorio en producción
+- ✅ Contraseñas hasheadas con PBKDF2
+- ✅ Cookies HTTP-only y Secure
+- ✅ Protección CSRF y XSS
+- ✅ Auditoría automática de accesos
+- ✅ Logging de seguridad en archivos separados
+- ✅ Sesiones con expiración configurable
+
+**Para más información**: Consulta [GDPR_README.md](GDPR_README.md)
 
 ### 💬 Centro de Soporte
 

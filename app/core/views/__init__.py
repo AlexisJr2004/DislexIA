@@ -6,6 +6,7 @@ from . import (
     views_report,
     views_misc,
     views_admin,
+    views_gdpr,
 )
 
 __all__ = [
@@ -16,4 +17,5 @@ __all__ = [
     'views_report',
     'views_misc',
     'views_admin',
+    'views_gdpr',
 ]

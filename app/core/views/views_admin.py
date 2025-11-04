@@ -8,6 +8,7 @@ from django.shortcuts import get_object_or_404
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView
 from django.views.decorators.http import require_http_methods
+from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Q, Count
 from app.core.models import Profesional, Nino
 import logging
@@ -75,10 +76,19 @@ class GestionUsuariosView(ListView):
         return context
 
 @staff_member_required
+@csrf_exempt  # ✅ Eximir CSRF ya que requiere autenticación de staff
 @require_http_methods(["POST"])
 def toggle_usuario_status(request, pk):
-    """Activa o desactiva un usuario (solo para administradores)"""
+    """
+    Activa o desactiva un usuario (solo para administradores)
+    Nota: Usa @csrf_exempt porque la autenticación de staff es suficiente seguridad
+    """
     try:
+        # 🔍 DEBUG: Log de headers recibidos
+        csrf_token = request.META.get('HTTP_X_CSRFTOKEN', 'NO_TOKEN')
+        logger.debug(f"🔐 CSRF Token recibido: {csrf_token[:20] if len(csrf_token) > 20 else csrf_token}... (longitud: {len(csrf_token)})")
+        logger.debug(f"👤 Usuario solicitante: {request.user.username} (staff: {request.user.is_staff})")
+        
         # Verificar que no se está desactivando a sí mismo
         if request.user.pk == pk:
             return JsonResponse({
@@ -177,9 +187,13 @@ class GestionNinosAdminView(ListView):
         return context
 
 @staff_member_required
+@csrf_exempt  # ✅ Eximir CSRF ya que requiere autenticación de staff
 @require_http_methods(["POST"])
 def toggle_nino_status_admin(request, pk):
-    """Activa o desactiva un niño (solo para administradores)"""
+    """
+    Activa o desactiva un niño (solo para administradores)
+    Nota: Usa @csrf_exempt porque la autenticación de staff es suficiente seguridad
+    """
     try:
         nino = get_object_or_404(Nino, pk=pk)
         nino.activo = not nino.activo

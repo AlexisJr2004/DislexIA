@@ -193,6 +193,11 @@ class InitSequentialEvaluationView(View):
 
 @method_decorator(login_required, name='dispatch')
 class ResumeEvaluationView(View):
+    """
+    CASO 2: Usuario vuelve a entrar después de cerrar navegador
+    - Solo permite reanudar evaluaciones en estado 'en_proceso'
+    - NO permite reanudar evaluaciones 'interrumpidas' (esas fueron cerradas intencionalmente)
+    """
     def get(self, request, evaluacion_id, *args, **kwargs):
         try:
             evaluacion = Evaluacion.objects.get(
@@ -203,11 +208,20 @@ class ResumeEvaluationView(View):
             messages.error(request, "Evaluación no encontrada o no autorizada.")
             return redirect('games:session_list')
 
-        if evaluacion.estado != 'en_proceso':
+        # ⭐ VALIDACIÓN: Solo permitir reanudar evaluaciones en 'en_proceso'
+        if evaluacion.estado == 'interrumpida':
+            messages.error(
+                request,
+                f"Esta evaluación fue interrumpida definitivamente y no se puede reanudar. "
+                f"Por favor, inicia una nueva evaluación."
+            )
+            return redirect('games:session_list')
+        
+        if evaluacion.estado not in ['en_proceso']:
             messages.warning(
                 request, 
                 f"Esta evaluación ya está {evaluacion.get_estado_display()}. "
-                f"No se puede continuar una evaluación que no está en proceso."
+                f"No se puede continuar."
             )
             return redirect('games:session_list')
 
@@ -234,6 +248,18 @@ class ResumeEvaluationView(View):
             
             return redirect('games:sequential_results', evaluacion_id=evaluacion.id)
         
+        # ⭐ CASO 2: Calcular tiempo pausado (por cierre de navegador)
+        if sesion_pendiente.fecha_pausa:
+            # Calcular cuánto tiempo estuvo pausada
+            tiempo_pausa = (timezone.now() - sesion_pendiente.fecha_pausa).total_seconds()
+            sesion_pendiente.tiempo_pausado_segundos += int(tiempo_pausa)
+            # NO limpiar fecha_pausa aquí - se limpiará al entrar a PlayGameView
+            sesion_pendiente.save(update_fields=['tiempo_pausado_segundos'])
+            
+            print(f"⏯️ Sesión reanudada (CASO 2 - Cierre inesperado): {sesion_pendiente.juego.nombre}")
+            print(f"   Tiempo que estuvo pausada: {int(tiempo_pausa)}s")
+            print(f"   Tiempo pausado acumulado total: {sesion_pendiente.tiempo_pausado_segundos}s")
+        
         messages.success(
             request,
             f'Continuando evaluación de {evaluacion.nino.nombre_completo}. '
@@ -245,10 +271,20 @@ class ResumeEvaluationView(View):
 @csrf_exempt
 @require_http_methods(["POST"])
 def finish_game_session(request, url_sesion):
-    """API endpoint para finalizar una sesión de juego"""
+    """
+    API endpoint para finalizar una sesión de juego COMPLETADA
+    Este endpoint se llama cuando el usuario COMPLETA el juego normalmente
+    """
     try:
         # Obtener la sesión
         sesion = get_object_or_404(SesionJuego, url_sesion=url_sesion)
+        
+        # ⭐ IMPORTANTE: Si hay fecha_pausa registrada, calcular y acumular tiempo pausado
+        if sesion.fecha_pausa:
+            tiempo_pausa_actual = (timezone.now() - sesion.fecha_pausa).total_seconds()
+            sesion.tiempo_pausado_segundos += int(tiempo_pausa_actual)
+            print(f"⏸️ Tiempo pausado detectado: {int(tiempo_pausa_actual)}s")
+            print(f"   Tiempo pausado total acumulado: {sesion.tiempo_pausado_segundos}s")
         
         # Parsear datos del POST
         data = json.loads(request.body)
@@ -281,6 +317,10 @@ def finish_game_session(request, url_sesion):
             hits=hits_total,
             misses=misses_total
         )
+        
+        # Limpiar fecha_pausa al completar
+        sesion.fecha_pausa = None
+        sesion.save(update_fields=['fecha_pausa'])
 
         print(f"✅ Sesión finalizada - Ejercicio #{sesion.ejercicio_numero}: Clicks={clicks_total}, Hits={hits_total}, Misses={misses_total}")
         
@@ -435,9 +475,15 @@ def finish_game_session(request, url_sesion):
         }, status=400)
 
 @login_required
+@csrf_exempt
 @require_POST  
 def finish_evaluation_game(request, url_sesion):
-    """Finalizar juego dentro de evaluación IA - Solo sale sin predecir"""
+    """
+    CASO 1: Usuario hace clic en "Salir" → Interrumpida DEFINITIVAMENTE
+    - Estado: 'interrumpida' (no se puede reanudar)
+    - NO se guarda fecha_pausa (es salida intencional)
+    - Se marca como finalizada
+    """
     try:
         sesion = get_object_or_404(SesionJuego, url_sesion=url_sesion)
         
@@ -446,27 +492,37 @@ def finish_evaluation_game(request, url_sesion):
         puntaje_final = data.get('total_score', sesion.puntaje_total)
         tiempo_total = data.get('total_time_seconds', 0)
         
-        # Marcar como completada
-        sesion.estado = 'completada'
-        sesion.fecha_fin = timezone.now()
+        # ⭐ INTERRUPCIÓN DEFINITIVA (por botón "Salir")
+        sesion.estado = 'interrumpida'
+        sesion.fecha_fin = timezone.now()  # ✅ Marcar como finalizada (no se puede reanudar)
+        sesion.fecha_pausa = None  # ❌ NO guardar fecha_pausa (no es temporal)
         sesion.puntaje_total = puntaje_final
         sesion.tiempo_total_segundos = tiempo_total
         sesion.save()
         
+        # Marcar la evaluación como interrumpida
         evaluacion = sesion.evaluacion
+        evaluacion.estado = 'interrumpida'
+        evaluacion.fecha_hora_fin = timezone.now()
+        evaluacion.save()
+        
+        # Calcular progreso para mostrar al usuario
         sesiones_completadas = SesionJuego.objects.filter(
             evaluacion=evaluacion, 
             estado='completada'
         ).count()
         total_sesiones = SesionJuego.objects.filter(evaluacion=evaluacion).count()
         
-        print(f"✅ Juego de evaluación finalizado manualmente: {sesion.juego.nombre}")
-        print(f"   Progreso: {sesiones_completadas}/{total_sesiones}")
+        print(f"❌ Evaluación INTERRUMPIDA DEFINITIVAMENTE por el usuario: {sesion.juego.nombre}")
+        print(f"   Evaluación ID: {evaluacion.id} marcada como 'interrumpida'")
+        print(f"   Progreso final: {sesiones_completadas}/{total_sesiones}")
+        print(f"   ⚠️ NO SE PUEDE REANUDAR")
         
         return JsonResponse({
             'success': True,
-            'message': f'Juego finalizado. Progreso: {sesiones_completadas}/{total_sesiones}',
+            'message': 'Evaluación interrumpida definitivamente.',
             'redirect_url': '/games/session-list/',
+            'interrumpida': True,
             'progreso': {
                 'completadas': sesiones_completadas,
                 'totales': total_sesiones
@@ -474,12 +530,17 @@ def finish_evaluation_game(request, url_sesion):
         })
     
     except Exception as e:
-        print(f"❌ Error: {e}")
+        print(f"❌ Error al interrumpir evaluación: {e}")
+        import traceback
+        traceback.print_exc()
         return JsonResponse({
             'success': False,
             'error': str(e)
         }, status=500)
 
+@login_required
+@csrf_exempt
+@require_POST
 def finish_individual_game(request, url_sesion):
     """Finalizar juego individual sin predicción IA - Solo marca como completada"""
     try:

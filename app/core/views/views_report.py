@@ -6,7 +6,10 @@ from django.contrib import messages
 from django.urls import reverse_lazy
 from app.core.models import ValidacionProfesional, ReporteIA
 from app.core.forms.forms_report import ValidacionProfesionalForm
-from ..utils.pdf_utils import render_to_pdf # <-- Importar la nueva utilidad
+try:
+    from ..utils.pdf_utils import render_to_pdf # <-- Importar la nueva utilidad
+except ImportError:
+    render_to_pdf = None  # Temporal para permitir migraciones
 from app.games.models import Evaluacion # <-- Importar Evaluation
 from django.db.models import Avg, Sum, Count # ¡Importa Avg, Sum, Count!
 

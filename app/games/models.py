@@ -424,6 +424,19 @@ class SesionJuego(models.Model):
         verbose_name="Estado de la Sesión"
     )
     
+    # === CAMPOS PARA MANEJO DE PAUSAS ===
+    fecha_pausa = models.DateTimeField(
+        null=True, 
+        blank=True, 
+        verbose_name="Fecha de Pausa",
+        help_text="Momento en que se interrumpió la sesión"
+    )
+    tiempo_pausado_segundos = models.PositiveIntegerField(
+        default=0,
+        verbose_name="Tiempo Pausado (segundos)",
+        help_text="Tiempo total acumulado que la sesión estuvo pausada"
+    )
+    
     # Configuración de sesión (datos mínimos necesarios)
     puntaje_total = models.PositiveIntegerField(
         default=0,

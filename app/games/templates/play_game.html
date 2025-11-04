@@ -305,12 +305,13 @@
         </div>
         
         <!-- Advertencia -->
-        <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mb-6">
+        <div class="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg p-4 mb-6">
             <p class="text-sm text-gray-800 dark:text-gray-200 flex items-start gap-2">
-                <i class="fas fa-info-circle text-blue-600 dark:text-blue-400 mt-0.5 flex-shrink-0"></i>
+                <i class="fas fa-exclamation-triangle text-amber-600 dark:text-amber-400 mt-0.5 flex-shrink-0"></i>
                 <span>
                     {% if evaluacion %}
-                        {% trans "Tu progreso se guardará automáticamente. Podrás continuar la evaluación más tarde." %}
+                        <strong class="text-amber-800 dark:text-amber-300">{% trans "La evaluación será marcada como interrumpida." %}</strong><br>
+                        {% trans "Tu progreso se guardará automáticamente. Podrás reanudar la evaluación más tarde desde el listado de evaluaciones." %}
                     {% else %}
                         {% trans "Tu progreso actual se guardará. Podrás volver a jugar cuando quieras." %}
                     {% endif %}
@@ -382,7 +383,11 @@
         const startTime = new Date('{{ sesion.fecha_inicio|date:"c" }}');
         let isPaused = false;
         let pauseStartTime = null;
-        let totalPausedTime = 0;
+        
+        // ⭐ IMPORTANTE: Inicializar con el tiempo pausado acumulado de sesiones anteriores
+        let totalPausedTime = {{ tiempo_pausado_segundos|default:0 }};
+        console.log(`⏸️ Tiempo pausado previo: ${totalPausedTime}s`);
+        
         let timerInterval = null;
         
         // Control de pausas
@@ -609,6 +614,9 @@
                 btnConfirm.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Procesando...';
                 
                 try {
+                    const csrfToken = getCsrfToken();
+                    console.log('CSRF Token:', csrfToken); // Debug
+                    
                     let finishUrl;
                     if (window.gameSessionData.es_evaluacion_ia) {
                         finishUrl = `/es/games/evaluation/finish/{{ sesion.url_sesion }}/`;
@@ -620,8 +628,10 @@
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
-                            'X-CSRFToken': getCsrfToken()
+                            'X-CSRFToken': csrfToken,
+                            'X-Requested-With': 'XMLHttpRequest'
                         },
+                        credentials: 'same-origin',
                         body: JSON.stringify({
                             total_score: document.getElementById('puntaje-actual')?.textContent || 0,
                             total_correct: 0,
@@ -636,8 +646,11 @@
                         // Cerrar modal de confirmación
                         cerrarModal('modal-finish');
                         
-                        // ⭐ Mostrar modal de éxito SIEMPRE
-                        if (window.gameSessionData.es_evaluacion_ia && data.progreso) {
+                        // ⭐ Mostrar modal de éxito con mensaje apropiado
+                        if (data.interrumpida) {
+                            // Evaluación interrumpida
+                            mostrarModalExito(`⚠️ Evaluación Interrumpida\n\n${data.message}\n\nProgreso: ${data.progreso.completadas}/${data.progreso.totales} sesiones completadas`);
+                        } else if (window.gameSessionData.es_evaluacion_ia && data.progreso) {
                             // Evaluación IA: mostrar progreso
                             mostrarModalExito(`${data.message}\n\nProgreso: ${data.progreso.completadas}/${data.progreso.totales} sesiones`);
                         } else {

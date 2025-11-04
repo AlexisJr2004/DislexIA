@@ -1,6 +1,9 @@
 from django.contrib import admin
 from django.utils.html import format_html
-from .models import Nino, Profesional, ReporteIA, ValidacionProfesional, Cita
+from .models import (
+    Nino, Profesional, ReporteIA, ValidacionProfesional, Cita,
+    ConsentimientoGDPR, ConsentimientoTutor, AuditoriaAcceso, PoliticaRetencionDatos, LoginAttempt
+)
 
 
 @admin.register(Nino)
@@ -395,3 +398,352 @@ class CitaAdmin(admin.ModelAdmin):
             '<span style="color: #ffc107; font-weight: bold;">⏳ Pendiente</span>'
         )
     completada_display.short_description = 'Estado'
+
+
+# ============================================
+# ADMINISTRADORES PARA MODELOS GDPR
+# ============================================
+
+@admin.register(ConsentimientoGDPR)
+class ConsentimientoGDPRAdmin(admin.ModelAdmin):
+    """Administrador para Consentimientos GDPR"""
+    
+    list_display = [
+        'usuario_display',
+        'fecha_consentimiento',
+        'acepta_terminos',
+        'acepta_privacidad',
+        'acepta_tratamiento_datos',
+        'consentimiento_activo_display',
+        'version_terminos',
+        'ip_address',
+    ]
+    list_filter = [
+        'consentimiento_activo',
+        'acepta_terminos',
+        'acepta_privacidad',
+        'acepta_tratamiento_datos',
+        'fecha_consentimiento',
+    ]
+    search_fields = ['usuario__username', 'usuario__email', 'ip_address']
+    ordering = ['-fecha_consentimiento']
+    readonly_fields = ['fecha_consentimiento', 'fecha_revocacion']
+    
+    fieldsets = (
+        ('Usuario', {
+            'fields': ('usuario', 'ip_address', 'user_agent')
+        }),
+        ('Consentimientos', {
+            'fields': (
+                'acepta_terminos',
+                'acepta_privacidad',
+                'acepta_tratamiento_datos',
+                'acepta_cookies',
+                'acepta_comunicaciones'
+            )
+        }),
+        ('Versiones', {
+            'fields': ('version_terminos', 'version_privacidad')
+        }),
+        ('Estado', {
+            'fields': ('consentimiento_activo', 'fecha_consentimiento', 'fecha_revocacion')
+        }),
+    )
+    
+    def usuario_display(self, obj):
+        return format_html('<strong>{}</strong>', obj.usuario.nombre_completo)
+    usuario_display.short_description = 'Usuario'
+    
+    def consentimiento_activo_display(self, obj):
+        if obj.consentimiento_activo:
+            return format_html('<span style="color: #28a745; font-weight: bold;">✓ Activo</span>')
+        return format_html('<span style="color: #dc3545; font-weight: bold;">✗ Revocado</span>')
+    consentimiento_activo_display.short_description = 'Estado'
+
+
+@admin.register(ConsentimientoTutor)
+class ConsentimientoTutorAdmin(admin.ModelAdmin):
+    """Administrador para Consentimientos de Tutores"""
+    
+    list_display = [
+        'nino_display',
+        'nombre_completo_tutor',
+        'relacion',
+        'email',
+        'consentimiento_activo_display',
+        'fecha_consentimiento',
+    ]
+    list_filter = [
+        'consentimiento_activo',
+        'relacion',
+        'acepta_evaluacion',
+        'acepta_almacenamiento_datos',
+        'fecha_consentimiento',
+    ]
+    search_fields = [
+        'nombre_completo_tutor',
+        'email',
+        'documento_identidad',
+        'nino__nombres',
+        'nino__apellidos'
+    ]
+    ordering = ['-fecha_consentimiento']
+    
+    fieldsets = (
+        ('Niño', {
+            'fields': ('nino',)
+        }),
+        ('Datos del Tutor', {
+            'fields': (
+                'nombre_completo_tutor',
+                'relacion',
+                'documento_identidad',
+                'email',
+                'telefono'
+            )
+        }),
+        ('Consentimientos', {
+            'fields': (
+                'acepta_evaluacion',
+                'acepta_almacenamiento_datos',
+                'acepta_uso_imagen',
+                'acepta_compartir_profesionales'
+            )
+        }),
+        ('Información Adicional', {
+            'fields': (
+                'fecha_consentimiento',
+                'ip_address',
+                'firma_digital',
+                'notas'
+            )
+        }),
+        ('Validez', {
+            'fields': (
+                'consentimiento_activo',
+                'fecha_expiracion',
+                'fecha_renovacion'
+            )
+        }),
+    )
+    
+    readonly_fields = ['fecha_consentimiento']
+    
+    def nino_display(self, obj):
+        return format_html('<strong>{}</strong>', obj.nino.nombre_completo)
+    nino_display.short_description = 'Niño'
+    
+    def consentimiento_activo_display(self, obj):
+        if obj.es_valido():
+            return format_html('<span style="color: #28a745; font-weight: bold;">✓ Válido</span>')
+        return format_html('<span style="color: #dc3545; font-weight: bold;">✗ Inválido/Expirado</span>')
+    consentimiento_activo_display.short_description = 'Estado'
+
+
+@admin.register(AuditoriaAcceso)
+class AuditoriaAccesoAdmin(admin.ModelAdmin):
+    """Administrador para Auditorías de Acceso"""
+    
+    list_display = [
+        'timestamp',
+        'usuario_display',
+        'accion_display',
+        'tabla_afectada',
+        'registro_id',
+        'ip_address',
+        'exitoso_display',
+    ]
+    list_filter = [
+        'accion',
+        'tabla_afectada',
+        'exitoso',
+        'timestamp',
+    ]
+    search_fields = [
+        'usuario__username',
+        'tabla_afectada',
+        'ip_address',
+        'registro_id'
+    ]
+    ordering = ['-timestamp']
+    readonly_fields = [
+        'timestamp',
+        'usuario',
+        'accion',
+        'tabla_afectada',
+        'registro_id',
+        'ip_address',
+        'user_agent',
+        'detalles',
+        'exitoso',
+        'mensaje_error'
+    ]
+    
+    fieldsets = (
+        ('Información Básica', {
+            'fields': ('timestamp', 'usuario', 'accion', 'exitoso')
+        }),
+        ('Datos Afectados', {
+            'fields': ('tabla_afectada', 'registro_id')
+        }),
+        ('Contexto Técnico', {
+            'fields': ('ip_address', 'user_agent')
+        }),
+        ('Detalles', {
+            'fields': ('detalles', 'mensaje_error'),
+            'classes': ('collapse',)
+        }),
+    )
+    
+    def has_add_permission(self, request):
+        return False
+    
+    def has_change_permission(self, request, obj=None):
+        return False
+    
+    def has_delete_permission(self, request, obj=None):
+        # Solo administradores pueden eliminar auditorías
+        return request.user.is_superuser
+    
+    def usuario_display(self, obj):
+        if obj.usuario:
+            return format_html('<strong>{}</strong>', obj.usuario.username)
+        return format_html('<span style="color: #6c757d;">Sistema</span>')
+    usuario_display.short_description = 'Usuario'
+    
+    def accion_display(self, obj):
+        color_map = {
+            'READ': '#17a2b8',
+            'CREATE': '#28a745',
+            'UPDATE': '#ffc107',
+            'DELETE': '#dc3545',
+            'EXPORT': '#6f42c1',
+            'LOGIN': '#007bff',
+            'LOGOUT': '#6c757d',
+            'LOGIN_FAILED': '#dc3545',
+        }
+        color = color_map.get(obj.accion, '#000000')
+        return format_html(
+            '<span style="color: {}; font-weight: bold;">{}</span>',
+            color,
+            obj.get_accion_display()
+        )
+    accion_display.short_description = 'Acción'
+    
+    def exitoso_display(self, obj):
+        if obj.exitoso:
+            return format_html('<span style="color: #28a745;">✓</span>')
+        return format_html('<span style="color: #dc3545;">✗</span>')
+    exitoso_display.short_description = 'Éxito'
+
+
+@admin.register(PoliticaRetencionDatos)
+class PoliticaRetencionDatosAdmin(admin.ModelAdmin):
+    """Administrador para Políticas de Retención de Datos"""
+    
+    list_display = [
+        'tipo_dato_display',
+        'dias_retencion',
+        'accion_al_vencer_display',
+        'activa_display',
+        'fecha_actualizacion',
+    ]
+    list_filter = ['tipo_dato', 'accion_al_vencer', 'activa']
+    ordering = ['tipo_dato']
+    
+    fieldsets = (
+        ('Configuración', {
+            'fields': ('tipo_dato', 'dias_retencion', 'accion_al_vencer', 'activa')
+        }),
+        ('Fechas', {
+            'fields': ('fecha_creacion', 'fecha_actualizacion'),
+            'classes': ('collapse',)
+        }),
+    )
+    
+    readonly_fields = ['fecha_creacion', 'fecha_actualizacion']
+    
+    def tipo_dato_display(self, obj):
+        return format_html('<strong>{}</strong>', obj.get_tipo_dato_display())
+    tipo_dato_display.short_description = 'Tipo de Dato'
+    
+    def accion_al_vencer_display(self, obj):
+        color = '#dc3545' if obj.accion_al_vencer == 'eliminar' else '#17a2b8'
+        return format_html(
+            '<span style="color: {}; font-weight: bold;">{}</span>',
+            color,
+            obj.get_accion_al_vencer_display()
+        )
+    accion_al_vencer_display.short_description = 'Acción'
+    
+    def activa_display(self, obj):
+        if obj.activa:
+            return format_html('<span style="color: #28a745;">✓ Activa</span>')
+        return format_html('<span style="color: #6c757d;">✗ Inactiva</span>')
+    activa_display.short_description = 'Estado'
+
+
+@admin.register(LoginAttempt)
+class LoginAttemptAdmin(admin.ModelAdmin):
+    """Administrador para Intentos de Login"""
+    
+    list_display = [
+        'timestamp',
+        'username',
+        'ip_address',
+        'exitoso_display',
+        'intentos_recientes',
+    ]
+    list_filter = [
+        'exitoso',
+        'timestamp',
+    ]
+    search_fields = [
+        'username',
+        'ip_address',
+    ]
+    ordering = ['-timestamp']
+    readonly_fields = [
+        'username',
+        'ip_address',
+        'timestamp',
+        'exitoso',
+        'user_agent',
+    ]
+    
+    fieldsets = (
+        ('Información del Intento', {
+            'fields': ('username', 'exitoso', 'timestamp')
+        }),
+        ('Información Técnica', {
+            'fields': ('ip_address', 'user_agent')
+        }),
+    )
+    
+    def has_add_permission(self, request):
+        return False
+    
+    def has_change_permission(self, request, obj=None):
+        return False
+    
+    def exitoso_display(self, obj):
+        if obj.exitoso:
+            return format_html('<span style="color: #28a745; font-weight: bold;">✓ Exitoso</span>')
+        return format_html('<span style="color: #dc3545; font-weight: bold;">✗ Fallido</span>')
+    exitoso_display.short_description = 'Estado'
+    
+    def intentos_recientes(self, obj):
+        """Muestra intentos recientes del usuario"""
+        count = LoginAttempt.obtener_intentos_recientes(obj.username)
+        if count >= 5:
+            return format_html(
+                '<span style="color: #dc3545; font-weight: bold;">🔒 {} (BLOQUEADO)</span>',
+                count
+            )
+        elif count >= 3:
+            return format_html(
+                '<span style="color: #ffc107; font-weight: bold;">⚠️ {}</span>',
+                count
+            )
+        return format_html('<span style="color: #28a745;">{}</span>', count)
+    intentos_recientes.short_description = 'Intentos (30 min)'

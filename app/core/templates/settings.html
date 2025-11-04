@@ -463,6 +463,38 @@
             <!-- Privacy Settings -->
             <div id="privacy-content" class="tab-content hidden">
                 <div class="space-y-4">
+                    <!-- GDPR Consentimientos -->
+                    <div class="setting-card bg-white dark:bg-gray-800 rounded-xl border border-purple-200 dark:border-purple-800 p-6">
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-xl flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-shield-alt text-purple-600 dark:text-purple-400 text-lg"></i>
+                            </div>
+                            <div class="flex-1">
+                                <h3 class="text-base font-semibold text-gray-900 dark:text-white mb-1">{% trans "Consentimientos GDPR" %}</h3>
+                                <p class="text-sm text-gray-500 dark:text-gray-400 mb-3">{% trans "Gestiona tus consentimientos de protección de datos y revisa tu historial de accesos" %}</p>
+                                <a href="{% url 'core:consentimientos' %}" class="px-4 py-2 bg-purple-50 hover:bg-purple-100 dark:bg-purple-900/30 dark:hover:bg-purple-900/50 text-purple-600 dark:text-purple-400 font-medium rounded-lg text-sm transition-colors inline-block">
+                                    {% trans "Gestionar Consentimientos" %}
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Exportar Datos -->
+                    <div class="setting-card bg-white dark:bg-gray-800 rounded-xl border border-green-200 dark:border-green-800 p-6">
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-xl flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-download text-green-600 dark:text-green-400 text-lg"></i>
+                            </div>
+                            <div class="flex-1">
+                                <h3 class="text-base font-semibold text-gray-900 dark:text-white mb-1">{% trans "Exportar Mis Datos" %}</h3>
+                                <p class="text-sm text-gray-500 dark:text-gray-400 mb-3">{% trans "Descarga una copia completa de todos tus datos personales en formato JSON" %}</p>
+                                <a href="{% url 'core:exportar_datos' %}" class="px-4 py-2 bg-green-50 hover:bg-green-100 dark:bg-green-900/30 dark:hover:bg-green-900/50 text-green-600 dark:text-green-400 font-medium rounded-lg text-sm transition-colors inline-block">
+                                    {% trans "Exportar Datos" %}
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Delete Account -->
                     <div class="setting-card bg-white dark:bg-gray-800 rounded-xl border border-red-200 dark:border-red-800 p-6">
                         <div class="flex items-start gap-4">
@@ -483,8 +515,8 @@
         </div>
 
         <!-- Modal de Confirmación para Eliminar Cuenta -->
-        <div id="deleteAccountModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
-            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-lg w-full mx-4">
+        <div id="deleteAccountModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center" style="z-index: 9999;">
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-lg w-full mx-4" style="z-index: 10000;">
                 <!-- Modal Header -->
                 <div class="bg-red-50 dark:bg-red-900/30 border-b border-red-100 dark:border-red-800 px-6 py-4 rounded-t-2xl">
                     <div class="flex items-center gap-3">

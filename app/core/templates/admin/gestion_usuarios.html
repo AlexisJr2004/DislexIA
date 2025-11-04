@@ -380,15 +380,29 @@ async function toggleUsuarioStatus(usuarioId, isActive) {
     
     mostrarModal(actionTitle, actionMessage, action, async () => {
         try {
+            const csrfToken = getCookie('csrftoken');
+            console.log('🔐 CSRF Token:', csrfToken); // Debug
+            
             const response = await fetch(`/${LANGUAGE_PREFIX}/administracion/usuarios/${usuarioId}/toggle-status/`, {
                 method: 'POST',
                 headers: {
-                    'X-CSRFToken': getCookie('csrftoken'),
-                    'Content-Type': 'application/json'
-                }
+                    'X-Csrftoken': csrfToken,  // ✅ Corregido: minúscula en 'token'
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'  // ✅ Identificar como AJAX
+                },
+                credentials: 'same-origin'  // ✅ Incluir cookies
             });
             
+            console.log('📡 Response status:', response.status); // Debug
+            
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error('❌ Error response:', errorText);
+                throw new Error(`HTTP ${response.status}: ${errorText}`);
+            }
+            
             const data = await response.json();
+            console.log('✅ Response data:', data); // Debug
             
             if (data.success) {
                 // Actualizar UI

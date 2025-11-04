@@ -254,25 +254,11 @@
                     <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4">{% trans "Recursos Útiles" %}</h3>
                     
                     <div class="space-y-3">
-                        <a href="#" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                        <a href="{% url 'core:documents' %}" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
                             <div class="w-8 h-8 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
                                 <i class="fas fa-book text-blue-600 dark:text-blue-400 text-sm"></i>
                             </div>
                             <span class="text-sm font-medium text-gray-700 dark:text-gray-300">{% trans "Guía de Usuario" %}</span>
-                        </a>
-                        
-                        <a href="#" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
-                            <div class="w-8 h-8 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center">
-                                <i class="fas fa-video text-green-600 dark:text-green-400 text-sm"></i>
-                            </div>
-                            <span class="text-sm font-medium text-gray-700 dark:text-gray-300">{% trans "Video Tutoriales" %}</span>
-                        </a>
-                        
-                        <a href="#" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
-                            <div class="w-8 h-8 bg-orange-100 dark:bg-orange-900/30 rounded-lg flex items-center justify-center">
-                                <i class="fas fa-comments text-orange-600 dark:text-orange-400 text-sm"></i>
-                            </div>
-                            <span class="text-sm font-medium text-gray-700 dark:text-gray-300">{% trans "Comunidad" %}</span>
                         </a>
                     </div>
                 </div>

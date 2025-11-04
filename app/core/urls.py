@@ -1,4 +1,5 @@
 from django.urls import path
+from django.views.generic import TemplateView
 from app.core.views import (
     views_auth,
     views_profile,
@@ -7,6 +8,7 @@ from app.core.views import (
     views_report,
     views_misc,
     views_admin,
+    views_gdpr,
 )
 
 app_name = 'core'
@@ -82,4 +84,18 @@ urlpatterns = [
     # Gestión de niños admin (solo administradores)
     path('administracion/ninos/', views_admin.GestionNinosAdminView.as_view(), name='gestion_ninos_admin'),
     path('administracion/ninos/<int:pk>/toggle-status/', views_admin.toggle_nino_status_admin, name='toggle_nino_status_admin'),
+    
+    # ============================================
+    # RUTAS GDPR - Cumplimiento Legal
+    # ============================================
+    
+    # Documentos legales
+    path('legal/privacy-policy/', TemplateView.as_view(template_name='legal/privacy_policy.html'), name='privacy_policy'),
+    path('legal/terms-conditions/', TemplateView.as_view(template_name='legal/terms_conditions.html'), name='terms_conditions'),
+    
+    # Derechos del usuario GDPR
+    path('exportar-datos/', views_gdpr.exportar_datos_usuario, name='exportar_datos'),
+    path('consentimientos/', views_gdpr.vista_consentimientos, name='consentimientos'),
+    path('consentimientos/revocar/', views_gdpr.revocar_consentimiento, name='revocar_consentimiento'),
+    path('historial-auditoria/', views_gdpr.historial_auditoria_usuario, name='historial_auditoria'),
 ]

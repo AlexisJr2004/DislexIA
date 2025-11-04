@@ -101,7 +101,13 @@ class PlayGameView(TemplateView):
         # Obtener la sesión
         sesion = get_object_or_404(SesionJuego, url_sesion=url_sesion)
         
-        # ⭐ AGREGAR ESTAS 2 LÍNEAS AQUÍ:
+        # ⭐ CASO 2: Al entrar al juego, registrar fecha_pausa para detectar salidas inesperadas
+        # Si el usuario cierra el navegador sin hacer clic en "Salir", podremos calcular el tiempo pausado
+        if sesion.estado == 'en_proceso' and not sesion.fecha_pausa:
+            sesion.fecha_pausa = timezone.now()
+            sesion.save(update_fields=['fecha_pausa'])
+            print(f"⏸️ Registrado inicio de sesión para tracking: {sesion.fecha_pausa}")
+        
         # Detectar si es evaluación secuencial de IA (tiene evaluacion Y ejercicio_numero)
         es_evaluacion_ia = sesion.evaluacion is not None and sesion.ejercicio_numero is not None
 
@@ -165,7 +171,9 @@ class PlayGameView(TemplateView):
             'juegos': juegos_con_urls,
             'juegos_json': json.dumps(juegos_con_urls, ensure_ascii=False),
             'es_evaluacion_ia': es_evaluacion_ia,
+            'tiempo_pausado_segundos': sesion.tiempo_pausado_segundos,  # ⭐ NUEVO: Para ajustar el timer
         })
         
         print(f"=== PlayGameView returning template for game: {sesion.juego.nombre} ===")
+        print(f"   Tiempo pausado acumulado: {sesion.tiempo_pausado_segundos}s")
         return context

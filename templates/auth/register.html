@@ -62,7 +62,7 @@
     </style>
 </head>
 
-<body class="bg-gradient-to-br from-purple-50 via-white to-purple-100 min-h-screen flex items-center justify-center p-3 transition-colors duration-200">
+<body class="bg-gradient-to-br from-purple-50 via-white to-purple-100 min-h-screen flex items-center justify-center p-3 pb-20 transition-colors duration-200">
     
     <!-- Toast de Notificación (mismo diseño que base.html y login.html) -->
     <div id="toast-notification" class="fixed top-4 right-4 z-[9999] hidden">
@@ -245,6 +245,89 @@
                     </div>
                 {% endif %}
 
+                <!-- SECCIÓN GDPR: Consentimientos -->
+                <div class="mt-4 bg-gray-50 border border-gray-300 rounded-lg p-6">
+                    <h3 class="text-sm font-semibold text-gray-900 mb-4 flex items-center tracking-wide uppercase">
+                        <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                        </svg>
+                        Protección de Datos y Consentimientos
+                    </h3>
+                    
+                    <div class="space-y-4">
+                        <!-- Términos y Condiciones -->
+                        <div class="flex items-start gap-3">
+                            <div class="flex items-center h-5 mt-0.5">
+                                {{ form.acepta_terminos }}
+                            </div>
+                            <label for="{{ form.acepta_terminos.id_for_label }}" class="text-sm text-gray-700 cursor-pointer leading-tight">
+                                <span class="text-red-600 font-semibold">*</span> Acepto los 
+                                <a href="{% url 'core:terms_conditions' %}" target="_blank" class="text-gray-900 underline hover:text-gray-600 font-medium transition-colors">
+                                    Términos y Condiciones
+                                </a>
+                            </label>
+                        </div>
+                        {% if form.acepta_terminos.errors %}
+                            <p class="text-xs text-red-600 ml-8">{{ form.acepta_terminos.errors.0 }}</p>
+                        {% endif %}
+
+                        <!-- Política de Privacidad -->
+                        <div class="flex items-start gap-3">
+                            <div class="flex items-center h-5 mt-0.5">
+                                {{ form.acepta_privacidad }}
+                            </div>
+                            <label for="{{ form.acepta_privacidad.id_for_label }}" class="text-sm text-gray-700 cursor-pointer leading-tight">
+                                <span class="text-red-600 font-semibold">*</span> Acepto la 
+                                <a href="{% url 'core:privacy_policy' %}" target="_blank" class="text-gray-900 underline hover:text-gray-600 font-medium transition-colors">
+                                    Política de Privacidad
+                                </a>
+                            </label>
+                        </div>
+                        {% if form.acepta_privacidad.errors %}
+                            <p class="text-xs text-red-600 ml-8">{{ form.acepta_privacidad.errors.0 }}</p>
+                        {% endif %}
+
+                        <!-- Tratamiento de Datos -->
+                        <div class="flex items-start gap-3">
+                            <div class="flex items-center h-5 mt-0.5">
+                                {{ form.acepta_tratamiento_datos }}
+                            </div>
+                            <label for="{{ form.acepta_tratamiento_datos.id_for_label }}" class="text-sm text-gray-700 cursor-pointer leading-tight">
+                                <span class="text-red-600 font-semibold">*</span> Consiento el tratamiento de mis datos personales 
+                                conforme al GDPR
+                            </label>
+                        </div>
+                        {% if form.acepta_tratamiento_datos.errors %}
+                            <p class="text-xs text-red-600 ml-8">{{ form.acepta_tratamiento_datos.errors.0 }}</p>
+                        {% endif %}
+
+                        <!-- Comunicaciones (opcional) -->
+                        <div class="flex items-start gap-3 pt-2 border-t border-gray-200">
+                            <div class="flex items-center h-5 mt-0.5">
+                                {{ form.acepta_comunicaciones }}
+                            </div>
+                            <label for="{{ form.acepta_comunicaciones.id_for_label }}" class="text-sm text-gray-600 cursor-pointer leading-tight">
+                                Acepto recibir comunicaciones y actualizaciones (opcional)
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="mt-5 bg-white border border-gray-200 rounded p-4">
+                        <p class="text-xs text-gray-600 flex items-start gap-2 leading-relaxed">
+                            <svg class="w-4 h-4 text-gray-400 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+                            </svg>
+                            <span>
+                                Sus datos serán tratados con confidencialidad y podrá ejercer sus derechos de acceso, 
+                                rectificación, cancelación y oposición en cualquier momento. 
+                                <a href="{% url 'core:privacy_policy' %}" target="_blank" class="text-gray-900 underline hover:text-gray-600 transition-colors">
+                                    Más información
+                                </a>
+                            </span>
+                        </p>
+                    </div>
+                </div>
+
                 <!-- Botones centrados -->
                 <div class="flex justify-center gap-3 mt-3">
                     <button type="submit" 
@@ -263,7 +346,7 @@
     </div>
 
     <!-- Footer fijo en la parte inferior -->
-    <div class="fixed bottom-0 left-0 right-0 text-center py-2 text-xs text-gray-500 bg-gradient-to-t from-white/80 to-transparent backdrop-blur-sm">
+    <div class="fixed bottom-0 left-0 right-0 text-center py-3 text-xs text-gray-500 bg-white/90 backdrop-blur-sm border-t border-none z-10">
         <p>&copy; 2025 DislexIA. Todos los derechos reservados.</p>
         <p class="mt-0.5">Sistema de detección temprana de dislexia</p>
     </div>
